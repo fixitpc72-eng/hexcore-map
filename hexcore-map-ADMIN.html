@@ -132,9 +132,13 @@
   .color-row label { font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: .06em; }
   .color-row input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--border); border-radius: 5px; background: var(--card); cursor: pointer; padding: 2px 4px; }
   .swatch-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1rem; }
-  .swatch { width: 24px; height: 24px; border-radius: 4px; cursor: pointer; border: 2px solid transparent; transition: border-color .15s; flex-shrink: 0; }
+  .swatch { width: 36px; height: 36px; border-radius: 5px; border: 2px solid var(--border); cursor: pointer; transition: border-color .15s; }
   .swatch:hover { border-color: white; }
   .divider { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+
+  .save-status { font-size: 11px; color: var(--sub); margin-top: 0.5rem; display: flex; align-items: center; gap: 6px; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:.5; } }
 </style>
 </head>
 <body>
@@ -182,6 +186,7 @@
       <button class="stab" onclick="switchTab('shopify',this)">Shopify</button>
       <button class="stab" onclick="switchTab('customers',this)">List</button>
       <button class="stab" onclick="switchTab('customize',this)">Style</button>
+      <button class="stab" onclick="switchTab('backup',this)">Backup</button>
     </div>
 
     <div class="sidebar-content">
@@ -243,25 +248,6 @@
             <input id="f-spent" type="number" placeholder="0.00" min="0" step="0.01" />
           </div>
         </div>
-
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:.75rem">
-          <div style="font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#20FDF0;margin-bottom:8px">Pin Location</div>
-          <div class="form-grid-2">
-            <div class="form-row" style="margin-bottom:0">
-              <label>Latitude</label>
-              <input id="f-lat" type="number" placeholder="e.g. 27.9506" step="any" />
-            </div>
-            <div class="form-row" style="margin-bottom:0">
-              <label>Longitude</label>
-              <input id="f-lon" type="number" placeholder="e.g. -82.4572" step="any" />
-            </div>
-          </div>
-          <button onclick="autoGeocode()" id="geo-btn" style="margin-top:8px;width:100%;padding:7px;background:transparent;border:1px solid #20FDF0;border-radius:4px;color:#20FDF0;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer">
-            Auto-fill from City
-          </button>
-          <div id="geo-status" style="font-size:11px;color:var(--sub);margin-top:5px;min-height:14px"></div>
-        </div>
-
         <div class="form-row">
           <label>Order # (optional)</label>
           <input id="f-ordernum" placeholder="1001" />
@@ -275,6 +261,7 @@
           <textarea id="f-notes" placeholder="Repeat customer, special request..."></textarea>
         </div>
         <button class="submit-btn" onclick="addOrder()">Add to Map</button>
+        <div class="save-status" id="save-status"></div>
       </div>
 
       <!-- SHOPIFY -->
@@ -321,58 +308,81 @@
             <input type="color" id="cp-pin" value="#20FDF0" oninput="applyColor('--pin-color',this.value);renderPins()" />
           </div>
           <div class="color-row">
-            <label>Selected pin</label>
+            <label>Highlight color</label>
             <input type="color" id="cp-hl" value="#20FDF0" oninput="applyColor('--pin-color-hl',this.value);renderPins()" />
           </div>
         </div>
-        <div class="section-label">Quick presets</div>
+        <div class="section-label">Presets</div>
         <div class="swatch-row">
-          <div class="swatch" style="background:#20FDF0" title="Hexcore Orange" onclick="setPreset('#20FDF0','#20FDF0')"></div>
-          <div class="swatch" style="background:#2563eb" title="Blue" onclick="setPreset('#2563eb','#60a5fa')"></div>
-          <div class="swatch" style="background:#16a34a" title="Green" onclick="setPreset('#16a34a','#4ade80')"></div>
-          <div class="swatch" style="background:#9333ea" title="Purple" onclick="setPreset('#9333ea','#c084fc')"></div>
-          <div class="swatch" style="background:#dc2626" title="Red" onclick="setPreset('#dc2626','#f87171')"></div>
-          <div class="swatch" style="background:#d97706" title="Amber" onclick="setPreset('#d97706','#fbbf24')"></div>
-          <div class="swatch" style="background:#0891b2" title="Cyan" onclick="setPreset('#0891b2','#22d3ee')"></div>
-          <div class="swatch" style="background:#be185d" title="Pink" onclick="setPreset('#be185d','#f472b6')"></div>
+          <div class="swatch" style="background:#20FDF0" onclick="setPreset('#20FDF0','#20FDF0')" title="Cyan"></div>
+          <div class="swatch" style="background:#ff006e" onclick="setPreset('#ff006e','#ff006e')" title="Pink"></div>
+          <div class="swatch" style="background:#00f5ff" onclick="setPreset('#00f5ff','#00f5ff')" title="Bright Cyan"></div>
+          <div class="swatch" style="background:#00d9ff" onclick="setPreset('#00d9ff','#00d9ff')" title="Sky Blue"></div>
+          <div class="swatch" style="background:#a0ff00" onclick="setPreset('#a0ff00','#a0ff00')" title="Lime"></div>
         </div>
-
-        <hr class="divider">
-        <div class="section-label">Font colors</div>
-        <div class="color-grid">
+        <div class="divider"></div>
+        <div class="section-label">Text colors</div>
+        <div class="color-grid" style="margin-bottom:.5rem">
           <div class="color-row">
-            <label>Customer name</label>
-            <input type="color" id="cp-name" value="#e8e9ec" oninput="applyColor('--name-text',this.value)" />
+            <label>Name text</label>
+            <input type="color" id="cp-name" value="#e8e9ec" oninput="applyColor('--name-text',this.value);renderPins()" />
           </div>
           <div class="color-row">
-            <label>City / State</label>
-            <input type="color" id="cp-loc" value="#7a7f8e" oninput="applyColor('--loc-text',this.value)" />
+            <label>Location text</label>
+            <input type="color" id="cp-loc" value="#7a7f8e" oninput="applyColor('--loc-text',this.value);renderPins()" />
           </div>
           <div class="color-row">
             <label>Stat numbers</label>
             <input type="color" id="cp-stat" value="#e8e9ec" oninput="applyColor('--stat-num-text',this.value)" />
           </div>
           <div class="color-row">
-            <label>Orders / Accent</label>
-            <input type="color" id="cp-acc" value="#20FDF0" oninput="applyColor('--ui-accent-text',this.value)" />
+            <label>Accent text</label>
+            <input type="color" id="cp-acc" value="#20FDF0" oninput="applyColor('--ui-accent-text',this.value);renderPins()" />
           </div>
           <div class="color-row">
             <label>Tooltip name</label>
-            <input type="color" id="cp-tt" value="#e8e9ec" oninput="applyColor('--tooltip-name',this.value)" />
+            <input type="color" id="cp-tt" value="#e8e9ec" oninput="applyColor('--tooltip-name',this.value);renderPins()" />
           </div>
           <div class="color-row">
-            <label>Logo text</label>
+            <label>UI text</label>
             <input type="color" id="cp-ui" value="#e8e9ec" oninput="applyColor('--ui-text',this.value)" />
           </div>
         </div>
-        <hr class="divider">
-        <button class="submit-btn secondary" style="margin-top:0" onclick="resetColors()">Reset to defaults</button>
+        <button class="submit-btn secondary" onclick="resetColors()">Reset to Default</button>
+      </div>
+
+      <!-- BACKUP -->
+      <div id="tab-backup" class="panel">
+        <div class="section-label">Data Management</div>
+        <p style="font-size:12px;color:var(--sub);margin-bottom:1rem;line-height:1.5">Your data is automatically saved to your browser's local storage. Use these tools to backup and restore your customer data.</p>
+        
+        <div style="margin-bottom:1.5rem">
+          <div class="section-label" style="margin-bottom:.5rem">Export Data</div>
+          <p style="font-size:12px;color:var(--sub);margin-bottom:.75rem">Download all customer data as a JSON file for backup.</p>
+          <button class="submit-btn" onclick="downloadBackup()">📥 Download Backup</button>
+        </div>
+
+        <div style="margin-bottom:1.5rem">
+          <div class="section-label" style="margin-bottom:.5rem">Import Data</div>
+          <p style="font-size:12px;color:var(--sub);margin-bottom:.75rem">Restore customer data from a previously saved backup file.</p>
+          <input type="file" id="backup-file" accept=".json" style="display:none" onchange="importBackup(event)" />
+          <button class="submit-btn secondary" onclick="document.getElementById('backup-file').click()">📤 Upload Backup</button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-label" style="margin-bottom:.5rem">Storage Info</div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:5px;padding:10px 12px;font-size:12px;color:var(--sub);line-height:1.6">
+          <div style="margin-bottom:8px"><strong style="color:var(--text)">Total Customers:</strong> <span id="storage-count">0</span></div>
+          <div style="margin-bottom:8px"><strong style="color:var(--text)">Storage Used:</strong> <span id="storage-size">0 KB</span></div>
+          <div><strong style="color:var(--text)">Last Updated:</strong> <span id="storage-date">Never</span></div>
+        </div>
+
+        <button class="submit-btn secondary" onclick="clearAllData()" style="margin-top:1.5rem;background:rgba(255,0,0,.1);border-color:#ef4444;color:#ef4444">🗑️ Clear All Data</button>
       </div>
 
     </div>
   </div>
 
-  <!-- MAP -->
   <div class="map-area">
     <div id="map-svg-wrap">
       <svg id="usa-svg" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg">
@@ -466,14 +476,114 @@ function formatName(first, lastInitial) {
   return l ? `${f} ${l}.` : f;
 }
 
-let customers = [
-  {id:1,first:"Jake",lastInitial:"M",city:"Miami",state:"Florida",orders:1,spent:0,notes:"",source:"instagram",ordernum:"",product:""},
-  {id:2,first:"Sarah",lastInitial:"T",city:"Dallas",state:"Texas",orders:1,spent:0,notes:"VIP",source:"shopify",ordernum:"",product:""},
-  {id:3,first:"Mike",lastInitial:"R",city:"Denver",state:"Colorado",orders:1,spent:0,notes:"",source:"instagram",ordernum:"",product:""},
-  {id:4,first:"Lisa",lastInitial:"K",city:"Chicago",state:"Illinois",orders:1,spent:0,notes:"",source:"facebook",ordernum:"",product:""},
-  {id:5,first:"Tom",lastInitial:"W",city:"Seattle",state:"Washington",orders:1,spent:0,notes:"",source:"facebook",ordernum:"",product:""},
+// ── LOCALSTORAGE PERSISTENCE ──
+const STORAGE_KEY = 'hexcore_customers';
+const DEFAULT_CUSTOMERS = [
+  {id:1,first:"Jake",lastInitial:"M",city:"Miami",state:"Florida",orders:1,spent:0,notes:"",source:"instagram",ordernum:"",product:"",lat:null,lon:null,date:"2024-01-01"},
+  {id:2,first:"Sarah",lastInitial:"T",city:"Dallas",state:"Texas",orders:1,spent:0,notes:"VIP",source:"shopify",ordernum:"",product:"",lat:null,lon:null,date:"2024-01-02"},
+  {id:3,first:"Mike",lastInitial:"R",city:"Denver",state:"Colorado",orders:1,spent:0,notes:"",source:"instagram",ordernum:"",product:"",lat:null,lon:null,date:"2024-01-03"},
+  {id:4,first:"Lisa",lastInitial:"K",city:"Chicago",state:"Illinois",orders:1,spent:0,notes:"",source:"facebook",ordernum:"",product:"",lat:null,lon:null,date:"2024-01-04"},
+  {id:5,first:"Tom",lastInitial:"W",city:"Seattle",state:"Washington",orders:1,spent:0,notes:"",source:"facebook",ordernum:"",product:"",lat:null,lon:null,date:"2024-01-05"},
 ];
-let nextId = 6;
+
+function loadCustomers() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch(e) {
+    console.error('Error loading customers:', e);
+  }
+  return DEFAULT_CUSTOMERS;
+}
+
+function saveCustomers() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(customers));
+    updateStorageInfo();
+    showSaveStatus();
+  } catch(e) {
+    console.error('Error saving customers:', e);
+    showToast('Error saving data', true);
+  }
+}
+
+function updateStorageInfo() {
+  const count = customers.length;
+  const size = (new Blob([JSON.stringify(customers)]).size / 1024).toFixed(2);
+  const date = new Date().toLocaleString();
+  document.getElementById('storage-count').textContent = count;
+  document.getElementById('storage-size').textContent = size + ' KB';
+  document.getElementById('storage-date').textContent = date;
+}
+
+function showSaveStatus() {
+  const el = document.getElementById('save-status');
+  el.innerHTML = '<div class="save-dot"></div><span>Saved to browser storage</span>';
+  setTimeout(() => {
+    el.innerHTML = '';
+  }, 3000);
+}
+
+function downloadBackup() {
+  const data = {
+    version: 1,
+    exported: new Date().toISOString(),
+    customers: customers
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `hexcore-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Backup downloaded!');
+}
+
+function importBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.customers && Array.isArray(data.customers)) {
+        customers = data.customers;
+        nextId = Math.max(...customers.map(c => c.id), 0) + 1;
+        saveCustomers();
+        renderPins();
+        updateStats();
+        renderTopCustomers();
+        showToast(`Restored ${customers.length} customers!`);
+      } else {
+        showToast('Invalid backup file', true);
+      }
+    } catch(e) {
+      showToast('Error importing backup', true);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function clearAllData() {
+  if (confirm('Are you sure? This will delete all customer data. This cannot be undone.')) {
+    customers = [];
+    nextId = 1;
+    saveCustomers();
+    renderPins();
+    updateStats();
+    renderTopCustomers();
+    renderCustomerList();
+    showToast('All data cleared');
+  }
+}
+
+let customers = loadCustomers();
+let nextId = Math.max(...customers.map(c => c.id), 0) + 1;
 let currentFilter = 'all';
 let searchQuery = '';
 let highlightedId = null;
@@ -486,6 +596,7 @@ function switchTab(name, btn) {
   btn.classList.add('active');
   if (name === 'stats') { updateStats(); renderTopCustomers(); }
   if (name === 'customers') renderCustomerList();
+  if (name === 'backup') updateStorageInfo();
 }
 
 function setSource(src, btn) {
@@ -537,37 +648,6 @@ function renderTopCustomers() {
     </div>`).join('');
 }
 
-async function autoGeocode() {
-  const city = document.getElementById('f-city').value.trim();
-  const state = document.getElementById('f-state').value;
-  if (!city || !state) { document.getElementById('geo-status').textContent = 'Enter city and state first.'; return; }
-  const btn = document.getElementById('geo-btn');
-  const status = document.getElementById('geo-status');
-  btn.textContent = 'Looking up...';
-  btn.disabled = true;
-  status.textContent = '';
-  try {
-    const q = encodeURIComponent(`${city}, ${state}, USA`);
-    const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`,
-      { headers: { 'Accept-Language': 'en', 'User-Agent': 'HexcoreMountsMap/1.0' } });
-    const data = await res.json();
-    if (data && data[0]) {
-      document.getElementById('f-lat').value = parseFloat(data[0].lat).toFixed(4);
-      document.getElementById('f-lon').value = parseFloat(data[0].lon).toFixed(4);
-      status.style.color = '#20FDF0';
-      status.textContent = `✓ Found: ${data[0].display_name.split(',').slice(0,2).join(',')}`;
-    } else {
-      status.style.color = '#e8440a';
-      status.textContent = 'City not found — paste coordinates from spreadsheet.';
-    }
-  } catch(e) {
-    status.style.color = '#e8440a';
-    status.textContent = 'Lookup failed — paste coordinates from spreadsheet.';
-  }
-  btn.textContent = 'Auto-fill from City';
-  btn.disabled = false;
-}
-
 async function addOrder() {
   const first = document.getElementById('f-first').value.trim();
   const lastInitial = document.getElementById('f-last').value.trim().toUpperCase().replace(/[^A-Z]/g,'');
@@ -578,13 +658,9 @@ async function addOrder() {
   const notes = document.getElementById('f-notes').value.trim();
   const ordernum = document.getElementById('f-ordernum').value.trim();
   const product = document.getElementById('f-product').value.trim();
-  const latVal = document.getElementById('f-lat').value.trim();
-  const lonVal = document.getElementById('f-lon').value.trim();
-  let lat = latVal ? parseFloat(latVal) : null;
-  let lon = lonVal ? parseFloat(lonVal) : null;
+  if (!first || !city || !state) { showToast('Fill in first name, city & state',true); return; }
 
-  if (!first || !city || !state) { showToast('Fill in first name, city & state', true); return; }
-
+  // Check if customer already exists
   const existing = customers.find(c =>
     c.first.toLowerCase()===first.toLowerCase() && c.lastInitial===lastInitial && c.state===state
   );
@@ -592,37 +668,53 @@ async function addOrder() {
     existing.orders += orders;
     existing.spent += spent;
     showToast(`${formatName(first,lastInitial)} — now ${existing.orders} orders`);
-    clearForm(); renderPins(); return;
+    clearForm();
+    saveCustomers();
+    renderPins();
+    return;
   }
 
-  // If no coords, try auto-geocode silently
-  if (!lat || !lon) {
-    try {
-      const q = encodeURIComponent(`${city}, ${state}, USA`);
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`,
-        { headers: { 'Accept-Language': 'en', 'User-Agent': 'HexcoreMountsMap/1.0' } });
-      const data = await res.json();
-      if (data && data[0]) { lat = parseFloat(data[0].lat); lon = parseFloat(data[0].lon); }
-    } catch(e) {}
+  // Geocode the city to get exact lat/lon
+  const addBtn = document.querySelector('.submit-btn');
+  addBtn.textContent = 'Looking up location...';
+  addBtn.disabled = true;
+
+  let lat = null, lon = null;
+  try {
+    const query = encodeURIComponent(`${city}, ${state}, USA`);
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=1`, {
+      headers: { 'Accept-Language': 'en', 'User-Agent': 'HexcoreMountsMap/1.0' }
+    });
+    const data = await res.json();
+    if (data && data[0]) {
+      lat = parseFloat(data[0].lat);
+      lon = parseFloat(data[0].lon);
+    }
+  } catch(e) {
+    // geocode failed — will fall back to state center
   }
 
-  customers.push({ id:nextId++, first, lastInitial, city, state, orders, spent, notes,
-    source:currentSource, ordernum, product, lat, lon, date:new Date().toISOString().slice(0,10) });
+  addBtn.textContent = 'Add to Map';
+  addBtn.disabled = false;
+
+  customers.push({
+    id: nextId++, first, lastInitial, city, state,
+    orders, spent, notes, source: currentSource,
+    ordernum, product,
+    lat, lon, // store exact coords (null if lookup failed)
+    date: new Date().toISOString().slice(0,10)
+  });
   showToast(`${formatName(first,lastInitial)} added!`);
   clearForm();
+  saveCustomers();
   renderPins();
 }
 
 function clearForm() {
-  ['f-first','f-last','f-city','f-ordernum','f-product','f-notes','f-lat','f-lon'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  document.getElementById('f-state').value = '';
-  document.getElementById('f-orders').value = '1';
-  document.getElementById('f-spent').value = '';
-  const gs = document.getElementById('geo-status');
-  if (gs) gs.textContent = '';
+  ['f-first','f-last','f-city','f-ordernum','f-product','f-notes'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('f-state').value='';
+  document.getElementById('f-orders').value='1';
+  document.getElementById('f-spent').value='';
 }
 
 function testShopifyConnection() {
@@ -680,6 +772,7 @@ function renderCustomerList() {
 }
 function deleteCustomer(id) {
   customers=customers.filter(c=>c.id!==id);
+  saveCustomers();
   renderPins(); renderCustomerList(); updateStats();
   showToast('Customer removed');
 }
@@ -801,7 +894,7 @@ function resetColors() {
 function drawStates() {
   fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json')
     .then(r=>r.json()).then(us=>{
-      const proj=d3.geoAlbersUsa().scale(1280).translate([480,300]);
+      const proj=d3.geoAlbersUsa().scale(1280).translate([480,300])
       projectionFn = proj;
       const path=d3.geoPath().projection(proj);
       const states=topojson.feature(us,us.objects.states);
@@ -810,19 +903,20 @@ function drawStates() {
       renderPins();
     }).catch(()=>{
       projectionFn=d3.geoAlbersUsa().scale(1280).translate([480,300]);
-      document.getElementById('states-g').innerHTML=`<rect x="60" y="80" width="840" height="440" rx="4" fill="#16181c" stroke="#2a2d35" stroke-width="0.8"/><text x="480" y="300" text-anchor="middle" font-size="14" fill="#3a3d47" font-family="Barlow,sans-serif">US Map</text>`;
+      document.getElementById('states-g').innerHTML=
+        `<rect x="60" y="80" width="840" height="440" rx="4" fill="#16181c" stroke="#2a2d35"/>
+         <text x="480" y="300" text-anchor="middle" font-size="14" fill="#3a3d47" font-family="Barlow,sans-serif">US Map</text>`;
       renderPins();
     });
 }
 
-function showToast(msg,isError=false) {
+function showToast(msg, isError=false) {
   const t=document.getElementById('toast');
   t.textContent=msg;
   t.style.background=isError?'#20FDF0':'#16a34a';
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2800);
 }
-
 
 // ── PASSWORD GATE ──
 const ADMIN_PASSWORD = 'hexcore2024'; // Change this to your own password
@@ -870,6 +964,7 @@ function copyExport() {
 updateStats();
 renderTopCustomers();
 drawStates();
+updateStorageInfo();
 </script>
 </body>
 </html>
