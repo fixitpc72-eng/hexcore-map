@@ -29,25 +29,28 @@
     --tooltip-name: #e8e9ec;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--black); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
+  body { background: var(--black); color: var(--text); font-family: var(--font-body); min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
 
   header {
     background: var(--dark);
     border-bottom: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
     padding: 0 2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 60px;
+    width: 75%;
   }
   .logo { font-family: var(--font-head); font-weight: 900; font-size: 22px; letter-spacing: .04em; text-transform: uppercase; color: var(--ui-text); }
   .logo span { color: var(--ui-accent-text); }
   .header-badge { background: var(--accent); color: white; font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border-radius: 3px; }
 
-  .layout { display: grid; grid-template-columns: 300px 1fr; height: calc(100vh - 60px); }
+  .layout { display: grid; grid-template-columns: 260px 1fr; height: calc(100vh - 60px); width: 75%; margin: 0 auto; }
 
-  /* ── SIDEBAR (stats only) ── */
-  .sidebar { background: var(--dark); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+  /* Keep sidebar left on desktop even though map is first in DOM */
+  .sidebar { order: -1; background: var(--dark); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
   .sidebar-header { padding: 1.25rem 1.25rem .75rem; border-bottom: 1px solid var(--border); }
   .sidebar-title { font-family: var(--font-head); font-size: 14px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--sub); }
   .sidebar-content { flex: 1; overflow-y: auto; padding: 1.25rem; scrollbar-width: thin; scrollbar-color: var(--muted) transparent; }
@@ -60,6 +63,10 @@
   .stat-label { font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: .08em; margin-top: 4px; }
 
   .section-label { font-family: var(--font-head); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--sub); margin-bottom: .75rem; }
+
+  /* Desktop: two-col is just normal stacked flow */
+  .mobile-two-col { display: block; }
+  .mobile-two-col > div + div { margin-top: 1.25rem; }
 
   .source-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 5px; margin-bottom: 6px; }
   .ci-source { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
@@ -95,10 +102,97 @@
 
   .map-tagline { position: absolute; top: 1.25rem; left: 50%; transform: translateX(-50%); font-family: var(--font-head); font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--sub); white-space: nowrap; pointer-events: none; }
 
-  @media (max-width: 700px) {
-    .layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; height: auto; }
-    .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
-    .map-area { height: 60vw; min-height: 300px; }
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    html, body { height: auto; overflow-x: hidden; }
+
+    header { padding: 0 1rem; height: 52px; width: 75%; }
+    .logo { font-size: 18px; }
+    .header-badge { font-size: 10px; padding: 3px 8px; }
+
+    /* Stack map ON TOP, stats below */
+    .layout {
+      display: flex;
+      flex-direction: column;
+      height: auto;
+      min-height: 100vh;
+      width: 75%;
+    }
+
+    /* Map comes first on mobile */
+    .map-area {
+      order: 1;
+      width: 100%;
+      height: 56vw;
+      min-height: 220px;
+      max-height: 340px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #map-svg-wrap {
+      padding: .5rem;
+      width: 100%;
+      height: 100%;
+    }
+
+    #usa-svg {
+      width: 100%;
+      height: 100%;
+      max-height: none;
+    }
+
+    .map-tagline { display: none; }
+    .map-legend { padding: 6px 10px; bottom: .5rem; left: .5rem; }
+    .map-legend-title { font-size: 10px; margin-bottom: 4px; }
+    .leg-row { font-size: 10px; gap: 5px; margin-bottom: 2px; }
+
+    /* Stats below map */
+    .sidebar {
+      order: 2;
+      width: 100%;
+      border-right: none;
+      border-top: 1px solid var(--border);
+      overflow: visible;
+      height: auto;
+    }
+
+    .sidebar-content { padding: 1rem; overflow: visible; }
+
+    /* Stats grid — 4 across on mobile */
+    .stats-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 1rem;
+    }
+    .stat-card.full { grid-column: span 4; }
+    .stat-num { font-size: 22px; }
+    .stat-label { font-size: 9px; }
+
+    /* Source + top customers side by side */
+    .mobile-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .source-row { padding: 6px 10px; }
+    .src-count { font-size: 15px; }
+
+    .top-item { padding: 6px 0; }
+    .top-name { font-size: 12px; }
+    .top-orders { font-size: 15px; }
+
+    /* Tooltip smaller on mobile */
+    .map-tooltip { min-width: 130px; padding: 8px 10px; font-size: 11px; }
+    .tt-orders { font-size: 18px; }
+  }
+
+  @media (max-width: 400px) {
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .stat-card.full { grid-column: span 2; }
+    .mobile-two-col { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -110,31 +204,8 @@
 </header>
 
 <div class="layout">
-  <!-- STATS SIDEBAR -->
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-title"><span class="pulse-dot"></span>Live customer stats</div>
-    </div>
-    <div class="sidebar-content">
 
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-num accent" id="s-total">0</div><div class="stat-label">Customers</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-states">0</div><div class="stat-label">States</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-orders">0</div><div class="stat-label">Orders</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-avg">0</div><div class="stat-label">Avg Orders</div></div>
-        <div class="stat-card full"><div class="stat-num" id="s-top-state" style="font-size:22px">—</div><div class="stat-label">Top State</div></div>
-      </div>
-
-      <div class="section-label">Orders by source</div>
-      <div id="source-breakdown" style="margin-bottom:1.5rem"></div>
-
-      <div class="section-label">Top customers</div>
-      <div id="top-customers"></div>
-
-    </div>
-  </div>
-
-  <!-- MAP -->
+  <!-- MAP — rendered first in DOM so it appears on top on mobile -->
   <div class="map-area">
     <div class="map-tagline">Hexcore Mounts — Nationwide</div>
     <div id="map-svg-wrap">
@@ -153,6 +224,36 @@
       <div class="leg-row"><svg width="26" height="25" viewBox="-13 -12 26 25"><polygon id="lh4" points="0,-12 10.4,-6 10.4,6 0,12 -10.4,6 -10.4,-6" fill="#20FDF0"/></svg><span>11+</span></div>
     </div>
   </div>
+
+  <!-- STATS SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title"><span class="pulse-dot"></span>Live customer stats</div>
+    </div>
+    <div class="sidebar-content">
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-num accent" id="s-total">0</div><div class="stat-label">Customers</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-states">0</div><div class="stat-label">States</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-orders">0</div><div class="stat-label">Orders</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-avg">0</div><div class="stat-label">Avg Orders</div></div>
+        <div class="stat-card full"><div class="stat-num" id="s-top-state" style="font-size:22px">—</div><div class="stat-label">Top State</div></div>
+      </div>
+
+      <div class="mobile-two-col">
+        <div>
+          <div class="section-label">Orders by source</div>
+          <div id="source-breakdown"></div>
+        </div>
+        <div>
+          <div class="section-label">Top customers</div>
+          <div id="top-customers"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <script>
