@@ -243,6 +243,25 @@
             <input id="f-spent" type="number" placeholder="0.00" min="0" step="0.01" />
           </div>
         </div>
+
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:.75rem">
+          <div style="font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#20FDF0;margin-bottom:8px">Pin Location</div>
+          <div class="form-grid-2">
+            <div class="form-row" style="margin-bottom:0">
+              <label>Latitude</label>
+              <input id="f-lat" type="number" placeholder="e.g. 27.9506" step="any" />
+            </div>
+            <div class="form-row" style="margin-bottom:0">
+              <label>Longitude</label>
+              <input id="f-lon" type="number" placeholder="e.g. -82.4572" step="any" />
+            </div>
+          </div>
+          <button onclick="autoGeocode()" id="geo-btn" style="margin-top:8px;width:100%;padding:7px;background:transparent;border:1px solid #20FDF0;border-radius:4px;color:#20FDF0;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer">
+            Auto-fill from City
+          </button>
+          <div id="geo-status" style="font-size:11px;color:var(--sub);margin-top:5px;min-height:14px"></div>
+        </div>
+
         <div class="form-row">
           <label>Order # (optional)</label>
           <input id="f-ordernum" placeholder="1001" />
@@ -518,6 +537,37 @@ function renderTopCustomers() {
     </div>`).join('');
 }
 
+async function autoGeocode() {
+  const city = document.getElementById('f-city').value.trim();
+  const state = document.getElementById('f-state').value;
+  if (!city || !state) { document.getElementById('geo-status').textContent = 'Enter city and state first.'; return; }
+  const btn = document.getElementById('geo-btn');
+  const status = document.getElementById('geo-status');
+  btn.textContent = 'Looking up...';
+  btn.disabled = true;
+  status.textContent = '';
+  try {
+    const q = encodeURIComponent(`${city}, ${state}, USA`);
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`,
+      { headers: { 'Accept-Language': 'en', 'User-Agent': 'HexcoreMountsMap/1.0' } });
+    const data = await res.json();
+    if (data && data[0]) {
+      document.getElementById('f-lat').value = parseFloat(data[0].lat).toFixed(4);
+      document.getElementById('f-lon').value = parseFloat(data[0].lon).toFixed(4);
+      status.style.color = '#20FDF0';
+      status.textContent = `✓ Found: ${data[0].display_name.split(',').slice(0,2).join(',')}`;
+    } else {
+      status.style.color = '#e8440a';
+      status.textContent = 'City not found — paste coordinates from spreadsheet.';
+    }
+  } catch(e) {
+    status.style.color = '#e8440a';
+    status.textContent = 'Lookup failed — paste coordinates from spreadsheet.';
+  }
+  btn.textContent = 'Auto-fill from City';
+  btn.disabled = false;
+}
+
 async function addOrder() {
   const first = document.getElementById('f-first').value.trim();
   const lastInitial = document.getElementById('f-last').value.trim().toUpperCase().replace(/[^A-Z]/g,'');
@@ -528,9 +578,13 @@ async function addOrder() {
   const notes = document.getElementById('f-notes').value.trim();
   const ordernum = document.getElementById('f-ordernum').value.trim();
   const product = document.getElementById('f-product').value.trim();
-  if (!first || !city || !state) { showToast('Fill in first name, city & state',true); return; }
+  const latVal = document.getElementById('f-lat').value.trim();
+  const lonVal = document.getElementById('f-lon').value.trim();
+  let lat = latVal ? parseFloat(latVal) : null;
+  let lon = lonVal ? parseFloat(lonVal) : null;
 
-  // Check if customer already exists
+  if (!first || !city || !state) { showToast('Fill in first name, city & state', true); return; }
+
   const existing = customers.find(c =>
     c.first.toLowerCase()===first.toLowerCase() && c.lastInitial===lastInitial && c.state===state
   );
@@ -538,51 +592,37 @@ async function addOrder() {
     existing.orders += orders;
     existing.spent += spent;
     showToast(`${formatName(first,lastInitial)} — now ${existing.orders} orders`);
-    clearForm();
-    renderPins();
-    return;
+    clearForm(); renderPins(); return;
   }
 
-  // Geocode the city to get exact lat/lon
-  const addBtn = document.querySelector('.submit-btn');
-  addBtn.textContent = 'Looking up location...';
-  addBtn.disabled = true;
-
-  let lat = null, lon = null;
-  try {
-    const query = encodeURIComponent(`${city}, ${state}, USA`);
-    const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=1`, {
-      headers: { 'Accept-Language': 'en', 'User-Agent': 'HexcoreMountsMap/1.0' }
-    });
-    const data = await res.json();
-    if (data && data[0]) {
-      lat = parseFloat(data[0].lat);
-      lon = parseFloat(data[0].lon);
-    }
-  } catch(e) {
-    // geocode failed — will fall back to state center
+  // If no coords, try auto-geocode silently
+  if (!lat || !lon) {
+    try {
+      const q = encodeURIComponent(`${city}, ${state}, USA`);
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`,
+        { headers: { 'Accept-Language': 'en', 'User-Agent': 'HexcoreMountsMap/1.0' } });
+      const data = await res.json();
+      if (data && data[0]) { lat = parseFloat(data[0].lat); lon = parseFloat(data[0].lon); }
+    } catch(e) {}
   }
 
-  addBtn.textContent = 'Add to Map';
-  addBtn.disabled = false;
-
-  customers.push({
-    id: nextId++, first, lastInitial, city, state,
-    orders, spent, notes, source: currentSource,
-    ordernum, product,
-    lat, lon, // store exact coords (null if lookup failed)
-    date: new Date().toISOString().slice(0,10)
-  });
+  customers.push({ id:nextId++, first, lastInitial, city, state, orders, spent, notes,
+    source:currentSource, ordernum, product, lat, lon, date:new Date().toISOString().slice(0,10) });
   showToast(`${formatName(first,lastInitial)} added!`);
   clearForm();
   renderPins();
 }
 
 function clearForm() {
-  ['f-first','f-last','f-city','f-ordernum','f-product','f-notes'].forEach(id => document.getElementById(id).value='');
-  document.getElementById('f-state').value='';
-  document.getElementById('f-orders').value='1';
-  document.getElementById('f-spent').value='';
+  ['f-first','f-last','f-city','f-ordernum','f-product','f-notes','f-lat','f-lon'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('f-state').value = '';
+  document.getElementById('f-orders').value = '1';
+  document.getElementById('f-spent').value = '';
+  const gs = document.getElementById('geo-status');
+  if (gs) gs.textContent = '';
 }
 
 function testShopifyConnection() {
