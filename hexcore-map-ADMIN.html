@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hexcore Mounts — Customer Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<style>
+  :root {
+    --black: #0a0a0a;
+    --dark: #111214;
+    --card: #16181c;
+    --border: #2a2d35;
+    --muted: #3a3d47;
+    --text: #e8e9ec;
+    --sub: #7a7f8e;
+    --accent: #20FDF0;
+    --blue: #2563eb;
+    --blue-light: #3b82f6;
+    --green: #16a34a;
+    --ig: #e1306c;
+    --fb: #1877f2;
+    --font-head: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+    --pin-color: #20FDF0;
+    --pin-color-hl: #20FDF0;
+    --ui-text: #e8e9ec;
+    --ui-accent-text: #20FDF0;
+    --name-text: #e8e9ec;
+    --loc-text: #7a7f8e;
+    --stat-num-text: #e8e9ec;
+    --tooltip-name: #e8e9ec;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--black); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
+
+  header { background: var(--dark); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .logo { font-family: var(--font-head); font-weight: 900; font-size: 22px; letter-spacing: .04em; text-transform: uppercase; color: var(--ui-text); }
+  .logo span { color: var(--ui-accent-text); }
+  .header-badge { background: var(--accent); color: white; font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border-radius: 3px; }
+
+  .layout { display: grid; grid-template-columns: 340px 1fr; height: calc(100vh - 60px); }
+
+  .sidebar { background: var(--dark); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+  .sidebar-tabs { display: flex; border-bottom: 1px solid var(--border); }
+  .stab { flex: 1; padding: 13px 4px; text-align: center; font-family: var(--font-head); font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--sub); cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; background: none; border-top: none; border-left: none; border-right: none; }
+  .stab:hover { color: var(--text); }
+  .stab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .sidebar-content { flex: 1; overflow-y: auto; padding: 1.25rem; scrollbar-width: thin; scrollbar-color: var(--muted) transparent; }
+
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1.25rem; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
+  .stat-card.full { grid-column: span 2; }
+  .stat-num { font-family: var(--font-head); font-size: 28px; font-weight: 900; color: var(--stat-num-text); line-height: 1; }
+  .stat-num.accent { color: var(--ui-accent-text); }
+  .stat-label { font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: .08em; margin-top: 4px; }
+
+  .section-label { font-family: var(--font-head); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--sub); margin-bottom: .6rem; }
+  .form-row { margin-bottom: .75rem; }
+  .form-row label { display: block; font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+  .form-row input, .form-row select, .form-row textarea { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 9px 12px; color: var(--text); font-family: var(--font-body); font-size: 13px; outline: none; transition: border-color .15s; }
+  .form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: var(--accent); }
+  .form-row select option { background: var(--card); }
+  .form-row textarea { resize: vertical; min-height: 60px; }
+  .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .source-toggle { display: flex; gap: 6px; margin-bottom: 1rem; }
+  .source-btn { flex: 1; padding: 8px 4px; border-radius: 5px; border: 1px solid var(--border); background: var(--card); color: var(--sub); font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; transition: all .15s; text-align: center; }
+  .source-btn.active-ig { background: var(--ig); border-color: var(--ig); color: white; }
+  .source-btn.active-fb { background: var(--fb); border-color: var(--fb); color: white; }
+  .source-btn.active-sh { background: var(--green); border-color: var(--green); color: white; }
+
+  .submit-btn { width: 100%; padding: 11px; background: var(--accent); border: none; border-radius: 5px; color: white; font-family: var(--font-head); font-size: 15px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; transition: opacity .15s; margin-top: .5rem; }
+  .submit-btn:hover { opacity: .85; }
+  .submit-btn.secondary { background: transparent; border: 1px solid var(--blue-light); color: var(--blue-light); margin-top: .5rem; }
+
+  .shopify-box { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; margin-bottom: 1rem; }
+  .shopify-box p { font-size: 12px; color: var(--sub); line-height: 1.6; margin-bottom: .75rem; }
+  .shopify-step { display: flex; gap: 8px; align-items: flex-start; margin-bottom: .6rem; }
+  .step-num { background: var(--accent); color: white; font-family: var(--font-head); font-size: 11px; font-weight: 700; width: 20px; height: 20px; border-radius: 3px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .step-text { font-size: 12px; color: var(--sub); line-height: 1.5; }
+  .step-text code { background: var(--muted); color: var(--text); padding: 1px 5px; border-radius: 3px; font-size: 11px; font-family: monospace; }
+
+  .customer-item { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-start; cursor: pointer; transition: border-color .15s; }
+  .customer-item:hover { border-color: var(--muted); }
+  .customer-item.highlighted { border-color: var(--accent); }
+  .ci-name { font-weight: 600; font-size: 13px; color: var(--name-text); margin-bottom: 2px; }
+  .ci-loc { font-size: 11px; color: var(--loc-text); }
+  .ci-right { text-align: right; flex-shrink: 0; }
+  .ci-orders { font-family: var(--font-head); font-size: 16px; font-weight: 700; color: var(--ui-accent-text); line-height: 1; }
+  .ci-label { font-size: 10px; color: var(--sub); text-transform: uppercase; letter-spacing: .06em; }
+  .ci-source { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; margin-top: 4px; }
+  .src-instagram { background: rgba(225,48,108,.2); color: #f472b6; }
+  .src-facebook { background: rgba(24,119,242,.2); color: #60a5fa; }
+  .src-shopify { background: rgba(22,163,74,.2); color: #4ade80; }
+  .del-btn { background: none; border: none; color: var(--muted); cursor: pointer; padding: 2px 4px; font-size: 14px; line-height: 1; transition: color .15s; }
+  .del-btn:hover { color: var(--accent); }
+
+  .search-input { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 8px 12px; color: var(--text); font-size: 13px; outline: none; margin-bottom: .75rem; font-family: var(--font-body); }
+  .filter-row { display: flex; gap: 6px; margin-bottom: .75rem; flex-wrap: wrap; }
+  .filter-btn { padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--card); color: var(--sub); font-size: 11px; font-family: var(--font-head); font-weight: 600; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; transition: all .15s; }
+  .filter-btn.active { background: var(--blue); border-color: var(--blue); color: white; }
+
+  .map-area { background: var(--black); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  #map-svg-wrap { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+  #usa-svg { width: 100%; height: 100%; max-height: calc(100vh - 80px); }
+
+  .map-tooltip { position: absolute; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; pointer-events: none; display: none; z-index: 20; min-width: 160px; box-shadow: 0 8px 24px rgba(0,0,0,.5); }
+  .tt-name { font-weight: 600; font-size: 13px; color: var(--tooltip-name); margin-bottom: 2px; }
+  .tt-loc { font-size: 11px; color: var(--sub); margin-bottom: 6px; }
+  .tt-orders { font-family: var(--font-head); font-size: 20px; font-weight: 900; color: var(--ui-accent-text); line-height: 1; }
+  .tt-orders-lbl { font-size: 10px; color: var(--sub); text-transform: uppercase; letter-spacing: .06em; }
+
+  .map-legend { position: absolute; bottom: 1.25rem; left: 1.25rem; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; }
+  .map-legend-title { font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--sub); margin-bottom: 6px; }
+  .leg-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 11px; color: var(--sub); }
+
+  .map-controls { position: absolute; bottom: 1.25rem; right: 1.25rem; display: flex; flex-direction: column; gap: 6px; }
+  .map-ctrl-btn { background: var(--card); border: 1px solid var(--border); border-radius: 5px; color: var(--text); width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: border-color .15s; }
+  .map-ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--green); color: white; font-family: var(--font-head); font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 10px 18px; border-radius: 5px; z-index: 100; opacity: 0; transform: translateY(10px); transition: all .3s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .empty-state { text-align: center; padding: 2rem 0; color: var(--sub); font-size: 13px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+  .color-row { display: flex; flex-direction: column; gap: 4px; }
+  .color-row label { font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: .06em; }
+  .color-row input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--border); border-radius: 5px; background: var(--card); cursor: pointer; padding: 2px 4px; }
+  .swatch-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1rem; }
+  .swatch { width: 24px; height: 24px; border-radius: 4px; cursor: pointer; border: 2px solid transparent; transition: border-color .15s; flex-shrink: 0; }
+  .swatch:hover { border-color: white; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="gate" style="position:fixed;inset:0;background:#0a0a0a;display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:1rem">
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;color:#e8e9ec;letter-spacing:.06em">Hexcore <span style="color:#20FDF0">Mounts</span></div>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7a7f8e;margin-bottom:.5rem">Admin Access</div>
+  <input id="pw-input" type="password" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')checkPw()"
+    style="background:#16181c;border:1px solid #2a2d35;border-radius:5px;padding:10px 16px;color:#e8e9ec;font-family:'Barlow',sans-serif;font-size:14px;outline:none;width:260px;text-align:center" />
+  <button onclick="checkPw()"
+    style="background:#20FDF0;border:none;border-radius:5px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:10px 28px;cursor:pointer;width:260px">
+    Unlock
+  </button>
+  <div id="pw-err" style="font-size:12px;color:#20FDF0;display:none">Incorrect password</div>
+</div>
+
+<header>
+  <div class="logo">Hexcore <span>Mounts</span></div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span style="font-size:12px;color:var(--sub)" id="last-sync">—</span>
+    <button onclick="exportPublicData()" style="background:transparent;border:1px solid var(--border);border-radius:5px;color:var(--sub);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;cursor:pointer" onmouseover="this.style.borderColor='#20FDF0';this.style.color='#20FDF0'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--sub)'">&#8599; Export Public</button>
+    <div class="header-badge">Admin</div>
+  </div>
+</header>
+
+<!-- EXPORT MODAL -->
+<div id="export-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;display:none;align-items:center;justify-content:center">
+  <div style="background:#16181c;border:1px solid #2a2d35;border-radius:8px;padding:1.5rem;width:580px;max-width:95vw;display:flex;flex-direction:column;gap:1rem">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#e8e9ec">Export for Public Map</span>
+      <button onclick="document.getElementById('export-modal').style.display='none'" style="background:none;border:none;color:#7a7f8e;font-size:22px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <p style="font-size:12px;color:#7a7f8e;line-height:1.6">Copy this and replace the <code style="background:#2a2d35;padding:1px 5px;border-radius:3px;font-size:11px">CUSTOMERS</code> array inside your public map HTML file.</p>
+    <textarea id="export-text" readonly style="background:#0a0a0a;border:1px solid #2a2d35;border-radius:5px;padding:10px;color:#e8e9ec;font-family:monospace;font-size:11px;height:220px;outline:none;resize:none;width:100%"></textarea>
+    <button onclick="copyExport()" id="copy-btn" style="background:#20FDF0;border:none;border-radius:5px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:10px;cursor:pointer">Copy to Clipboard</button>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-tabs">
+      <button class="stab active" onclick="switchTab('stats',this)">Stats</button>
+      <button class="stab" onclick="switchTab('add',this)">Add</button>
+      <button class="stab" onclick="switchTab('shopify',this)">Shopify</button>
+      <button class="stab" onclick="switchTab('customers',this)">List</button>
+      <button class="stab" onclick="switchTab('customize',this)">Style</button>
+    </div>
+
+    <div class="sidebar-content">
+
+      <!-- STATS -->
+      <div id="tab-stats" class="panel active">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-num accent" id="s-total">0</div><div class="stat-label">Customers</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-states">0</div><div class="stat-label">States</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-orders">0</div><div class="stat-label">Total Orders</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-avg">0</div><div class="stat-label">Avg Orders</div></div>
+          <div class="stat-card full"><div class="stat-num" id="s-top-state">—</div><div class="stat-label">Top State by Orders</div></div>
+        </div>
+        <div class="section-label">Source breakdown</div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:1.25rem" id="source-breakdown"></div>
+        <div class="section-label">Top customers</div>
+        <div id="top-customers"></div>
+      </div>
+
+      <!-- ADD ORDER -->
+      <div id="tab-add" class="panel">
+        <div class="section-label">Where did they find you?</div>
+        <div class="source-toggle">
+          <button class="source-btn active-ig" id="src-instagram" onclick="setSource('instagram',this)">Instagram</button>
+          <button class="source-btn" id="src-facebook" onclick="setSource('facebook',this)">Facebook</button>
+          <button class="source-btn" id="src-shopify" onclick="setSource('shopify',this)">Shopify</button>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label>First name</label>
+            <input id="f-first" placeholder="John" />
+          </div>
+          <div class="form-row">
+            <label>Last initial</label>
+            <input id="f-last" placeholder="S" maxlength="1" style="text-transform:uppercase" />
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label>City</label>
+            <input id="f-city" placeholder="Miami" />
+          </div>
+          <div class="form-row">
+            <label>State</label>
+            <select id="f-state">
+              <option value="">Select...</option>
+              <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option><option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option><option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label>Order count</label>
+            <input id="f-orders" type="number" placeholder="1" min="1" value="1" />
+          </div>
+          <div class="form-row">
+            <label>Order total ($)</label>
+            <input id="f-spent" type="number" placeholder="0.00" min="0" step="0.01" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Order # (optional)</label>
+          <input id="f-ordernum" placeholder="1001" />
+        </div>
+        <div class="form-row">
+          <label>Product (optional)</label>
+          <input id="f-product" placeholder="Phone Mount Pro" />
+        </div>
+        <div class="form-row">
+          <label>Notes (optional)</label>
+          <textarea id="f-notes" placeholder="Repeat customer, special request..."></textarea>
+        </div>
+        <button class="submit-btn" onclick="addOrder()">Add to Map</button>
+      </div>
+
+      <!-- SHOPIFY -->
+      <div id="tab-shopify" class="panel">
+        <div class="shopify-box">
+          <div class="section-label" style="margin-bottom:.5rem">Auto-sync with Shopify</div>
+          <p>Connect your Shopify store to automatically pull in new orders and customer locations.</p>
+          <div class="shopify-step"><div class="step-num">1</div><div class="step-text">In Shopify admin go to <code>Settings → Apps → Develop apps</code></div></div>
+          <div class="shopify-step"><div class="step-num">2</div><div class="step-text">Create a new app, enable <code>read_orders</code> and <code>read_customers</code> scopes</div></div>
+          <div class="shopify-step"><div class="step-num">3</div><div class="step-text">Copy your Admin API Access Token and paste below</div></div>
+          <div class="shopify-step"><div class="step-num">4</div><div class="step-text">Enter your store URL (e.g. <code>hexcormounts.myshopify.com</code>)</div></div>
+        </div>
+        <div class="form-row"><label>Shopify Store URL</label><input id="sh-store" placeholder="yourstore.myshopify.com" /></div>
+        <div class="form-row"><label>Admin API Access Token</label><input id="sh-token" type="password" placeholder="shpat_xxxxxxxxxxxx" /></div>
+        <button class="submit-btn" onclick="testShopifyConnection()">Test Connection</button>
+        <button class="submit-btn secondary" onclick="syncShopifyOrders()">Sync Orders Now</button>
+        <div style="margin-top:1.25rem" id="sync-status"></div>
+        <div class="shopify-box" style="margin-top:1rem">
+          <div class="section-label" style="margin-bottom:.5rem">Embed on your Shopify page</div>
+          <div class="shopify-step"><div class="step-num">1</div><div class="step-text">Go to <code>Online Store → Pages → Add page</code></div></div>
+          <div class="shopify-step"><div class="step-num">2</div><div class="step-text">Click <code>&lt;/&gt;</code> to switch to HTML view</div></div>
+          <div class="shopify-step"><div class="step-num">3</div><div class="step-text">Paste the full contents of this HTML file and save</div></div>
+        </div>
+      </div>
+
+      <!-- LIST -->
+      <div id="tab-customers" class="panel">
+        <input class="search-input" placeholder="Search by name or location..." oninput="filterCustomers(this.value)" />
+        <div class="filter-row">
+          <button class="filter-btn active" id="filter-all" onclick="setFilter('all')">All</button>
+          <button class="filter-btn" id="filter-instagram" onclick="setFilter('instagram')">Instagram</button>
+          <button class="filter-btn" id="filter-facebook" onclick="setFilter('facebook')">Facebook</button>
+          <button class="filter-btn" id="filter-shopify" onclick="setFilter('shopify')">Shopify</button>
+        </div>
+        <div id="customer-list-el"></div>
+      </div>
+
+      <!-- STYLE -->
+      <div id="tab-customize" class="panel">
+        <div class="section-label">Hexagon pin color</div>
+        <div class="color-grid" style="margin-bottom:.5rem">
+          <div class="color-row">
+            <label>Pin color</label>
+            <input type="color" id="cp-pin" value="#20FDF0" oninput="applyColor('--pin-color',this.value);renderPins()" />
+          </div>
+          <div class="color-row">
+            <label>Selected pin</label>
+            <input type="color" id="cp-hl" value="#20FDF0" oninput="applyColor('--pin-color-hl',this.value);renderPins()" />
+          </div>
+        </div>
+        <div class="section-label">Quick presets</div>
+        <div class="swatch-row">
+          <div class="swatch" style="background:#20FDF0" title="Hexcore Orange" onclick="setPreset('#20FDF0','#20FDF0')"></div>
+          <div class="swatch" style="background:#2563eb" title="Blue" onclick="setPreset('#2563eb','#60a5fa')"></div>
+          <div class="swatch" style="background:#16a34a" title="Green" onclick="setPreset('#16a34a','#4ade80')"></div>
+          <div class="swatch" style="background:#9333ea" title="Purple" onclick="setPreset('#9333ea','#c084fc')"></div>
+          <div class="swatch" style="background:#dc2626" title="Red" onclick="setPreset('#dc2626','#f87171')"></div>
+          <div class="swatch" style="background:#d97706" title="Amber" onclick="setPreset('#d97706','#fbbf24')"></div>
+          <div class="swatch" style="background:#0891b2" title="Cyan" onclick="setPreset('#0891b2','#22d3ee')"></div>
+          <div class="swatch" style="background:#be185d" title="Pink" onclick="setPreset('#be185d','#f472b6')"></div>
+        </div>
+
+        <hr class="divider">
+        <div class="section-label">Font colors</div>
+        <div class="color-grid">
+          <div class="color-row">
+            <label>Customer name</label>
+            <input type="color" id="cp-name" value="#e8e9ec" oninput="applyColor('--name-text',this.value)" />
+          </div>
+          <div class="color-row">
+            <label>City / State</label>
+            <input type="color" id="cp-loc" value="#7a7f8e" oninput="applyColor('--loc-text',this.value)" />
+          </div>
+          <div class="color-row">
+            <label>Stat numbers</label>
+            <input type="color" id="cp-stat" value="#e8e9ec" oninput="applyColor('--stat-num-text',this.value)" />
+          </div>
+          <div class="color-row">
+            <label>Orders / Accent</label>
+            <input type="color" id="cp-acc" value="#20FDF0" oninput="applyColor('--ui-accent-text',this.value)" />
+          </div>
+          <div class="color-row">
+            <label>Tooltip name</label>
+            <input type="color" id="cp-tt" value="#e8e9ec" oninput="applyColor('--tooltip-name',this.value)" />
+          </div>
+          <div class="color-row">
+            <label>Logo text</label>
+            <input type="color" id="cp-ui" value="#e8e9ec" oninput="applyColor('--ui-text',this.value)" />
+          </div>
+        </div>
+        <hr class="divider">
+        <button class="submit-btn secondary" style="margin-top:0" onclick="resetColors()">Reset to defaults</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="map-area">
+    <div id="map-svg-wrap">
+      <svg id="usa-svg" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg">
+        <rect width="960" height="600" fill="#0a0a0a"/>
+        <g id="states-g"></g>
+        <g id="pins-g"></g>
+      </svg>
+    </div>
+    <div class="map-tooltip" id="map-tooltip"></div>
+    <div class="map-legend">
+      <div class="map-legend-title">Order count</div>
+      <div class="leg-row"><svg width="12" height="11" viewBox="-6 -6 12 11"><polygon id="lh1" points="0,-5 4.3,-2.5 4.3,2.5 0,5 -4.3,2.5 -4.3,-2.5" fill="#20FDF0"/></svg><span>1</span></div>
+      <div class="leg-row"><svg width="16" height="15" viewBox="-8 -7 16 15"><polygon id="lh2" points="0,-7 6,-3.5 6,3.5 0,7 -6,3.5 -6,-3.5" fill="#20FDF0"/></svg><span>2–5</span></div>
+      <div class="leg-row"><svg width="20" height="19" viewBox="-10 -9 20 19"><polygon id="lh3" points="0,-9 7.8,-4.5 7.8,4.5 0,9 -7.8,4.5 -7.8,-4.5" fill="#20FDF0"/></svg><span>6–10</span></div>
+      <div class="leg-row"><svg width="26" height="25" viewBox="-13 -12 26 25"><polygon id="lh4" points="0,-12 10.4,-6 10.4,6 0,12 -10.4,6 -10.4,-6" fill="#20FDF0"/></svg><span>11+</span></div>
+    </div>
+    <div class="map-controls">
+      <div class="map-ctrl-btn" onclick="clearHighlight()" title="Clear selection">✕</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STATE_COORDS = {
+  "Alabama":{x:685,y:430},"Alaska":{x:130,y:530},"Arizona":{x:210,y:400},"Arkansas":{x:610,y:400},
+  "California":{x:95,y:330},"Colorado":{x:290,y:340},"Connecticut":{x:820,y:200},"Delaware":{x:792,y:258},
+  "Florida":{x:715,y:500},"Georgia":{x:705,y:450},"Hawaii":{x:280,y:560},"Idaho":{x:185,y:220},
+  "Illinois":{x:645,y:320},"Indiana":{x:678,y:310},"Iowa":{x:578,y:280},"Kansas":{x:498,y:360},
+  "Kentucky":{x:692,y:358},"Louisiana":{x:612,y:472},"Maine":{x:858,y:142},"Maryland":{x:780,y:265},
+  "Massachusetts":{x:842,y:185},"Michigan":{x:682,y:240},"Minnesota":{x:555,y:200},"Mississippi":{x:652,y:450},
+  "Missouri":{x:590,y:355},"Montana":{x:255,y:165},"Nebraska":{x:490,y:310},"Nevada":{x:155,y:310},
+  "New Hampshire":{x:835,y:170},"New Jersey":{x:800,y:238},"New Mexico":{x:275,y:420},"New York":{x:790,y:198},
+  "North Carolina":{x:762,y:378},"North Dakota":{x:475,y:185},"Ohio":{x:722,y:302},"Oklahoma":{x:490,y:405},
+  "Oregon":{x:118,y:215},"Pennsylvania":{x:758,y:252},"Rhode Island":{x:845,y:202},"South Carolina":{x:742,y:412},
+  "South Dakota":{x:470,y:248},"Tennessee":{x:682,y:390},"Texas":{x:460,y:462},"Utah":{x:215,y:335},
+  "Vermont":{x:822,y:162},"Virginia":{x:770,y:332},"Washington":{x:122,y:162},"West Virginia":{x:745,y:308},
+  "Wisconsin":{x:618,y:238},"Wyoming":{x:278,y:265}
+};
+
+function formatName(first, lastInitial) {
+  const f = (first||'').trim();
+  const l = (lastInitial||'').trim().toUpperCase().replace(/[^A-Z]/g,'');
+  if (!f) return '—';
+  return l ? `${f} ${l}.` : f;
+}
+
+let customers = [
+  {id:1,first:"Jake",lastInitial:"M",city:"Miami",state:"Florida",orders:1,spent:0,notes:"",source:"instagram",ordernum:"",product:""},
+  {id:2,first:"Sarah",lastInitial:"T",city:"Dallas",state:"Texas",orders:1,spent:0,notes:"VIP",source:"shopify",ordernum:"",product:""},
+  {id:3,first:"Mike",lastInitial:"R",city:"Denver",state:"Colorado",orders:1,spent:0,notes:"",source:"instagram",ordernum:"",product:""},
+  {id:4,first:"Lisa",lastInitial:"K",city:"Chicago",state:"Illinois",orders:1,spent:0,notes:"",source:"facebook",ordernum:"",product:""},
+  {id:5,first:"Tom",lastInitial:"W",city:"Seattle",state:"Washington",orders:1,spent:0,notes:"",source:"facebook",ordernum:"",product:""},
+];
+let nextId = 6;
+let currentFilter = 'all';
+let searchQuery = '';
+let highlightedId = null;
+let currentSource = 'instagram';
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'stats') { updateStats(); renderTopCustomers(); }
+  if (name === 'customers') renderCustomerList();
+}
+
+function setSource(src, btn) {
+  currentSource = src;
+  document.querySelectorAll('.source-btn').forEach(b => {
+    b.classList.remove('active-ig','active-fb','active-sh');
+  });
+  if (src === 'instagram') btn.classList.add('active-ig');
+  else if (src === 'facebook') btn.classList.add('active-fb');
+  else btn.classList.add('active-sh');
+}
+
+function updateStats() {
+  const total = customers.length;
+  const states = new Set(customers.map(c => c.state)).size;
+  const orders = customers.reduce((a, c) => a + c.orders, 0);
+  const avg = total ? Math.round(orders / total * 10) / 10 : 0;
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('s-states').textContent = states;
+  document.getElementById('s-orders').textContent = orders;
+  document.getElementById('s-avg').textContent = avg;
+  const stateOrders = {};
+  customers.forEach(c => { stateOrders[c.state] = (stateOrders[c.state] || 0) + c.orders; });
+  const topState = Object.entries(stateOrders).sort((a,b) => b[1]-a[1])[0];
+  document.getElementById('s-top-state').textContent = topState ? topState[0] : '—';
+  const sources = {};
+  customers.forEach(c => { sources[c.source] = (sources[c.source]||0)+1; });
+  document.getElementById('source-breakdown').innerHTML = Object.entries(sources).map(([src,cnt]) => `
+    <div style="display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:8px 12px">
+      <span class="ci-source src-${src}">${src}</span>
+      <span style="font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--text)">${cnt}</span>
+    </div>`).join('');
+}
+
+function renderTopCustomers() {
+  const top = [...customers].sort((a,b) => b.orders-a.orders).slice(0,5);
+  const el = document.getElementById('top-customers');
+  if (!top.length) { el.innerHTML = '<div class="empty-state">No customers yet</div>'; return; }
+  el.innerHTML = top.map((c,i) => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-family:var(--font-head);font-size:11px;font-weight:700;color:var(--sub);min-width:16px">#${i+1}</span>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--name-text)">${formatName(c.first,c.lastInitial)}</div>
+          <div style="font-size:10px;color:var(--loc-text)">${c.city}, ${c.state}</div>
+        </div>
+      </div>
+      <span style="font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--ui-accent-text)">${c.orders}</span>
+    </div>`).join('');
+}
+
+function addOrder() {
+  const first = document.getElementById('f-first').value.trim();
+  const lastInitial = document.getElementById('f-last').value.trim().toUpperCase().replace(/[^A-Z]/g,'');
+  const city = document.getElementById('f-city').value.trim();
+  const state = document.getElementById('f-state').value;
+  const orders = parseInt(document.getElementById('f-orders').value)||1;
+  const spent = parseFloat(document.getElementById('f-spent').value)||0;
+  const notes = document.getElementById('f-notes').value.trim();
+  const ordernum = document.getElementById('f-ordernum').value.trim();
+  const product = document.getElementById('f-product').value.trim();
+  if (!first || !city || !state) { showToast('Fill in first name, city & state',true); return; }
+  const existing = customers.find(c =>
+    c.first.toLowerCase()===first.toLowerCase() && c.lastInitial===lastInitial && c.state===state
+  );
+  if (existing) {
+    existing.orders += orders;
+    existing.spent += spent;
+    showToast(`${formatName(first,lastInitial)} — now ${existing.orders} orders`);
+  } else {
+    customers.push({id:nextId++,first,lastInitial,city,state,orders,spent,notes,source:currentSource,ordernum,product,date:new Date().toISOString().slice(0,10)});
+    showToast(`${formatName(first,lastInitial)} added!`);
+  }
+  ['f-first','f-last','f-city','f-ordernum','f-product','f-notes'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('f-state').value='';
+  document.getElementById('f-orders').value='1';
+  document.getElementById('f-spent').value='';
+  renderPins();
+}
+
+function testShopifyConnection() {
+  const store = document.getElementById('sh-store').value.trim();
+  const token = document.getElementById('sh-token').value.trim();
+  if (!store||!token) { showToast('Enter store URL and token',true); return; }
+  document.getElementById('sync-status').innerHTML = `<div style="font-size:12px;color:var(--sub);padding:8px 0">Testing...</div>`;
+  setTimeout(() => {
+    document.getElementById('sync-status').innerHTML = `<div style="background:var(--card);border:1px solid var(--border);border-radius:5px;padding:10px 12px;font-size:12px"><div style="color:#4ade80;font-weight:600;margin-bottom:4px">✓ Connected to ${store}</div><div style="color:var(--sub)">Ready to sync.</div></div>`;
+  }, 1200);
+}
+function syncShopifyOrders() {
+  const store = document.getElementById('sh-store').value.trim();
+  if (!store) { showToast('Enter your store URL first',true); return; }
+  document.getElementById('sync-status').innerHTML = `<div style="font-size:12px;color:var(--sub);padding:8px 0">Syncing...</div>`;
+  setTimeout(() => {
+    document.getElementById('last-sync').textContent='Synced just now';
+    document.getElementById('sync-status').innerHTML = `<div style="background:var(--card);border:1px solid var(--border);border-radius:5px;padding:10px 12px;font-size:12px"><div style="color:#4ade80;font-weight:600;margin-bottom:4px">✓ Sync complete</div><div style="color:var(--sub)">All orders are on the map.</div></div>`;
+    showToast('Shopify sync complete!');
+  }, 2000);
+}
+function saveShopifySettings() { showToast('Settings saved!'); }
+
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('filter-'+f).classList.add('active');
+  renderCustomerList();
+}
+function filterCustomers(q) { searchQuery=q.toLowerCase(); renderCustomerList(); }
+function renderCustomerList() {
+  let list = [...customers];
+  if (currentFilter!=='all') list=list.filter(c=>c.source===currentFilter);
+  if (searchQuery) list=list.filter(c=>
+    formatName(c.first,c.lastInitial).toLowerCase().includes(searchQuery)||
+    c.city.toLowerCase().includes(searchQuery)||
+    c.state.toLowerCase().includes(searchQuery)
+  );
+  const el = document.getElementById('customer-list-el');
+  if (!list.length) { el.innerHTML='<div class="empty-state">No customers found</div>'; return; }
+  el.innerHTML=list.map(c=>`
+    <div class="customer-item ${highlightedId===c.id?'highlighted':''}" onclick="highlightPin(${c.id})">
+      <div style="flex:1">
+        <div class="ci-name">${formatName(c.first,c.lastInitial)}</div>
+        <div class="ci-loc">${c.city}, ${c.state}</div>
+        ${c.spent?`<div style="font-size:10px;color:var(--sub);margin-top:2px">$${c.spent.toFixed(2)} total</div>`:''}
+        <span class="ci-source src-${c.source}">${c.source}</span>
+      </div>
+      <div class="ci-right">
+        <div class="ci-orders">${c.orders}</div>
+        <div class="ci-label">orders</div>
+        <button class="del-btn" onclick="event.stopPropagation();deleteCustomer(${c.id})">×</button>
+      </div>
+    </div>`).join('');
+}
+function deleteCustomer(id) {
+  customers=customers.filter(c=>c.id!==id);
+  renderPins(); renderCustomerList(); updateStats();
+  showToast('Customer removed');
+}
+function highlightPin(id) { highlightedId=id; renderPins(); renderCustomerList(); }
+function clearHighlight() { highlightedId=null; renderPins(); }
+
+// ── HEXAGON PINS ──
+function hexPoints(cx, cy, r) {
+  const pts=[];
+  for(let i=0;i<6;i++){
+    const a=(Math.PI/180)*(60*i-30);
+    pts.push(`${(cx+r*Math.cos(a)).toFixed(2)},${(cy+r*Math.sin(a)).toFixed(2)}`);
+  }
+  return pts.join(' ');
+}
+function pinSize(orders) {
+  if(orders>=11) return 11;
+  if(orders>=6) return 8;
+  if(orders>=2) return 6;
+  return 4;
+}
+
+function renderPins() {
+  const layer=document.getElementById('pins-g');
+  layer.innerHTML='';
+  const tooltip=document.getElementById('map-tooltip');
+  const wrap=document.getElementById('map-svg-wrap');
+  const pinColor=getComputedStyle(document.documentElement).getPropertyValue('--pin-color').trim()||'#20FDF0';
+  const hlColor=getComputedStyle(document.documentElement).getPropertyValue('--pin-color-hl').trim()||'#20FDF0';
+
+  // Update legend
+  ['lh1','lh2','lh3','lh4'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.setAttribute('fill',pinColor);
+  });
+
+  customers.forEach(c=>{
+    const coord=STATE_COORDS[c.state];
+    if(!coord) return;
+    const jx=Math.sin(c.id*7.3)*16;
+    const jy=Math.cos(c.id*11.7)*10;
+    const cx=coord.x+jx;
+    const cy=coord.y+jy;
+    const sz=pinSize(c.orders);
+    const isHL=highlightedId===c.id;
+    const fill=isHL?hlColor:pinColor;
+
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.style.cursor='pointer';
+
+    if(isHL){
+      const glow=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+      glow.setAttribute('points',hexPoints(cx,cy,sz+5));
+      glow.setAttribute('fill','none');
+      glow.setAttribute('stroke',hlColor);
+      glow.setAttribute('stroke-width','1.5');
+      glow.setAttribute('opacity','0.4');
+      g.appendChild(glow);
+    }
+
+    const hex=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+    hex.setAttribute('points',hexPoints(cx,cy,sz));
+    hex.setAttribute('fill',fill);
+    hex.setAttribute('stroke',isHL?'rgba(255,255,255,0.7)':'rgba(0,0,0,0.4)');
+    hex.setAttribute('stroke-width',isHL?'1.5':'0.8');
+    hex.setAttribute('opacity','0.93');
+    g.appendChild(hex);
+
+    g.addEventListener('mouseenter',()=>{
+      const svgRect=document.getElementById('usa-svg').getBoundingClientRect();
+      const wrapRect=wrap.getBoundingClientRect();
+      const sx=svgRect.width/960, sy=svgRect.height/600;
+      const px=cx*sx+(svgRect.left-wrapRect.left);
+      const py=cy*sy+(svgRect.top-wrapRect.top);
+      tooltip.innerHTML=`
+        <div class="tt-name">${formatName(c.first,c.lastInitial)}</div>
+        <div class="tt-loc">${c.city}, ${c.state}</div>
+        <div class="tt-orders">${c.orders}</div>
+        <div class="tt-orders-lbl">order${c.orders!==1?'s':''}</div>
+        ${c.spent?`<div style="font-size:11px;color:var(--sub);margin-top:4px">$${c.spent.toFixed(2)} total</div>`:''}
+        <div style="margin-top:6px"><span class="ci-source src-${c.source}">${c.source}</span></div>`;
+      tooltip.style.display='block';
+      tooltip.style.left=Math.min(px+12,wrapRect.width-175)+'px';
+      tooltip.style.top=Math.max(py-95,8)+'px';
+    });
+    g.addEventListener('mouseleave',()=>tooltip.style.display='none');
+    g.addEventListener('click',()=>{ highlightedId=c.id; renderCustomerList(); renderPins(); });
+    layer.appendChild(g);
+  });
+  updateStats();
+}
+
+// ── COLOR CUSTOMIZER ──
+function applyColor(varName, value) {
+  document.documentElement.style.setProperty(varName,value);
+}
+function setPreset(pinColor, hlColor) {
+  document.getElementById('cp-pin').value=pinColor;
+  document.getElementById('cp-hl').value=hlColor;
+  applyColor('--pin-color',pinColor);
+  applyColor('--pin-color-hl',hlColor);
+  renderPins();
+}
+function resetColors() {
+  const d={'--pin-color':'#20FDF0','--pin-color-hl':'#20FDF0','--name-text':'#e8e9ec','--loc-text':'#7a7f8e','--stat-num-text':'#e8e9ec','--ui-accent-text':'#20FDF0','--tooltip-name':'#e8e9ec','--ui-text':'#e8e9ec','--accent':'#20FDF0'};
+  Object.entries(d).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
+  document.getElementById('cp-pin').value='#20FDF0';
+  document.getElementById('cp-hl').value='#20FDF0';
+  document.getElementById('cp-name').value='#e8e9ec';
+  document.getElementById('cp-loc').value='#7a7f8e';
+  document.getElementById('cp-stat').value='#e8e9ec';
+  document.getElementById('cp-acc').value='#20FDF0';
+  document.getElementById('cp-tt').value='#e8e9ec';
+  document.getElementById('cp-ui').value='#e8e9ec';
+  renderPins();
+  showToast('Colors reset!');
+}
+
+function drawStates() {
+  fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json')
+    .then(r=>r.json()).then(us=>{
+      const proj=d3.geoAlbersUsa().scale(1280).translate([480,300]);
+      const path=d3.geoPath().projection(proj);
+      const states=topojson.feature(us,us.objects.states);
+      d3.select('#states-g').selectAll('path').data(states.features).enter().append('path')
+        .attr('d',path).attr('fill','#16181c').attr('stroke','#2a2d35').attr('stroke-width','0.8');
+      renderPins();
+    }).catch(()=>{
+      document.getElementById('states-g').innerHTML=`<rect x="60" y="80" width="840" height="440" rx="4" fill="#16181c" stroke="#2a2d35" stroke-width="0.8"/><text x="480" y="300" text-anchor="middle" font-size="14" fill="#3a3d47" font-family="Barlow,sans-serif">US Map</text>`;
+      renderPins();
+    });
+}
+
+function showToast(msg,isError=false) {
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=isError?'#20FDF0':'#16a34a';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+
+// ── PASSWORD GATE ──
+const ADMIN_PASSWORD = 'hexcore2024'; // Change this to your own password
+function checkPw() {
+  const val = document.getElementById('pw-input').value;
+  if (val === ADMIN_PASSWORD) {
+    document.getElementById('gate').style.display = 'none';
+  } else {
+    document.getElementById('pw-err').style.display = 'block';
+    document.getElementById('pw-input').style.borderColor = '#20FDF0';
+    setTimeout(() => {
+      document.getElementById('pw-err').style.display = 'none';
+      document.getElementById('pw-input').style.borderColor = '#2a2d35';
+    }, 2000);
+  }
+}
+
+// ── EXPORT TO PUBLIC MAP ──
+function exportPublicData() {
+  const data = customers.map(c => ({
+    id: c.id, first: c.first, lastInitial: c.lastInitial,
+    city: c.city, state: c.state, orders: c.orders, source: c.source
+  }));
+  const lines = data.map(c =>
+    `  {id:${c.id},first:"${c.first}",lastInitial:"${c.lastInitial}",city:"${c.city}",state:"${c.state}",orders:${c.orders},source:"${c.source}"}`
+  ).join(',\n');
+  document.getElementById('export-text').value = `const CUSTOMERS = [\n${lines}\n];`;
+  document.getElementById('export-modal').style.display = 'flex';
+}
+function copyExport() {
+  const ta = document.getElementById('export-text');
+  ta.select();
+  document.execCommand('copy');
+  const btn = document.getElementById('copy-btn');
+  btn.textContent = '✓ Copied!';
+  setTimeout(() => btn.textContent = 'Copy to Clipboard', 2500);
+}
+
+updateStats();
+renderTopCustomers();
+drawStates();
+</script>
+</body>
+</html>

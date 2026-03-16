@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hexcore Mounts — Customer Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<style>
+  :root {
+    --black: #0a0a0a;
+    --dark: #111214;
+    --card: #16181c;
+    --border: #2a2d35;
+    --muted: #3a3d47;
+    --text: #e8e9ec;
+    --sub: #7a7f8e;
+    --accent: #20FDF0;
+    --font-head: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+    --pin-color: #20FDF0;
+    --pin-color-hl: #20FDF0;
+    --ui-text: #e8e9ec;
+    --ui-accent-text: #20FDF0;
+    --name-text: #e8e9ec;
+    --loc-text: #7a7f8e;
+    --stat-num-text: #e8e9ec;
+    --tooltip-name: #e8e9ec;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--black); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
+
+  header {
+    background: var(--dark);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+  .logo { font-family: var(--font-head); font-weight: 900; font-size: 22px; letter-spacing: .04em; text-transform: uppercase; color: var(--ui-text); }
+  .logo span { color: var(--ui-accent-text); }
+  .header-badge { background: var(--accent); color: white; font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border-radius: 3px; }
+
+  .layout { display: grid; grid-template-columns: 300px 1fr; height: calc(100vh - 60px); }
+
+  /* ── SIDEBAR (stats only) ── */
+  .sidebar { background: var(--dark); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+  .sidebar-header { padding: 1.25rem 1.25rem .75rem; border-bottom: 1px solid var(--border); }
+  .sidebar-title { font-family: var(--font-head); font-size: 14px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--sub); }
+  .sidebar-content { flex: 1; overflow-y: auto; padding: 1.25rem; scrollbar-width: thin; scrollbar-color: var(--muted) transparent; }
+
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1.25rem; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
+  .stat-card.full { grid-column: span 2; }
+  .stat-num { font-family: var(--font-head); font-size: 32px; font-weight: 900; color: var(--stat-num-text); line-height: 1; }
+  .stat-num.accent { color: var(--ui-accent-text); }
+  .stat-label { font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: .08em; margin-top: 4px; }
+
+  .section-label { font-family: var(--font-head); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--sub); margin-bottom: .75rem; }
+
+  .source-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 5px; margin-bottom: 6px; }
+  .ci-source { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .src-instagram { background: rgba(225,48,108,.2); color: #f472b6; }
+  .src-facebook { background: rgba(24,119,242,.2); color: #60a5fa; }
+  .src-shopify { background: rgba(22,163,74,.2); color: #4ade80; }
+  .src-count { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--text); }
+
+  .top-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .top-item:last-child { border-bottom: none; }
+  .top-rank { font-family: var(--font-head); font-size: 11px; font-weight: 700; color: var(--sub); min-width: 20px; }
+  .top-name { font-size: 13px; font-weight: 600; color: var(--name-text); }
+  .top-loc { font-size: 10px; color: var(--loc-text); margin-top: 1px; }
+  .top-orders { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--ui-accent-text); }
+
+  .pulse-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-right: 6px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.5; transform:scale(1.3); } }
+
+  /* ── MAP ── */
+  .map-area { background: var(--black); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  #map-svg-wrap { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+  #usa-svg { width: 100%; height: 100%; max-height: calc(100vh - 80px); }
+
+  .map-tooltip { position: absolute; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; pointer-events: none; display: none; z-index: 20; min-width: 160px; box-shadow: 0 8px 24px rgba(0,0,0,.5); }
+  .tt-name { font-weight: 600; font-size: 13px; color: var(--tooltip-name); margin-bottom: 2px; }
+  .tt-loc { font-size: 11px; color: var(--sub); margin-bottom: 6px; }
+  .tt-orders { font-family: var(--font-head); font-size: 22px; font-weight: 900; color: var(--ui-accent-text); line-height: 1; }
+  .tt-orders-lbl { font-size: 10px; color: var(--sub); text-transform: uppercase; letter-spacing: .06em; }
+
+  .map-legend { position: absolute; bottom: 1.25rem; left: 1.25rem; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; }
+  .map-legend-title { font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--sub); margin-bottom: 6px; }
+  .leg-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 11px; color: var(--sub); }
+
+  .map-tagline { position: absolute; top: 1.25rem; left: 50%; transform: translateX(-50%); font-family: var(--font-head); font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--sub); white-space: nowrap; pointer-events: none; }
+
+  @media (max-width: 700px) {
+    .layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; height: auto; }
+    .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
+    .map-area { height: 60vw; min-height: 300px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Hexcore <span>Mounts</span></div>
+  <div class="header-badge">Our Customers</div>
+</header>
+
+<div class="layout">
+  <!-- STATS SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title"><span class="pulse-dot"></span>Live customer stats</div>
+    </div>
+    <div class="sidebar-content">
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-num accent" id="s-total">0</div><div class="stat-label">Customers</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-states">0</div><div class="stat-label">States</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-orders">0</div><div class="stat-label">Orders</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-avg">0</div><div class="stat-label">Avg Orders</div></div>
+        <div class="stat-card full"><div class="stat-num" id="s-top-state" style="font-size:22px">—</div><div class="stat-label">Top State</div></div>
+      </div>
+
+      <div class="section-label">Orders by source</div>
+      <div id="source-breakdown" style="margin-bottom:1.5rem"></div>
+
+      <div class="section-label">Top customers</div>
+      <div id="top-customers"></div>
+
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="map-area">
+    <div class="map-tagline">Hexcore Mounts — Nationwide</div>
+    <div id="map-svg-wrap">
+      <svg id="usa-svg" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg">
+        <rect width="960" height="600" fill="#0a0a0a"/>
+        <g id="states-g"></g>
+        <g id="pins-g"></g>
+      </svg>
+    </div>
+    <div class="map-tooltip" id="map-tooltip"></div>
+    <div class="map-legend">
+      <div class="map-legend-title">Order count</div>
+      <div class="leg-row"><svg width="12" height="11" viewBox="-6 -6 12 11"><polygon id="lh1" points="0,-5 4.3,-2.5 4.3,2.5 0,5 -4.3,2.5 -4.3,-2.5" fill="#20FDF0"/></svg><span>1</span></div>
+      <div class="leg-row"><svg width="16" height="15" viewBox="-8 -7 16 15"><polygon id="lh2" points="0,-7 6,-3.5 6,3.5 0,7 -6,3.5 -6,-3.5" fill="#20FDF0"/></svg><span>2–5</span></div>
+      <div class="leg-row"><svg width="20" height="19" viewBox="-10 -9 20 19"><polygon id="lh3" points="0,-9 7.8,-4.5 7.8,4.5 0,9 -7.8,4.5 -7.8,-4.5" fill="#20FDF0"/></svg><span>6–10</span></div>
+      <div class="leg-row"><svg width="26" height="25" viewBox="-13 -12 26 25"><polygon id="lh4" points="0,-12 10.4,-6 10.4,6 0,12 -10.4,6 -10.4,-6" fill="#20FDF0"/></svg><span>11+</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CUSTOMER DATA — paste updated data from your admin panel here
+   Format: { first, lastInitial, city, state, orders, source }
+   ============================================================ */
+const CUSTOMERS = [
+  {id:1,first:"Jake",lastInitial:"M",city:"Miami",state:"Florida",orders:1,source:"instagram"},
+  {id:2,first:"Sarah",lastInitial:"T",city:"Dallas",state:"Texas",orders:1,source:"shopify"},
+  {id:3,first:"Mike",lastInitial:"R",city:"Denver",state:"Colorado",orders:1,source:"instagram"},
+  {id:4,first:"Lisa",lastInitial:"K",city:"Chicago",state:"Illinois",orders:1,source:"facebook"},
+  {id:5,first:"Tom",lastInitial:"W",city:"Seattle",state:"Washington",orders:1,source:"facebook"},
+];
+
+/* ============================================================
+   APPEARANCE — tweak these to match your brand
+   ============================================================ */
+const CONFIG = {
+  pinColor:   '#20FDF0',   // hex color for pins
+  pinColorHl: '#20FDF0',   // hex color when pin is hovered
+  nameColor:  '#e8e9ec',   // customer name text
+  locColor:   '#7a7f8e',   // city/state text
+  accentColor:'#20FDF0',   // order count & accent numbers
+};
+
+/* ============================================================
+   STATE COORDINATES (do not edit)
+   ============================================================ */
+const STATE_COORDS = {
+  "Alabama":{x:685,y:430},"Alaska":{x:130,y:530},"Arizona":{x:210,y:400},"Arkansas":{x:610,y:400},
+  "California":{x:95,y:330},"Colorado":{x:290,y:340},"Connecticut":{x:820,y:200},"Delaware":{x:792,y:258},
+  "Florida":{x:715,y:500},"Georgia":{x:705,y:450},"Hawaii":{x:280,y:560},"Idaho":{x:185,y:220},
+  "Illinois":{x:645,y:320},"Indiana":{x:678,y:310},"Iowa":{x:578,y:280},"Kansas":{x:498,y:360},
+  "Kentucky":{x:692,y:358},"Louisiana":{x:612,y:472},"Maine":{x:858,y:142},"Maryland":{x:780,y:265},
+  "Massachusetts":{x:842,y:185},"Michigan":{x:682,y:240},"Minnesota":{x:555,y:200},"Mississippi":{x:652,y:450},
+  "Missouri":{x:590,y:355},"Montana":{x:255,y:165},"Nebraska":{x:490,y:310},"Nevada":{x:155,y:310},
+  "New Hampshire":{x:835,y:170},"New Jersey":{x:800,y:238},"New Mexico":{x:275,y:420},"New York":{x:790,y:198},
+  "North Carolina":{x:762,y:378},"North Dakota":{x:475,y:185},"Ohio":{x:722,y:302},"Oklahoma":{x:490,y:405},
+  "Oregon":{x:118,y:215},"Pennsylvania":{x:758,y:252},"Rhode Island":{x:845,y:202},"South Carolina":{x:742,y:412},
+  "South Dakota":{x:470,y:248},"Tennessee":{x:682,y:390},"Texas":{x:460,y:462},"Utah":{x:215,y:335},
+  "Vermont":{x:822,y:162},"Virginia":{x:770,y:332},"Washington":{x:122,y:162},"West Virginia":{x:745,y:308},
+  "Wisconsin":{x:618,y:238},"Wyoming":{x:278,y:265}
+};
+
+/* ============================================================
+   INIT — applies CONFIG colors to CSS variables
+   ============================================================ */
+function applyConfig() {
+  const r = document.documentElement;
+  r.style.setProperty('--pin-color', CONFIG.pinColor);
+  r.style.setProperty('--pin-color-hl', CONFIG.pinColorHl);
+  r.style.setProperty('--name-text', CONFIG.nameColor);
+  r.style.setProperty('--loc-text', CONFIG.locColor);
+  r.style.setProperty('--ui-accent-text', CONFIG.accentColor);
+  r.style.setProperty('--tooltip-name', CONFIG.nameColor);
+  ['lh1','lh2','lh3','lh4'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.setAttribute('fill', CONFIG.pinColor);
+  });
+}
+
+function formatName(first, lastInitial) {
+  const f = (first||'').trim();
+  const l = (lastInitial||'').trim().toUpperCase();
+  return l ? `${f} ${l}.` : f;
+}
+
+/* ── STATS ── */
+function renderStats() {
+  const total = CUSTOMERS.length;
+  const states = new Set(CUSTOMERS.map(c => c.state)).size;
+  const orders = CUSTOMERS.reduce((a, c) => a + c.orders, 0);
+  const avg = total ? Math.round(orders / total * 10) / 10 : 0;
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('s-states').textContent = states;
+  document.getElementById('s-orders').textContent = orders;
+  document.getElementById('s-avg').textContent = avg;
+  const stateOrders = {};
+  CUSTOMERS.forEach(c => { stateOrders[c.state] = (stateOrders[c.state]||0) + c.orders; });
+  const top = Object.entries(stateOrders).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('s-top-state').textContent = top ? top[0] : '—';
+
+  const sources = {};
+  CUSTOMERS.forEach(c => { sources[c.source] = (sources[c.source]||0)+1; });
+  document.getElementById('source-breakdown').innerHTML = Object.entries(sources)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([src,cnt]) => `
+      <div class="source-row">
+        <span class="ci-source src-${src}">${src}</span>
+        <span class="src-count">${cnt}</span>
+      </div>`).join('');
+
+  const topCust = [...CUSTOMERS].sort((a,b)=>b.orders-a.orders).slice(0,6);
+  document.getElementById('top-customers').innerHTML = topCust.map((c,i) => `
+    <div class="top-item">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="top-rank">#${i+1}</span>
+        <div>
+          <div class="top-name">${formatName(c.first,c.lastInitial)}</div>
+          <div class="top-loc">${c.city}, ${c.state}</div>
+        </div>
+      </div>
+      <span class="top-orders">${c.orders}</span>
+    </div>`).join('');
+}
+
+/* ── HEXAGON PINS ── */
+function hexPoints(cx, cy, r) {
+  const pts = [];
+  for (let i = 0; i < 6; i++) {
+    const a = (Math.PI/180) * (60*i - 30);
+    pts.push(`${(cx + r*Math.cos(a)).toFixed(2)},${(cy + r*Math.sin(a)).toFixed(2)}`);
+  }
+  return pts.join(' ');
+}
+function pinSize(orders) {
+  if (orders >= 11) return 11;
+  if (orders >= 6) return 8;
+  if (orders >= 2) return 6;
+  return 4;
+}
+
+function renderPins() {
+  const layer = document.getElementById('pins-g');
+  layer.innerHTML = '';
+  const tooltip = document.getElementById('map-tooltip');
+  const wrap = document.getElementById('map-svg-wrap');
+
+  CUSTOMERS.forEach(c => {
+    const coord = STATE_COORDS[c.state];
+    if (!coord) return;
+    const jx = Math.sin(c.id * 7.3) * 16;
+    const jy = Math.cos(c.id * 11.7) * 10;
+    const cx = coord.x + jx;
+    const cy = coord.y + jy;
+    const sz = pinSize(c.orders);
+
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.style.cursor = 'pointer';
+
+    const hex = document.createElementNS('http://www.w3.org/2000/svg','polygon');
+    hex.setAttribute('points', hexPoints(cx, cy, sz));
+    hex.setAttribute('fill', CONFIG.pinColor);
+    hex.setAttribute('stroke', 'rgba(0,0,0,0.4)');
+    hex.setAttribute('stroke-width', '0.8');
+    hex.setAttribute('opacity', '0.93');
+    g.appendChild(hex);
+
+    g.addEventListener('mouseenter', () => {
+      hex.setAttribute('fill', CONFIG.pinColorHl);
+      hex.setAttribute('stroke', 'rgba(255,255,255,0.6)');
+      hex.setAttribute('stroke-width', '1.5');
+      const svgRect = document.getElementById('usa-svg').getBoundingClientRect();
+      const wrapRect = wrap.getBoundingClientRect();
+      const px = cx*(svgRect.width/960) + (svgRect.left-wrapRect.left);
+      const py = cy*(svgRect.height/600) + (svgRect.top-wrapRect.top);
+      tooltip.innerHTML = `
+        <div class="tt-name">${formatName(c.first,c.lastInitial)}</div>
+        <div class="tt-loc">${c.city}, ${c.state}</div>
+        <div class="tt-orders">${c.orders}</div>
+        <div class="tt-orders-lbl">order${c.orders!==1?'s':''}</div>
+        <div style="margin-top:6px"><span class="ci-source src-${c.source}">${c.source}</span></div>`;
+      tooltip.style.display = 'block';
+      tooltip.style.left = Math.min(px+12, wrapRect.width-175)+'px';
+      tooltip.style.top = Math.max(py-95, 8)+'px';
+    });
+    g.addEventListener('mouseleave', () => {
+      hex.setAttribute('fill', CONFIG.pinColor);
+      hex.setAttribute('stroke', 'rgba(0,0,0,0.4)');
+      hex.setAttribute('stroke-width', '0.8');
+      tooltip.style.display = 'none';
+    });
+    layer.appendChild(g);
+  });
+}
+
+function drawStates() {
+  fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json')
+    .then(r=>r.json()).then(us=>{
+      const proj = d3.geoAlbersUsa().scale(1280).translate([480,300]);
+      const path = d3.geoPath().projection(proj);
+      const states = topojson.feature(us, us.objects.states);
+      d3.select('#states-g').selectAll('path').data(states.features).enter().append('path')
+        .attr('d',path).attr('fill','#16181c').attr('stroke','#2a2d35').attr('stroke-width','0.8');
+      renderPins();
+    }).catch(()=>{
+      document.getElementById('states-g').innerHTML =
+        `<rect x="60" y="80" width="840" height="440" rx="4" fill="#16181c" stroke="#2a2d35"/>
+         <text x="480" y="300" text-anchor="middle" font-size="14" fill="#3a3d47" font-family="Barlow,sans-serif">US Map</text>`;
+      renderPins();
+    });
+}
+
+applyConfig();
+renderStats();
+drawStates();
+</script>
+</body>
+</html>
