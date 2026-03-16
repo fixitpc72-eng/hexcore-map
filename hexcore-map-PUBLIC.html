@@ -267,7 +267,8 @@ function _decode(raw){
   try {
     return JSON.parse(_x(raw)).map(r=>({
       id:r.g, first:_x(r.a), lastInitial:_x(r.b),
-      city:_x(r.c), state:_x(r.d), orders:r.e, source:_x(r.f)
+      city:_x(r.c), state:_x(r.d), orders:r.e, source:_x(r.f),
+      lat:r.h||null, lon:r.i||null
     }));
   } catch(e){ return []; }
 }
@@ -287,21 +288,67 @@ const CONFIG = {
 /* ============================================================
    STATE COORDINATES (do not edit)
    ============================================================ */
-const STATE_COORDS = {
-  "Alabama":{x:685,y:430},"Alaska":{x:130,y:530},"Arizona":{x:210,y:400},"Arkansas":{x:610,y:400},
-  "California":{x:95,y:330},"Colorado":{x:290,y:340},"Connecticut":{x:820,y:200},"Delaware":{x:792,y:258},
-  "Florida":{x:715,y:500},"Georgia":{x:705,y:450},"Hawaii":{x:280,y:560},"Idaho":{x:185,y:220},
-  "Illinois":{x:645,y:320},"Indiana":{x:678,y:310},"Iowa":{x:578,y:280},"Kansas":{x:498,y:360},
-  "Kentucky":{x:692,y:358},"Louisiana":{x:612,y:472},"Maine":{x:858,y:142},"Maryland":{x:780,y:265},
-  "Massachusetts":{x:842,y:185},"Michigan":{x:682,y:240},"Minnesota":{x:555,y:200},"Mississippi":{x:652,y:450},
-  "Missouri":{x:590,y:355},"Montana":{x:255,y:165},"Nebraska":{x:490,y:310},"Nevada":{x:155,y:310},
-  "New Hampshire":{x:835,y:170},"New Jersey":{x:800,y:238},"New Mexico":{x:275,y:420},"New York":{x:790,y:198},
-  "North Carolina":{x:762,y:378},"North Dakota":{x:475,y:185},"Ohio":{x:722,y:302},"Oklahoma":{x:490,y:405},
-  "Oregon":{x:118,y:215},"Pennsylvania":{x:758,y:252},"Rhode Island":{x:845,y:202},"South Carolina":{x:742,y:412},
-  "South Dakota":{x:470,y:248},"Tennessee":{x:682,y:390},"Texas":{x:460,y:462},"Utah":{x:215,y:335},
-  "Vermont":{x:822,y:162},"Virginia":{x:770,y:332},"Washington":{x:122,y:162},"West Virginia":{x:745,y:308},
-  "Wisconsin":{x:618,y:238},"Wyoming":{x:278,y:265}
+/* ── STATE GEOGRAPHIC CENTROIDS (real lat/lon) ── */
+const STATE_CENTROIDS = {
+  "Alabama":       [-86.9023, 32.3182],
+  "Alaska":        [-153.4937, 61.3707],
+  "Arizona":       [-111.0937, 34.0489],
+  "Arkansas":      [-92.3731, 34.7999],
+  "California":    [-119.4179, 36.7783],
+  "Colorado":      [-105.3111, 39.5501],
+  "Connecticut":   [-72.7554, 41.6032],
+  "Delaware":      [-75.5071, 38.9108],
+  "Florida":       [-81.5158, 27.6648],
+  "Georgia":       [-83.6431, 32.6415],
+  "Hawaii":        [-155.5828, 19.8968],
+  "Idaho":         [-114.7420, 44.0682],
+  "Illinois":      [-89.1965, 40.6331],
+  "Indiana":       [-86.1349, 40.2672],
+  "Iowa":          [-93.0977, 41.8780],
+  "Kansas":        [-98.4842, 38.5266],
+  "Kentucky":      [-84.2700, 37.8393],
+  "Louisiana":     [-91.9623, 31.1695],
+  "Maine":         [-69.4455, 45.2538],
+  "Maryland":      [-76.6413, 39.0458],
+  "Massachusetts": [-71.3824, 42.4072],
+  "Michigan":      [-85.6024, 44.3148],
+  "Minnesota":     [-94.6859, 46.7296],
+  "Mississippi":   [-89.3985, 32.3547],
+  "Missouri":      [-91.8318, 37.9643],
+  "Montana":       [-110.3626, 46.8797],
+  "Nebraska":      [-99.9018, 41.4925],
+  "Nevada":        [-116.4194, 38.8026],
+  "New Hampshire": [-71.5724, 43.1939],
+  "New Jersey":    [-74.4057, 40.0583],
+  "New Mexico":    [-106.2485, 34.5199],
+  "New York":      [-74.9654, 43.2994],
+  "North Carolina":[-79.0193, 35.7596],
+  "North Dakota":  [-101.0020, 47.5515],
+  "Ohio":          [-82.9071, 40.4173],
+  "Oklahoma":      [-97.0929, 35.4676],
+  "Oregon":        [-120.5542, 43.8041],
+  "Pennsylvania":  [-77.1945, 41.2033],
+  "Rhode Island":  [-71.4774, 41.5801],
+  "South Carolina":[-80.9450, 33.8361],
+  "South Dakota":  [-99.9018, 43.9695],
+  "Tennessee":     [-86.5804, 35.5175],
+  "Texas":         [-99.3413, 31.9686],
+  "Utah":          [-111.0937, 39.3210],
+  "Vermont":       [-72.5778, 44.5588],
+  "Virginia":      [-78.6569, 37.4316],
+  "Washington":    [-120.7401, 47.7511],
+  "West Virginia": [-80.4549, 38.5976],
+  "Wisconsin":     [-88.7879, 43.7844],
+  "Wyoming":       [-107.2903, 43.0760]
 };
+
+let projectionFn = null; // set once D3 loads
+
+function getStateCoord(stateName) {
+  const ll = STATE_CENTROIDS[stateName];
+  if (!ll || !projectionFn) return null;
+  return projectionFn(ll); // returns [x, y]
+}
 
 /* ============================================================
    INIT — applies CONFIG colors to CSS variables
@@ -388,12 +435,12 @@ function renderPins() {
   const wrap = document.getElementById('map-svg-wrap');
 
   CUSTOMERS.forEach(c => {
-    const coord = STATE_COORDS[c.state];
+    const coord = (c.lat && c.lon && projectionFn)
+      ? projectionFn([c.lon, c.lat])
+      : getStateCoord(c.state);
     if (!coord) return;
-    const jx = Math.sin(c.id * 7.3) * 16;
-    const jy = Math.cos(c.id * 11.7) * 10;
-    const cx = coord.x + jx;
-    const cy = coord.y + jy;
+    const cx = coord[0];
+    const cy = coord[1];
     const sz = pinSize(c.orders);
 
     const g = document.createElementNS('http://www.w3.org/2000/svg','g');
@@ -439,12 +486,15 @@ function drawStates() {
   fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json')
     .then(r=>r.json()).then(us=>{
       const proj = d3.geoAlbersUsa().scale(1280).translate([480,300]);
+      projectionFn = proj; // store for pin placement
       const path = d3.geoPath().projection(proj);
       const states = topojson.feature(us, us.objects.states);
       d3.select('#states-g').selectAll('path').data(states.features).enter().append('path')
         .attr('d',path).attr('fill','#16181c').attr('stroke','#2a2d35').attr('stroke-width','0.8');
-      renderPins();
+      renderPins(); // render pins AFTER projection is ready
     }).catch(()=>{
+      // fallback: use a basic albers projection without the map
+      projectionFn = d3.geoAlbersUsa().scale(1280).translate([480,300]);
       document.getElementById('states-g').innerHTML =
         `<rect x="60" y="80" width="840" height="440" rx="4" fill="#16181c" stroke="#2a2d35"/>
          <text x="480" y="300" text-anchor="middle" font-size="14" fill="#3a3d47" font-family="Barlow,sans-serif">US Map</text>`;
