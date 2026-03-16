@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hexcore Mounts — Affiliate Map (Admin)</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<style>
+  :root {
+    --black: #0a0a0a;
+    --dark: #111214;
+    --card: #16181c;
+    --border: #2a2d35;
+    --muted: #3a3d47;
+    --text: #e8e9ec;
+    --sub: #7a7f8e;
+    --accent: #20FDF0;
+    --blue: #2563eb;
+    --blue-light: #3b82f6;
+    --green: #16a34a;
+    --ig: #e1306c;
+    --fb: #1877f2;
+    --yt: #ff0000;
+    --font-head: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+    --pin-color: #20FDF0;
+    --pin-color-hl: #20FDF0;
+    --ui-text: #e8e9ec;
+    --ui-accent-text: #20FDF0;
+    --name-text: #e8e9ec;
+    --loc-text: #7a7f8e;
+    --stat-num-text: #e8e9ec;
+    --tooltip-name: #e8e9ec;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--black); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
+
+  header { background: var(--dark); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .logo { font-family: var(--font-head); font-weight: 900; font-size: 22px; letter-spacing: .04em; text-transform: uppercase; color: var(--ui-text); }
+  .logo span { color: var(--ui-accent-text); }
+  .header-badge { background: var(--accent); color: white; font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border-radius: 3px; }
+
+  .layout { display: grid; grid-template-columns: 340px 1fr; height: calc(100vh - 60px); }
+
+  .sidebar { background: var(--dark); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+  .sidebar-tabs { display: flex; border-bottom: 1px solid var(--border); }
+  .stab { flex: 1; padding: 13px 4px; text-align: center; font-family: var(--font-head); font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--sub); cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; background: none; border-top: none; border-left: none; border-right: none; }
+  .stab:hover { color: var(--text); }
+  .stab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .sidebar-content { flex: 1; overflow-y: auto; padding: 1.25rem; scrollbar-width: thin; scrollbar-color: var(--muted) transparent; }
+
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1.25rem; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
+  .stat-card.full { grid-column: span 2; }
+  .stat-num { font-family: var(--font-head); font-size: 28px; font-weight: 900; color: var(--stat-num-text); line-height: 1; }
+  .stat-num.accent { color: var(--ui-accent-text); }
+  .stat-label { font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: .08em; margin-top: 4px; }
+
+  .section-label { font-family: var(--font-head); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--sub); margin-bottom: .6rem; }
+  .form-row { margin-bottom: .75rem; }
+  .form-row label { display: block; font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+  .form-row input, .form-row select, .form-row textarea { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 9px 12px; color: var(--text); font-family: var(--font-body); font-size: 13px; outline: none; transition: border-color .15s; }
+  .form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: var(--accent); }
+  .form-row select option { background: var(--card); }
+  .form-row textarea { resize: vertical; min-height: 70px; }
+  .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .submit-btn { width: 100%; padding: 11px; background: var(--accent); border: none; border-radius: 5px; color: white; font-family: var(--font-head); font-size: 15px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; transition: opacity .15s; margin-top: .5rem; }
+  .submit-btn:hover { opacity: .85; }
+  .submit-btn.secondary { background: transparent; border: 1px solid var(--blue-light); color: var(--blue-light); margin-top: .5rem; }
+
+  .affiliate-item { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-start; cursor: pointer; transition: border-color .15s; }
+  .affiliate-item:hover { border-color: var(--muted); }
+  .affiliate-item.highlighted { border-color: var(--accent); }
+  .ci-name { font-weight: 600; font-size: 13px; color: var(--name-text); margin-bottom: 2px; }
+  .ci-loc { font-size: 11px; color: var(--loc-text); }
+  .ci-right { text-align: right; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+  .social-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 3px; font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .sp-ig { background: rgba(225,48,108,.2); color: #f472b6; }
+  .sp-fb { background: rgba(24,119,242,.2); color: #60a5fa; }
+  .sp-yt { background: rgba(255,0,0,.15); color: #f87171; }
+  .del-btn { background: none; border: none; color: var(--muted); cursor: pointer; padding: 2px 4px; font-size: 14px; line-height: 1; transition: color .15s; }
+  .del-btn:hover { color: #ef4444; }
+
+  .search-input { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 8px 12px; color: var(--text); font-size: 13px; outline: none; margin-bottom: .75rem; font-family: var(--font-body); }
+
+  .map-area { background: var(--black); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  #map-svg-wrap { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+  #usa-svg { width: 100%; height: 100%; max-height: calc(100vh - 80px); }
+
+  .map-tooltip { position: absolute; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; pointer-events: none; display: none; z-index: 20; min-width: 180px; box-shadow: 0 8px 24px rgba(0,0,0,.5); }
+  .tt-name { font-weight: 600; font-size: 13px; color: var(--tooltip-name); margin-bottom: 2px; }
+  .tt-loc { font-size: 11px; color: var(--sub); margin-bottom: 4px; }
+  .tt-bio { font-size: 11px; color: var(--sub); margin-bottom: 6px; line-height: 1.4; font-style: italic; }
+  .tt-social { display: flex; gap: 6px; }
+
+  .map-legend { position: absolute; bottom: 1.25rem; left: 1.25rem; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; }
+  .map-legend-title { font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--sub); margin-bottom: 6px; }
+  .leg-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 11px; color: var(--sub); }
+
+  .map-controls { position: absolute; bottom: 1.25rem; right: 1.25rem; display: flex; flex-direction: column; gap: 6px; }
+  .map-ctrl-btn { background: var(--card); border: 1px solid var(--border); border-radius: 5px; color: var(--text); width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: border-color .15s; }
+  .map-ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--green); color: white; font-family: var(--font-head); font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 10px 18px; border-radius: 5px; z-index: 100; opacity: 0; transform: translateY(10px); transition: all .3s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  .empty-state { text-align: center; padding: 2rem 0; color: var(--sub); font-size: 13px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+  .color-row { display: flex; flex-direction: column; gap: 4px; }
+  .color-row label { font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: .06em; }
+  .color-row input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--border); border-radius: 5px; background: var(--card); cursor: pointer; padding: 2px 4px; }
+  .swatch-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1rem; }
+  .swatch { width: 36px; height: 36px; border-radius: 5px; border: 2px solid var(--border); cursor: pointer; transition: border-color .15s; }
+  .swatch:hover { border-color: white; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+  .save-status { font-size: 11px; color: var(--sub); margin-top: 0.5rem; display: flex; align-items: center; gap: 6px; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:.5; } }
+
+  .ig-input-wrap { position: relative; }
+  .ig-input-wrap span { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--sub); font-size: 13px; pointer-events: none; }
+  .ig-input-wrap input { padding-left: 22px; }
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="gate" style="position:fixed;inset:0;background:#0a0a0a;display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:1rem">
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;color:#e8e9ec;letter-spacing:.06em">Hexcore <span style="color:#20FDF0">Mounts</span></div>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7a7f8e;margin-bottom:.5rem">Affiliate Admin</div>
+  <input id="pw-input" type="password" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')checkPw()"
+    style="background:#16181c;border:1px solid #2a2d35;border-radius:5px;padding:10px 16px;color:#e8e9ec;font-family:'Barlow',sans-serif;font-size:14px;outline:none;width:260px;text-align:center" />
+  <button onclick="checkPw()"
+    style="background:#20FDF0;border:none;border-radius:5px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:10px 28px;cursor:pointer;width:260px">
+    Unlock
+  </button>
+  <div id="pw-err" style="font-size:12px;color:#20FDF0;display:none">Incorrect password</div>
+</div>
+
+<header>
+  <div class="logo">Hexcore <span>Mounts</span></div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <button onclick="exportPublicData()" style="background:transparent;border:1px solid var(--border);border-radius:5px;color:var(--sub);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;cursor:pointer" onmouseover="this.style.borderColor='#20FDF0';this.style.color='#20FDF0'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--sub)'">&#8599; Export Public</button>
+    <div class="header-badge">Affiliate Admin</div>
+  </div>
+</header>
+
+<!-- EXPORT MODAL -->
+<div id="export-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;display:none;align-items:center;justify-content:center">
+  <div style="background:#16181c;border:1px solid #2a2d35;border-radius:8px;padding:1.5rem;width:620px;max-width:95vw;display:flex;flex-direction:column;gap:1rem">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#e8e9ec">Export for Public Map</span>
+      <button onclick="document.getElementById('export-modal').style.display='none'" style="background:none;border:none;color:#7a7f8e;font-size:22px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <p style="font-size:12px;color:#7a7f8e;line-height:1.6">Copy this and replace the <code style="background:#2a2d35;padding:1px 5px;border-radius:3px;font-size:11px">const _d = "..."</code> block in your public affiliate map HTML file. Affiliate data is encoded so it is not readable in browser inspect tools.</p>
+    <textarea id="export-text" readonly style="background:#0a0a0a;border:1px solid #2a2d35;border-radius:5px;padding:10px;color:#e8e9ec;font-family:monospace;font-size:11px;height:220px;outline:none;resize:none;width:100%"></textarea>
+    <button onclick="copyExport()" id="copy-btn" style="background:#20FDF0;border:none;border-radius:5px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:10px;cursor:pointer">Copy to Clipboard</button>
+  </div>
+</div>
+
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-tabs">
+      <button class="stab active" onclick="switchTab('stats',this)">Stats</button>
+      <button class="stab" onclick="switchTab('add',this)">Add</button>
+      <button class="stab" onclick="switchTab('list',this)">List</button>
+      <button class="stab" onclick="switchTab('customize',this)">Style</button>
+      <button class="stab" onclick="switchTab('backup',this)">Backup</button>
+    </div>
+
+    <div class="sidebar-content">
+
+      <!-- STATS -->
+      <div id="tab-stats" class="panel active">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-num accent" id="s-total">0</div><div class="stat-label">Affiliates</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-states">0</div><div class="stat-label">States</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-ig">0</div><div class="stat-label">Instagram</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-fb">0</div><div class="stat-label">Facebook</div></div>
+          <div class="stat-card full"><div class="stat-num" id="s-yt">0</div><div class="stat-label">YouTube</div></div>
+          <div class="stat-card full"><div class="stat-num" id="s-top-state" style="font-size:20px">—</div><div class="stat-label">Top State by Affiliates</div></div>
+        </div>
+        <div class="section-label">Recent affiliates</div>
+        <div id="top-affiliates"></div>
+      </div>
+
+      <!-- ADD AFFILIATE -->
+      <div id="tab-add" class="panel">
+        <div class="section-label">Affiliate Info</div>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label>First Name</label>
+            <input id="f-first" placeholder="Jane" />
+          </div>
+          <div class="form-row">
+            <label>Last Name</label>
+            <input id="f-last" placeholder="Smith" />
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label>City</label>
+            <input id="f-city" placeholder="Austin" />
+          </div>
+          <div class="form-row">
+            <label>State</label>
+            <select id="f-state">
+              <option value="">Select...</option>
+              <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option><option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option><option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Bio</label>
+          <textarea id="f-bio" placeholder="Off-road enthusiast and content creator based in Austin, TX..."></textarea>
+        </div>
+        <div class="form-row">
+          <label>Instagram handle</label>
+          <div class="ig-input-wrap">
+            <span>@</span>
+            <input id="f-instagram" placeholder="username" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Facebook profile / page URL</label>
+          <input id="f-facebook" placeholder="facebook.com/username or full URL" />
+        </div>
+        <div class="form-row">
+          <label>YouTube channel URL</label>
+          <input id="f-youtube" placeholder="youtube.com/@channelname or full URL" />
+        </div>
+        <div class="form-row">
+          <label>Notes (internal, not shown publicly)</label>
+          <textarea id="f-notes" placeholder="Commission rate, tier, contact info..." style="min-height:50px"></textarea>
+        </div>
+        <button class="submit-btn" onclick="addAffiliate()">Add to Map</button>
+        <div class="save-status" id="save-status"></div>
+
+        <!-- Generated card — shown after adding -->
+        <div id="card-result" style="display:none;margin-top:1.25rem">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem">
+            <div class="section-label" style="margin-bottom:0">Card Preview</div>
+            <span style="font-size:10px;color:#16a34a;font-weight:600;letter-spacing:.04em;text-transform:uppercase">✓ Added</span>
+          </div>
+          <div id="card-preview" style="margin-bottom:1rem"></div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem">
+            <div class="section-label" style="margin-bottom:0">Embeddable HTML</div>
+            <span style="font-size:10px;color:var(--sub)">Paste anywhere on your site</span>
+          </div>
+          <textarea id="card-html-output" readonly style="width:100%;background:#0a0a0a;border:1px solid var(--border);border-radius:5px;padding:10px 12px;color:var(--sub);font-family:monospace;font-size:10px;height:130px;outline:none;resize:none;line-height:1.5;margin-bottom:.5rem"></textarea>
+          <button onclick="copyCardHtml()" id="copy-card-btn" class="submit-btn" style="margin-top:0">Copy HTML</button>
+        </div>
+      </div>
+
+      <!-- LIST -->
+      <div id="tab-list" class="panel">
+        <input class="search-input" placeholder="Search by name or location..." oninput="filterAffiliates(this.value)" />
+        <div id="affiliate-list-el"></div>
+      </div>
+
+      <!-- STYLE -->
+      <div id="tab-customize" class="panel">
+        <div class="section-label">Hexagon pin color</div>
+        <div class="color-grid" style="margin-bottom:.5rem">
+          <div class="color-row">
+            <label>Pin color</label>
+            <input type="color" id="cp-pin" value="#20FDF0" oninput="applyColor('--pin-color',this.value);renderPins()" />
+          </div>
+          <div class="color-row">
+            <label>Highlight color</label>
+            <input type="color" id="cp-hl" value="#20FDF0" oninput="applyColor('--pin-color-hl',this.value);renderPins()" />
+          </div>
+        </div>
+        <div class="section-label">Presets</div>
+        <div class="swatch-row">
+          <div class="swatch" style="background:#20FDF0" onclick="setPreset('#20FDF0','#20FDF0')" title="Cyan"></div>
+          <div class="swatch" style="background:#ff006e" onclick="setPreset('#ff006e','#ff006e')" title="Pink"></div>
+          <div class="swatch" style="background:#a0ff00" onclick="setPreset('#a0ff00','#a0ff00')" title="Lime"></div>
+          <div class="swatch" style="background:#f59e0b" onclick="setPreset('#f59e0b','#f59e0b')" title="Amber"></div>
+          <div class="swatch" style="background:#8b5cf6" onclick="setPreset('#8b5cf6','#8b5cf6')" title="Purple"></div>
+        </div>
+        <div class="divider"></div>
+        <div class="section-label">Text colors</div>
+        <div class="color-grid" style="margin-bottom:.5rem">
+          <div class="color-row">
+            <label>Name text</label>
+            <input type="color" id="cp-name" value="#e8e9ec" oninput="applyColor('--name-text',this.value)" />
+          </div>
+          <div class="color-row">
+            <label>Location text</label>
+            <input type="color" id="cp-loc" value="#7a7f8e" oninput="applyColor('--loc-text',this.value)" />
+          </div>
+          <div class="color-row">
+            <label>Stat numbers</label>
+            <input type="color" id="cp-stat" value="#e8e9ec" oninput="applyColor('--stat-num-text',this.value)" />
+          </div>
+          <div class="color-row">
+            <label>Accent text</label>
+            <input type="color" id="cp-acc" value="#20FDF0" oninput="applyColor('--ui-accent-text',this.value)" />
+          </div>
+        </div>
+        <button class="submit-btn secondary" onclick="resetColors()">Reset to Default</button>
+      </div>
+
+      <!-- BACKUP -->
+      <div id="tab-backup" class="panel">
+        <div class="section-label">Data Management</div>
+        <p style="font-size:12px;color:var(--sub);margin-bottom:1rem;line-height:1.5">Affiliate data is saved to your browser's local storage. Use these tools to backup and restore.</p>
+        <div style="margin-bottom:1.5rem">
+          <div class="section-label" style="margin-bottom:.5rem">Export Data</div>
+          <button class="submit-btn" onclick="downloadBackup()">📥 Download Backup</button>
+        </div>
+        <div style="margin-bottom:1.5rem">
+          <div class="section-label" style="margin-bottom:.5rem">Import Data</div>
+          <input type="file" id="backup-file" accept=".json" style="display:none" onchange="importBackup(event)" />
+          <button class="submit-btn secondary" onclick="document.getElementById('backup-file').click()">📤 Upload Backup</button>
+        </div>
+        <div class="divider"></div>
+        <div class="section-label" style="margin-bottom:.5rem">Storage Info</div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:5px;padding:10px 12px;font-size:12px;color:var(--sub);line-height:1.6">
+          <div style="margin-bottom:8px"><strong style="color:var(--text)">Total Affiliates:</strong> <span id="storage-count">0</span></div>
+          <div style="margin-bottom:8px"><strong style="color:var(--text)">Storage Used:</strong> <span id="storage-size">0 KB</span></div>
+          <div><strong style="color:var(--text)">Last Updated:</strong> <span id="storage-date">Never</span></div>
+        </div>
+        <button class="submit-btn secondary" onclick="clearAllData()" style="margin-top:1.5rem;background:rgba(255,0,0,.1);border-color:#ef4444;color:#ef4444">🗑️ Clear All Data</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="map-area">
+    <div id="map-svg-wrap">
+      <svg id="usa-svg" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg">
+        <rect width="960" height="600" fill="#0a0a0a"/>
+        <g id="states-g"></g>
+        <g id="pins-g"></g>
+      </svg>
+    </div>
+    <div class="map-tooltip" id="map-tooltip"></div>
+    <div class="map-legend">
+      <div class="map-legend-title">Affiliates</div>
+      <div class="leg-row"><svg width="14" height="13" viewBox="-7 -6 14 13"><polygon id="lh1" points="0,-6 5.2,-3 5.2,3 0,6 -5.2,3 -5.2,-3" fill="#20FDF0"/></svg><span>Pin</span></div>
+      <div class="leg-row"><svg width="20" height="19" viewBox="-10 -9 20 19"><polygon id="lh2" points="0,-9 7.8,-4.5 7.8,4.5 0,9 -7.8,4.5 -7.8,-4.5" fill="#20FDF0" opacity="0.4"/><polygon points="0,-6 5.2,-3 5.2,3 0,6 -5.2,3 -5.2,-3" fill="#20FDF0"/></svg><span>Selected</span></div>
+    </div>
+    <div class="map-controls">
+      <div class="map-ctrl-btn" onclick="clearHighlight()" title="Clear selection">✕</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STATE_CENTROIDS = {
+  "Alabama":[-86.9023,32.3182],"Alaska":[-153.4937,61.3707],"Arizona":[-111.0937,34.0489],"Arkansas":[-92.3731,34.7999],
+  "California":[-119.4179,36.7783],"Colorado":[-105.3111,39.5501],"Connecticut":[-72.7554,41.6032],"Delaware":[-75.5071,38.9108],
+  "Florida":[-81.5158,27.6648],"Georgia":[-83.6431,32.6415],"Hawaii":[-155.5828,19.8968],"Idaho":[-114.7420,44.0682],
+  "Illinois":[-89.1965,40.6331],"Indiana":[-86.1349,40.2672],"Iowa":[-93.0977,41.8780],"Kansas":[-98.4842,38.5266],
+  "Kentucky":[-84.2700,37.8393],"Louisiana":[-91.9623,31.1695],"Maine":[-69.4455,45.2538],"Maryland":[-76.6413,39.0458],
+  "Massachusetts":[-71.3824,42.4072],"Michigan":[-85.6024,44.3148],"Minnesota":[-94.6859,46.7296],"Mississippi":[-89.3985,32.3547],
+  "Missouri":[-91.8318,37.9643],"Montana":[-110.3626,46.8797],"Nebraska":[-99.9018,41.4925],"Nevada":[-116.4194,38.8026],
+  "New Hampshire":[-71.5724,43.1939],"New Jersey":[-74.4057,40.0583],"New Mexico":[-106.2485,34.5199],"New York":[-74.9654,43.2994],
+  "North Carolina":[-79.0193,35.7596],"North Dakota":[-101.0020,47.5515],"Ohio":[-82.9071,40.4173],"Oklahoma":[-97.0929,35.4676],
+  "Oregon":[-120.5542,43.8041],"Pennsylvania":[-77.1945,41.2033],"Rhode Island":[-71.4774,41.5801],"South Carolina":[-80.9450,33.8361],
+  "South Dakota":[-99.9018,43.9695],"Tennessee":[-86.5804,35.5175],"Texas":[-99.3413,31.9686],"Utah":[-111.0937,39.3210],
+  "Vermont":[-72.5778,44.5588],"Virginia":[-78.6569,37.4316],"Washington":[-120.7401,47.7511],"West Virginia":[-80.4549,38.5976],
+  "Wisconsin":[-88.7879,43.7844],"Wyoming":[-107.2903,43.0760]
+};
+
+let projectionFn = null;
+
+function getStateCoord(s) {
+  const ll = STATE_CENTROIDS[s];
+  if (!ll || !projectionFn) return null;
+  return projectionFn(ll);
+}
+
+// ── STORAGE ──
+const STORAGE_KEY = 'hexcore_affiliates';
+const DEFAULT_AFFILIATES = [
+  {id:1,first:"Alex",last:"Rivera",city:"Austin",state:"Texas",bio:"Off-road enthusiast and content creator. Reviews overlanding gear and trail builds.",instagram:"alexrivera",facebook:"facebook.com/alexrivera",youtube:"youtube.com/@alexrivera",notes:"",lat:null,lon:null,date:"2024-01-01"},
+  {id:2,first:"Jenna",last:"Moore",city:"Denver",state:"Colorado",bio:"Jeep life advocate. Creates content on mountain trails and 4x4 builds.",instagram:"jennamoore4x4",facebook:"",youtube:"",notes:"",lat:null,lon:null,date:"2024-01-02"},
+  {id:3,first:"Carlos",last:"Diaz",city:"Miami",state:"Florida",bio:"Truck enthusiast and lifestyle influencer covering gear, mods, and adventures.",instagram:"carlosdiazdrives",facebook:"facebook.com/carlosdiazdrives",youtube:"youtube.com/@carlosdiazdrives",notes:"",lat:null,lon:null,date:"2024-01-03"},
+];
+
+function loadAffiliates() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch(e) {}
+  return DEFAULT_AFFILIATES;
+}
+function saveAffiliates() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(affiliates));
+    updateStorageInfo();
+    showSaveStatus();
+  } catch(e) { showToast('Error saving data', true); }
+}
+function updateStorageInfo() {
+  document.getElementById('storage-count').textContent = affiliates.length;
+  document.getElementById('storage-size').textContent = (new Blob([JSON.stringify(affiliates)]).size/1024).toFixed(2)+' KB';
+  document.getElementById('storage-date').textContent = new Date().toLocaleString();
+}
+function showSaveStatus() {
+  const el = document.getElementById('save-status');
+  el.innerHTML = '<div class="save-dot"></div><span>Saved to browser storage</span>';
+  setTimeout(()=>el.innerHTML='', 3000);
+}
+
+let affiliates = loadAffiliates();
+let nextId = Math.max(...affiliates.map(a=>a.id), 0) + 1;
+let searchQuery = '';
+let highlightedId = null;
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  if (name==='stats') { updateStats(); renderTopAffiliates(); }
+  if (name==='list') renderAffiliateList();
+  if (name==='backup') updateStorageInfo();
+}
+
+function updateStats() {
+  document.getElementById('s-total').textContent = affiliates.length;
+  document.getElementById('s-states').textContent = new Set(affiliates.map(a=>a.state)).size;
+  document.getElementById('s-ig').textContent = affiliates.filter(a=>a.instagram).length;
+  document.getElementById('s-fb').textContent = affiliates.filter(a=>a.facebook).length;
+  document.getElementById('s-yt').textContent = affiliates.filter(a=>a.youtube).length;
+  const stateCount = {};
+  affiliates.forEach(a=>{ stateCount[a.state]=(stateCount[a.state]||0)+1; });
+  const top = Object.entries(stateCount).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('s-top-state').textContent = top ? top[0] : '—';
+}
+function renderTopAffiliates() {
+  const el = document.getElementById('top-affiliates');
+  if (!affiliates.length) { el.innerHTML='<div class="empty-state">No affiliates yet</div>'; return; }
+  el.innerHTML = [...affiliates].slice(-5).reverse().map((a,i)=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--name-text)">${a.first} ${a.last}</div>
+        <div style="font-size:10px;color:var(--loc-text)">${a.city}, ${a.state}</div>
+      </div>
+      <div style="display:flex;gap:4px">
+        ${a.instagram?`<span class="social-pill sp-ig">IG</span>`:''}
+        ${a.facebook?`<span class="social-pill sp-fb">FB</span>`:''}
+        ${a.youtube?`<span class="social-pill sp-yt">YT</span>`:''}
+      </div>
+    </div>`).join('');
+}
+
+async function addAffiliate() {
+  const first = document.getElementById('f-first').value.trim();
+  const last = document.getElementById('f-last').value.trim();
+  const city = document.getElementById('f-city').value.trim();
+  const state = document.getElementById('f-state').value;
+  const bio = document.getElementById('f-bio').value.trim();
+  const instagram = document.getElementById('f-instagram').value.trim().replace(/^@/,'');
+  const facebook = document.getElementById('f-facebook').value.trim();
+  const youtube = document.getElementById('f-youtube').value.trim();
+  const notes = document.getElementById('f-notes').value.trim();
+  if (!first || !city || !state) { showToast('Fill in first name, city & state', true); return; }
+
+  const addBtn = document.querySelector('.submit-btn');
+  addBtn.textContent = 'Looking up location...';
+  addBtn.disabled = true;
+  let lat=null, lon=null;
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city+', '+state+', USA')}&format=json&limit=1`,{headers:{'Accept-Language':'en','User-Agent':'HexcoreMountsMap/1.0'}});
+    const data = await res.json();
+    if (data&&data[0]) { lat=parseFloat(data[0].lat); lon=parseFloat(data[0].lon); }
+  } catch(e) {}
+  addBtn.textContent = 'Add to Map';
+  addBtn.disabled = false;
+
+  affiliates.push({ id:nextId++, first, last, city, state, bio, instagram, facebook, youtube, notes, lat, lon, date: new Date().toISOString().slice(0,10) });
+  const newAffiliate = affiliates[affiliates.length - 1];
+  showToast(`${first} ${last} added!`);
+  saveAffiliates();
+  renderPins();
+  updateStats();
+  clearForm();
+  showCardModal(newAffiliate);
+}
+
+function clearForm() {
+  ['f-first','f-last','f-city','f-bio','f-instagram','f-facebook','f-youtube','f-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-state').value='';
+  document.getElementById('card-result').style.display = 'none';
+}
+
+function filterAffiliates(q) { searchQuery=q.toLowerCase(); renderAffiliateList(); }
+function renderAffiliateList() {
+  let list = [...affiliates];
+  if (searchQuery) list = list.filter(a=>`${a.first} ${a.last}`.toLowerCase().includes(searchQuery)||a.city.toLowerCase().includes(searchQuery)||a.state.toLowerCase().includes(searchQuery));
+  const el = document.getElementById('affiliate-list-el');
+  if (!list.length) { el.innerHTML='<div class="empty-state">No affiliates found</div>'; return; }
+  el.innerHTML = list.map(a=>`
+    <div class="affiliate-item ${highlightedId===a.id?'highlighted':''}" onclick="highlightPin(${a.id})">
+      <div style="flex:1;min-width:0">
+        <div class="ci-name">${a.first} ${a.last}</div>
+        <div class="ci-loc">${a.city}, ${a.state}</div>
+        ${a.bio?`<div style="font-size:10px;color:var(--sub);margin-top:3px;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${a.bio}</div>`:''}
+        <div style="display:flex;gap:4px;margin-top:5px">
+          ${a.instagram?`<span class="social-pill sp-ig">@${a.instagram}</span>`:''}
+          ${a.facebook?`<span class="social-pill sp-fb">FB</span>`:''}
+          ${a.youtube?`<span class="social-pill sp-yt">YT</span>`:''}
+      </div>
+      <div class="ci-right">
+        <button class="del-btn" onclick="event.stopPropagation();deleteAffiliate(${a.id})" title="Remove">×</button>
+      </div>
+    </div>`).join('');
+}
+function deleteAffiliate(id) {
+  affiliates = affiliates.filter(a=>a.id!==id);
+  saveAffiliates(); renderPins(); renderAffiliateList(); updateStats();
+  showToast('Affiliate removed');
+}
+function highlightPin(id) { highlightedId=id; renderPins(); renderAffiliateList(); }
+function clearHighlight() { highlightedId=null; renderPins(); }
+
+// ── PINS ──
+function hexPoints(cx,cy,r) {
+  const pts=[];
+  for(let i=0;i<6;i++){const a=(Math.PI/180)*(60*i-30);pts.push(`${(cx+r*Math.cos(a)).toFixed(2)},${(cy+r*Math.sin(a)).toFixed(2)}`);}
+  return pts.join(' ');
+}
+
+function renderPins() {
+  const layer=document.getElementById('pins-g');
+  layer.innerHTML='';
+  const tooltip=document.getElementById('map-tooltip');
+  const wrap=document.getElementById('map-svg-wrap');
+  const pinColor=getComputedStyle(document.documentElement).getPropertyValue('--pin-color').trim()||'#20FDF0';
+  const hlColor=getComputedStyle(document.documentElement).getPropertyValue('--pin-color-hl').trim()||'#20FDF0';
+
+  affiliates.forEach(a=>{
+    const coord=(a.lat&&a.lon&&projectionFn)?projectionFn([a.lon,a.lat]):getStateCoord(a.state);
+    if(!coord) return;
+    const cx=coord[0], cy=coord[1];
+    const isHL=highlightedId===a.id;
+    const fill=isHL?hlColor:pinColor;
+    const sz=7;
+
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.style.cursor='pointer';
+
+    if(isHL){
+      const glow=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+      glow.setAttribute('points',hexPoints(cx,cy,sz+5));
+      glow.setAttribute('fill','none');
+      glow.setAttribute('stroke',hlColor);
+      glow.setAttribute('stroke-width','1.5');
+      glow.setAttribute('opacity','0.4');
+      g.appendChild(glow);
+    }
+    const hex=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+    hex.setAttribute('points',hexPoints(cx,cy,sz));
+    hex.setAttribute('fill',fill);
+    hex.setAttribute('stroke',isHL?'rgba(255,255,255,0.7)':'rgba(0,0,0,0.4)');
+    hex.setAttribute('stroke-width',isHL?'1.5':'0.8');
+    hex.setAttribute('opacity','0.93');
+    g.appendChild(hex);
+
+    g.addEventListener('mouseenter',()=>{
+      const svgRect=document.getElementById('usa-svg').getBoundingClientRect();
+      const wrapRect=wrap.getBoundingClientRect();
+      const sx=svgRect.width/960, sy=svgRect.height/600;
+      const px=cx*sx+(svgRect.left-wrapRect.left);
+      const py=cy*sy+(svgRect.top-wrapRect.top);
+      const igLink=a.instagram?`<a href="https://instagram.com/${a.instagram}" target="_blank" class="social-pill sp-ig" style="text-decoration:none">@${a.instagram}</a>`:'';
+      const fbLink=a.facebook?`<a href="${a.facebook.startsWith('http')?a.facebook:'https://'+a.facebook}" target="_blank" class="social-pill sp-fb" style="text-decoration:none">Facebook</a>`:'';
+      const ytLink=a.youtube?`<a href="${a.youtube.startsWith('http')?a.youtube:'https://'+a.youtube}" target="_blank" class="social-pill sp-yt" style="text-decoration:none">YouTube</a>`:'';
+      tooltip.innerHTML=`
+        <div class="tt-name">${a.first} ${a.last}</div>
+        <div class="tt-loc">${a.city}, ${a.state}</div>
+        ${a.bio?`<div class="tt-bio">${a.bio.length>90?a.bio.slice(0,90)+'…':a.bio}</div>`:''}
+        <div class="tt-social">${igLink}${fbLink}${ytLink}</div>`;
+      tooltip.style.display='block';
+      tooltip.style.left=Math.min(px+12,wrapRect.width-205)+'px';
+      tooltip.style.top=Math.max(py-100,8)+'px';
+    });
+    g.addEventListener('mouseleave',()=>tooltip.style.display='none');
+    g.addEventListener('click',()=>{ highlightedId=a.id; renderAffiliateList(); renderPins(); });
+    layer.appendChild(g);
+  });
+}
+
+// ── COLORS ──
+function applyColor(varName,value){ document.documentElement.style.setProperty(varName,value); }
+function setPreset(pin,hl){ document.getElementById('cp-pin').value=pin; document.getElementById('cp-hl').value=hl; applyColor('--pin-color',pin); applyColor('--pin-color-hl',hl); renderPins(); }
+function resetColors(){
+  const d={'--pin-color':'#20FDF0','--pin-color-hl':'#20FDF0','--name-text':'#e8e9ec','--loc-text':'#7a7f8e','--stat-num-text':'#e8e9ec','--ui-accent-text':'#20FDF0','--tooltip-name':'#e8e9ec','--accent':'#20FDF0'};
+  Object.entries(d).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
+  document.getElementById('cp-pin').value='#20FDF0';
+  document.getElementById('cp-hl').value='#20FDF0';
+  renderPins(); showToast('Colors reset!');
+}
+
+// ── MAP ──
+function drawStates() {
+  fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(r=>r.json()).then(us=>{
+    const proj=d3.geoAlbersUsa().scale(1280).translate([480,300]);
+    projectionFn=proj;
+    const path=d3.geoPath().projection(proj);
+    const states=topojson.feature(us,us.objects.states);
+    d3.select('#states-g').selectAll('path').data(states.features).enter().append('path').attr('d',path).attr('fill','#16181c').attr('stroke','#2a2d35').attr('stroke-width','0.8');
+    renderPins();
+  }).catch(()=>{
+    projectionFn=d3.geoAlbersUsa().scale(1280).translate([480,300]);
+    document.getElementById('states-g').innerHTML=`<rect x="60" y="80" width="840" height="440" rx="4" fill="#16181c" stroke="#2a2d35"/><text x="480" y="300" text-anchor="middle" font-size="14" fill="#3a3d47" font-family="Barlow,sans-serif">US Map</text>`;
+    renderPins();
+  });
+}
+
+// ── BACKUP ──
+function downloadBackup() {
+  const blob=new Blob([JSON.stringify({version:1,exported:new Date().toISOString(),affiliates},null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`hexcore-affiliates-backup-${new Date().toISOString().slice(0,10)}.json`; a.click();
+  URL.revokeObjectURL(url); showToast('Backup downloaded!');
+}
+function importBackup(event) {
+  const file=event.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try {
+      const data=JSON.parse(e.target.result);
+      if(data.affiliates&&Array.isArray(data.affiliates)){ affiliates=data.affiliates; nextId=Math.max(...affiliates.map(a=>a.id),0)+1; saveAffiliates(); renderPins(); updateStats(); showToast(`Restored ${affiliates.length} affiliates!`); }
+      else showToast('Invalid backup file',true);
+    } catch(e){ showToast('Error importing backup',true); }
+  };
+  reader.readAsText(file); event.target.value='';
+}
+function clearAllData(){
+  if(confirm('Delete all affiliate data? This cannot be undone.')){ affiliates=[]; nextId=1; saveAffiliates(); renderPins(); updateStats(); renderAffiliateList(); showToast('All data cleared'); }
+}
+
+// ── AFFILIATE CARD MODAL ──
+function normFb(url) { if(!url) return ''; return url.startsWith('http')?url:'https://'+url; }
+function normIg(h) { if(!h) return ''; const c=h.replace(/^@/,'').replace(/^https?:\/\/(www\.)?instagram\.com\//,''); return 'https://instagram.com/'+c; }
+function normYt(url) { if(!url) return ''; return url.startsWith('http')?url:'https://'+url; }
+
+function generateCardHtml(a) {
+  const igBtn = a.instagram ? `<a href="${normIg(a.instagram)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;background:rgba(225,48,108,.12);color:#f472b6;border:1px solid rgba(225,48,108,.25);text-decoration:none;font-size:13px;font-weight:600;font-family:sans-serif"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>@${a.instagram.replace(/^@/,'')}</a>` : '';
+  const fbBtn = a.facebook ? `<a href="${normFb(a.facebook)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;background:rgba(24,119,242,.12);color:#60a5fa;border:1px solid rgba(24,119,242,.25);text-decoration:none;font-size:13px;font-weight:600;font-family:sans-serif"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>Facebook</a>` : '';
+  const ytBtn = a.youtube ? `<a href="${normYt(a.youtube)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;background:rgba(255,0,0,.1);color:#f87171;border:1px solid rgba(255,0,0,.2);text-decoration:none;font-size:13px;font-weight:600;font-family:sans-serif"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>YouTube</a>` : '';
+
+  const initials = ((a.first||'').charAt(0)+(a.last||'').charAt(0)).toUpperCase();
+  const socialRow = [igBtn, fbBtn].filter(Boolean).join(' ');
+  const ytRow = ytBtn ? `<div style="margin-top:8px">${ytBtn}</div>` : '';
+
+  return `<!-- Hexcore Affiliate Card: ${a.first} ${a.last} -->
+<div style="background:#16181c;border:1px solid #2a2d35;border-radius:10px;padding:1.5rem;max-width:420px;font-family:sans-serif">
+  <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px">
+    <div style="width:44px;height:44px;border-radius:8px;background:#3a3d47;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:#20FDF0;flex-shrink:0;letter-spacing:.02em">${initials}</div>
+    <div>
+      <div style="font-size:17px;font-weight:700;color:#e8e9ec;letter-spacing:.02em;line-height:1.1">${a.first} ${a.last}</div>
+      <div style="font-size:11px;color:#7a7f8e;margin-top:3px">${a.city}, ${a.state}</div>
+    </div>
+  </div>
+  ${a.bio ? `<p style="font-size:13px;color:#7a7f8e;line-height:1.6;margin:0 0 14px">${a.bio}</p>` : ''}
+  ${socialRow ? `<div style="display:flex;flex-wrap:wrap;gap:8px">${socialRow}</div>` : ''}
+  ${ytRow}
+</div>`;
+}
+
+function showCardModal(a) {
+  const html = generateCardHtml(a);
+  document.getElementById('card-preview').innerHTML = html;
+  document.getElementById('card-html-output').value = html;
+  const result = document.getElementById('card-result');
+  result.style.display = 'block';
+  setTimeout(() => result.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+  document.getElementById('copy-card-btn').textContent = 'Copy HTML';
+}
+
+function copyCardHtml() {
+  const ta = document.getElementById('card-html-output');
+  ta.select();
+  document.execCommand('copy');
+  const btn = document.getElementById('copy-card-btn');
+  btn.textContent = '✓ Copied!';
+  setTimeout(()=>btn.textContent='Copy HTML', 2500);
+}
+
+// ── TOAST ──
+function showToast(msg,isError=false){
+  const t=document.getElementById('toast'); t.textContent=msg; t.style.background=isError?'#ef4444':'#16a34a'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ── PASSWORD ──
+const ADMIN_PASSWORD = 'hexcore2024';
+function checkPw(){
+  const val=document.getElementById('pw-input').value;
+  if(val===ADMIN_PASSWORD){ document.getElementById('gate').style.display='none'; }
+  else { document.getElementById('pw-err').style.display='block'; setTimeout(()=>{ document.getElementById('pw-err').style.display='none'; },2000); }
+}
+
+// ── EXPORT ──
+function exportPublicData() {
+  const data = affiliates.map(a=>({
+    g:a.id, a:btoa(a.first), b:btoa(a.last), c:btoa(a.city), d:btoa(a.state),
+    e:btoa(a.bio||''), f:btoa(a.instagram||''), h:btoa(a.facebook||''), k:btoa(a.youtube||''),
+    i:a.lat||null, j:a.lon||null
+  }));
+  const encoded = btoa(JSON.stringify(data));
+  const output = `const _d = "${encoded}";\n\nfunction _x(s){try{return atob(s)}catch(e){return s}}\nfunction _decode(raw){\n  try {\n    return JSON.parse(_x(raw)).map(r=>({\n      id:r.g, first:_x(r.a), last:_x(r.b),\n      city:_x(r.c), state:_x(r.d), bio:_x(r.e),\n      instagram:_x(r.f), facebook:_x(r.h), youtube:_x(r.k),\n      lat:r.i||null, lon:r.j||null\n    }));\n  } catch(e){ return []; }\n}\nconst AFFILIATES = _decode(_d);`;
+  document.getElementById('export-text').value = output;
+  document.getElementById('export-modal').style.display = 'flex';
+}
+function copyExport(){
+  const ta=document.getElementById('export-text'); ta.select(); document.execCommand('copy');
+  const btn=document.getElementById('copy-btn'); btn.textContent='✓ Copied!'; setTimeout(()=>btn.textContent='Copy to Clipboard',2500);
+}
+
+updateStats();
+renderTopAffiliates();
+drawStates();
+updateStorageInfo();
+</script>
+</body>
+</html>
