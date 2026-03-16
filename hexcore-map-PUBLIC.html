@@ -258,16 +258,20 @@
 
 <script>
 /* ============================================================
-   CUSTOMER DATA — paste updated data from your admin panel here
-   Format: { first, lastInitial, city, state, orders, source }
+   DATA — do not edit manually, use Export Public from admin
    ============================================================ */
-const CUSTOMERS = [
-  {id:1,first:"Jake",lastInitial:"M",city:"Miami",state:"Florida",orders:1,source:"instagram"},
-  {id:2,first:"Sarah",lastInitial:"T",city:"Dallas",state:"Texas",orders:1,source:"shopify"},
-  {id:3,first:"Mike",lastInitial:"R",city:"Denver",state:"Colorado",orders:1,source:"instagram"},
-  {id:4,first:"Lisa",lastInitial:"K",city:"Chicago",state:"Illinois",orders:1,source:"facebook"},
-  {id:5,first:"Tom",lastInitial:"W",city:"Seattle",state:"Washington",orders:1,source:"facebook"},
-];
+const _d = "W3siZyI6MSwiYSI6IlNtRnJaUT09IiwiYiI6IlRRPT0iLCJjIjoiVFdsaGJXaz0iLCJkIjoiUm14dmNtbGtZUT09IiwiZSI6MSwiZiI6ImFXNXpkR0ZuY21GdCJ9LHsiZyI6MiwiYSI6IlUyRnlZV2c9IiwiYiI6IlZBPT0iLCJjIjoiUkdGc2JHRnoiLCJkIjoiVkdWNFlYTT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09In0seyJnIjozLCJhIjoiVFdsclpRPT0iLCJiIjoiVWc9PSIsImMiOiJSR1Z1ZG1WeSIsImQiOiJRMjlzYjNKaFpHOD0iLCJlIjoxLCJmIjoiYVc1emRHRm5jbUZ0In0seyJnIjo0LCJhIjoiVEdsellRPT0iLCJiIjoiU3c9PSIsImMiOiJRMmhwWTJGbmJ3PT0iLCJkIjoiU1d4c2FXNXZhWE09IiwiZSI6MSwiZiI6IlptRmpaV0p2YjJzPSJ9LHsiZyI6NSwiYSI6IlZHOXQiLCJiIjoiVnc9PSIsImMiOiJVMlZoZEhSc1pRPT0iLCJkIjoiVjJGemFHbHVaM1J2Ymc9PSIsImUiOjEsImYiOiJabUZqWldKdmIycz0ifV0=";
+
+function _x(s){try{return atob(s)}catch(e){return s}}
+function _decode(raw){
+  try {
+    return JSON.parse(_x(raw)).map(r=>({
+      id:r.g, first:_x(r.a), lastInitial:_x(r.b),
+      city:_x(r.c), state:_x(r.d), orders:r.e, source:_x(r.f)
+    }));
+  } catch(e){ return []; }
+}
+const CUSTOMERS = _decode(_d);
 
 /* ============================================================
    APPEARANCE — tweak these to match your brand
