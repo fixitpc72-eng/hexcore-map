@@ -6,54 +6,74 @@
 <title>Hexcore Mounts — FAQ</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;
-    --text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;
-    --font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;
+  :root {
+    --black: #0a0a0a;
+    --dark: #111214;
+    --card: #16181c;
+    --border: #2a2d35;
+    --muted: #3a3d47;
+    --text: #e8e9ec;
+    --sub: #7a7f8e;
+    --accent: #20FDF0;
+    --font-head: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
   }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--black); color: var(--text); font-family: var(--font-body); min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
 
-  header{background:var(--dark);border-bottom:1px solid var(--border);border-left:1px solid var(--border);border-right:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;width:75%;}
-  .logo{font-family:var(--font-head);font-weight:900;font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);}
-  .logo span{color:var(--accent);}
-  .header-badge{background:var(--accent);color:#0a0a0a;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;}
+  header {
+    background: var(--dark);
+    border-bottom: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    width: 75%;
+  }
+  .logo { font-family: var(--font-head); font-weight: 900; font-size: 22px; letter-spacing: .04em; text-transform: uppercase; color: var(--text); }
+  .logo span { color: var(--accent); }
+  .header-badge { background: var(--accent); color: #0a0a0a; font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border-radius: 3px; }
 
-  .main{width:75%;padding:2.5rem 0;}
+  .layout { width: 75%; margin: 0 auto; padding: 2.5rem 0; }
 
-  .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem;}
-  .page-title{font-family:var(--font-head);font-size:28px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;}
-  .page-title span{color:var(--accent);}
-  .count-badge{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:rgba(32,253,240,.1);border:1px solid rgba(32,253,240,.25);border-radius:3px;padding:3px 10px;}
-  .pulse-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:10px;animation:pulse 2s infinite;vertical-align:middle;}
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.3);}}
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: .75rem; }
+  .page-title { font-family: var(--font-head); font-size: 28px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+  .page-title span { color: var(--accent); }
+  .count-badge { font-family: var(--font-head); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); background: rgba(32,253,240,.1); border: 1px solid rgba(32,253,240,.25); border-radius: 3px; padding: 3px 10px; margin-left: 12px; }
+  .pulse-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-right: 8px; animation: pulse 2s infinite; vertical-align: middle; }
+  @keyframes pulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.5; transform:scale(1.3); } }
 
-  .filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem;}
-  .filter-btn{padding:7px 14px;border-radius:4px;border:1px solid var(--border);background:var(--card);color:var(--sub);font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s;}
-  .filter-btn:hover{border-color:var(--muted);color:var(--text);}
-  .filter-btn.active{background:var(--accent);border-color:var(--accent);color:#0a0a0a;}
+  .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .filter-btn { padding: 7px 14px; border-radius: 4px; border: 1px solid var(--border); background: var(--card); color: var(--sub); font-family: var(--font-head); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; transition: all .15s; }
+  .filter-btn:hover { border-color: var(--muted); color: var(--text); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #0a0a0a; }
 
-  .cat-group{margin-bottom:2rem;}
-  .cat-group-header{display:flex;align-items:center;gap:12px;margin-bottom:.75rem;}
-  .cat-group-label{font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);white-space:nowrap;}
-  .cat-group-line{flex:1;height:1px;background:var(--border);}
-  .cat-group-count{font-family:var(--font-head);font-size:11px;font-weight:700;color:var(--sub);letter-spacing:.06em;white-space:nowrap;}
+  .cat-group { margin-bottom: 2rem; }
+  .cat-group-header { display: flex; align-items: center; gap: 12px; margin-bottom: .75rem; }
+  .cat-group-label { font-family: var(--font-head); font-size: 14px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
+  .cat-group-line { flex: 1; height: 1px; background: var(--border); }
+  .cat-group-count { font-family: var(--font-head); font-size: 11px; font-weight: 700; color: var(--sub); letter-spacing: .06em; white-space: nowrap; }
 
-  .faq-grid{display:grid;grid-template-columns:1fr;gap:8px;}
+  .faq-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .faq-grid.two-col { grid-template-columns: 1fr 1fr; }
 
-  .faq-item{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:border-color .2s;}
-  .faq-item:hover{border-color:var(--muted);}
-  .faq-item.open{border-color:rgba(32,253,240,.35);}
-  .faq-q{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;}
-  .faq-q-text{flex:1;font-family:var(--font-head);font-size:16px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text);}
-  .faq-a{display:none;padding:12px 16px 16px 50px;border-top:1px solid var(--border);font-size:14px;color:var(--sub);line-height:1.7;}
-  .faq-item.open .faq-a{display:block;}
+  .faq-item { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; transition: border-color .2s; }
+  .faq-item:hover { border-color: var(--muted); }
+  .faq-item.open { border-color: rgba(32,253,240,.35); }
+  .faq-q { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; user-select: none; }
+  .faq-q-text { flex: 1; font-family: var(--font-head); font-size: 16px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text); }
+  .faq-a { display: none; padding: 12px 16px 16px 50px; border-top: 1px solid var(--border); font-size: 14px; color: var(--sub); line-height: 1.7; }
+  .faq-item.open .faq-a { display: block; }
 
-  @media(max-width:900px){header,.main{width:92%;}}
-  @media(max-width:600px){
-    .page-title{font-size:22px;}
-    .faq-q-text{font-size:14px;}
-    .faq-a{padding-left:16px;}
+  @media (max-width: 900px) { header, .layout { width: 92%; } }
+  @media (max-width: 600px) {
+    .page-title { font-size: 22px; }
+    .faq-q-text { font-size: 14px; }
+    .faq-a { padding-left: 16px; }
+    .faq-grid.two-col { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -64,9 +84,9 @@
   <div class="header-badge">FAQ</div>
 </header>
 
-<div class="main">
+<div class="layout">
   <div class="page-header">
-    <div style="display:flex;align-items:center;gap:12px">
+    <div style="display:flex;align-items:center;">
       <div class="page-title"><span class="pulse-dot"></span>Frequently <span>Asked</span></div>
       <span class="count-badge" id="total-badge">—</span>
     </div>
@@ -77,9 +97,9 @@
 
 <script>
 /* ============================================================
-   DATA — copy the _d line from Export Public in the admin tool
+   DATA — do not edit manually, use Export Public from admin
    ============================================================ */
-const _d = "eyJjYXRzIjpbIkdlbmVyYWwiLCJTaGlwcGluZyIsIlJldHVybnMiLCJQYXltZW50cyIsIk9yZGVycyJdLCJmYXFzIjpbeyJpIjoxLCJxIjoiV2hhdCBwYXltZW50IG1ldGhvZHMgZG8geW91IGFjY2VwdD8=","YSI6Ildl..."}]}";
+const _d = "eyJjYXRzIjpbIkdlbmVyYWwiLCJTaGlwcGluZyIsIlJldHVybnMiLCJQYXltZW50cyIsIk9yZGVycyJdLCJmYXFzIjpbeyJpIjoxLCJxIjoiV2hhdCBwYXltZW50IG1ldGhvZHMgZG8geW91IGFjY2VwdD8iLCJhIjoiV2UgYWNjZXB0IGFsbCBtYWpvciBjcmVkaXQgY2FyZHMgKFZpc2EsIE1hc3RlcmNhcmQsIEFtZXgpLCBQYXlQYWwsIEFwcGxlIFBheSwgYW5kIEdvb2dsZSBQYXkuIEFsbCB0cmFuc2FjdGlvbnMgYXJlIHNlY3VyZWQgd2l0aCBTU0wgZW5jcnlwdGlvbi4iLCJjIjoiUGF5bWVudHMifSx7ImkiOjIsInEiOiJIb3cgbG9uZyBkb2VzIHNoaXBwaW5nIHRha2U/IiwiYSI6IlN0YW5kYXJkIHNoaXBwaW5nIHRha2VzIDXigJM3IGJ1c2luZXNzIGRheXMuIEV4cHJlc3Mgc2hpcHBpbmcgKDLigJMzIGRheXMpIGlzIGF2YWlsYWJsZSBhdCBjaGVja291dC4gRnJlZSBzdGFuZGFyZCBzaGlwcGluZyBvbiBvcmRlcnMgb3ZlciAkNzUuIiwiYyI6IlNoaXBwaW5nIn0seyJpIjozLCJxIjoiV2hhdCBpcyB5b3VyIHJldHVybiBwb2xpY3k/IiwiYSI6IldlIG9mZmVyIGEgMzAtZGF5IGhhc3NsZS1mcmVlIHJldHVybiBwb2xpY3kuIEl0ZW1zIG11c3QgYmUgdW51c2VkIGFuZCBpbiBvcmlnaW5hbCBwYWNrYWdpbmcuIENvbnRhY3Qgb3VyIHN1cHBvcnQgdGVhbSB0byBpbml0aWF0ZSBhIHJldHVybi4iLCJjIjoiUmV0dXJucyJ9LHsiaSI6NCwicSI6IkRvIHlvdSBzaGlwIGludGVybmF0aW9uYWxseT8iLCJhIjoiWWVzISBXZSBzaGlwIHRvIG92ZXIgNTAgY291bnRyaWVzIHdvcmxkd2lkZS4gSW50ZXJuYXRpb25hbCBzaGlwcGluZyB0aW1lcyB2YXJ5IGJldHdlZW4gN+KAkzIxIGJ1c2luZXNzIGRheXMgZGVwZW5kaW5nIG9uIHlvdXIgbG9jYXRpb24uIiwiYyI6IlNoaXBwaW5nIn0seyJpIjo1LCJxIjoiSG93IGNhbiBJIHRyYWNrIG15IG9yZGVyPyIsImEiOiJPbmNlIHlvdXIgb3JkZXIgc2hpcHMgeW91J2xsIHJlY2VpdmUgYSBjb25maXJtYXRpb24gZW1haWwgd2l0aCBhIHRyYWNraW5nIGxpbmsuIFlvdSBjYW4gYWxzbyB0cmFjayBmcm9tIHlvdXIgYWNjb3VudCBkYXNoYm9hcmQuIiwiYyI6Ik9yZGVycyJ9LHsiaSI6NiwicSI6IkNhbiBJIGNoYW5nZSBvciBjYW5jZWwgbXkgb3JkZXI/IiwiYSI6Ik9yZGVycyBjYW4gYmUgbW9kaWZpZWQgb3IgY2FuY2VsbGVkIHdpdGhpbiAxIGhvdXIgb2YgcGxhY2VtZW50LiBBZnRlciB0aGF0IHRoZXkgZW50ZXIgZnVsZmlsbG1lbnQuIFBsZWFzZSBjb250YWN0IHN1cHBvcnQgaW1tZWRpYXRlbHkuIiwiYyI6Ik9yZGVycyJ9XX0=";
 
 /* ============================================================
    DECODE
@@ -88,29 +108,18 @@ function _x(s){try{return decodeURIComponent(escape(atob(s)));}catch(e){return s
 function _decode(raw){
   try{
     const d=JSON.parse(atob(raw));
-    return {
-      cats:d.cats||[],
-      faqs:d.faqs.map(r=>({id:r.i,q:_x(r.q),a:_x(r.a),cat:_x(r.c),open:false}))
-    };
-  }catch(e){return {cats:[],faqs:[]};}
+    return{cats:d.cats||[],faqs:d.faqs.map(r=>({id:r.i,q:_x(r.q),a:_x(r.a),cat:_x(r.c),open:false}))};
+  }catch(e){return{cats:[],faqs:[]};}
 }
 
+const DATA   = _decode(_d);
+const CATS   = DATA.cats;
+const FAQS   = DATA.faqs;
+let activeFilter = 'All';
+
 /* ============================================================
-   INIT
+   RENDER
    ============================================================ */
-const decoded = _decode(_d);
-const CATS = decoded.cats;
-const FAQS = decoded.faqs.length ? decoded.faqs : [
-  {id:1,q:"What payment methods do you accept?",a:"We accept all major credit cards (Visa, Mastercard, Amex), PayPal, Apple Pay, and Google Pay. All transactions are secured with SSL encryption.",cat:"Payments",open:false},
-  {id:2,q:"How long does shipping take?",a:"Standard shipping takes 5–7 business days. Express shipping (2–3 days) is available at checkout. Free standard shipping on orders over $75.",cat:"Shipping",open:false},
-  {id:3,q:"What is your return policy?",a:"We offer a 30-day hassle-free return policy. Items must be unused and in original packaging. Contact our support team to initiate a return.",cat:"Returns",open:false},
-  {id:4,q:"Do you ship internationally?",a:"Yes! We ship to over 50 countries worldwide. International shipping times vary between 7–21 business days depending on your location.",cat:"Shipping",open:false},
-  {id:5,q:"How can I track my order?",a:"Once your order ships you'll receive a confirmation email with a tracking link. You can also track from your account dashboard.",cat:"Orders",open:false},
-  {id:6,q:"Can I change or cancel my order?",a:"Orders can be modified or cancelled within 1 hour of placement. After that they enter fulfillment. Please contact support immediately.",cat:"Orders",open:false},
-];
-
-let activeFilter='All';
-
 function hexSVG(open){
   const fill=open?'#20FDF0':'#3a3d47';
   const cs=open?'#0a0a0a':'#e8e9ec';
@@ -122,29 +131,26 @@ function hexSVG(open){
 }
 
 function toggleFaq(id){
-  const f=FAQS.find(f=>f.id===id);if(!f)return;
-  f.open=!f.open;render();
+  const f=FAQS.find(f=>f.id===id);
+  if(f){f.open=!f.open;render();}
 }
 
 function renderFilters(){
-  const usedCats=CATS.length?CATS.filter(c=>FAQS.some(f=>f.cat===c)):[...new Set(FAQS.map(f=>f.cat))];
-  const all=['All',...usedCats];
-  document.getElementById('filter-bar').innerHTML=all.map(c=>
+  const usedCats=CATS.filter(c=>FAQS.some(f=>f.cat===c));
+  document.getElementById('filter-bar').innerHTML=['All',...usedCats].map(c=>
     `<button class="filter-btn${c===activeFilter?' active':''}" onclick="activeFilter='${c}';render()">${c}</button>`).join('');
 }
 
 function render(){
   renderFilters();
-  let list=FAQS;
-  if(activeFilter!=='All')list=list.filter(f=>f.cat===activeFilter);
+  const list=activeFilter==='All'?FAQS:FAQS.filter(f=>f.cat===activeFilter);
   document.getElementById('total-badge').textContent=list.length+' question'+(list.length!==1?'s':'');
-
-  const cats=CATS.length?CATS.filter(c=>list.some(f=>f.cat===c)):[...new Set(list.map(f=>f.cat))];
   const el=document.getElementById('faq-content');
 
   if(activeFilter==='All'){
-    el.innerHTML=cats.map(cat=>{
-      const items=list.filter(f=>f.cat===cat);
+    const usedCats=CATS.filter(c=>FAQS.some(f=>f.cat===c));
+    el.innerHTML=usedCats.map(cat=>{
+      const items=FAQS.filter(f=>f.cat===cat);
       if(!items.length)return '';
       return `<div class="cat-group">
         <div class="cat-group-header">
@@ -153,7 +159,7 @@ function render(){
           <span class="cat-group-count">${items.length} FAQ${items.length!==1?'s':''}</span>
         </div>
         <div class="faq-grid">${items.map(f=>`
-          <div class="faq-item${f.open?' open':''}" id="fi-${f.id}">
+          <div class="faq-item${f.open?' open':''}">
             <div class="faq-q" onclick="toggleFaq(${f.id})">${hexSVG(f.open)}<span class="faq-q-text">${f.q}</span></div>
             <div class="faq-a">${f.a}</div>
           </div>`).join('')}
@@ -162,7 +168,7 @@ function render(){
     }).join('');
   } else {
     el.innerHTML=`<div class="faq-grid">${list.map(f=>`
-      <div class="faq-item${f.open?' open':''}" id="fi-${f.id}">
+      <div class="faq-item${f.open?' open':''}">
         <div class="faq-q" onclick="toggleFaq(${f.id})">${hexSVG(f.open)}<span class="faq-q-text">${f.q}</span></div>
         <div class="faq-a">${f.a}</div>
       </div>`).join('')}</div>`;
