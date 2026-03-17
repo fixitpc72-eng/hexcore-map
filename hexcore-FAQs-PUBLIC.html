@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hexcore Mounts — FAQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;
+    --text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;
+    --font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+
+  header{background:var(--dark);border-bottom:1px solid var(--border);border-left:1px solid var(--border);border-right:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;width:75%;}
+  .logo{font-family:var(--font-head);font-weight:900;font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);}
+  .logo span{color:var(--accent);}
+  .header-badge{background:var(--accent);color:#0a0a0a;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;}
+
+  .main{width:75%;padding:2.5rem 0;}
+
+  .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem;}
+  .page-title{font-family:var(--font-head);font-size:28px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;}
+  .page-title span{color:var(--accent);}
+  .count-badge{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:rgba(32,253,240,.1);border:1px solid rgba(32,253,240,.25);border-radius:3px;padding:3px 10px;}
+  .pulse-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:10px;animation:pulse 2s infinite;vertical-align:middle;}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.3);}}
+
+  .filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem;}
+  .filter-btn{padding:7px 14px;border-radius:4px;border:1px solid var(--border);background:var(--card);color:var(--sub);font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s;}
+  .filter-btn:hover{border-color:var(--muted);color:var(--text);}
+  .filter-btn.active{background:var(--accent);border-color:var(--accent);color:#0a0a0a;}
+
+  .cat-group{margin-bottom:2rem;}
+  .cat-group-header{display:flex;align-items:center;gap:12px;margin-bottom:.75rem;}
+  .cat-group-label{font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);white-space:nowrap;}
+  .cat-group-line{flex:1;height:1px;background:var(--border);}
+  .cat-group-count{font-family:var(--font-head);font-size:11px;font-weight:700;color:var(--sub);letter-spacing:.06em;white-space:nowrap;}
+
+  .faq-grid{display:grid;grid-template-columns:1fr;gap:8px;}
+
+  .faq-item{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:border-color .2s;}
+  .faq-item:hover{border-color:var(--muted);}
+  .faq-item.open{border-color:rgba(32,253,240,.35);}
+  .faq-q{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;}
+  .faq-q-text{flex:1;font-family:var(--font-head);font-size:16px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text);}
+  .faq-a{display:none;padding:12px 16px 16px 50px;border-top:1px solid var(--border);font-size:14px;color:var(--sub);line-height:1.7;}
+  .faq-item.open .faq-a{display:block;}
+
+  @media(max-width:900px){header,.main{width:92%;}}
+  @media(max-width:600px){
+    .page-title{font-size:22px;}
+    .faq-q-text{font-size:14px;}
+    .faq-a{padding-left:16px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Hexcore <span>Mounts</span></div>
+  <div class="header-badge">FAQ</div>
+</header>
+
+<div class="main">
+  <div class="page-header">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="page-title"><span class="pulse-dot"></span>Frequently <span>Asked</span></div>
+      <span class="count-badge" id="total-badge">—</span>
+    </div>
+  </div>
+  <div class="filter-bar" id="filter-bar"></div>
+  <div id="faq-content"></div>
+</div>
+
+<script>
+/* ============================================================
+   DATA — copy the _d line from Export Public in the admin tool
+   ============================================================ */
+const _d = "eyJjYXRzIjpbIkdlbmVyYWwiLCJTaGlwcGluZyIsIlJldHVybnMiLCJQYXltZW50cyIsIk9yZGVycyJdLCJmYXFzIjpbeyJpIjoxLCJxIjoiV2hhdCBwYXltZW50IG1ldGhvZHMgZG8geW91IGFjY2VwdD8=","YSI6Ildl..."}]}";
+
+/* ============================================================
+   DECODE
+   ============================================================ */
+function _x(s){try{return decodeURIComponent(escape(atob(s)));}catch(e){return s;}}
+function _decode(raw){
+  try{
+    const d=JSON.parse(atob(raw));
+    return {
+      cats:d.cats||[],
+      faqs:d.faqs.map(r=>({id:r.i,q:_x(r.q),a:_x(r.a),cat:_x(r.c),open:false}))
+    };
+  }catch(e){return {cats:[],faqs:[]};}
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+const decoded = _decode(_d);
+const CATS = decoded.cats;
+const FAQS = decoded.faqs.length ? decoded.faqs : [
+  {id:1,q:"What payment methods do you accept?",a:"We accept all major credit cards (Visa, Mastercard, Amex), PayPal, Apple Pay, and Google Pay. All transactions are secured with SSL encryption.",cat:"Payments",open:false},
+  {id:2,q:"How long does shipping take?",a:"Standard shipping takes 5–7 business days. Express shipping (2–3 days) is available at checkout. Free standard shipping on orders over $75.",cat:"Shipping",open:false},
+  {id:3,q:"What is your return policy?",a:"We offer a 30-day hassle-free return policy. Items must be unused and in original packaging. Contact our support team to initiate a return.",cat:"Returns",open:false},
+  {id:4,q:"Do you ship internationally?",a:"Yes! We ship to over 50 countries worldwide. International shipping times vary between 7–21 business days depending on your location.",cat:"Shipping",open:false},
+  {id:5,q:"How can I track my order?",a:"Once your order ships you'll receive a confirmation email with a tracking link. You can also track from your account dashboard.",cat:"Orders",open:false},
+  {id:6,q:"Can I change or cancel my order?",a:"Orders can be modified or cancelled within 1 hour of placement. After that they enter fulfillment. Please contact support immediately.",cat:"Orders",open:false},
+];
+
+let activeFilter='All';
+
+function hexSVG(open){
+  const fill=open?'#20FDF0':'#3a3d47';
+  const cs=open?'#0a0a0a':'#e8e9ec';
+  const p1=open?12:10,p2=open?8:14,p3=open?12:10;
+  return `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" style="flex-shrink:0">
+    <polygon points="11,1 20,6 20,16 11,21 2,16 2,6" fill="${fill}"/>
+    <polyline points="7.5,${p1} 11,${p2} 14.5,${p3}" fill="none" stroke="${cs}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+}
+
+function toggleFaq(id){
+  const f=FAQS.find(f=>f.id===id);if(!f)return;
+  f.open=!f.open;render();
+}
+
+function renderFilters(){
+  const usedCats=CATS.length?CATS.filter(c=>FAQS.some(f=>f.cat===c)):[...new Set(FAQS.map(f=>f.cat))];
+  const all=['All',...usedCats];
+  document.getElementById('filter-bar').innerHTML=all.map(c=>
+    `<button class="filter-btn${c===activeFilter?' active':''}" onclick="activeFilter='${c}';render()">${c}</button>`).join('');
+}
+
+function render(){
+  renderFilters();
+  let list=FAQS;
+  if(activeFilter!=='All')list=list.filter(f=>f.cat===activeFilter);
+  document.getElementById('total-badge').textContent=list.length+' question'+(list.length!==1?'s':'');
+
+  const cats=CATS.length?CATS.filter(c=>list.some(f=>f.cat===c)):[...new Set(list.map(f=>f.cat))];
+  const el=document.getElementById('faq-content');
+
+  if(activeFilter==='All'){
+    el.innerHTML=cats.map(cat=>{
+      const items=list.filter(f=>f.cat===cat);
+      if(!items.length)return '';
+      return `<div class="cat-group">
+        <div class="cat-group-header">
+          <span class="cat-group-label">${cat}</span>
+          <div class="cat-group-line"></div>
+          <span class="cat-group-count">${items.length} FAQ${items.length!==1?'s':''}</span>
+        </div>
+        <div class="faq-grid">${items.map(f=>`
+          <div class="faq-item${f.open?' open':''}" id="fi-${f.id}">
+            <div class="faq-q" onclick="toggleFaq(${f.id})">${hexSVG(f.open)}<span class="faq-q-text">${f.q}</span></div>
+            <div class="faq-a">${f.a}</div>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    }).join('');
+  } else {
+    el.innerHTML=`<div class="faq-grid">${list.map(f=>`
+      <div class="faq-item${f.open?' open':''}" id="fi-${f.id}">
+        <div class="faq-q" onclick="toggleFaq(${f.id})">${hexSVG(f.open)}<span class="faq-q-text">${f.q}</span></div>
+        <div class="faq-a">${f.a}</div>
+      </div>`).join('')}</div>`;
+  }
+}
+
+render();
+</script>
+</body>
+</html>

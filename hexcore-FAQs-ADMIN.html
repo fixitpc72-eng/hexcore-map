@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hexcore Mounts — FAQ Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;--text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#16a34a;--font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;}
+header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.logo{font-family:var(--font-head);font-weight:900;font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);}
+.logo span{color:var(--accent);}
+.header-badge{background:var(--accent);color:#0a0a0a;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;}
+.layout{display:grid;grid-template-columns:320px 1fr;height:calc(100vh - 60px);}
+.sidebar{background:var(--dark);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.sidebar-tabs{display:flex;border-bottom:1px solid var(--border);}
+.stab{flex:1;padding:13px 4px;text-align:center;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--sub);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;}
+.stab:hover{color:var(--text);}.stab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.sidebar-content{flex:1;overflow-y:auto;padding:1.25rem;scrollbar-width:thin;scrollbar-color:var(--muted) transparent;}
+.panel{display:none;}.panel.active{display:block;}
+.section-label{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.6rem;}
+.form-row{margin-bottom:.75rem;}
+.form-row label{display:block;font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.form-row input,.form-row textarea,.form-row select{width:100%;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:9px 12px;color:var(--text);font-family:var(--font-body);font-size:13px;outline:none;transition:border-color .15s;}
+.form-row input:focus,.form-row textarea:focus,.form-row select:focus{border-color:var(--accent);}
+.form-row textarea{resize:vertical;min-height:80px;}
+.form-row select option{background:var(--card);}
+.submit-btn{width:100%;padding:11px;background:var(--accent);border:none;border-radius:5px;color:#0a0a0a;font-family:var(--font-head);font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:opacity .15s;margin-top:.5rem;}
+.submit-btn:hover{opacity:.85;}
+.submit-btn.secondary{background:transparent;border:1px solid var(--border);color:var(--sub);margin-top:.5rem;}
+.submit-btn.secondary:hover{border-color:var(--accent);color:var(--accent);}
+.submit-btn.danger{background:transparent;border:1px solid #ef4444;color:#ef4444;margin-top:.5rem;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.25rem;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px 14px;}
+.stat-card.full{grid-column:span 2;}
+.stat-num{font-family:var(--font-head);font-size:28px;font-weight:900;color:var(--text);line-height:1;}
+.stat-num.accent{color:var(--accent);}
+.stat-label{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;margin-top:4px;}
+.cat-btn{padding:6px 12px;border-radius:4px;border:1px solid var(--border);background:var(--card);color:var(--sub);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:all .15s;}
+.cat-btn.active{background:var(--accent);border-color:var(--accent);color:#0a0a0a;}
+.search-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:8px 12px;color:var(--text);font-size:13px;outline:none;margin-bottom:.75rem;font-family:var(--font-body);}
+.search-input:focus{border-color:var(--accent);}
+.faq-list-item{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:8px;transition:border-color .15s;}
+.faq-list-item:hover{border-color:var(--muted);}
+.fli-q{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fli-cat{display:inline-block;padding:2px 6px;border-radius:3px;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;background:rgba(32,253,240,.1);color:var(--accent);border:1px solid rgba(32,253,240,.2);}
+.fli-actions{display:flex;gap:4px;margin-top:6px;}
+.mini-btn{padding:3px 8px;border-radius:3px;border:1px solid var(--border);background:none;color:var(--sub);font-size:10px;font-family:var(--font-head);font-weight:600;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;transition:all .15s;}
+.mini-btn:hover{border-color:var(--accent);color:var(--accent);}
+.mini-btn.del:hover{border-color:#ef4444;color:#ef4444;}
+.save-status{font-size:11px;color:var(--sub);margin-top:.5rem;display:flex;align-items:center;gap:6px;}
+.save-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;}
+.shopify-box{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:1rem;margin-bottom:1rem;}
+.shopify-step{display:flex;gap:8px;align-items:flex-start;margin-bottom:.6rem;}
+.step-num{background:var(--accent);color:#0a0a0a;font-family:var(--font-head);font-size:11px;font-weight:700;width:20px;height:20px;border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.step-text{font-size:12px;color:var(--sub);line-height:1.5;}
+.step-text code{background:var(--muted);color:var(--text);padding:1px 5px;border-radius:3px;font-size:11px;font-family:monospace;}
+.main-area{background:var(--black);overflow-y:auto;padding:2rem;}
+.main-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem;}
+.main-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.faq-view-title{font-family:var(--font-head);font-size:22px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;}
+.faq-view-title span{color:var(--accent);}
+.count-badge{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:rgba(32,253,240,.1);border:1px solid rgba(32,253,240,.25);border-radius:3px;padding:3px 10px;}
+.main-right{display:flex;align-items:center;gap:8px;}
+.icon-toggle{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:6px 12px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;}
+.icon-toggle:hover{border-color:var(--accent);color:var(--accent);}
+.icon-toggle.on{border-color:var(--accent);color:var(--accent);background:rgba(32,253,240,.08);}
+.view-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem;}
+.cat-group{margin-bottom:2rem;}
+.cat-group-header{display:flex;align-items:center;gap:12px;margin-bottom:.75rem;}
+.cat-group-label{font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);}
+.cat-group-line{flex:1;height:1px;background:var(--border);}
+.cat-group-count{font-family:var(--font-head);font-size:11px;font-weight:700;color:var(--sub);letter-spacing:.06em;}
+.faq-grid{display:grid;grid-template-columns:1fr;gap:8px;}
+.faq-grid.two-col{grid-template-columns:1fr 1fr;}
+.faq-card{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:border-color .2s;}
+.faq-card:hover{border-color:var(--muted);}
+.faq-card.open{border-color:rgba(32,253,240,.35);}
+.faq-card-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;}
+.faq-card-q{flex:1;font-family:var(--font-head);font-size:16px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text);}
+.faq-card-actions{display:flex;gap:5px;opacity:0;transition:opacity .15s;}
+.faq-card:hover .faq-card-actions{opacity:1;}
+.card-act-btn{width:26px;height:26px;border-radius:4px;border:1px solid var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.card-act-btn svg{width:12px;height:12px;stroke:var(--sub);}
+.card-act-btn:hover{border-color:var(--accent);}
+.card-act-btn:hover svg{stroke:var(--accent);}
+.card-act-btn.del:hover{border-color:#ef4444;}
+.card-act-btn.del:hover svg{stroke:#ef4444;}
+.faq-card-body{display:none;padding:0 16px 16px 50px;border-top:1px solid var(--border);}
+.faq-card.open .faq-card-body{display:block;}
+.faq-card-a{font-size:14px;color:var(--sub);line-height:1.7;padding-top:12px;}
+.edit-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;align-items:center;justify-content:center;}
+.edit-overlay.show{display:flex;}
+.edit-modal{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:1.5rem;width:560px;max-width:95vw;display:flex;flex-direction:column;gap:1rem;}
+.pulse-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:8px;animation:pulse 2s infinite;vertical-align:middle;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.3);}}
+.toast{position:fixed;bottom:2rem;right:2rem;color:white;font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:10px 18px;border-radius:5px;z-index:400;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+.empty-state{text-align:center;padding:3rem 0;color:var(--sub);font-size:13px;}
+.divider{border:none;border-top:1px solid var(--border);margin:1rem 0;}
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="gate" style="position:fixed;inset:0;background:#0a0a0a;display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:1rem">
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;color:#e8e9ec;letter-spacing:.06em">Hexcore <span style="color:#20FDF0">Mounts</span></div>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7a7f8e;margin-bottom:.5rem">FAQ Admin</div>
+  <input id="pw-input" type="password" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')checkPw()"
+    style="background:#16181c;border:1px solid #2a2d35;border-radius:5px;padding:10px 16px;color:#e8e9ec;font-family:'Barlow',sans-serif;font-size:14px;outline:none;width:260px;text-align:center"/>
+  <button onclick="checkPw()" style="background:#20FDF0;border:none;border-radius:5px;color:#0a0a0a;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:10px 28px;cursor:pointer;width:260px">Unlock</button>
+  <div id="pw-err" style="font-size:12px;color:#20FDF0;display:none">Incorrect password</div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="edit-overlay" id="edit-overlay">
+  <div class="edit-modal">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-family:var(--font-head);font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text)">Edit FAQ</span>
+      <button onclick="closeEdit()" style="background:none;border:none;color:var(--sub);font-size:22px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <div class="form-row"><label>Category</label><select id="e-cat"></select></div>
+    <div class="form-row"><label>Question</label><input id="e-q"/></div>
+    <div class="form-row"><label>Answer</label><textarea id="e-a" style="min-height:100px"></textarea></div>
+    <div style="display:flex;gap:8px">
+      <button class="submit-btn" style="margin-top:0" onclick="saveEdit()">Save Changes</button>
+      <button class="submit-btn secondary" style="margin-top:0;width:auto;padding:11px 20px" onclick="closeEdit()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPORT MODAL -->
+<div id="export-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;display:none;align-items:center;justify-content:center">
+  <div style="background:#16181c;border:1px solid #2a2d35;border-radius:8px;padding:1.5rem;width:620px;max-width:95vw;display:flex;flex-direction:column;gap:1rem">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#e8e9ec">Export Public Data</span>
+      <button onclick="document.getElementById('export-modal').style.display='none'" style="background:none;border:none;color:#7a7f8e;font-size:22px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <p style="font-size:12px;color:#7a7f8e;line-height:1.6">Copy this encoded data string and replace the <code style="background:#2a2d35;padding:1px 5px;border-radius:3px;font-size:11px">const _d =</code> line in your <strong style="color:#e8e9ec">hexcorefaqPUBLIC.html</strong> file. FAQ data is encoded so it is not readable in browser inspect tools.</p>
+    <textarea id="export-text" readonly style="background:#0a0a0a;border:1px solid #2a2d35;border-radius:5px;padding:10px;color:#e8e9ec;font-family:monospace;font-size:11px;height:120px;outline:none;resize:none;width:100%"></textarea>
+    <button onclick="copyExport()" id="copy-btn" style="background:#20FDF0;border:none;border-radius:5px;color:#0a0a0a;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:10px;cursor:pointer">Copy to Clipboard</button>
+  </div>
+</div>
+
+<header>
+  <div class="logo">Hexcore <span>Mounts</span></div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span style="font-size:12px;color:var(--sub)" id="last-save">—</span>
+    <button onclick="openExport()" style="background:transparent;border:1px solid var(--border);border-radius:5px;color:var(--sub);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;cursor:pointer" onmouseover="this.style.borderColor='#20FDF0';this.style.color='#20FDF0'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--sub)'">&#8599; Export Public</button>
+    <div class="header-badge">Admin</div>
+  </div>
+</header>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-tabs">
+      <button class="stab active" onclick="switchTab('stats',this)">Stats</button>
+      <button class="stab" onclick="switchTab('add',this)">Add</button>
+      <button class="stab" onclick="switchTab('cats',this)">Cats</button>
+      <button class="stab" onclick="switchTab('list',this)">List</button>
+      <button class="stab" onclick="switchTab('backup',this)">Backup</button>
+    </div>
+    <div class="sidebar-content">
+
+      <!-- STATS -->
+      <div id="tab-stats" class="panel active">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-num accent" id="s-total">0</div><div class="stat-label">Total FAQs</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-cats">0</div><div class="stat-label">Categories</div></div>
+          <div class="stat-card full"><div class="stat-num" id="s-top-cat" style="font-size:18px">—</div><div class="stat-label">Largest Category</div></div>
+        </div>
+        <div class="section-label">By category</div>
+        <div id="cat-breakdown"></div>
+      </div>
+
+      <!-- ADD -->
+      <div id="tab-add" class="panel">
+        <div class="section-label">Category</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem" id="cat-picker"></div>
+        <div class="form-row"><label>Question</label><input id="f-q" placeholder="What is your return policy?"/></div>
+        <div class="form-row"><label>Answer</label><textarea id="f-a" placeholder="We offer a 30-day return policy..."></textarea></div>
+        <button class="submit-btn" onclick="addFaq()">Add to FAQ</button>
+        <div class="save-status" id="save-status"></div>
+      </div>
+
+      <!-- CATEGORIES -->
+      <div id="tab-cats" class="panel">
+        <div class="section-label">Manage Categories</div>
+        <p style="font-size:12px;color:var(--sub);line-height:1.5;margin-bottom:1rem">Removing a category moves its FAQs to the first available category.</p>
+        <div id="cat-manager"></div>
+        <div class="divider"></div>
+        <div class="section-label">Add New Category</div>
+        <div class="form-row"><label>Name</label><input id="new-cat-input" placeholder="e.g. Warranty" onkeydown="if(event.key==='Enter')addCategory()"/></div>
+        <button class="submit-btn" onclick="addCategory()">Add Category</button>
+      </div>
+
+      <!-- LIST -->
+      <div id="tab-list" class="panel">
+        <input class="search-input" id="list-search" placeholder="Search questions..." oninput="renderList(this.value)"/>
+        <div id="faq-list-sidebar"></div>
+      </div>
+
+      <!-- BACKUP -->
+      <div id="tab-backup" class="panel">
+        <div class="section-label">Data Management</div>
+        <p style="font-size:12px;color:var(--sub);margin-bottom:1rem;line-height:1.5">Data saves automatically to this browser. Download backups regularly.</p>
+        <button class="submit-btn" onclick="downloadBackup()">&#8595; Download Backup</button>
+        <input type="file" id="backup-file" accept=".json" style="display:none" onchange="importBackup(event)"/>
+        <button class="submit-btn secondary" onclick="document.getElementById('backup-file').click()">&#8593; Upload Backup</button>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:5px;padding:10px 12px;font-size:12px;color:var(--sub);line-height:1.8;margin-top:1rem">
+          <div><strong style="color:var(--text)">Total FAQs:</strong> <span id="storage-count">0</span></div>
+          <div><strong style="color:var(--text)">Storage Used:</strong> <span id="storage-size">0 KB</span></div>
+          <div><strong style="color:var(--text)">Last Updated:</strong> <span id="storage-date">Never</span></div>
+        </div>
+        <button class="submit-btn danger" onclick="clearAllData()">&#128465; Clear All Data</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MAIN PREVIEW -->
+  <div class="main-area">
+    <div class="main-toolbar">
+      <div class="main-left">
+        <div class="faq-view-title"><span class="pulse-dot"></span>Frequently <span>Asked</span></div>
+        <span class="count-badge" id="view-count">0 items</span>
+      </div>
+      <div class="main-right">
+        <button class="icon-toggle on" id="toggle-group" onclick="toggleGrouping()">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="11" height="3" rx="1"/><rect x="1" y="6" width="7" height="3" rx="1"/></svg>
+          Group by Cat
+        </button>
+        <button class="icon-toggle" id="toggle-cols" onclick="toggleColumns()">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="4.5" height="11" rx="1"/><rect x="7.5" y="1" width="4.5" height="11" rx="1"/></svg>
+          2 Columns
+        </button>
+      </div>
+    </div>
+    <div class="view-filters" id="view-filters"></div>
+    <div id="faq-preview"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   STORAGE
+   ============================================================ */
+const STORAGE_KEY='hexcore_faqs';
+const CAT_KEY='hexcore_faq_cats';
+const ADMIN_PASSWORD='420'; // change this
+
+const DEFAULT_CATS=['General','Shipping','Returns','Payments','Orders'];
+const DEFAULT_FAQS=[
+  {id:1,q:"What payment methods do you accept?",a:"We accept all major credit cards (Visa, Mastercard, Amex), PayPal, Apple Pay, and Google Pay. All transactions are secured with SSL encryption.",cat:"Payments",open:false},
+  {id:2,q:"How long does shipping take?",a:"Standard shipping takes 5–7 business days. Express shipping (2–3 days) is available at checkout. Free standard shipping on orders over $75.",cat:"Shipping",open:false},
+  {id:3,q:"What is your return policy?",a:"We offer a 30-day hassle-free return policy. Items must be unused and in original packaging. Contact our support team to initiate a return.",cat:"Returns",open:false},
+  {id:4,q:"Do you ship internationally?",a:"Yes! We ship to over 50 countries worldwide. International shipping times vary between 7–21 business days depending on your location.",cat:"Shipping",open:false},
+  {id:5,q:"How can I track my order?",a:"Once your order ships you'll receive a confirmation email with a tracking link. You can also track from your account dashboard.",cat:"Orders",open:false},
+  {id:6,q:"Can I change or cancel my order?",a:"Orders can be modified or cancelled within 1 hour of placement. After that they enter fulfillment. Please contact support immediately.",cat:"Orders",open:false},
+];
+
+function loadFaqs(){try{const s=localStorage.getItem(STORAGE_KEY);if(s)return JSON.parse(s);}catch(e){}return DEFAULT_FAQS;}
+function loadCats(){try{const s=localStorage.getItem(CAT_KEY);if(s)return JSON.parse(s);}catch(e){}return DEFAULT_CATS;}
+function saveFaqs(){
+  try{
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(faqs));
+    localStorage.setItem(CAT_KEY,JSON.stringify(categories));
+    updateStorageInfo();showSaveStatus();
+    document.getElementById('last-save').textContent='Saved '+new Date().toLocaleTimeString();
+  }catch(e){showToast('Error saving',true);}
+}
+
+let faqs=loadFaqs();
+let categories=loadCats();
+let nextId=Math.max(0,...faqs.map(f=>f.id))+1;
+let activeCat=categories[0]||'General';
+let viewFilter='All';
+let groupByCat=true;
+let twoCol=false;
+let editingId=null;
+
+/* ============================================================
+   PASSWORD
+   ============================================================ */
+function checkPw(){
+  if(document.getElementById('pw-input').value===ADMIN_PASSWORD){
+    document.getElementById('gate').style.display='none';
+  } else {
+    document.getElementById('pw-err').style.display='block';
+    document.getElementById('pw-input').style.borderColor='#20FDF0';
+    setTimeout(()=>{document.getElementById('pw-err').style.display='none';document.getElementById('pw-input').style.borderColor='#2a2d35';},2000);
+  }
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+function switchTab(name,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='stats')renderStats();
+  if(name==='add')buildCatPicker();
+  if(name==='cats')renderCatManager();
+  if(name==='list')renderList('');
+  if(name==='backup')updateStorageInfo();
+}
+
+/* ============================================================
+   CATEGORIES
+   ============================================================ */
+function buildCatPicker(){
+  document.getElementById('cat-picker').innerHTML=categories.map(c=>
+    `<button class="cat-btn${c===activeCat?' active':''}" onclick="activeCat='${c}';buildCatPicker()">${c}</button>`).join('');
+}
+function addCategory(){
+  const val=document.getElementById('new-cat-input').value.trim();
+  if(!val)return;
+  if(categories.includes(val)){showToast('Already exists',true);return;}
+  categories.push(val);saveFaqs();renderCatManager();buildCatPicker();renderAll();
+  document.getElementById('new-cat-input').value='';showToast('"'+val+'" added!');
+}
+function deleteCategory(cat){
+  if(categories.length<=1){showToast('Must have at least one category',true);return;}
+  if(!confirm('Delete "'+cat+'"? Its FAQs will move to "'+categories.filter(c=>c!==cat)[0]+'".\n\nThis cannot be undone.'))return;
+  const fallback=categories.filter(c=>c!==cat)[0];
+  faqs=faqs.map(f=>f.cat===cat?{...f,cat:fallback}:f);
+  categories=categories.filter(c=>c!==cat);
+  if(activeCat===cat)activeCat=categories[0];
+  saveFaqs();renderCatManager();buildCatPicker();renderAll();showToast('"'+cat+'" removed');
+}
+function renderCatManager(){
+  const counts={};faqs.forEach(f=>{counts[f.cat]=(counts[f.cat]||0)+1;});
+  document.getElementById('cat-manager').innerHTML=categories.map(c=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:8px 12px;margin-bottom:6px">
+      <div>
+        <span style="font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text)">${c}</span>
+        <span style="font-size:11px;color:var(--sub);margin-left:8px">${counts[c]||0} FAQs</span>
+      </div>
+      <button class="mini-btn del" onclick="deleteCategory('${c}')">Remove</button>
+    </div>`).join('');
+}
+
+/* ============================================================
+   ADD / EDIT / DELETE
+   ============================================================ */
+function addFaq(){
+  const q=document.getElementById('f-q').value.trim();
+  const a=document.getElementById('f-a').value.trim();
+  if(!q||!a){showToast('Enter a question and answer',true);return;}
+  faqs.push({id:nextId++,q,a,cat:activeCat,open:false});
+  saveFaqs();renderAll();
+  document.getElementById('f-q').value='';document.getElementById('f-a').value='';
+  showToast('FAQ added!');
+}
+function openEdit(id){
+  const f=faqs.find(f=>f.id===id);if(!f)return;
+  editingId=id;
+  document.getElementById('e-cat').innerHTML=categories.map(c=>`<option value="${c}"${c===f.cat?' selected':''}>${c}</option>`).join('');
+  document.getElementById('e-q').value=f.q;
+  document.getElementById('e-a').value=f.a;
+  document.getElementById('edit-overlay').classList.add('show');
+}
+function closeEdit(){document.getElementById('edit-overlay').classList.remove('show');editingId=null;}
+function saveEdit(){
+  const f=faqs.find(f=>f.id===editingId);if(!f)return;
+  const q=document.getElementById('e-q').value.trim();
+  const a=document.getElementById('e-a').value.trim();
+  if(!q||!a){showToast('Question and answer required',true);return;}
+  f.cat=document.getElementById('e-cat').value;f.q=q;f.a=a;
+  saveFaqs();renderAll();closeEdit();showToast('FAQ updated!');
+}
+function deleteFaq(id){
+  if(!confirm('Delete this FAQ?'))return;
+  faqs=faqs.filter(f=>f.id!==id);saveFaqs();renderAll();showToast('FAQ removed');
+}
+function toggleOpen(id){const f=faqs.find(f=>f.id===id);if(f)f.open=!f.open;renderPreview();}
+
+/* ============================================================
+   LAYOUT TOGGLES
+   ============================================================ */
+function toggleGrouping(){groupByCat=!groupByCat;document.getElementById('toggle-group').classList.toggle('on',groupByCat);renderPreview();}
+function toggleColumns(){twoCol=!twoCol;document.getElementById('toggle-cols').classList.toggle('on',twoCol);renderPreview();}
+
+/* ============================================================
+   STATS
+   ============================================================ */
+function renderStats(){
+  document.getElementById('s-total').textContent=faqs.length;
+  document.getElementById('s-cats').textContent=new Set(faqs.map(f=>f.cat)).size;
+  const cc={};faqs.forEach(f=>{cc[f.cat]=(cc[f.cat]||0)+1;});
+  const top=Object.entries(cc).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('s-top-cat').textContent=top?top[0]:'—';
+  document.getElementById('cat-breakdown').innerHTML=Object.entries(cc).map(([c,n])=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:8px 12px;margin-bottom:6px">
+      <span style="font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)">${c}</span>
+      <span style="font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--text)">${n}</span>
+    </div>`).join('');
+}
+
+/* ============================================================
+   LIST (sidebar)
+   ============================================================ */
+function renderList(q){
+  const s=(q||'').toLowerCase();
+  let list=[...faqs];
+  if(s)list=list.filter(f=>f.q.toLowerCase().includes(s)||f.a.toLowerCase().includes(s));
+  const el=document.getElementById('faq-list-sidebar');
+  if(!list.length){el.innerHTML='<div class="empty-state">No FAQs found</div>';return;}
+  el.innerHTML=list.map(f=>`
+    <div class="faq-list-item">
+      <div class="fli-q">${f.q}</div>
+      <span class="fli-cat">${f.cat}</span>
+      <div class="fli-actions">
+        <button class="mini-btn" onclick="openEdit(${f.id})">Edit</button>
+        <button class="mini-btn del" onclick="deleteFaq(${f.id})">Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+/* ============================================================
+   PREVIEW
+   ============================================================ */
+function renderViewFilters(){
+  const cats=['All',...categories.filter(c=>faqs.some(f=>f.cat===c))];
+  document.getElementById('view-filters').innerHTML=cats.map(c=>
+    `<button class="cat-btn${c===viewFilter?' active':''}" onclick="viewFilter='${c}';renderViewFilters();renderPreview()">${c}</button>`).join('');
+}
+function faqCardHTML(f){
+  const fill=f.open?'#20FDF0':'#3a3d47';
+  const cs=f.open?'#0a0a0a':'#e8e9ec';
+  const p1=f.open?12:10,p2=f.open?8:14,p3=f.open?12:10;
+  return `<div class="faq-card${f.open?' open':''}" id="fc-${f.id}">
+    <div class="faq-card-header" onclick="toggleOpen(${f.id})">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" style="flex-shrink:0">
+        <polygon points="11,1 20,6 20,16 11,21 2,16 2,6" fill="${fill}"/>
+        <polyline points="7.5,${p1} 11,${p2} 14.5,${p3}" fill="none" stroke="${cs}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="faq-card-q">${f.q}</span>
+      <div class="faq-card-actions" onclick="event.stopPropagation()">
+        <button class="card-act-btn" title="Edit" onclick="openEdit(${f.id})">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="1.5"><path d="M8.5 1.5l2 2L4 10H2v-2L8.5 1.5z"/></svg>
+        </button>
+        <button class="card-act-btn del" title="Delete" onclick="deleteFaq(${f.id})">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="1.5"><polyline points="1,2.5 11,2.5"/><path d="M4 2.5V1.5h4v1"/><path d="M2.5 2.5l.8 8h5.4l.8-8"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="faq-card-body"><div class="faq-card-a">${f.a}</div></div>
+  </div>`;
+}
+function renderPreview(){
+  let list=faqs;
+  if(viewFilter!=='All')list=list.filter(f=>f.cat===viewFilter);
+  document.getElementById('view-count').textContent=list.length+' item'+(list.length!==1?'s':'');
+  const el=document.getElementById('faq-preview');
+  if(!list.length){el.innerHTML='<div class="empty-state">No FAQs yet — add some from the sidebar</div>';return;}
+  if(groupByCat&&viewFilter==='All'){
+    const byCat={};
+    categories.forEach(c=>{const items=list.filter(f=>f.cat===c);if(items.length)byCat[c]=items;});
+    el.innerHTML=Object.entries(byCat).map(([cat,items])=>`
+      <div class="cat-group">
+        <div class="cat-group-header">
+          <span class="cat-group-label">${cat}</span>
+          <div class="cat-group-line"></div>
+          <span class="cat-group-count">${items.length} FAQ${items.length!==1?'s':''}</span>
+        </div>
+        <div class="faq-grid${twoCol?' two-col':''}">${items.map(faqCardHTML).join('')}</div>
+      </div>`).join('');
+  } else {
+    el.innerHTML=`<div class="faq-grid${twoCol?' two-col':''}">${list.map(faqCardHTML).join('')}</div>`;
+  }
+}
+function renderAll(){renderStats();renderList('');renderViewFilters();renderPreview();}
+
+/* ============================================================
+   EXPORT PUBLIC  — same pattern as map admin
+   ============================================================ */
+function openExport(){
+  const data=faqs.map(f=>({
+    i:f.id,
+    q:btoa(unescape(encodeURIComponent(f.q))),
+    a:btoa(unescape(encodeURIComponent(f.a))),
+    c:btoa(f.cat)
+  }));
+  const encoded=btoa(JSON.stringify({cats:categories,faqs:data}));
+  const output=`const _d = "${encoded}";`;
+  document.getElementById('export-text').value=output;
+  document.getElementById('export-modal').style.display='flex';
+}
+function copyExport(){
+  const ta=document.getElementById('export-text');ta.select();document.execCommand('copy');
+  const btn=document.getElementById('copy-btn');btn.textContent='✓ Copied!';
+  setTimeout(()=>btn.textContent='Copy to Clipboard',2500);
+}
+
+/* ============================================================
+   BACKUP
+   ============================================================ */
+function downloadBackup(){
+  const blob=new Blob([JSON.stringify({version:1,exported:new Date().toISOString(),faqs,categories},null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download='hexcore-faq-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  URL.revokeObjectURL(url);showToast('Backup downloaded!');
+}
+function importBackup(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{try{
+    const d=JSON.parse(ev.target.result);
+    if(d.faqs&&Array.isArray(d.faqs)){
+      faqs=d.faqs;if(d.categories)categories=d.categories;
+      nextId=Math.max(0,...faqs.map(f=>f.id))+1;
+      saveFaqs();renderAll();showToast('Restored '+faqs.length+' FAQs!');
+    } else showToast('Invalid file',true);
+  }catch(e){showToast('Error importing',true);}};
+  r.readAsText(file);e.target.value='';
+}
+function clearAllData(){
+  if(confirm('Delete ALL FAQ data? This cannot be undone.')){faqs=[];saveFaqs();renderAll();showToast('All data cleared');}
+}
+function updateStorageInfo(){
+  document.getElementById('storage-count').textContent=faqs.length;
+  document.getElementById('storage-size').textContent=(new Blob([JSON.stringify(faqs)]).size/1024).toFixed(2)+' KB';
+  document.getElementById('storage-date').textContent=new Date().toLocaleString();
+}
+function showSaveStatus(){
+  const el=document.getElementById('save-status');
+  el.innerHTML='<div class="save-dot"></div><span>Saved to browser storage</span>';
+  setTimeout(()=>el.innerHTML='',3000);
+}
+function showToast(msg,err=false){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.style.background=err?'#ef4444':'#16a34a';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+buildCatPicker();renderAll();updateStorageInfo();
+</script>
+</body>
+</html>
