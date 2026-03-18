@@ -3,255 +3,255 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hexcore Mounts — Customer Map</title>
+<title>HexCore Mounts — Customer Map</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 <style>
-  :root {
-    --black: #0a0a0a;
-    --dark: #111214;
-    --card: #16181c;
-    --border: #2a2d35;
-    --muted: #3a3d47;
-    --text: #e8e9ec;
-    --sub: #7a7f8e;
-    --accent: #20FDF0;
-    --font-head: 'Barlow Condensed', sans-serif;
-    --font-body: 'Barlow', sans-serif;
-    --pin-color: #20FDF0;
-    --pin-color-hl: #20FDF0;
-    --ui-text: #e8e9ec;
-    --ui-accent-text: #20FDF0;
-    --name-text: #e8e9ec;
-    --loc-text: #7a7f8e;
-    --stat-num-text: #e8e9ec;
-    --tooltip-name: #e8e9ec;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--black); color: var(--text); font-family: var(--font-body); min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+:root {
+  --black:#0a0a0a; --dark:#111214; --card:#16181c; --border:#2a2d35;
+  --muted:#3a3d47; --text:#e8e9ec; --sub:#7a7f8e; --accent:#20FDF0;
+  --font-head:'Barlow Condensed',sans-serif; --font-body:'Barlow',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);display:flex;flex-direction:column}
 
-  header {
-    background: var(--dark);
-    border-bottom: 1px solid var(--border);
-    border-left: 1px solid var(--border);
-    border-right: 1px solid var(--border);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 60px;
-    width: 75%;
-  }
-  .logo { font-family: var(--font-head); font-weight: 900; font-size: 22px; letter-spacing: .04em; text-transform: uppercase; color: var(--ui-text); }
-  .logo span { color: var(--ui-accent-text); }
-  .header-badge { background: var(--accent); color: white; font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border-radius: 3px; }
+/* ── HEADER ── */
+header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;flex-shrink:0;gap:1rem}
+.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);white-space:nowrap}
+.logo span{color:var(--accent)}
 
-  .layout { display: grid; grid-template-columns: 260px 1fr; height: calc(100vh - 60px); width: 75%; margin: 0 auto; }
+/* View toggle */
+.view-toggle{display:flex;gap:3px;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:3px}
+.vt-btn{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:none;border:none;color:var(--sub);padding:5px 12px;border-radius:3px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.vt-btn:hover{color:var(--text)}
+.vt-btn.active{background:var(--accent);color:var(--black)}
 
-  /* Keep sidebar left on desktop even though map is first in DOM */
-  .sidebar { order: -1; background: var(--dark); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
-  .sidebar-header { padding: 1.25rem 1.25rem .75rem; border-bottom: 1px solid var(--border); }
-  .sidebar-title { font-family: var(--font-head); font-size: 14px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--sub); }
-  .sidebar-content { flex: 1; overflow-y: auto; padding: 1.25rem; scrollbar-width: thin; scrollbar-color: var(--muted) transparent; }
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;white-space:nowrap}
 
-  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1.25rem; }
-  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
-  .stat-card.full { grid-column: span 2; }
-  .stat-num { font-family: var(--font-head); font-size: 32px; font-weight: 900; color: var(--stat-num-text); line-height: 1; }
-  .stat-num.accent { color: var(--ui-accent-text); }
-  .stat-label { font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: .08em; margin-top: 4px; }
+/* ── LAYOUT ── */
+.layout{display:grid;grid-template-columns:260px 1fr;flex:1;min-height:0}
 
-  .section-label { font-family: var(--font-head); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--sub); margin-bottom: .75rem; }
+/* ── SIDEBAR ── */
+.sidebar{background:var(--dark);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-hdr{padding:1rem 1.25rem .75rem;border-bottom:1px solid var(--border);flex-shrink:0}
+.sidebar-title{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
+.sidebar-body{flex:1;overflow-y:auto;padding:1.25rem;scrollbar-width:thin;scrollbar-color:var(--muted) transparent}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:1.25rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:11px 13px}
+.stat-card.full{grid-column:span 2}
+.stat-num{font-family:var(--font-head);font-size:30px;font-weight:900;color:var(--text);line-height:1}
+.stat-num.accent{color:var(--accent)}
+.stat-lbl{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+.sec-lbl{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.6rem}
+.src-row{display:flex;justify-content:space-between;align-items:center;padding:7px 11px;background:var(--card);border:1px solid var(--border);border-radius:5px;margin-bottom:5px}
+.ci-src{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.src-instagram{background:rgba(225,48,108,.2);color:#f472b6}
+.src-facebook{background:rgba(24,119,242,.2);color:#60a5fa}
+.src-shopify{background:rgba(22,163,74,.2);color:#4ade80}
+.src-count{font-family:var(--font-head);font-size:17px;font-weight:700;color:var(--text)}
+.top-item{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)}
+.top-item:last-child{border-bottom:none}
+.top-rank{font-family:var(--font-head);font-size:11px;font-weight:700;color:var(--sub);min-width:20px}
+.top-name{font-size:13px;font-weight:600;color:var(--text)}
+.top-loc{font-size:10px;color:var(--sub);margin-top:1px}
+.top-orders{font-family:var(--font-head);font-size:17px;font-weight:700;color:var(--accent)}
+.two-col{display:block}
+.two-col>div+div{margin-top:1.25rem}
+.pulse-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:6px;animation:pulse 2s infinite;vertical-align:middle}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
 
-  /* Desktop: two-col is just normal stacked flow */
-  .mobile-two-col { display: block; }
-  .mobile-two-col > div + div { margin-top: 1.25rem; }
+/* ── MAP VIEW ── */
+.map-area{background:var(--black);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.view-panel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.view-panel.active{opacity:1;pointer-events:all}
 
-  .source-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 5px; margin-bottom: 6px; }
-  .ci-source { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
-  .src-instagram { background: rgba(225,48,108,.2); color: #f472b6; }
-  .src-facebook { background: rgba(24,119,242,.2); color: #60a5fa; }
-  .src-shopify { background: rgba(22,163,74,.2); color: #4ade80; }
-  .src-count { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--text); }
+/* Flat map */
+#map-svg-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1.25rem}
+#usa-svg{width:100%;height:100%;max-height:calc(100vh - 80px)}
 
-  .top-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
-  .top-item:last-child { border-bottom: none; }
-  .top-rank { font-family: var(--font-head); font-size: 11px; font-weight: 700; color: var(--sub); min-width: 20px; }
-  .top-name { font-size: 13px; font-weight: 600; color: var(--name-text); }
-  .top-loc { font-size: 10px; color: var(--loc-text); margin-top: 1px; }
-  .top-orders { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--ui-accent-text); }
+/* Globe canvas */
+#globe-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+#globe-canvas{border-radius:50%;cursor:grab;box-shadow:0 0 60px rgba(32,253,240,.08),0 0 120px rgba(0,0,0,.8)}
+#globe-canvas:active{cursor:grabbing}
 
-  .pulse-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-right: 6px; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.5; transform:scale(1.3); } }
+/* List view */
+#list-wrap{width:100%;height:100%;overflow-y:auto;padding:1.5rem;scrollbar-width:thin;scrollbar-color:var(--muted) transparent}
+.list-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.list-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.9rem 1rem;transition:border-color .15s}
+.list-card:hover{border-color:var(--accent)}
+.lc-name{font-family:var(--font-head);font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text);margin-bottom:2px}
+.lc-loc{font-size:12px;color:var(--sub);margin-bottom:6px}
+.lc-bottom{display:flex;align-items:center;justify-content:space-between}
+.lc-orders{font-family:var(--font-head);font-size:20px;font-weight:900;color:var(--accent);line-height:1}
+.lc-orders-lbl{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.05em}
 
-  /* ── MAP ── */
-  .map-area { background: var(--black); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-  #map-svg-wrap { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
-  #usa-svg { width: 100%; height: 100%; max-height: calc(100vh - 80px); }
+/* Tooltip */
+.map-tooltip{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 14px;pointer-events:none;display:none;z-index:30;min-width:155px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.tt-name{font-weight:600;font-size:13px;color:var(--text);margin-bottom:2px}
+.tt-loc{font-size:11px;color:var(--sub);margin-bottom:6px}
+.tt-orders{font-family:var(--font-head);font-size:22px;font-weight:900;color:var(--accent);line-height:1}
+.tt-orders-lbl{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em}
 
-  .map-tooltip { position: absolute; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; pointer-events: none; display: none; z-index: 20; min-width: 160px; box-shadow: 0 8px 24px rgba(0,0,0,.5); }
-  .tt-name { font-weight: 600; font-size: 13px; color: var(--tooltip-name); margin-bottom: 2px; }
-  .tt-loc { font-size: 11px; color: var(--sub); margin-bottom: 6px; }
-  .tt-orders { font-family: var(--font-head); font-size: 22px; font-weight: 900; color: var(--ui-accent-text); line-height: 1; }
-  .tt-orders-lbl { font-size: 10px; color: var(--sub); text-transform: uppercase; letter-spacing: .06em; }
+/* Legend */
+.map-legend{position:absolute;bottom:1.25rem;left:1.25rem;background:rgba(22,24,28,.9);border:1px solid var(--border);border-radius:6px;padding:9px 13px;backdrop-filter:blur(4px)}
+.legend-title{font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:5px}
+.leg-row{display:flex;align-items:center;gap:7px;margin-bottom:3px;font-size:10px;color:var(--sub)}
 
-  .map-legend { position: absolute; bottom: 1.25rem; left: 1.25rem; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; }
-  .map-legend-title { font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--sub); margin-bottom: 6px; }
-  .leg-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 11px; color: var(--sub); }
+/* Tagline */
+.map-tagline{position:absolute;top:1rem;left:50%;transform:translateX(-50%);font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);white-space:nowrap;pointer-events:none;opacity:.6}
 
-  .map-tagline { position: absolute; top: 1.25rem; left: 50%; transform: translateX(-50%); font-family: var(--font-head); font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--sub); white-space: nowrap; pointer-events: none; }
+/* List search */
+.list-search-wrap{margin-bottom:1rem;display:flex;gap:8px;align-items:center}
+.list-search{flex:1;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:.6rem 1rem;color:var(--text);font-family:var(--font-body);font-size:14px;outline:none;transition:border-color .15s}
+.list-search:focus{border-color:var(--accent)}
+.list-search::placeholder{color:var(--sub)}
+.list-count{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);white-space:nowrap}
 
-  /* ── MOBILE ── */
-  @media (max-width: 768px) {
-    html, body { height: auto; overflow-x: hidden; }
+/* State filter badge */
+.state-filter{display:none;align-items:center;gap:6px;background:rgba(32,253,240,.1);border:1px solid rgba(32,253,240,.3);border-radius:4px;padding:4px 10px;margin-bottom:.75rem}
+.state-filter.visible{display:flex}
+.sf-label{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.sf-clear{background:none;border:none;color:var(--sub);cursor:pointer;font-size:14px;padding:0 2px;transition:color .15s}
+.sf-clear:hover{color:var(--accent)}
 
-    header { padding: 0 1rem; height: 52px; width: 75%; }
-    .logo { font-size: 18px; }
-    .header-badge { font-size: 10px; padding: 3px 8px; }
+/* Globe controls */
+.globe-controls{position:absolute;bottom:1.25rem;right:1.25rem;display:flex;flex-direction:column;gap:5px}
+.globe-btn{background:rgba(22,24,28,.9);border:1px solid var(--border);color:var(--sub);font-family:var(--font-head);font-size:14px;font-weight:700;width:32px;height:32px;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;backdrop-filter:blur(4px)}
+.globe-btn:hover{color:var(--accent);border-color:var(--accent)}
+.globe-spin-btn{font-size:11px;letter-spacing:.04em;width:auto;padding:0 10px}
+.globe-spin-btn.spinning{color:var(--accent);border-color:rgba(32,253,240,.4)}
 
-    /* Stack map ON TOP, stats below */
-    .layout {
-      display: flex;
-      flex-direction: column;
-      height: auto;
-      min-height: 100vh;
-      width: 75%;
-    }
+/* ── PIN ANIMATION ── */
+@keyframes pinDrop{
+  0%{opacity:0;transform:scale(0) translateY(-8px)}
+  70%{transform:scale(1.2) translateY(1px)}
+  100%{opacity:.93;transform:scale(1) translateY(0)}
+}
+.pin-g{animation:pinDrop .35s ease-out both}
 
-    /* Map comes first on mobile */
-    .map-area {
-      order: 1;
-      width: 100%;
-      height: 56vw;
-      min-height: 220px;
-      max-height: 340px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    #map-svg-wrap {
-      padding: .5rem;
-      width: 100%;
-      height: 100%;
-    }
-
-    #usa-svg {
-      width: 100%;
-      height: 100%;
-      max-height: none;
-    }
-
-    .map-tagline { display: none; }
-    .map-legend { padding: 6px 10px; bottom: .5rem; left: .5rem; }
-    .map-legend-title { font-size: 10px; margin-bottom: 4px; }
-    .leg-row { font-size: 10px; gap: 5px; margin-bottom: 2px; }
-
-    /* Stats below map */
-    .sidebar {
-      order: 2;
-      width: 100%;
-      border-right: none;
-      border-top: 1px solid var(--border);
-      overflow: visible;
-      height: auto;
-    }
-
-    .sidebar-content { padding: 1rem; overflow: visible; }
-
-    /* Stats grid — 4 across on mobile */
-    .stats-grid {
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      margin-bottom: 1rem;
-    }
-    .stat-card.full { grid-column: span 4; }
-    .stat-num { font-size: 22px; }
-    .stat-label { font-size: 9px; }
-
-    /* Source + top customers side by side */
-    .mobile-two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .source-row { padding: 6px 10px; }
-    .src-count { font-size: 15px; }
-
-    .top-item { padding: 6px 0; }
-    .top-name { font-size: 12px; }
-    .top-orders { font-size: 15px; }
-
-    /* Tooltip smaller on mobile */
-    .map-tooltip { min-width: 130px; padding: 8px 10px; font-size: 11px; }
-    .tt-orders { font-size: 18px; }
-  }
-
-  @media (max-width: 400px) {
-    .stats-grid { grid-template-columns: 1fr 1fr; }
-    .stat-card.full { grid-column: span 2; }
-    .mobile-two-col { grid-template-columns: 1fr; }
-  }
+/* ── MOBILE ── */
+@media(max-width:768px){
+  html,body{height:auto;overflow:auto}
+  .layout{grid-template-columns:1fr;height:auto}
+  .map-area{height:56vw;min-height:220px;max-height:320px;order:1}
+  .sidebar{order:2;height:auto;overflow:visible}
+  .sidebar-body{overflow:visible;padding:.9rem}
+  .stats-grid{grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:.9rem}
+  .stat-card.full{grid-column:span 4}
+  .stat-num{font-size:22px}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-top:.9rem}
+  .map-tagline{display:none}
+  header{padding:0 1rem;height:50px}
+  .logo{font-size:17px}
+  .vt-btn{padding:4px 8px;font-size:11px}
+  #list-wrap{height:60vw;min-height:300px}
+}
+@media(max-width:400px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .stat-card.full{grid-column:span 2}
+  .two-col{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">Hexcore <span>Mounts</span></div>
+  <div class="logo">Hex<span>Core</span> Mounts</div>
+  <div class="view-toggle">
+    <button class="vt-btn active" id="btn-map" onclick="setView('map')">Map</button>
+    <button class="vt-btn" id="btn-globe" onclick="setView('globe')">Globe</button>
+    <button class="vt-btn" id="btn-list" onclick="setView('list')">List</button>
+  </div>
   <div class="header-badge">Our Customers</div>
 </header>
 
 <div class="layout">
 
-  <!-- MAP — rendered first in DOM so it appears on top on mobile -->
-  <div class="map-area">
-    <div class="map-tagline">Hexcore Mounts — Nationwide</div>
-    <div id="map-svg-wrap">
-      <svg id="usa-svg" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg">
-        <rect width="960" height="600" fill="#0a0a0a"/>
-        <g id="states-g"></g>
-        <g id="pins-g"></g>
-      </svg>
-    </div>
-    <div class="map-tooltip" id="map-tooltip"></div>
-    <div class="map-legend">
-      <div class="map-legend-title">Order count</div>
-      <div class="leg-row"><svg width="12" height="11" viewBox="-6 -6 12 11"><polygon id="lh1" points="0,-5 4.3,-2.5 4.3,2.5 0,5 -4.3,2.5 -4.3,-2.5" fill="#20FDF0"/></svg><span>1</span></div>
-      <div class="leg-row"><svg width="16" height="15" viewBox="-8 -7 16 15"><polygon id="lh2" points="0,-7 6,-3.5 6,3.5 0,7 -6,3.5 -6,-3.5" fill="#20FDF0"/></svg><span>2–5</span></div>
-      <div class="leg-row"><svg width="20" height="19" viewBox="-10 -9 20 19"><polygon id="lh3" points="0,-9 7.8,-4.5 7.8,4.5 0,9 -7.8,4.5 -7.8,-4.5" fill="#20FDF0"/></svg><span>6–10</span></div>
-      <div class="leg-row"><svg width="26" height="25" viewBox="-13 -12 26 25"><polygon id="lh4" points="0,-12 10.4,-6 10.4,6 0,12 -10.4,6 -10.4,-6" fill="#20FDF0"/></svg><span>11+</span></div>
-    </div>
-  </div>
-
-  <!-- STATS SIDEBAR -->
+  <!-- SIDEBAR -->
   <div class="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-title"><span class="pulse-dot"></span>Customer stats</div>
+    <div class="sidebar-hdr">
+      <div class="sidebar-title"><span class="pulse-dot"></span>Customer Stats</div>
     </div>
-    <div class="sidebar-content">
-
+    <div class="sidebar-body">
       <div class="stats-grid">
-        <div class="stat-card"><div class="stat-num accent" id="s-total">0</div><div class="stat-label">Customers</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-states">0</div><div class="stat-label">States</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-orders">0</div><div class="stat-label">Orders</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-avg">0</div><div class="stat-label">Avg Orders</div></div>
-        <div class="stat-card full"><div class="stat-num" id="s-top-state" style="font-size:22px">—</div><div class="stat-label">Top State</div></div>
+        <div class="stat-card"><div class="stat-num accent" id="s-total">0</div><div class="stat-lbl">Customers</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-states">0</div><div class="stat-lbl">States</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-orders">0</div><div class="stat-lbl">Orders</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-avg">0</div><div class="stat-lbl">Avg Orders</div></div>
+        <div class="stat-card full"><div class="stat-num" id="s-top-state" style="font-size:20px">—</div><div class="stat-lbl">Top State</div></div>
       </div>
-
-      <div class="mobile-two-col">
+      <div class="two-col">
         <div>
-          <div class="section-label">Orders by source</div>
+          <div class="sec-lbl">By Source</div>
           <div id="source-breakdown"></div>
         </div>
         <div>
-          <div class="section-label">Top customers</div>
+          <div class="sec-lbl">Top Customers</div>
           <div id="top-customers"></div>
         </div>
       </div>
-
     </div>
+  </div>
+
+  <!-- MAP AREA -->
+  <div class="map-area">
+
+    <!-- FLAT MAP -->
+    <div class="view-panel active" id="panel-map">
+      <div class="map-tagline">HexCore Mounts — Nationwide</div>
+      <div id="map-svg-wrap">
+        <svg id="usa-svg" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg">
+          <rect width="960" height="600" fill="#0a0a0a"/>
+          <g id="states-g"></g>
+          <g id="pins-g"></g>
+        </svg>
+      </div>
+      <div class="map-legend">
+        <div class="legend-title">Order count</div>
+        <div class="leg-row"><svg width="10" height="10" viewBox="-5 -5 10 10"><polygon points="0,-4 3.5,-2 3.5,2 0,4 -3.5,2 -3.5,-2" fill="#20FDF0"/></svg><span>1</span></div>
+        <div class="leg-row"><svg width="14" height="14" viewBox="-7 -7 14 14"><polygon points="0,-6 5.2,-3 5.2,3 0,6 -5.2,3 -5.2,-3" fill="#20FDF0"/></svg><span>2–5</span></div>
+        <div class="leg-row"><svg width="18" height="18" viewBox="-9 -9 18 18"><polygon points="0,-8 6.9,-4 6.9,4 0,8 -6.9,4 -6.9,-4" fill="#20FDF0"/></svg><span>6–10</span></div>
+        <div class="leg-row"><svg width="24" height="24" viewBox="-12 -12 24 24"><polygon points="0,-11 9.5,-5.5 9.5,5.5 0,11 -9.5,5.5 -9.5,-5.5" fill="#20FDF0"/></svg><span>11+</span></div>
+      </div>
+    </div>
+
+    <!-- GLOBE -->
+    <div class="view-panel" id="panel-globe">
+      <div id="globe-wrap">
+        <canvas id="globe-canvas"></canvas>
+      </div>
+      <div class="globe-controls">
+        <button class="globe-btn globe-spin-btn" id="spin-btn" onclick="toggleSpin()" title="Auto-rotate">Spin</button>
+        <button class="globe-btn" onclick="zoomGlobe(1.15)" title="Zoom in">+</button>
+        <button class="globe-btn" onclick="zoomGlobe(0.87)" title="Zoom out">−</button>
+      </div>
+      <div class="map-legend">
+        <div class="legend-title">Order count</div>
+        <div class="leg-row"><svg width="10" height="10" viewBox="-5 -5 10 10"><polygon points="0,-4 3.5,-2 3.5,2 0,4 -3.5,2 -3.5,-2" fill="#20FDF0"/></svg><span>1</span></div>
+        <div class="leg-row"><svg width="14" height="14" viewBox="-7 -7 14 14"><polygon points="0,-6 5.2,-3 5.2,3 0,6 -5.2,3 -5.2,-3" fill="#20FDF0"/></svg><span>2–5</span></div>
+        <div class="leg-row"><svg width="18" height="18" viewBox="-9 -9 18 18"><polygon points="0,-8 6.9,-4 6.9,4 0,8 -6.9,4 -6.9,-4" fill="#20FDF0"/></svg><span>6–10</span></div>
+        <div class="leg-row"><svg width="24" height="24" viewBox="-12 -12 24 24"><polygon points="0,-11 9.5,-5.5 9.5,5.5 0,11 -9.5,5.5 -9.5,-5.5" fill="#20FDF0"/></svg><span>11+</span></div>
+      </div>
+    </div>
+
+    <!-- LIST -->
+    <div class="view-panel" id="panel-list">
+      <div id="list-wrap">
+        <div class="list-search-wrap">
+          <input type="text" class="list-search" id="list-search" placeholder="Search customers, city, or state…" oninput="filterList()" autocomplete="off">
+          <span class="list-count" id="list-count"></span>
+        </div>
+        <div class="state-filter" id="state-filter">
+          <span class="sf-label" id="sf-label">All States</span>
+          <button class="sf-clear" onclick="clearStateFilter()" title="Clear filter">✕</button>
+        </div>
+        <div class="list-grid" id="list-grid"></div>
+      </div>
+    </div>
+
+    <div class="map-tooltip" id="map-tooltip"></div>
   </div>
 
 </div>
@@ -260,248 +260,384 @@
 /* ============================================================
    DATA — do not edit manually, use Export Public from admin
    ============================================================ */
-const _d = "W3siZyI6NiwiYSI6IlZISmxkbTl5IiwiYiI6IlZBPT0iLCJjIjoiUm1GeVoyOD0iLCJkIjoiVG05eWRHZ2dSR0ZyYjNSaCIsImUiOjEsImYiOiJhVzV6ZEdGbmNtRnQiLCJoIjo0Ni44NzcyMjksImkiOi05Ni43ODk4MjF9LHsiZyI6NywiYSI6IlFuSjViMjQ9IiwiYiI6IlFnPT0iLCJjIjoiUTNKaGQyWnZjbVIyYVd4c1pRPT0iLCJkIjoiUm14dmNtbGtZUT09IiwiZSI6MSwiZiI6ImFXNXpkR0ZuY21GdCIsImgiOjMwLjE3NjAzNTgsImkiOi04NC4zNzUxNzc4fSx7ImciOjgsImEiOiJRWFZuZFhOMGFXNWgiLCJiIjoiUVE9PSIsImMiOiJSV3dnVUdGemJ3PT0iLCJkIjoiVkdWNFlYTT0iLCJlIjoxLCJmIjoiYVc1emRHRm5jbUZ0IiwiaCI6MzEuNzYwMTAwMSwiaSI6LTEwNi40ODcwNDc2fSx7ImciOjEwLCJhIjoiUzJWdVpHRnNiQT09IiwiYiI6IlN3PT0iLCJjIjoiUVd0eWIyND0iLCJkIjoiVDJocGJ3PT0iLCJlIjoxLCJmIjoiYVc1emRHRm5jbUZ0IiwiaCI6NDEuMDgzMDY0LCJpIjotODEuNTE4NDg1fSx7ImciOjExLCJhIjoiUjJWeVlXeGsiLCJiIjoiVUE9PSIsImMiOiJVR1Z2Y21saCIsImQiOiJTV3hzYVc1dmFYTT0iLCJlIjoxLCJmIjoiYVc1emRHRm5jbUZ0IiwiaCI6NDAuNjkzODYwOSwiaSI6LTg5LjU4OTEwMDh9LHsiZyI6MTIsImEiOiJSV1IzWVhKayIsImIiOiJVQT09IiwiYyI6IlRHbDBkR3hsSUZKdlkycz0iLCJkIjoiUVhKcllXNXpZWE09IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM0Ljc0NjUwNzEsImkiOi05Mi4yODk2MjY3fSx7ImciOjEzLCJhIjoiVUdGMGNtbGphdz09IiwiYiI6IlRBPT0iLCJjIjoiU0dWdVpHVnljMjl1IiwiZCI6IlRtVjJZV1JoIiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM2LjAzMTk2MDIsImkiOi0xMTQuOTgyMjcxNn0seyJnIjoxNCwiYSI6IlRXRnlZMjg9IiwiYiI6IlRRPT0iLCJjIjoiVkc5c1pXUnYiLCJkIjoiVDJocGJ3PT0iLCJlIjoxLCJmIjoiWm1GalpXSnZiMnM9IiwiaCI6NDEuNjUyOTE0MywiaSI6LTgzLjUzNzgxNzN9LHsiZyI6MTUsImEiOiJTbUZ0WlhNPSIsImIiOiJVdz09IiwiYyI6IlRXbGtiR0Z1WkE9PSIsImQiOiJWR1Y0WVhNPSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozMS44MzY4OCwiaSI6LTEwMi4wMTAzNzY3fSx7ImciOjE2LCJhIjoiUW5KaGJtUnZiZz09IiwiYiI6IlF3PT0iLCJjIjoiUTI5c2RXMWlkWE09IiwiZCI6IlIyVnZjbWRwWVE9PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozMi40NjEwNzA4LCJpIjotODQuOTg4MDQ0OX0seyJnIjoxNywiYSI6IlNtOXphSFZoIiwiYiI6IldRPT0iLCJjIjoiVjJGamJ3PT0iLCJkIjoiVkdWNFlYTT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzEuNTQ5MTg5OSwiaSI6LTk3LjE0NzQ2Mjh9LHsiZyI6MTgsImEiOiJRbkpoWkE9PSIsImIiOiJVdz09IiwiYyI6IlEyeGxkbVZzWVc1ayIsImQiOiJSMlZ2Y21kcFlRPT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzQuNTk3MjQ0OSwiaSI6LTgzLjc2MzMwNTh9LHsiZyI6MTksImEiOiJRMmh5YVhNPSIsImIiOiJUQT09IiwiYyI6IlRXRmpiMjQ9IiwiZCI6IlIyVnZjbWRwWVE9PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozMi44NDA2OTQ2LCJpIjotODMuNjMyNDAyMn0seyJnIjoyMCwiYSI6IlVHRnQiLCJiIjoiVXc9PSIsImMiOiJWR2xtZEc5dSIsImQiOiJSMlZ2Y21kcFlRPT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzEuNDU0OTcxOSwiaSI6LTgzLjUxMDgyODR9LHsiZyI6MjEsImEiOiJSMkZ5ZVE9PSIsImIiOiJTdz09IiwiYyI6IlNHRnlaR2x1IiwiZCI6IlRXOXVkR0Z1WVE9PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjo0NS43MzI0Nzc4LCJpIjotMTA3LjYxMjAzMX0seyJnIjoyMiwiYSI6IlMzbHNaUT09IiwiYiI6IlZBPT0iLCJjIjoiUW05MWJHUmxjZz09IiwiZCI6IlEyOXNiM0poWkc4PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjo0MC4wMTQ5ODU2LCJpIjotMTA1LjI3MDU0NX0seyJnIjoyMywiYSI6IlUyTnZkSFE9IiwiYiI6IlV3PT0iLCJjIjoiUVhOd1pXND0iLCJkIjoiUTI5c2IzSmhaRzg9IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM5LjE5MTExMjgsImkiOi0xMDYuODIzNTZ9LHsiZyI6MjQsImEiOiJRbkpwWVc0PSIsImIiOiJRdz09IiwiYyI6IlYyRnNjMlZ1WW5WeVp3PT0iLCJkIjoiUTI5c2IzSmhaRzg9IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM3LjYyMzUyMzQsImkiOi0xMDQuNzgwOTk1fSx7ImciOjI1LCJhIjoiU21WeWNuaz0iLCJiIjoiVGc9PSIsImMiOiJVbWxqYUcxdmJtUT0iLCJkIjoiVm1seVoybHVhV0U9IiwiZSI6MSwiZiI6ImFXNXpkR0ZuY21GdCIsImgiOjM3LjUzODUwODcsImkiOi03Ny40MzQyOH0seyJnIjoyNiwiYSI6IlMyVnVibVYwYUE9PSIsImIiOiJVUT09IiwiYyI6IlRHVjRhVzVuZEc5dSIsImQiOiJTMlZ1ZEhWamEzaz0iLCJlIjoxLCJmIjoiYVc1emRHRm5jbUZ0IiwiaCI6MzguMDQ2NDA2NiwiaSI6LTg0LjQ5NzAzOTN9LHsiZyI6MjcsImEiOiJTbUZ0WlhNPSIsImIiOiJRdz09IiwiYyI6IlIzSmxaVzUyYVd4c1pRPT0iLCJkIjoiVTI5MWRHZ2dRMkZ5YjJ4cGJtRT0iLCJlIjoxLCJmIjoiYVc1emRHRm5jbUZ0IiwiaCI6MzQuODUxMzU0LCJpIjotODIuMzk4NDg4Mn0seyJnIjoyOCwiYSI6IlVtOWlaWEowIiwiYiI6IlZ3PT0iLCJjIjoiVFdsaGJXaz0iLCJkIjoiUm14dmNtbGtZUT09IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjI1Ljc3NDE1NjYsImkiOi04MC4xOTM1OTczfSx7ImciOjI5LCJhIjoiVTJoaGQyND0iLCJiIjoiU3c9PSIsImMiOiJSbTl5ZENCTmVXVnljdz09IiwiZCI6IlJteHZjbWxrWVE9PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjoyNi42NDA2MjgsImkiOi04MS44NzIzMDg0fSx7ImciOjMwLCJhIjoiUkc5dVlXeGsiLCJiIjoiVEE9PSIsImMiOiJWMlZ6ZENCUVlXeHRJRUpsWVdObyIsImQiOiJSbXh2Y21sa1lRPT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MjYuNzE1MzY0LCJpIjotODAuMDUzMjk0Mn0seyJnIjozMSwiYSI6IlUyTnZkSFE9IiwiYiI6IlZBPT0iLCJjIjoiVFc5dmNtVT0iLCJkIjoiVDJ0c1lXaHZiV0U9IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM1LjMzODMyNTQsImkiOi05Ny40ODY3MDQ1fSx7ImciOjMyLCJhIjoiUW5KcFlXND0iLCJiIjoiU0E9PSIsImMiOiJSR1ZzSUVOcGRIaz0iLCJkIjoiVDJ0c1lXaHZiV0U9IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM1LjQ0MjAwNywiaSI6LTk3LjQ0MDg3MDl9LHsiZyI6MzMsImEiOiJVMkZ1WkhKaCIsImIiOiJVQT09IiwiYyI6IlFYVnpkR2x1IiwiZCI6IlZHVjRZWE09IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjMwLjI3MTEyODYsImkiOi05Ny43NDM2OTk1fSx7ImciOjM0LCJhIjoiU205b2JnPT0iLCJiIjoiUXc9PSIsImMiOiJTbUZqYTNOdmJnPT0iLCJkIjoiVkdWdWJtVnpjMlZsIiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM1LjYxNDQ0NDYsImkiOi04OC44MTc3NDE4fSx7ImciOjM1LCJhIjoiUm5KaGJtcz0iLCJiIjoiUVE9PSIsImMiOiJWR1Z1Ym1WemMyVmwiLCJkIjoiVkdWdWJtVnpjMlZsIiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM1Ljk1MTYzNTIsImkiOi04My45MzA4ODE5fSx7ImciOjM2LCJhIjoiUkdGdWFXVnMiLCJiIjoiVnc9PSIsImMiOiJUMnhwZG1VZ1FuSmhibU5vIiwiZCI6IlRXbHpjMmx6YzJsd2NHaz0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzQuOTYxNzYwNSwiaSI6LTg5LjgyOTUzMTV9LHsiZyI6MzcsImEiOiJVbTl1WVd4ayIsImIiOiJWdz09IiwiYyI6IlUyaHlaWFpsY0c5eWRBPT0iLCJkIjoiVEc5MWFYTnBZVzVoIiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjMyLjUxMzUzNTYsImkiOi05My43NDc3ODM5fSx7ImciOjM4LCJhIjoiU205elpYQm8iLCJiIjoiUlE9PSIsImMiOiJUV0Z5Y21WeWJ3PT0iLCJkIjoiVEc5MWFYTnBZVzVoIiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjI5Ljg5OTM3MjMsImkiOi05MC4xMDAzNTA2fSx7ImciOjM5LCJhIjoiUkdGdWFXVnMiLCJiIjoiUlE9PSIsImMiOiJWMlZ6ZENCTlpXMXdhR2x6IiwiZCI6IlFYSnJZVzV6WVhNPSIsImUiOjEsImYiOiJhVzV6ZEdGbmNtRnQiLCJoIjozNS4xNDY0Nzk3LCJpIjotOTAuMTg0NTM4OH0seyJnIjo0MSwiYSI6IlUyTnZkSFE9IiwiYiI6IlFRPT0iLCJjIjoiVTNCeWFXNW5abWxsYkdRPSIsImQiOiJUMmhwYnc9PSIsImUiOjEsImYiOiJhVzV6ZEdGbmNtRnQiLCJoIjozOS45MjM0MDQ2LCJpIjotODMuODEwMTM4fSx7ImciOjQyLCJhIjoiVkdsdGIzUm9lUT09IiwiYiI6IldRPT0iLCJjIjoiV1c5MWJtZHpkRzkzYmc9PSIsImQiOiJUMmhwYnc9PSIsImUiOjEsImYiOiJhVzV6ZEdGbmNtRnQiLCJoIjo0MS4xMDM1Nzg2LCJpIjotODAuNjUyMDE2MX0seyJnIjo0MywiYSI6IlUzQmxibU5sY2c9PSIsImIiOiJSZz09IiwiYyI6IlVHbGphMlZ5YVc1bmRHOXUiLCJkIjoiVDJocGJ3PT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzkuODg0MjMwNCwiaSI6LTgyLjc1MzUwNDl9LHsiZyI6NDQsImEiOiJWRzlrWkE9PSIsImIiOiJRZz09IiwiYyI6IlNtOW9ibk1nUTNKbFpXcz0iLCJkIjoiUjJWdmNtZHBZUT09IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM0LjAxODE1NTcsImkiOi04NC4xOTAxOTZ9LHsiZyI6NDUsImEiOiJTbTl6WlhCbyIsImIiOiJRUT09IiwiYyI6IlVtOXpkMlZzYkE9PSIsImQiOiJSMlZ2Y21kcFlRPT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzQuMDIzMzIsImkiOi04NC4zNjAwMjJ9LHsiZyI6NDYsImEiOiJSR1ZpYjNKaGFBPT0iLCJiIjoiU0E9PSIsImMiOiJVR1ZoWTJoMGNtVmxJRU5wZEhrPSIsImQiOiJSMlZ2Y21kcFlRPT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzMuMzk3NTQ3MiwiaSI6LTg0LjU4OTgyNTZ9LHsiZyI6NDcsImEiOiJTbTl1WVhSb1lXND0iLCJiIjoiVWc9PSIsImMiOiJVbUZzWldsbmFBPT0iLCJkIjoiVG05eWRHZ2dRMkZ5YjJ4cGJtRT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzUuNzgwMzk3NywiaSI6LTc4LjYzOTA5ODl9LHsiZyI6NDgsImEiOiJWMkY1Ym1VPSIsImIiOiJWdz09IiwiYyI6IlYybHNiV2x1WjNSdmJnPT0iLCJkIjoiVG05eWRHZ2dRMkZ5YjJ4cGJtRT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzQuMjM1Mjg1MywiaSI6LTc3Ljk0ODcyODR9LHsiZyI6NDksImEiOiJVbUY1Ylc5dVpBPT0iLCJiIjoiVWc9PSIsImMiOiJUM0JsYkdscllRPT0iLCJkIjoiUVd4aFltRnRZUT09IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjMyLjY0NTQxMTYsImkiOi04NS4zNzgyNzk1fSx7ImciOjUwLCJhIjoiUjJWdmNtZGwiLCJiIjoiVnc9PSIsImMiOiJSMkZrYzJSbGJnPT0iLCJkIjoiUVd4aFltRnRZUT09IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM0LjAxMjgzMjMsImkiOi04Ni4wMDMwMjUxfSx7ImciOjUxLCJhIjoiVUdGMWJBPT0iLCJiIjoiVWc9PSIsImMiOiJSMnhsYm1SaGJHVT0iLCJkIjoiUVhKcGVtOXVZUT09IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjMzLjUzODY4NTgsImkiOi0xMTIuMTg1OTk0fSx7ImciOjUyLCJhIjoiVUdGdFpXeGgiLCJiIjoiVkE9PSIsImMiOiJWSFZqYzI5dSIsImQiOiJRWEpwZW05dVlRPT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzIuMjIyODc2NSwiaSI6LTExMC45NzQ4NDd9LHsiZyI6NTMsImEiOiJTbUZqYXc9PSIsImIiOiJVdz09IiwiYyI6IlFYSjJZV1JoIiwiZCI6IlEyOXNiM0poWkc4PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozOS44MDA1NTA1LCJpIjotMTA1LjA4MTE1NzN9LHsiZyI6NTQsImEiOiJRVzE1IiwiYiI6IlF3PT0iLCJjIjoiVm1Gc1pHOXpkR0U9IiwiZCI6IlIyVnZjbWRwWVE9PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozMC44MzI3MDIyLCJpIjotODMuMjc4NDg1MX0seyJnIjo1NSwiYSI6IlVubGhiZz09IiwiYiI6IlF3PT0iLCJjIjoiVEdGM2NtVnVZMlU9IiwiZCI6IlNXNWthV0Z1WVE9PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozOC44NDAwMzk1LCJpIjotODYuNDg4MDcxN30seyJnIjo1NiwiYSI6IlNtVm1abkpsZVE9PSIsImIiOiJSQT09IiwiYyI6IlNtVm1abVZ5YzI5dWRtbHNiR1U9IiwiZCI6IlNXNWthV0Z1WVE9PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozOC4yNzcwMjI3LCJpIjotODUuNzM3MTYwNH0seyJnIjo1NywiYSI6IlIzSmxaMjl5ZVE9PSIsImIiOiJUUT09IiwiYyI6IlEyOXNkVzFpZFhNPSIsImQiOiJTVzVrYVdGdVlRPT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzkuMjAxNDQwNSwiaSI6LTg1LjkyMTM3OTZ9LHsiZyI6NTgsImEiOiJTbVZ1Ym1sbVpYST0iLCJiIjoiVEE9PSIsImMiOiJUM1psY214aGJtUWdVR0Z5YXc9PSIsImQiOiJTMkZ1YzJGeiIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozOC45NzQyNTAyLCJpIjotOTQuNjg1MTcwMn0seyJnIjo1OSwiYSI6IlZIbHNaWEk9IiwiYiI6IlNnPT0iLCJjIjoiVDNkbGJuTmliM0p2IiwiZCI6IlMyVnVkSFZqYTNrPSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozNy43NzQyMTUyLCJpIjotODcuMTEzMzMwNH1d";
+const _d = "W3siZyI6NiwiYSI6IlZISmxkbTl5IiwiYiI6IlZBPT0iLCJjIjoiUm1GeVoyOD0iLCJkIjoiVG05eWRHZ2dSR0ZyYjNSaCIsImUiOjEsImYiOiJhVzV6ZEdGbmNtRnQiLCJoIjo0Ni44NzcyMjksImkiOi05Ni43ODk4MjF9LHsiZyI6NywiYSI6IlFuSjViMjQ9IiwiYiI6IlFnPT0iLCJjIjoiUTNKaGQyWnZjbVIyYVd4c1pRPT0iLCJkIjoiUm14dmNtbGtZUT09IiwiZSI6MSwiZiI6ImFXNXpkR0ZuY21GdCIsImgiOjMwLjE3NjAzNTgsImkiOi04NC4zNzUxNzc4fSx7ImciOjgsImEiOiJRWFZuZFhOMGFXNWgiLCJiIjoiUVE9PSIsImMiOiJSV3dnVUdGemJ3PT0iLCJkIjoiVkdWNFlYTT0iLCJlIjoxLCJmIjoiYVc1emRHRm5jbUZ0IiwiaCI6MzEuNzYwMTAwMSwiaSI6LTEwNi40ODcwNDc2fSx7ImciOjEwLCJhIjoiUzJWdVpHRnNiQT09IiwiYiI6IlN3PT0iLCJjIjoiUVd0eWIyND0iLCJkIjoiVDJocGJ3PT0iLCJlIjoxLCJmIjoiYVc1emRHRm5jbUZ0IiwiaCI6NDEuMDgzMDY0LCJpIjotODEuNTE4NDg1fSx7ImciOjExLCJhIjoiUjJWeVlXeGsiLCJiIjoiVUE9PSIsImMiOiJVR1Z2Y21saCIsImQiOiJTV3hzYVc1dmFYTT0iLCJlIjoxLCJmIjoiYVc1emRHRm5jbUZ0IiwiaCI6NDAuNjkzODYwOSwiaSI6LTg5LjU4OTEwMDh9LHsiZyI6MTIsImEiOiJSV1IzWVhKayIsImIiOiJVQT09IiwiYyI6IlRHbDBkR3hsSUZKdlkycz0iLCJkIjoiUVhKcllXNXpZWE09IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM0Ljc0NjUwNzEsImkiOi05Mi4yODk2MjY3fSx7ImciOjEzLCJhIjoiVUdGMGNtbGphdz09IiwiYiI6IlRBPT0iLCJjIjoiU0dWdVpHVnljMjl1IiwiZCI6IlRtVjJZV1JoIiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM2LjAzMTk2MDIsImkiOi0xMTQuOTgyMjcxNn0seyJnIjoxNCwiYSI6IlRXRnlZMjg9IiwiYiI6IlRRPT0iLCJjIjoiVkc5c1pXUnYiLCJkIjoiVDJocGJ3PT0iLCJlIjoxLCJmIjoiWm1GalpXSnZiMnM9IiwiaCI6NDEuNjUyOTE0MywiaSI6LTgzLjUzNzgxNzN9LHsiZyI6MTUsImEiOiJTbUZ0WlhNPSIsImIiOiJVdz09IiwiYyI6IlRXbGtiR0Z1WkE9PSIsImQiOiJWR1Y0WVhNPSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozMS44MzY4OCwiaSI6LTEwMi4wMTAzNzY3fSx7ImciOjE2LCJhIjoiUW5KaGJtUnZiZz09IiwiYiI6IlF3PT0iLCJjIjoiUTI5c2RXMWlkWE09IiwiZCI6IlIyVnZjbWRwWVE9PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozMi40NjEwNzA4LCJpIjotODQuOTg4MDQ0OX0seyJnIjoxNywiYSI6IlNtOXphSFZoIiwiYiI6IldRPT0iLCJjIjoiVjJGamJ3PT0iLCJkIjoiVkdWNFlYTT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzEuNTQ5MTg5OSwiaSI6LTk3LjE0NzQ2Mjh9LHsiZyI6MTgsImEiOiJRbkpoWkE9PSIsImIiOiJVdz09IiwiYyI6IlEyeGxkbVZzWVc1ayIsImQiOiJSMlZ2Y21kcFlRPT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzQuNTk3MjQ0OSwiaSI6LTgzLjc2MzMwNTh9LHsiZyI6MTksImEiOiJRMmh5YVhNPSIsImIiOiJUQT09IiwiYyI6IlRXRmpiMjQ9IiwiZCI6IlIyVnZjbWRwWVE9PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozMi44NDA2OTQ2LCJpIjotODMuNjMyNDAyMn0seyJnIjoyMCwiYSI6IlVHRnQiLCJiIjoiVXc9PSIsImMiOiJWR2xtZEc5dSIsImQiOiJSMlZ2Y21kcFlRPT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzEuNDU0OTcxOSwiaSI6LTgzLjUxMDgyODR9LHsiZyI6MjEsImEiOiJSMkZ5ZVE9PSIsImIiOiJTdz09IiwiYyI6IlNHRnlaR2x1IiwiZCI6IlRXOXVkR0Z1WVE9PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjo0NS43MzI0Nzc4LCJpIjotMTA3LjYxMjAzMX0seyJnIjoyMiwiYSI6IlMzbHNaUT09IiwiYiI6IlZBPT0iLCJjIjoiUW05MWJHUmxjZz09IiwiZCI6IlEyOXNiM0poWkc4PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjo0MC4wMTQ5ODU2LCJpIjotMTA1LjI3MDU0NX0seyJnIjoyMywiYSI6IlUyTnZkSFE9IiwiYiI6IlV3PT0iLCJjIjoiUVhOd1pXND0iLCJkIjoiUTI5c2IzSmhaRzg9IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM5LjE5MTExMjgsImkiOi0xMDYuODIzNTZ9LHsiZyI6MjQsImEiOiJRbkpwWVc0PSIsImIiOiJRdz09IiwiYyI6IlYyRnNjMlZ1WW5WeVp3PT0iLCJkIjoiUTI5c2IzSmhaRzg9IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM3LjYyMzUyMzQsImkiOi0xMDQuNzgwOTk1fSx7ImciOjI1LCJhIjoiU21WeWNuaz0iLCJiIjoiVGc9PSIsImMiOiJVbWxqYUcxdmJtUT0iLCJkIjoiVm1seVoybHVhV0U9IiwiZSI6MSwiZiI6ImFXNXpkR0ZuY21GdCIsImgiOjM3LjUzODUwODcsImkiOi03Ny40MzQyOH0seyJnIjoyNiwiYSI6IlMyVnVibVYwYUE9PSIsImIiOiJVUT09IiwiYyI6IlRHVjRhVzVuZEc5dSIsImQiOiJTMlZ1ZEhWamEzaz0iLCJlIjoxLCJmIjoiYVc1emRHRm5jbUZ0IiwiaCI6MzguMDQ2NDA2NiwiaSI6LTg0LjQ5NzAzOTN9LHsiZyI6MjcsImEiOiJTbUZ0WlhNPSIsImIiOiJRdz09IiwiYyI6IlIzSmxaVzUyYVd4c1pRPT0iLCJkIjoiVTI5MWRHZ2dRMkZ5YjJ4cGJtRT0iLCJlIjoxLCJmIjoiYVc1emRHRm5jbUZ0IiwiaCI6MzQuODUxMzU0LCJpIjotODIuMzk4NDg4Mn0seyJnIjoyOCwiYSI6IlVtOWlaWEowIiwiYiI6IlZ3PT0iLCJjIjoiVFdsaGJXaz0iLCJkIjoiUm14dmNtbGtZUT09IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjI1Ljc3NDE1NjYsImkiOi04MC4xOTM1OTczfSx7ImciOjI5LCJhIjoiVTJoaGQyND0iLCJiIjoiU3c9PSIsImMiOiJSbTl5ZENCTmVXVnljdz09IiwiZCI6IlJteHZjbWxrWVE9PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjoyNi42NDA2MjgsImkiOi04MS44NzIzMDg0fSx7ImciOjMwLCJhIjoiUkc5dVlXeGsiLCJiIjoiVEE9PSIsImMiOiJWMlZ6ZENCUVlXeHRJRUpsWVdObyIsImQiOiJSbXh2Y21sa1lRPT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MjYuNzE1MzY0LCJpIjotODAuMDUzMjk0Mn0seyJnIjozMSwiYSI6IlUyTnZkSFE9IiwiYiI6IlZBPT0iLCJjIjoiVFc5dmNtVT0iLCJkIjoiVDJ0c1lXaHZiV0U9IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM1LjMzODMyNTQsImkiOi05Ny40ODY3MDQ1fSx7ImciOjMyLCJhIjoiUW5KcFlXND0iLCJiIjoiU0E9PSIsImMiOiJSR1ZzSUVOcGRIaz0iLCJkIjoiVDJ0c1lXaHZiV0U9IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM1LjQ0MjAwNywiaSI6LTk3LjQ0MDg3MDl9LHsiZyI6MzMsImEiOiJVMkZ1WkhKaCIsImIiOiJVQT09IiwiYyI6IlFYVnpkR2x1IiwiZCI6IlZHVjRZWE09IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjMwLjI3MTEyODYsImkiOi05Ny43NDM2OTk1fSx7ImciOjM0LCJhIjoiU205b2JnPT0iLCJiIjoiUXc9PSIsImMiOiJTbUZqYTNOdmJnPT0iLCJkIjoiVkdWdWJtVnpjMlZsIiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM1LjYxNDQ0NDYsImkiOi04OC44MTc3NDE4fSx7ImciOjM1LCJhIjoiUm5KaGJtcz0iLCJiIjoiUVE9PSIsImMiOiJWR1Z1Ym1WemMyVmwiLCJkIjoiVkdWdWJtVnpjMlZsIiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE5PSIsImgiOjM1Ljk1MTYzNTIsImkiOi04My45MzA4ODE5fSx7ImciOjM2LCJhIjoiUkdGdWFXVnMiLCJiIjoiVnc9PSIsImMiOiJUMnhwZG1VZ1FuSmhibU5vIiwiZCI6IlRXbHpjMmx6YzJsd2NHaz0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzQuOTYxNzYwNSwiaSI6LTg5LjgyOTUzMTV9LHsiZyI6MzcsImEiOiJVbTl1WVd4ayIsImIiOiJWdz09IiwiYyI6IlUyaHlaWFpsY0c5eWRBPT0iLCJkIjoiVEc5MWFYTnBZVzVoIiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjMyLjUxMzUzNTYsImkiOi05My43NDc3ODM5fSx7ImciOjM4LCJhIjoiU205elpYQm8iLCJiIjoiUlE9PSIsImMiOiJUV0Z5Y21WeWJ3PT0iLCJkIjoiVEc5MWFYTnBZVzVoIiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjI5Ljg5OTM3MjMsImkiOi05MC4xMDAzNTA2fSx7ImciOjM5LCJhIjoiUkdGdWFXVnMiLCJiIjoiUlE9PSIsImMiOiJWMlZ6ZENCTlpXMXdhR2x6IiwiZCI6IlFYSnJZVzV6WVhNPSIsImUiOjEsImYiOiJhVzV6ZEdGbmNtRnQiLCJoIjozNS4xNDY0Nzk3LCJpIjotOTAuMTg0NTM4OH0seyJnIjo0MSwiYSI6IlUyTnZkSFE9IiwiYiI6IlFRPT0iLCJjIjoiVTNCeWFXNW5abWxsYkdRPSIsImQiOiJUMmhwYnc9PSIsImUiOjEsImYiOiJhVzV6ZEdGbmNtRnQiLCJoIjozOS45MjM0MDQ2LCJpIjotODMuODEwMTM4fSx7ImciOjQyLCJhIjoiVkdsdGIzUm9lUT09IiwiYiI6IldRPT0iLCJjIjoiV1c5MWJtZHpkRzkzYmc9PSIsImQiOiJUMmhwYnc9PSIsImUiOjEsImYiOiJhVzV6ZEdGbmNtRnQiLCJoIjo0MS4xMDM1Nzg2LCJpIjotODAuNjUyMDE2MX0seyJnIjo0MywiYSI6IlUzQmxibU5sY2c9PSIsImIiOiJSZz09IiwiYyI6IlVHbGphMlZ5YVc1bmRHOXUiLCJkIjoiVDJocGJ3PT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzkuODg0MjMwNCwiaSI6LTgyLjc1MzUwNDl9LHsiZyI6NDQsImEiOiJWRzlrWkE9PSIsImIiOiJRZz09IiwiYyI6IlNtOW9ibk1nUTNKbFpXcz0iLCJkIjoiUjJWdmNtZHBZUT09IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM0LjAxODE1NTcsImkiOi04NC4xOTAxOTZ9LHsiZyI6NDUsImEiOiJTbTl6WlhCbyIsImIiOiJRUT09IiwiYyI6IlVtOXpkMlZzYkE9PSIsImQiOiJSMlZ2Y21kcFlRPT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzQuMDIzMzIsImkiOi04NC4zNjAwMjJ9LHsiZyI6NDYsImEiOiJSR1ZpYjNKaGFBPT0iLCJiIjoiU0E9PSIsImMiOiJVR1ZoWTJoMGNtVmxJRU5wZEhrPSIsImQiOiJSMlZ2Y21kcFlRPT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzMuMzk3NTQ3MiwiaSI6LTg0LjU4OTgyNTZ9LHsiZyI6NDcsImEiOiJTbTl1WVhSb1lXND0iLCJiIjoiVWc9PSIsImMiOiJVbUZzWldsbmFBPT0iLCJkIjoiVG05eWRHZ2dRMkZ5YjJ4cGJtRT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzUuNzgwMzk3NywiaSI6LTc4LjYzOTA5ODl9LHsiZyI6NDgsImEiOiJWMkY1Ym1VPSIsImkiOiJWdz09IiwiYyI6IlYybHNiV2x1WjNSdmJnPT0iLCJkIjoiVG05eWRHZ2dRMkZ5YjJ4cGJtRT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzQuMjM1Mjg1MywiaSI6LTc3Ljk0ODcyODR9LHsiZyI6NDksImEiOiJVbUY1Ylc5dVpBPT0iLCJiIjoiVWc9PSIsImMiOiJUM0JsYkdscllRPT0iLCJkIjoiUVd4aFltRnRZUT09IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjMyLjY0NTQxMTYsImkiOi04NS4zNzgyNzk1fSx7ImciOjUwLCJhIjoiUjJWdmNtZGwiLCJiIjoiVnc9PSIsImMiOiJSMkZrYzJSbGJnPT0iLCJkIjoiUVd4aFltRnRZUT09IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjM0LjAxMjgzMjMsImkiOi04Ni4wMDMwMjUxfSx7ImciOjUxLCJhIjoiVUdGMWJBPT0iLCJiIjoiVWc9PSIsImMiOiJSMnhsYm1SaGJHVT0iLCJkIjoiUVhKcGVtOXVZUT09IiwiZSI6MSwiZiI6ImMyaHZjR2xtZVE9PSIsImgiOjMzLjUzODY4NTgsImkiOi0xMTIuMTg1OTk0fSx7ImciOjUyLCJhIjoiVUdGdFpXeGgiLCJiIjoiVkE9PSIsImMiOiJWSFZqYzI5dSIsImQiOiJRWEpwZW05dVlRPT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzIuMjIyODc2NSwiaSI6LTExMC45NzQ4NDd9LHsiZyI6NTMsImEiOiJTbUZqYXc9PSIsImIiOiJVdz09IiwiYyI6IlFYSjJZV1JoIiwiZCI6IlEyOXNiM0poWkc4PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozOS44MDA1NTA1LCJpIjotMTA1LjA4MTE1NzN9LHsiZyI6NTQsImEiOiJRVzE1IiwiYiI6IlF3PT0iLCJjIjoiVm1Gc1pHOXpkR0U9IiwiZCI6IlIyVnZjbWRwWVE9PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozMC44MzI3MDIyLCJpIjotODMuMjc4NDg1MX0seyJnIjo1NSwiYSI6IlVubGhiZz09IiwiYiI6IlF3PT0iLCJjIjoiVEdGM2NtVnVZMlU9IiwiZCI6IlNXNWthV0Z1WVE9PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozOC44NDAwMzk1LCJpIjotODYuNDg4MDcxN30seyJnIjo1NiwiYSI6IlNtVm1abkpsZVE9PSIsImIiOiJSQT09IiwiYyI6IlNtVm1abVZ5YzI5dWRtbHNiR1U9IiwiZCI6IlNXNWthV0Z1WVE9PSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozOC4yNzcwMjI3LCJpIjotODUuNzM3MTYwNH0seyJnIjo1NywiYSI6IlIzSmxaMjl5ZVE9PSIsImIiOiJUUT09IiwiYyI6IlEyOXNkVzFpZFhNPSIsImQiOiJTVzVrYVdGdVlRPT0iLCJlIjoxLCJmIjoiYzJodmNHbG1lUT09IiwiaCI6MzkuMjAxNDQwNSwiaSI6LTg1LjkyMTM3OTZ9LHsiZyI6NTgsImEiOiJTbVZ1Ym1sbVpYST0iLCJiIjoiVEE9PSIsImMiOiJUM1psY214aGJtUWdVR0Z5YXc9PSIsImQiOiJTMkZ1YzJGeiIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozOC45NzQyNTAyLCJpIjotOTQuNjg1MTcwMn0seyJnIjo1OSwiYSI6IlZIbHNaWEk9IiwiYiI6IlNnPT0iLCJjIjoiVDNkbGJuTmliM0p2IiwiZCI6IlMyVnVkSFZqYTNrPSIsImUiOjEsImYiOiJjMmh2Y0dsbWVRPT0iLCJoIjozNy43NzQyMTUyLCJpIjotODcuMTEzMzMwNH1d";
 
 function _x(s){try{return atob(s)}catch(e){return s}}
 function _decode(raw){
-  try {
+  try{
     return JSON.parse(_x(raw)).map(r=>({
-      id:r.g, first:_x(r.a), lastInitial:_x(r.b),
-      city:_x(r.c), state:_x(r.d), orders:r.e, source:_x(r.f),
-      lat:r.h||null, lon:r.i||null
+      id:r.g,first:_x(r.a),lastInitial:_x(r.b),
+      city:_x(r.c),state:_x(r.d),orders:r.e,source:_x(r.f),
+      lat:r.h||null,lon:r.i||null
     }));
-  } catch(e){ return []; }
+  }catch(e){return[]}
 }
-const CUSTOMERS = _decode(_d);
-/* ============================================================
-   APPEARANCE — tweak these to match your brand
-   ============================================================ */
-const CONFIG = {
-  pinColor:   '#20FDF0',   // hex color for pins
-  pinColorHl: '#20FDF0',   // hex color when pin is hovered
-  nameColor:  '#e8e9ec',   // customer name text
-  locColor:   '#7a7f8e',   // city/state text
-  accentColor:'#20FDF0',   // order count & accent numbers
+const CUSTOMERS=_decode(_d);
+
+const CONFIG={pinColor:'#20FDF0',pinColorHl:'#ffffff',nameColor:'#e8e9ec',accentColor:'#20FDF0'};
+
+/* ── STATE CENTROIDS ── */
+const STATE_CENTROIDS={
+  "Alabama":[-86.9023,32.3182],"Alaska":[-153.4937,61.3707],"Arizona":[-111.0937,34.0489],
+  "Arkansas":[-92.3731,34.7999],"California":[-119.4179,36.7783],"Colorado":[-105.3111,39.5501],
+  "Connecticut":[-72.7554,41.6032],"Delaware":[-75.5071,38.9108],"Florida":[-81.5158,27.6648],
+  "Georgia":[-83.6431,32.6415],"Hawaii":[-155.5828,19.8968],"Idaho":[-114.7420,44.0682],
+  "Illinois":[-89.1965,40.6331],"Indiana":[-86.1349,40.2672],"Iowa":[-93.0977,41.8780],
+  "Kansas":[-98.4842,38.5266],"Kentucky":[-84.2700,37.8393],"Louisiana":[-91.9623,31.1695],
+  "Maine":[-69.4455,45.2538],"Maryland":[-76.6413,39.0458],"Massachusetts":[-71.3824,42.4072],
+  "Michigan":[-85.6024,44.3148],"Minnesota":[-94.6859,46.7296],"Mississippi":[-89.3985,32.3547],
+  "Missouri":[-91.8318,37.9643],"Montana":[-110.3626,46.8797],"Nebraska":[-99.9018,41.4925],
+  "Nevada":[-116.4194,38.8026],"New Hampshire":[-71.5724,43.1939],"New Jersey":[-74.4057,40.0583],
+  "New Mexico":[-106.2485,34.5199],"New York":[-74.9654,43.2994],"North Carolina":[-79.0193,35.7596],
+  "North Dakota":[-101.0020,47.5515],"Ohio":[-82.9071,40.4173],"Oklahoma":[-97.0929,35.4676],
+  "Oregon":[-120.5542,43.8041],"Pennsylvania":[-77.1945,41.2033],"Rhode Island":[-71.4774,41.5801],
+  "South Carolina":[-80.9450,33.8361],"South Dakota":[-99.9018,43.9695],"Tennessee":[-86.5804,35.5175],
+  "Texas":[-99.3413,31.9686],"Utah":[-111.0937,39.3210],"Vermont":[-72.5778,44.5588],
+  "Virginia":[-78.6569,37.4316],"Washington":[-120.7401,47.7511],"West Virginia":[-80.4549,38.5976],
+  "Wisconsin":[-88.7879,43.7844],"Wyoming":[-107.2903,43.0760]
 };
 
-/* ============================================================
-   STATE COORDINATES (do not edit)
-   ============================================================ */
-/* ── STATE GEOGRAPHIC CENTROIDS (real lat/lon) ── */
-const STATE_CENTROIDS = {
-  "Alabama":       [-86.9023, 32.3182],
-  "Alaska":        [-153.4937, 61.3707],
-  "Arizona":       [-111.0937, 34.0489],
-  "Arkansas":      [-92.3731, 34.7999],
-  "California":    [-119.4179, 36.7783],
-  "Colorado":      [-105.3111, 39.5501],
-  "Connecticut":   [-72.7554, 41.6032],
-  "Delaware":      [-75.5071, 38.9108],
-  "Florida":       [-81.5158, 27.6648],
-  "Georgia":       [-83.6431, 32.6415],
-  "Hawaii":        [-155.5828, 19.8968],
-  "Idaho":         [-114.7420, 44.0682],
-  "Illinois":      [-89.1965, 40.6331],
-  "Indiana":       [-86.1349, 40.2672],
-  "Iowa":          [-93.0977, 41.8780],
-  "Kansas":        [-98.4842, 38.5266],
-  "Kentucky":      [-84.2700, 37.8393],
-  "Louisiana":     [-91.9623, 31.1695],
-  "Maine":         [-69.4455, 45.2538],
-  "Maryland":      [-76.6413, 39.0458],
-  "Massachusetts": [-71.3824, 42.4072],
-  "Michigan":      [-85.6024, 44.3148],
-  "Minnesota":     [-94.6859, 46.7296],
-  "Mississippi":   [-89.3985, 32.3547],
-  "Missouri":      [-91.8318, 37.9643],
-  "Montana":       [-110.3626, 46.8797],
-  "Nebraska":      [-99.9018, 41.4925],
-  "Nevada":        [-116.4194, 38.8026],
-  "New Hampshire": [-71.5724, 43.1939],
-  "New Jersey":    [-74.4057, 40.0583],
-  "New Mexico":    [-106.2485, 34.5199],
-  "New York":      [-74.9654, 43.2994],
-  "North Carolina":[-79.0193, 35.7596],
-  "North Dakota":  [-101.0020, 47.5515],
-  "Ohio":          [-82.9071, 40.4173],
-  "Oklahoma":      [-97.0929, 35.4676],
-  "Oregon":        [-120.5542, 43.8041],
-  "Pennsylvania":  [-77.1945, 41.2033],
-  "Rhode Island":  [-71.4774, 41.5801],
-  "South Carolina":[-80.9450, 33.8361],
-  "South Dakota":  [-99.9018, 43.9695],
-  "Tennessee":     [-86.5804, 35.5175],
-  "Texas":         [-99.3413, 31.9686],
-  "Utah":          [-111.0937, 39.3210],
-  "Vermont":       [-72.5778, 44.5588],
-  "Virginia":      [-78.6569, 37.4316],
-  "Washington":    [-120.7401, 47.7511],
-  "West Virginia": [-80.4549, 38.5976],
-  "Wisconsin":     [-88.7879, 43.7844],
-  "Wyoming":       [-107.2903, 43.0760]
-};
-
-let projectionFn = null; // set once D3 loads
-
-function getStateCoord(stateName) {
-  const ll = STATE_CENTROIDS[stateName];
-  if (!ll || !projectionFn) return null;
-  return projectionFn(ll); // returns [x, y]
-}
-
-/* ============================================================
-   INIT — applies CONFIG colors to CSS variables
-   ============================================================ */
-function applyConfig() {
-  const r = document.documentElement;
-  r.style.setProperty('--pin-color', CONFIG.pinColor);
-  r.style.setProperty('--pin-color-hl', CONFIG.pinColorHl);
-  r.style.setProperty('--name-text', CONFIG.nameColor);
-  r.style.setProperty('--loc-text', CONFIG.locColor);
-  r.style.setProperty('--ui-accent-text', CONFIG.accentColor);
-  r.style.setProperty('--tooltip-name', CONFIG.nameColor);
-  ['lh1','lh2','lh3','lh4'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.setAttribute('fill', CONFIG.pinColor);
-  });
-}
-
-function formatName(first, lastInitial) {
-  const f = (first||'').trim();
-  const l = (lastInitial||'').trim().toUpperCase();
-  return l ? `${f} ${l}.` : f;
-}
+let projFn=null, currentView='map', stateFilter=null;
 
 /* ── STATS ── */
-function renderStats() {
-  const total = CUSTOMERS.length;
-  const states = new Set(CUSTOMERS.map(c => c.state)).size;
-  const orders = CUSTOMERS.reduce((a, c) => a + c.orders, 0);
-  const avg = total ? Math.round(orders / total * 10) / 10 : 0;
-  document.getElementById('s-total').textContent = total;
-  document.getElementById('s-states').textContent = states;
-  document.getElementById('s-orders').textContent = orders;
-  document.getElementById('s-avg').textContent = avg;
-  const stateOrders = {};
-  CUSTOMERS.forEach(c => { stateOrders[c.state] = (stateOrders[c.state]||0) + c.orders; });
-  const top = Object.entries(stateOrders).sort((a,b)=>b[1]-a[1])[0];
-  document.getElementById('s-top-state').textContent = top ? top[0] : '—';
-
-  const sources = {};
-  CUSTOMERS.forEach(c => { sources[c.source] = (sources[c.source]||0)+1; });
-  document.getElementById('source-breakdown').innerHTML = Object.entries(sources)
+function renderStats(){
+  const total=CUSTOMERS.length,states=new Set(CUSTOMERS.map(c=>c.state)).size;
+  const orders=CUSTOMERS.reduce((a,c)=>a+c.orders,0);
+  const avg=total?Math.round(orders/total*10)/10:0;
+  document.getElementById('s-total').textContent=total;
+  document.getElementById('s-states').textContent=states;
+  document.getElementById('s-orders').textContent=orders;
+  document.getElementById('s-avg').textContent=avg;
+  const so={};
+  CUSTOMERS.forEach(c=>{so[c.state]=(so[c.state]||0)+c.orders});
+  const top=Object.entries(so).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('s-top-state').textContent=top?top[0]:'—';
+  const src={};
+  CUSTOMERS.forEach(c=>{src[c.source]=(src[c.source]||0)+1});
+  document.getElementById('source-breakdown').innerHTML=Object.entries(src)
     .sort((a,b)=>b[1]-a[1])
-    .map(([src,cnt]) => `
-      <div class="source-row">
-        <span class="ci-source src-${src}">${src}</span>
-        <span class="src-count">${cnt}</span>
-      </div>`).join('');
-
-  const topCust = [...CUSTOMERS].sort((a,b)=>b.orders-a.orders).slice(0,6);
-  document.getElementById('top-customers').innerHTML = topCust.map((c,i) => `
+    .map(([s,n])=>`<div class="src-row"><span class="ci-src src-${s}">${s}</span><span class="src-count">${n}</span></div>`).join('');
+  const tc=[...CUSTOMERS].sort((a,b)=>b.orders-a.orders).slice(0,6);
+  document.getElementById('top-customers').innerHTML=tc.map((c,i)=>`
     <div class="top-item">
       <div style="display:flex;align-items:center;gap:8px">
         <span class="top-rank">#${i+1}</span>
-        <div>
-          <div class="top-name">${formatName(c.first,c.lastInitial)}</div>
-          <div class="top-loc">${c.city}, ${c.state}</div>
-        </div>
+        <div><div class="top-name">${fmt(c.first,c.lastInitial)}</div><div class="top-loc">${c.city}, ${c.state}</div></div>
       </div>
       <span class="top-orders">${c.orders}</span>
     </div>`).join('');
 }
 
-/* ── HEXAGON PINS ── */
-function hexPoints(cx, cy, r) {
-  const pts = [];
-  for (let i = 0; i < 6; i++) {
-    const a = (Math.PI/180) * (60*i - 30);
-    pts.push(`${(cx + r*Math.cos(a)).toFixed(2)},${(cy + r*Math.sin(a)).toFixed(2)}`);
-  }
-  return pts.join(' ');
+function fmt(f,l){const fi=(f||'').trim(),li=(l||'').trim().toUpperCase();return li?`${fi} ${li}.`:fi}
+
+/* ── HEX POINTS ── */
+function hexPts(cx,cy,r){
+  const p=[];
+  for(let i=0;i<6;i++){const a=Math.PI/180*(60*i-30);p.push(`${(cx+r*Math.cos(a)).toFixed(2)},${(cy+r*Math.sin(a)).toFixed(2)}`)}
+  return p.join(' ')
 }
-function pinSize(orders) {
-  if (orders >= 11) return 11;
-  if (orders >= 6) return 8;
-  if (orders >= 2) return 6;
-  return 4;
-}
+function psize(o){return o>=11?11:o>=6?8:o>=2?6:4}
 
-function renderPins() {
-  const layer = document.getElementById('pins-g');
-  layer.innerHTML = '';
-  const tooltip = document.getElementById('map-tooltip');
-  const wrap = document.getElementById('map-svg-wrap');
+/* ── FLAT MAP ── */
+function renderPins(){
+  const layer=document.getElementById('pins-g');
+  layer.innerHTML='';
+  const tt=document.getElementById('map-tooltip');
+  const wrap=document.getElementById('map-svg-wrap');
 
-  CUSTOMERS.forEach(c => {
-    const coord = (c.lat && c.lon && projectionFn)
-      ? projectionFn([c.lon, c.lat])
-      : getStateCoord(c.state);
-    if (!coord) return;
-    const cx = coord[0];
-    const cy = coord[1];
-    const sz = pinSize(c.orders);
+  CUSTOMERS.forEach((c,idx)=>{
+    const coord=(c.lat&&c.lon&&projFn)?projFn([c.lon,c.lat]):(()=>{const ll=STATE_CENTROIDS[c.state];return ll&&projFn?projFn(ll):null})();
+    if(!coord)return;
+    const[cx,cy]=coord, sz=psize(c.orders);
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('class','pin-g');
+    g.style.animationDelay=`${idx*18}ms`;
+    g.style.cursor='pointer';
 
-    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
-    g.style.cursor = 'pointer';
-
-    const hex = document.createElementNS('http://www.w3.org/2000/svg','polygon');
-    hex.setAttribute('points', hexPoints(cx, cy, sz));
-    hex.setAttribute('fill', CONFIG.pinColor);
-    hex.setAttribute('stroke', 'rgba(0,0,0,0.4)');
-    hex.setAttribute('stroke-width', '0.8');
-    hex.setAttribute('opacity', '0.93');
+    const hex=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+    hex.setAttribute('points',hexPts(cx,cy,sz));
+    hex.setAttribute('fill',CONFIG.pinColor);
+    hex.setAttribute('stroke','rgba(0,0,0,0.5)');
+    hex.setAttribute('stroke-width','0.8');
+    hex.setAttribute('opacity','0.9');
     g.appendChild(hex);
 
-    g.addEventListener('mouseenter', () => {
-      hex.setAttribute('fill', CONFIG.pinColorHl);
-      hex.setAttribute('stroke', 'rgba(255,255,255,0.6)');
-      hex.setAttribute('stroke-width', '1.5');
-      const svgRect = document.getElementById('usa-svg').getBoundingClientRect();
-      const wrapRect = wrap.getBoundingClientRect();
-      const px = cx*(svgRect.width/960) + (svgRect.left-wrapRect.left);
-      const py = cy*(svgRect.height/600) + (svgRect.top-wrapRect.top);
-      tooltip.innerHTML = `
-        <div class="tt-name">${formatName(c.first,c.lastInitial)}</div>
-        <div class="tt-loc">${c.city}, ${c.state}</div>
-        <div class="tt-orders">${c.orders}</div>
-        <div class="tt-orders-lbl">order${c.orders!==1?'s':''}</div>
-        <div style="margin-top:6px"><span class="ci-source src-${c.source}">${c.source}</span></div>`;
-      tooltip.style.display = 'block';
-      tooltip.style.left = Math.min(px+12, wrapRect.width-175)+'px';
-      tooltip.style.top = Math.max(py-95, 8)+'px';
+    // Pulse ring for 11+ orders
+    if(c.orders>=11){
+      const ring=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      ring.setAttribute('cx',cx);ring.setAttribute('cy',cy);ring.setAttribute('r',sz+4);
+      ring.setAttribute('fill','none');ring.setAttribute('stroke',CONFIG.pinColor);
+      ring.setAttribute('stroke-width','1');ring.setAttribute('opacity','0.35');
+      g.insertBefore(ring,hex);
+    }
+
+    g.addEventListener('mouseenter',()=>{
+      hex.setAttribute('fill',CONFIG.pinColorHl);
+      hex.setAttribute('stroke','rgba(32,253,240,0.8)');
+      hex.setAttribute('stroke-width','1.5');
+      const svgRect=document.getElementById('usa-svg').getBoundingClientRect();
+      const wrapRect=wrap.getBoundingClientRect();
+      const px=cx*(svgRect.width/960)+(svgRect.left-wrapRect.left);
+      const py=cy*(svgRect.height/600)+(svgRect.top-wrapRect.top);
+      showTT(tt,c,Math.min(px+14,wrapRect.width-175),Math.max(py-95,8));
     });
-    g.addEventListener('mouseleave', () => {
-      hex.setAttribute('fill', CONFIG.pinColor);
-      hex.setAttribute('stroke', 'rgba(0,0,0,0.4)');
-      hex.setAttribute('stroke-width', '0.8');
-      tooltip.style.display = 'none';
+    g.addEventListener('mouseleave',()=>{
+      hex.setAttribute('fill',CONFIG.pinColor);
+      hex.setAttribute('stroke','rgba(0,0,0,0.5)');
+      hex.setAttribute('stroke-width','0.8');
+      tt.style.display='none';
     });
+    g.addEventListener('click',()=>filterByState(c.state));
     layer.appendChild(g);
   });
 }
 
-function drawStates() {
+function showTT(tt,c,x,y){
+  tt.innerHTML=`
+    <div class="tt-name">${fmt(c.first,c.lastInitial)}</div>
+    <div class="tt-loc">${c.city}, ${c.state}</div>
+    <div class="tt-orders">${c.orders}</div>
+    <div class="tt-orders-lbl">order${c.orders!==1?'s':''}</div>
+    <div style="margin-top:6px"><span class="ci-src src-${c.source}">${c.source}</span></div>`;
+  tt.style.display='block';
+  tt.style.left=x+'px';
+  tt.style.top=y+'px';
+}
+
+function drawStates(){
   fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json')
     .then(r=>r.json()).then(us=>{
-      const proj = d3.geoAlbersUsa().scale(1280).translate([480,300]);
-      projectionFn = proj; // store for pin placement
-      const path = d3.geoPath().projection(proj);
-      const states = topojson.feature(us, us.objects.states);
+      const proj=d3.geoAlbersUsa().scale(1280).translate([480,300]);
+      projFn=proj;
+      const path=d3.geoPath().projection(proj);
+      const states=topojson.feature(us,us.objects.states);
       d3.select('#states-g').selectAll('path').data(states.features).enter().append('path')
         .attr('d',path).attr('fill','#16181c').attr('stroke','#2a2d35').attr('stroke-width','0.8');
-      renderPins(); // render pins AFTER projection is ready
+      renderPins();
     }).catch(()=>{
-      // fallback: use a basic albers projection without the map
-      projectionFn = d3.geoAlbersUsa().scale(1280).translate([480,300]);
-      document.getElementById('states-g').innerHTML =
-        `<rect x="60" y="80" width="840" height="440" rx="4" fill="#16181c" stroke="#2a2d35"/>
-         <text x="480" y="300" text-anchor="middle" font-size="14" fill="#3a3d47" font-family="Barlow,sans-serif">US Map</text>`;
+      projFn=d3.geoAlbersUsa().scale(1280).translate([480,300]);
+      document.getElementById('states-g').innerHTML=`<rect x="60" y="80" width="840" height="440" rx="4" fill="#16181c" stroke="#2a2d35"/>`;
       renderPins();
     });
 }
 
-applyConfig();
+/* ── GLOBE ── */
+let globeProj=null, globeCanvas=null, globeCtx=null, globeUS=null;
+let isDragging=false, lastX=0, lastY=0, rotation=[0,0], spinning=false, spinRAF=null;
+let globeScale=1;
+
+function initGlobe(){
+  globeCanvas=document.getElementById('globe-canvas');
+  globeCtx=globeCanvas.getContext('2d');
+  sizeGlobe();
+
+  globeProj=d3.geoOrthographic()
+    .scale(getGlobeR())
+    .translate([globeCanvas.width/2,globeCanvas.height/2])
+    .clipAngle(90)
+    .rotate(rotation);
+
+  fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+    .then(r=>r.json())
+    .then(world=>{
+      window._worldData=world;
+      fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json')
+        .then(r=>r.json()).then(us=>{
+          window._usData=us;
+          drawGlobe();
+        });
+    });
+
+  // Drag
+  globeCanvas.addEventListener('mousedown',e=>{isDragging=true;lastX=e.clientX;lastY=e.clientY;stopSpin()});
+  window.addEventListener('mousemove',e=>{
+    if(!isDragging)return;
+    const dx=e.clientX-lastX, dy=e.clientY-lastY;
+    rotation[0]+=dx*0.4;rotation[1]-=dy*0.4;
+    rotation[1]=Math.max(-80,Math.min(80,rotation[1]));
+    lastX=e.clientX;lastY=e.clientY;
+    globeProj.rotate(rotation);drawGlobe();
+  });
+  window.addEventListener('mouseup',()=>isDragging=false);
+
+  // Touch
+  let lastTX=0,lastTY=0;
+  globeCanvas.addEventListener('touchstart',e=>{e.preventDefault();const t=e.touches[0];lastTX=t.clientX;lastTY=t.clientY;stopSpin()},{passive:false});
+  globeCanvas.addEventListener('touchmove',e=>{
+    e.preventDefault();const t=e.touches[0];
+    const dx=t.clientX-lastTX,dy=t.clientY-lastTY;
+    rotation[0]+=dx*0.4;rotation[1]-=dy*0.4;
+    rotation[1]=Math.max(-80,Math.min(80,rotation[1]));
+    lastTX=t.clientX;lastTY=t.clientY;
+    globeProj.rotate(rotation);drawGlobe();
+  },{passive:false});
+
+  window.addEventListener('resize',()=>{sizeGlobe();drawGlobe()});
+}
+
+function getGlobeR(){
+  const wrap=document.getElementById('globe-wrap');
+  const s=Math.min(wrap.clientWidth,wrap.clientHeight)*0.44*globeScale;
+  return Math.max(100,s);
+}
+
+function sizeGlobe(){
+  const wrap=document.getElementById('globe-wrap');
+  const size=Math.min(wrap.clientWidth,wrap.clientHeight)*0.9;
+  globeCanvas.width=wrap.clientWidth;
+  globeCanvas.height=wrap.clientHeight;
+  if(globeProj){
+    globeProj.scale(getGlobeR()).translate([globeCanvas.width/2,globeCanvas.height/2]);
+  }
+}
+
+function drawGlobe(){
+  if(!globeCtx||!globeProj||!window._worldData)return;
+  const ctx=globeCtx;
+  const W=globeCanvas.width,H=globeCanvas.height;
+  const cx=W/2,cy=H/2,R=getGlobeR();
+  ctx.clearRect(0,0,W,H);
+
+  // Ocean
+  ctx.beginPath();ctx.arc(cx,cy,R,0,2*Math.PI);
+  ctx.fillStyle='#060e0d';ctx.fill();
+  ctx.strokeStyle='#0d2421';ctx.lineWidth=1;ctx.stroke();
+
+  // Subtle grid lines
+  const path=d3.geoPath().projection(globeProj).context(ctx);
+  ctx.beginPath();path(d3.geoGraticule()());
+  ctx.strokeStyle='rgba(32,253,240,0.04)';ctx.lineWidth=0.5;ctx.stroke();
+
+  // Countries
+  const countries=topojson.feature(window._worldData,window._worldData.objects.countries);
+  ctx.beginPath();path({type:'FeatureCollection',features:countries.features});
+  ctx.fillStyle='#16181c';ctx.fill();
+  ctx.strokeStyle='#1e2228';ctx.lineWidth=0.4;ctx.stroke();
+
+  // US states (if visible)
+  if(window._usData){
+    const states=topojson.feature(window._usData,window._usData.objects.states);
+    ctx.beginPath();path({type:'FeatureCollection',features:states.features});
+    ctx.fillStyle='#1c1f25';ctx.fill();
+    ctx.strokeStyle='#2a2d35';ctx.lineWidth=0.6;ctx.stroke();
+  }
+
+  // Outline
+  ctx.beginPath();ctx.arc(cx,cy,R,0,2*Math.PI);
+  ctx.strokeStyle='rgba(32,253,240,0.18)';ctx.lineWidth=1.5;ctx.stroke();
+
+  // Pins
+  CUSTOMERS.forEach(c=>{
+    const ll=c.lat&&c.lon?[c.lon,c.lat]:STATE_CENTROIDS[c.state];
+    if(!ll)return;
+    const pt=globeProj(ll);
+    if(!pt)return;
+    const[px,py]=pt;
+    const sz=psize(c.orders)*0.75;
+    // Check if on visible side
+    const rot=globeProj.rotate();
+    const lon=ll[0],lat=ll[1];
+    const rLon=lon+rot[0],rLat=lat+rot[1];
+    const visible=Math.cos(rLat*Math.PI/180)*Math.cos(rLon*Math.PI/180)>0;
+    if(!visible)return;
+
+    ctx.save();
+    ctx.translate(px,py);
+    ctx.beginPath();
+    for(let i=0;i<6;i++){
+      const a=Math.PI/180*(60*i-30);
+      i===0?ctx.moveTo(sz*Math.cos(a),sz*Math.sin(a)):ctx.lineTo(sz*Math.cos(a),sz*Math.sin(a));
+    }
+    ctx.closePath();
+    ctx.fillStyle=CONFIG.pinColor;
+    ctx.globalAlpha=0.85;
+    ctx.fill();
+    ctx.globalAlpha=1;
+    ctx.restore();
+  });
+}
+
+function toggleSpin(){
+  if(spinning){stopSpin()}else{startSpin()}
+}
+function startSpin(){
+  spinning=true;
+  document.getElementById('spin-btn').classList.add('spinning');
+  document.getElementById('spin-btn').textContent='Stop';
+  function frame(){
+    if(!spinning)return;
+    rotation[0]+=0.3;
+    globeProj.rotate(rotation);
+    drawGlobe();
+    spinRAF=requestAnimationFrame(frame);
+  }
+  spinRAF=requestAnimationFrame(frame);
+}
+function stopSpin(){
+  spinning=false;
+  if(spinRAF)cancelAnimationFrame(spinRAF);
+  const btn=document.getElementById('spin-btn');
+  if(btn){btn.classList.remove('spinning');btn.textContent='Spin'}
+}
+function zoomGlobe(f){
+  globeScale=Math.max(0.4,Math.min(2,globeScale*f));
+  globeProj.scale(getGlobeR());
+  drawGlobe();
+}
+
+/* ── LIST VIEW ── */
+let listFilter='';
+function renderList(){
+  const q=listFilter.toLowerCase();
+  const filtered=CUSTOMERS.filter(c=>{
+    const matchState=!stateFilter||c.state===stateFilter;
+    const matchQ=!q||fmt(c.first,c.lastInitial).toLowerCase().includes(q)||c.city.toLowerCase().includes(q)||c.state.toLowerCase().includes(q);
+    return matchState&&matchQ;
+  }).sort((a,b)=>b.orders-a.orders);
+
+  document.getElementById('list-count').textContent=`${filtered.length} customer${filtered.length!==1?'s':''}`;
+  document.getElementById('list-grid').innerHTML=filtered.map(c=>`
+    <div class="list-card">
+      <div class="lc-name">${fmt(c.first,c.lastInitial)}</div>
+      <div class="lc-loc">${c.city}, ${c.state}</div>
+      <div class="lc-bottom">
+        <div><div class="lc-orders">${c.orders}</div><div class="lc-orders-lbl">order${c.orders!==1?'s':''}</div></div>
+        <span class="ci-src src-${c.source}">${c.source}</span>
+      </div>
+    </div>`).join('');
+}
+function filterList(){
+  listFilter=document.getElementById('list-search').value;
+  renderList();
+}
+function filterByState(state){
+  stateFilter=state;
+  const sf=document.getElementById('state-filter');
+  document.getElementById('sf-label').textContent=state;
+  sf.classList.add('visible');
+  setView('list');
+  renderList();
+}
+function clearStateFilter(){
+  stateFilter=null;
+  document.getElementById('state-filter').classList.remove('visible');
+  renderList();
+}
+
+/* ── VIEW SWITCHING ── */
+let globeInited=false;
+function setView(v){
+  currentView=v;
+  ['map','globe','list'].forEach(id=>{
+    document.getElementById(`panel-${id}`).classList.toggle('active',id===v);
+    document.getElementById(`btn-${id}`).classList.toggle('active',id===v);
+  });
+  if(v==='globe'&&!globeInited){globeInited=true;initGlobe()}
+  if(v==='list')renderList();
+  if(v!=='globe')stopSpin();
+}
+
+/* ── BOOT ── */
 renderStats();
 drawStates();
 </script>
