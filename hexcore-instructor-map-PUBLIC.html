@@ -219,7 +219,23 @@ footer{border-top:1px solid var(--border);background:var(--dark);padding:1.75rem
 /* ============================================================
    DATA — Replace this block with export from ADMIN tool
    ============================================================ */
-const INSTRUCTORS = [];
+const _d = "W3siZyI6MSwiYSI6IlMzbHNaUT09IiwiYiI6IlYzSnZZbXhsYzJ0cCIsImMiOiJUbVYzY0c5eWRBPT0iLCJkIjoiVFdsamFHbG5ZVzQ9IiwiZSI6IlYyVWdZWEpsSUdFZ2NISmxiV2xsY2lCbWFYSmxZWEp0Y3lCaGJtUWdkR0ZqZEdsamN5QjBjbUZwYm1sdVp5QmpiMjF3WVc1NUxpQlhaU0JvWVhabElEWWdhVzV6ZEhKMVkzUnZjbk1nZDJsMGFDQmhJR052YldKcGJtVmtJR1Y0Y0dWeWFXVnVZMlVnYjJZZ2IzWmxjaUE1TUNCNVpXRnljeTRnVjJVZ1lYSmxJR0ZzYkNCamIyMWlZWFFnZG1WMGN5d2dkMlVnYUdGMlpTQmxlSEJsY21sbGJtTmxJR2x1SUhKbFlXd2dkMjl5YkdRZ1kyOXVabXhwWTNSekxDQmpiMjF3WlhScGRHbHZiaUJ6YUc5dmRHbHVaeUJoYm1RZ2JXOXlaUzRnVjJVZ2RHVmhZMmdnWVd4c0lHOTJaWElnWm5KdmJTQk5hV05vYVdkaGJpQjBieUJVWlc1dVpYTnpaV1VnZEc4Z1RtOXlkR2dnUTJGeWIyeHBibUV1IiwiZiI6IiIsImgiOiJhSFIwY0hNNkx5OTNkM2N1Wm1GalpXSnZiMnN1WTI5dEwzTm9ZWEpsTHpGaVJUZDFUV1E1ZURNdiIsImsiOiIiLCJpIjo0Mi4wMDI0ODE0MzkyNDI3MTUsImoiOjgzLjMwOTIwNzY3OTM3NjE5LCJtIjoiTWlCV1pYUnpJRVJsZG1Wc2IzQnRaVzUwSUVkeWIzVnciLCJuIjoiVUdWeVptOXliV0Z1WTJVZ1VHbHpkRzlzZkZCbGNtWnZjbTFoYm1ObElFTmhjbUpwYm1WOFRHOTNJRXhwWjJoMEwwNXBaMmgwSUZOb2IyOTBhVzVuZkVOUlFpQnliMjl0SUdOc1pXRnlhVzVuZkdOdmJXSmhkQ0J0WldScFkyRnMiLCJvIjoiUW05MGFBPT0iLCJwIjoiUW05MGFBPT0iLCJxIjoiVlZORFEwRWdZVzVrSUU1U1FTQmpaWEowYVdacFkyRjBaWE09IiwiciI6Ikt6RXpNVE15T0RNNE1UUTMiLCJzIjoiIiwidCI6ImFIUjBjSE02THk4eWRtUm5MbTl5Wnc9PSIsInUiOiJWSGx3YVdOaGJHeDVJSGRsWld0bGJtUnpMQ0J2Y2lCaWVTQmhjSEJ2YVc1MGJXVnVkQT09IiwidiI6IkpESTFNQ0IwYnlBa05EQXciLCJ3IjoiUlc1bmJHbHphQT09In1d";
+
+function _x(s){try{return atob(s)}catch(e){return s}}
+function _decode(raw){
+  try {
+    return JSON.parse(_x(raw)).map(r=>({
+      id:r.g, first:_x(r.a), last:_x(r.b),
+      city:_x(r.c), state:_x(r.d), bio:_x(r.e),
+      instagram:_x(r.f), facebook:_x(r.h), youtube:_x(r.k),
+      lat:r.i||null, lon:r.j||null,
+      biz:_x(r.m), courses:_x(r.n).split('|').filter(Boolean), type:_x(r.o), format:_x(r.p),
+      certs:_x(r.q), phone:_x(r.r), email:_x(r.s), website:_x(r.t),
+      schedule:_x(r.u), price:_x(r.v), langs:_x(r.w)
+    }));
+  } catch(e){ return []; }
+}
+const INSTRUCTORS = _decode(_d);
 
 /* ============================================================
    STATE CENTROIDS
