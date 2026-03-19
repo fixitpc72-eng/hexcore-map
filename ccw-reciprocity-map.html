@@ -9,14 +9,14 @@
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 <style>
 :root{--black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;--text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--cyan:#22d3ee;--font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif}
-*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%;overflow:hidden}
-body{background:var(--black);color:var(--text);font-family:var(--font-body);display:flex;flex-direction:column}
-header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;flex-shrink:0;gap:1rem}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);display:flex;flex-direction:column;min-height:100vh}
+header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;flex-shrink:0;gap:1rem;position:sticky;top:0;z-index:100}
 .logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);white-space:nowrap;cursor:pointer;transition:opacity .15s}.logo:hover{opacity:.8}.logo span{color:var(--accent)}
 .header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;white-space:nowrap}
 .header-center{display:flex;align-items:center;gap:10px;flex:1;justify-content:center;max-width:420px}
 .state-select{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:7px 12px;color:var(--text);font-family:var(--font-body);font-size:14px;font-weight:500;outline:none;cursor:pointer;flex:1;max-width:300px;transition:border-color .15s}.state-select:focus{border-color:var(--accent)}.state-select option{background:var(--card);color:var(--text)}
-.layout{display:grid;grid-template-columns:300px 1fr;flex:1;min-height:0}
+.layout{display:grid;grid-template-columns:300px 1fr;height:100vh;min-height:0}
 .sidebar{background:var(--dark);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
 .sidebar-hdr{padding:1rem 1.25rem .75rem;border-bottom:1px solid var(--border);flex-shrink:0}
 .sidebar-title{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
@@ -84,7 +84,65 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.
 .disclaimer{margin-top:1rem;padding:10px;background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.15);border-radius:5px;font-size:10px;color:var(--sub);line-height:1.5}.disclaimer strong{color:var(--yellow);font-weight:700}
 .map-instruction{position:absolute;bottom:1rem;right:1rem;background:rgba(22,24,28,.9);border:1px solid var(--border);border-radius:6px;padding:8px 14px;backdrop-filter:blur(4px);font-size:11px;color:var(--sub);display:flex;align-items:center;gap:6px;z-index:5}
 .set-permit-btn{width:100%;padding:10px;background:rgba(32,253,240,.1);border:1px solid rgba(32,253,240,.3);border-radius:5px;color:var(--accent);font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .15s}.set-permit-btn:hover{background:rgba(32,253,240,.18)}
-@media(max-width:900px){html,body{height:auto;overflow:auto}.layout{grid-template-columns:1fr;height:auto}.map-area{height:50vw;min-height:250px;max-height:380px;order:1}.sidebar{order:2;height:auto;overflow:visible}.sidebar-body{overflow:visible;padding:.9rem}.stats-grid{grid-template-columns:repeat(4,1fr);gap:5px}.stat-card.full{grid-column:span 4}.stat-num{font-size:20px}.map-tagline{display:none}header{padding:0 .75rem;height:50px;gap:.5rem}.logo{font-size:16px}.state-select{font-size:13px;padding:6px 8px}.header-badge{font-size:10px;padding:3px 8px}.detail-overlay{width:calc(100% - 2rem);left:1rem}.map-instruction{display:none}}
+
+/* ── HOW-TO GUIDE ── */
+.guide{position:relative;z-index:1;background:var(--black);border-top:1px solid var(--border)}
+.guide::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(32,253,240,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(32,253,240,.012) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.guide-inner{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:3.5rem 2rem 3rem}
+.guide-hero{text-align:center;margin-bottom:3rem;padding-bottom:2.5rem;border-bottom:1px solid var(--border)}
+.guide-eyebrow{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:8px}
+.guide-eyebrow::before,.guide-eyebrow::after{content:'';width:30px;height:1px;background:var(--accent);opacity:.4}
+.guide-title{font-family:var(--font-head);font-weight:900;font-size:48px;text-transform:uppercase;letter-spacing:.02em;line-height:1;color:#fff;margin-bottom:1rem}
+.guide-title .ga{color:var(--accent)}
+.guide-sub{font-size:16px;color:var(--sub);line-height:1.6;max-width:580px;margin:0 auto}
+.g-steps{display:flex;flex-direction:column;gap:2.5rem;margin-bottom:3rem}
+.g-step{display:grid;grid-template-columns:64px 1fr;gap:1.25rem;align-items:start}
+.gs-num-wrap{display:flex;flex-direction:column;align-items:center}
+.gs-num{width:52px;height:52px;background:var(--card);border:2px solid var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:26px;font-weight:900;color:var(--accent)}
+.gs-line{width:2px;flex:1;background:linear-gradient(to bottom,var(--accent),transparent);margin-top:8px;min-height:30px;opacity:.2}
+.g-step:last-child .gs-line{display:none}
+.gs-title{font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:6px}
+.gs-desc{font-size:14px;color:var(--sub);line-height:1.6;margin-bottom:10px}
+.gs-visual{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.15rem;margin-top:8px}
+.gs-note{font-size:11px;color:var(--muted);margin-top:8px}
+.gm-state{display:inline-flex;align-items:center;gap:6px;background:rgba(32,253,240,.08);border:1px solid rgba(32,253,240,.2);border-radius:5px;padding:6px 14px;font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.gm-dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.gm-colors{display:flex;gap:8px;flex-wrap:wrap}
+.gm-ci{display:flex;align-items:center;gap:6px;background:var(--dark);border:1px solid var(--border);border-radius:5px;padding:7px 12px}
+.gm-sw{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+.gm-cl{font-size:12px;font-weight:600;color:var(--text)}
+.gm-rows{display:flex;flex-direction:column;gap:4px}
+.gm-row{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--dark);border:1px solid var(--border);border-radius:4px}
+.gm-rl{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.gm-rv{font-size:13px;color:var(--text);font-weight:600}
+.gm-rv.num{font-family:var(--font-head);font-size:18px;font-weight:900}
+.gm-detail{background:var(--dark);border:1px solid var(--border);border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.gm-dt{font-family:var(--font-head);font-size:18px;font-weight:900;text-transform:uppercase;color:#fff}
+.gm-ds{display:inline-block;padding:4px 10px;border-radius:4px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.25);width:fit-content}
+.gm-dd{font-size:12px;color:var(--sub);line-height:1.5}
+.g-colors{background:var(--dark);border:1px solid var(--border);border-radius:10px;padding:2rem;margin-bottom:2.5rem}
+.gc-title{font-family:var(--font-head);font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:#fff;margin-bottom:1.25rem;text-align:center}
+.gc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gc-item{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px}
+.gc-sw{width:20px;height:20px;border-radius:4px;flex-shrink:0;margin-top:2px}
+.gc-label{font-family:var(--font-head);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--text);margin-bottom:2px}
+.gc-desc{font-size:12px;color:var(--sub);line-height:1.4}
+.g-tips{margin-bottom:2.5rem}
+.gt-title{font-family:var(--font-head);font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:#fff;margin-bottom:1.25rem;text-align:center}
+.gt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gt-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.15rem;display:flex;gap:12px;align-items:flex-start}
+.gt-icon{font-size:20px;flex-shrink:0;width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:rgba(32,253,240,.06);border:1px solid rgba(32,253,240,.12);border-radius:6px}
+.gt-text{font-size:13px;color:var(--sub);line-height:1.5}
+.gt-text strong{color:var(--text);font-weight:600}
+.g-cta{text-align:center;padding:2.5rem 2rem;background:var(--dark);border:1px solid var(--border);border-radius:10px;margin-bottom:1.5rem}
+.g-cta-title{font-family:var(--font-head);font-size:26px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:.5rem}
+.g-cta-desc{font-size:14px;color:var(--sub);margin-bottom:1.25rem}
+.g-cta-btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:12px 28px;border-radius:6px;border:none;cursor:pointer;text-decoration:none;transition:all .2s}
+.g-cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(32,253,240,.25)}
+.g-disclaimer{padding:12px 16px;background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.15);border-radius:6px;font-size:11px;color:var(--sub);line-height:1.5;text-align:center}
+.g-disclaimer strong{color:var(--yellow);font-weight:700}
+.g-footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;font-size:12px;color:var(--muted)}
+@media(max-width:900px){.layout{grid-template-columns:1fr;height:auto}.map-area{height:50vw;min-height:250px;max-height:380px;order:1}.sidebar{order:2;height:auto;overflow:visible}.sidebar-body{overflow:visible;padding:.9rem}.stats-grid{grid-template-columns:repeat(4,1fr);gap:5px}.stat-card.full{grid-column:span 4}.stat-num{font-size:20px}.map-tagline{display:none}header{padding:0 .75rem;height:50px;gap:.5rem}.logo{font-size:16px}.state-select{font-size:13px;padding:6px 8px}.header-badge{font-size:10px;padding:3px 8px}.detail-overlay{width:calc(100% - 2rem);left:1rem}.map-instruction{display:none}.guide-inner{padding:2rem 1.25rem}.guide-title{font-size:32px}.gc-grid,.gt-grid{grid-template-columns:1fr}.g-step{grid-template-columns:48px 1fr;gap:1rem}.gs-num{width:42px;height:42px;font-size:20px}.gs-title{font-size:18px}.gm-colors{flex-direction:column}}
 @media(max-width:500px){.stats-grid{grid-template-columns:1fr 1fr}.stat-card.full{grid-column:span 2}.header-center{max-width:200px}.header-badge{display:none}}
 </style>
 </head>
@@ -96,7 +154,10 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.
       <option value="">— Or Select Permit State —</option>
     </select>
   </div>
-  <div class="header-badge">Reciprocity Map</div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <a href="#how-to-use" style="font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);text-decoration:none;white-space:nowrap;transition:color .15s" onmouseover="this.style.color='#20FDF0'" onmouseout="this.style.color='#7a7f8e'">How to Use ↓</a>
+    <div class="header-badge">Reciprocity Map</div>
+  </div>
 </header>
 <div class="layout">
   <div class="sidebar">
@@ -127,6 +188,141 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.
     </div>
   </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- HOW TO USE GUIDE                                           -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="guide" id="how-to-use">
+  <div class="guide-inner">
+
+    <div class="guide-hero">
+      <div class="guide-eyebrow">Quick Start Guide</div>
+      <h2 class="guide-title">How to Use the <span class="ga">Map</span></h2>
+      <p class="guide-sub">Three clicks to know where you can legally carry. Here's everything you need to get the most out of the reciprocity map above.</p>
+    </div>
+
+    <div class="g-steps">
+
+      <div class="g-step">
+        <div class="gs-num-wrap"><div class="gs-num">1</div><div class="gs-line"></div></div>
+        <div>
+          <div class="gs-title">Click Your Permit State</div>
+          <p class="gs-desc">Click directly on the state where your concealed carry permit was issued. This sets it as your "home" state and instantly colors the entire map. You can also use the dropdown in the header.</p>
+          <div class="gs-visual">
+            <p style="font-size:12px;color:var(--sub);margin-bottom:8px">Example — selecting Florida:</p>
+            <div class="gm-state"><div class="gm-dot"></div> Florida (FL) — Permit State</div>
+            <p class="gs-note">The sidebar fills with your state's permit details, stats, and categorized state lists.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="g-step">
+        <div class="gs-num-wrap"><div class="gs-num">2</div><div class="gs-line"></div></div>
+        <div>
+          <div class="gs-title">Read the Color-Coded Map</div>
+          <p class="gs-desc">Every state lights up showing whether they honor your permit, offer constitutional carry, have restrictions, or don't recognize your permit at all.</p>
+          <div class="gs-visual">
+            <div class="gm-colors">
+              <div class="gm-ci"><div class="gm-sw" style="background:var(--accent)"></div><span class="gm-cl">Your State</span></div>
+              <div class="gm-ci"><div class="gm-sw" style="background:var(--green)"></div><span class="gm-cl">Honors</span></div>
+              <div class="gm-ci"><div class="gm-sw" style="background:var(--cyan)"></div><span class="gm-cl">Const. Carry</span></div>
+              <div class="gm-ci"><div class="gm-sw" style="background:var(--yellow)"></div><span class="gm-cl">Restricted</span></div>
+              <div class="gm-ci"><div class="gm-sw" style="background:var(--red)"></div><span class="gm-cl">No Honor</span></div>
+            </div>
+            <p class="gs-note">Hover over any state to see a quick tooltip with its status and basic info.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="g-step">
+        <div class="gs-num-wrap"><div class="gs-num">3</div><div class="gs-line"></div></div>
+        <div>
+          <div class="gs-title">Click Any State for Full Details</div>
+          <p class="gs-desc">With your permit state set, click another state to open a detail panel on the right with that state's full carry laws — permit type, constitutional carry, open carry, training, duty to inform, and official resource links.</p>
+          <div class="gs-visual">
+            <p style="font-size:12px;color:var(--sub);margin-bottom:8px">Example — clicking Texas with Florida as permit state:</p>
+            <div class="gm-detail">
+              <div class="gm-dt">Texas</div>
+              <div class="gm-ds">Constitutional Carry (No Permit Needed)</div>
+              <div class="gm-rows" style="margin-top:4px">
+                <div class="gm-row"><span class="gm-rl">Permit Type</span><span class="tag tag-blue">Shall-Issue</span></div>
+                <div class="gm-row"><span class="gm-rl">Const. Carry</span><span class="tag tag-green">Yes (2021)</span></div>
+                <div class="gm-row"><span class="gm-rl">Open Carry</span><span class="gm-rv">Legal</span></div>
+                <div class="gm-row"><span class="gm-rl">Duty to Inform</span><span class="tag tag-yellow">Yes</span></div>
+              </div>
+              <div class="gm-dd" style="margin-top:6px">Constitutional carry since 2021. LTC still available for reciprocity. 30.06/30.07 signage carries force of law.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="g-step">
+        <div class="gs-num-wrap"><div class="gs-num">4</div><div class="gs-line"></div></div>
+        <div>
+          <div class="gs-title">Use the Sidebar Lists</div>
+          <p class="gs-desc">The left sidebar shows how many states honor your permit, how many don't, and sorted lists by category. Click any state in the sidebar to jump to its detail panel.</p>
+          <div class="gs-visual">
+            <div class="gm-rows">
+              <div class="gm-row"><span class="gm-rl">States That Honor</span><span class="gm-rv num" style="color:var(--green)">36</span></div>
+              <div class="gm-row"><span class="gm-rl">Don't Honor</span><span class="gm-rv num" style="color:var(--red)">9</span></div>
+              <div class="gm-row"><span class="gm-rl">Constitutional Carry</span><span class="gm-rv num" style="color:var(--accent)">24</span></div>
+              <div class="gm-row"><span class="gm-rl">Restricted</span><span class="gm-rv num" style="color:var(--yellow)">2</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="g-step">
+        <div class="gs-num-wrap"><div class="gs-num">5</div></div>
+        <div>
+          <div class="gs-title">Switch or Reset Anytime</div>
+          <p class="gs-desc">Click your selected permit state again to deselect and reset the map. Or use the <strong>"← Back to Overview"</strong> button in the sidebar. You can also click <strong>"Set as My Permit State"</strong> in any state's detail panel to switch on the fly.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Color Guide -->
+    <div class="g-colors">
+      <div class="gc-title">What the Colors Mean</div>
+      <div class="gc-grid">
+        <div class="gc-item"><div class="gc-sw" style="background:var(--accent)"></div><div><div class="gc-label">Cyan — Your State</div><div class="gc-desc">The state where your permit was issued. Your home base on the map.</div></div></div>
+        <div class="gc-item"><div class="gc-sw" style="background:var(--green)"></div><div><div class="gc-label">Green — Honors Your Permit</div><div class="gc-desc">Recognizes your CCW permit. You can carry legally, but follow their state laws.</div></div></div>
+        <div class="gc-item"><div class="gc-sw" style="background:var(--cyan)"></div><div><div class="gc-label">Teal — Constitutional Carry</div><div class="gc-desc">No permit required. Anyone legally allowed to possess a firearm can carry concealed.</div></div></div>
+        <div class="gc-item"><div class="gc-sw" style="background:var(--yellow)"></div><div><div class="gc-label">Yellow — Restricted / Partial</div><div class="gc-desc">May honor your permit with additional conditions. Research carefully before carrying.</div></div></div>
+        <div class="gc-item"><div class="gc-sw" style="background:var(--red)"></div><div><div class="gc-label">Red — Does Not Honor</div><div class="gc-desc">Does not recognize your permit. Do not carry without their state-specific license.</div></div></div>
+        <div class="gc-item"><div class="gc-sw" style="background:var(--muted)"></div><div><div class="gc-label">Grey — Default</div><div class="gc-desc">No permit state selected yet. Click a state on the map to get started.</div></div></div>
+      </div>
+    </div>
+
+    <!-- Pro Tips -->
+    <div class="g-tips">
+      <div class="gt-title">Pro Tips</div>
+      <div class="gt-grid">
+        <div class="gt-card"><div class="gt-icon">🔗</div><div class="gt-text"><strong>Check official sources.</strong> Always verify reciprocity with the destination state's official website before traveling. Laws change frequently.</div></div>
+        <div class="gt-card"><div class="gt-icon">📋</div><div class="gt-text"><strong>Know the local rules.</strong> Even in states that honor your permit, you must follow their laws — magazine limits, ammo restrictions, prohibited locations, and signage rules.</div></div>
+        <div class="gt-card"><div class="gt-icon">🛣️</div><div class="gt-text"><strong>Plan your route.</strong> If driving through multiple states, check each one along your path. A single "no honor" state can mean serious legal trouble.</div></div>
+        <div class="gt-card"><div class="gt-icon">📱</div><div class="gt-text"><strong>Use the dropdown too.</strong> On mobile or smaller screens, the header dropdown is the fastest way to select your permit state.</div></div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="g-cta">
+      <div class="g-cta-title">Ready to Check Your Coverage?</div>
+      <p class="g-cta-desc">Scroll up, click your state, and see where your permit is recognized in seconds.</p>
+      <a class="g-cta-btn" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Back to Map</a>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="g-disclaimer">
+      <strong>⚠ Disclaimer:</strong> This map and guide are for informational purposes only and do not constitute legal advice. Concealed carry laws change frequently. Always verify current reciprocity with official state sources before traveling with a firearm.
+    </div>
+
+  </div>
+</div>
+
+<div class="g-footer">© 2026 HexCore Mounts — All rights reserved.</div>
+
 <script>
 const S={
 "Alabama":{a:"AL",f:"01",pt:"Shall-Issue",cc:!0,cy:2023,age:21,tr:!1,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2023. Still issues permits for reciprocity.",l:"https://www.alabamaag.gov/"},
