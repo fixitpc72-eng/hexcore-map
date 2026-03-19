@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HexCore Mounts — Instructor Map (Admin)</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<style>
+:root{--black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;--text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#16a34a;--red:#ef4444;--yellow:#eab308;--blue:#2563eb;--blue-light:#3b82f6;--ig:#e1306c;--fb:#1877f2;--yt:#ff0000;--pin-color:#20FDF0;--pin-color-hl:#ffffff;--font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh}
+
+/* ── GATE ── */
+.gate{position:fixed;inset:0;background:var(--black);display:flex;align-items:center;justify-content:center;z-index:999}
+.gate-box{background:var(--dark);border:1px solid var(--border);border-radius:10px;padding:2.5rem;text-align:center;width:340px}
+.gate-title{font-family:var(--font-head);font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--text);margin-bottom:6px}
+.gate-title span{color:var(--accent)}
+.gate-sub{font-size:13px;color:var(--sub);margin-bottom:1.5rem}
+.gate-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:11px 14px;color:var(--text);font-size:15px;text-align:center;outline:none;margin-bottom:10px;font-family:var(--font-body);letter-spacing:.1em}
+.gate-input:focus{border-color:var(--accent)}
+.gate-btn{width:100%;padding:11px;background:var(--accent);border:none;border-radius:5px;color:var(--black);font-family:var(--font-head);font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.gate-err{color:var(--red);font-size:12px;margin-top:8px;display:none}
+
+/* ── HEADER ── */
+header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-family:var(--font-head);font-weight:900;font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--text)}
+.logo span{color:var(--accent)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px}
+
+/* ── LAYOUT ── */
+.layout{display:grid;grid-template-columns:380px 1fr;height:calc(100vh - 60px)}
+.sidebar{background:var(--dark);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-tabs{display:flex;border-bottom:1px solid var(--border)}
+.stab{flex:1;padding:13px 4px;text-align:center;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--sub);cursor:pointer;border:none;border-bottom:2px solid transparent;transition:all .2s;background:none}
+.stab:hover{color:var(--text)}
+.stab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.sidebar-content{flex:1;overflow-y:auto;padding:1.25rem;scrollbar-width:thin;scrollbar-color:var(--muted) transparent}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ── STATS ── */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.25rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px 14px}
+.stat-card.full{grid-column:span 2}
+.stat-num{font-family:var(--font-head);font-size:28px;font-weight:900;color:var(--text);line-height:1}
+.stat-num.accent{color:var(--accent)}
+.stat-label{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
+
+/* ── FORMS ── */
+.section-label{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.6rem;margin-top:1rem}
+.section-label:first-child{margin-top:0}
+.form-row{margin-bottom:.75rem}
+.form-row label{display:block;font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.form-row input,.form-row select,.form-row textarea{width:100%;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:9px 12px;color:var(--text);font-family:var(--font-body);font-size:13px;outline:none;transition:border-color .15s}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:var(--accent)}
+.form-row select option{background:var(--card)}
+.form-row textarea{resize:vertical;min-height:70px}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+
+.submit-btn{width:100%;padding:11px;background:var(--accent);border:none;border-radius:5px;color:var(--black);font-family:var(--font-head);font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:opacity .15s;margin-top:.5rem}
+.submit-btn:hover{opacity:.85}
+.submit-btn.secondary{background:transparent;border:1px solid var(--blue-light);color:var(--blue-light);margin-top:.5rem}
+.submit-btn.danger{background:transparent;border:1px solid var(--red);color:var(--red);margin-top:.5rem}
+
+/* ── LIST ── */
+.search-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:8px 12px;color:var(--text);font-size:13px;outline:none;margin-bottom:.75rem;font-family:var(--font-body)}
+.search-input:focus{border-color:var(--accent)}
+.instructor-item{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.instructor-item:hover{border-color:var(--muted)}
+.instructor-item.highlighted{border-color:var(--accent)}
+.ii-top{display:flex;justify-content:space-between;align-items:flex-start}
+.ii-name{font-weight:600;font-size:13px;color:var(--text);margin-bottom:1px}
+.ii-biz{font-size:11px;color:var(--accent);margin-bottom:2px}
+.ii-loc{font-size:11px;color:var(--sub)}
+.ii-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
+.ii-tag{display:inline-block;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:rgba(32,253,240,.1);color:var(--accent);border:1px solid rgba(32,253,240,.2)}
+.ii-actions{display:flex;gap:4px;flex-shrink:0}
+.act-btn{background:none;border:none;color:var(--sub);cursor:pointer;padding:2px 4px;font-size:13px;transition:color .15s}
+.act-btn:hover{color:var(--accent)}
+.act-btn.del:hover{color:var(--red)}
+
+/* ── MAP ── */
+.map-area{background:var(--black);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#map-svg-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+#usa-svg{width:100%;height:100%;max-height:calc(100vh - 80px)}
+.map-tooltip{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 14px;pointer-events:none;display:none;z-index:20;min-width:200px;max-width:280px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.tt-name{font-weight:700;font-size:14px;color:var(--text);margin-bottom:1px}
+.tt-biz{font-size:11px;color:var(--accent);margin-bottom:3px}
+.tt-loc{font-size:11px;color:var(--sub);margin-bottom:5px}
+.tt-courses{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:5px}
+.tt-tag{display:inline-block;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:700;text-transform:uppercase;background:rgba(32,253,240,.1);color:var(--accent)}
+.tt-hint{font-size:10px;color:var(--muted);font-style:italic;margin-top:4px}
+.map-legend{position:absolute;bottom:1.25rem;left:1.25rem;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 14px}
+.map-legend-title{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:6px}
+.leg-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;font-size:11px;color:var(--sub)}
+.map-tagline{position:absolute;top:1.25rem;left:50%;transform:translateX(-50%);font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);white-space:nowrap;pointer-events:none}
+.map-count{position:absolute;top:1.25rem;right:1.25rem;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px 14px;font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.06em}
+
+/* ── EXPORT MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:200}
+.modal{background:var(--dark);border:1px solid var(--border);border-radius:10px;padding:2rem;width:90%;max-width:600px;max-height:80vh;overflow-y:auto}
+.modal-title{font-family:var(--font-head);font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--text);margin-bottom:1rem}
+.modal textarea{width:100%;height:200px;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:12px;color:var(--accent);font-family:monospace;font-size:11px;outline:none;resize:vertical}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--green);color:white;font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:12px 28px;border-radius:6px;z-index:300;transition:transform .3s ease;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── STORAGE INFO ── */
+.storage-info{font-size:11px;color:var(--sub);margin-top:.5rem;padding:8px 10px;background:var(--card);border:1px solid var(--border);border-radius:5px}
+
+@media(max-width:800px){
+  .layout{grid-template-columns:1fr;height:auto}
+  .map-area{height:50vw;min-height:250px;max-height:380px}
+  .sidebar{height:auto;overflow:visible}
+  .sidebar-content{overflow:visible}
+  header{padding:0 1rem}
+}
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div class="gate" id="gate">
+  <div class="gate-box">
+    <div class="gate-title">Hex<span>Core</span> Admin</div>
+    <div class="gate-sub">Instructor Map Management</div>
+    <input type="password" class="gate-input" id="pw-input" placeholder="Enter Password" onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="gate-btn" onclick="checkPw()">Access</button>
+    <div class="gate-err" id="pw-err">Incorrect password</div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Hex<span>Core</span> Instructor Map</div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <button class="submit-btn" style="width:auto;padding:8px 16px;font-size:12px;margin:0" onclick="exportPublicData()">Export Public</button>
+    <div class="header-badge">Admin</div>
+  </div>
+</header>
+
+<!-- MAIN LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-tabs">
+      <button class="stab active" onclick="showTab('add')">+ Add</button>
+      <button class="stab" onclick="showTab('list')">Instructors</button>
+      <button class="stab" onclick="showTab('settings')">Settings</button>
+    </div>
+    <div class="sidebar-content">
+
+      <!-- TAB: ADD -->
+      <div class="tab-panel active" id="tab-add">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-num accent" id="s-total">0</div><div class="stat-label">Instructors</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-states">0</div><div class="stat-label">States</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-courses">0</div><div class="stat-label">Courses Listed</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-range">0</div><div class="stat-label">Range Training</div></div>
+        </div>
+
+        <div class="section-label">Instructor Info</div>
+        <div class="form-grid-2">
+          <div class="form-row"><label>First Name *</label><input id="f-first" placeholder="John"></div>
+          <div class="form-row"><label>Last Name *</label><input id="f-last" placeholder="Smith"></div>
+        </div>
+        <div class="form-row"><label>Business / School Name</label><input id="f-biz" placeholder="Smith Firearms Training"></div>
+
+        <div class="section-label">Location</div>
+        <div class="form-grid-2">
+          <div class="form-row"><label>City *</label><input id="f-city" placeholder="Atlanta"></div>
+          <div class="form-row"><label>State *</label>
+            <select id="f-state"><option value="">Select State</option></select>
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row"><label>Latitude</label><input id="f-lat" type="number" step="any" placeholder="33.7490"></div>
+          <div class="form-row"><label>Longitude</label><input id="f-lon" type="number" step="any" placeholder="-84.3880"></div>
+        </div>
+
+        <div class="section-label">Contact</div>
+        <div class="form-grid-2">
+          <div class="form-row"><label>Phone</label><input id="f-phone" placeholder="(770) 555-1234"></div>
+          <div class="form-row"><label>Email</label><input id="f-email" placeholder="john@example.com"></div>
+        </div>
+        <div class="form-row"><label>Website</label><input id="f-website" placeholder="https://smithfirearms.com"></div>
+
+        <div class="section-label">Social Media</div>
+        <div class="form-grid-3">
+          <div class="form-row"><label>Instagram</label><input id="f-ig" placeholder="@handle"></div>
+          <div class="form-row"><label>Facebook</label><input id="f-fb" placeholder="URL or page name"></div>
+          <div class="form-row"><label>YouTube</label><input id="f-yt" placeholder="Channel URL"></div>
+        </div>
+
+        <div class="section-label">Training Details</div>
+        <div class="form-row"><label>Bio / Description</label><textarea id="f-bio" placeholder="Brief description of the instructor and their training programs..."></textarea></div>
+        <div class="form-row"><label>Certifications</label><input id="f-certs" placeholder="NRA, USCCA, Georgia POST, etc."></div>
+        <div class="form-row"><label>Courses Offered (comma separated)</label><input id="f-courses" placeholder="Basic Pistol, CCW/LTC, Defensive Rifle"></div>
+        <div class="form-grid-2">
+          <div class="form-row"><label>Training Type</label>
+            <select id="f-type"><option value="Both">Classroom & Range</option><option value="Classroom">Classroom Only</option><option value="Range">Range Only</option></select>
+          </div>
+          <div class="form-row"><label>Class Format</label>
+            <select id="f-format"><option value="Both">Group & Private</option><option value="Group">Group Only</option><option value="Private">Private Only</option></select>
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row"><label>Schedule / Dates</label><input id="f-schedule" placeholder="Saturdays monthly, by appt"></div>
+          <div class="form-row"><label>Price Range</label><input id="f-price" placeholder="$100–$250 or Contact"></div>
+        </div>
+        <div class="form-row"><label>Languages Spoken</label><input id="f-langs" placeholder="English, Spanish"></div>
+
+        <div class="section-label">Internal Notes</div>
+        <div class="form-row"><label>Certification # (internal)</label><input id="f-certnum" placeholder="For verification only"></div>
+        <div class="form-row"><label>Admin Notes (internal)</label><textarea id="f-notes" placeholder="Internal notes — not shown publicly"></textarea></div>
+
+        <button class="submit-btn" id="add-btn" onclick="addInstructor()">Add Instructor</button>
+        <button class="submit-btn secondary" id="cancel-edit-btn" style="display:none" onclick="cancelEdit()">Cancel Edit</button>
+      </div>
+
+      <!-- TAB: LIST -->
+      <div class="tab-panel" id="tab-list">
+        <input class="search-input" id="search" placeholder="Search instructors..." oninput="renderList()">
+        <div id="instructor-list"></div>
+      </div>
+
+      <!-- TAB: SETTINGS -->
+      <div class="tab-panel" id="tab-settings">
+        <div class="section-label">Export & Backup</div>
+        <button class="submit-btn" onclick="exportPublicData()">Export Public Data</button>
+        <button class="submit-btn secondary" onclick="downloadBackup()">Download JSON Backup</button>
+        <label class="submit-btn secondary" style="display:block;text-align:center;cursor:pointer;margin-top:.5rem">
+          Import JSON Backup
+          <input type="file" accept=".json" onchange="importBackup(event)" style="display:none">
+        </label>
+        <button class="submit-btn danger" onclick="clearAllData()">Clear All Data</button>
+        <div class="storage-info" id="storage-info"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="map-area">
+    <div class="map-tagline">HexCore Mounts — Instructor Map</div>
+    <div class="map-count" id="map-count">0 Instructors</div>
+    <div id="map-svg-wrap">
+      <svg id="usa-svg" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg">
+        <rect width="960" height="600" fill="#0a0a0a"/>
+        <g id="states-g"></g>
+        <g id="pins-g"></g>
+      </svg>
+    </div>
+    <div class="map-tooltip" id="map-tooltip"></div>
+    <div class="map-legend">
+      <div class="map-legend-title">Instructor</div>
+      <div class="leg-row">
+        <svg width="14" height="13" viewBox="-7 -6 14 13"><polygon points="0,-6 5.2,-3 5.2,3 0,6 -5.2,3 -5.2,-3" fill="var(--pin-color)"/></svg>
+        <span>Training Location</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- EXPORT MODAL -->
+<div class="modal-overlay" id="export-modal">
+  <div class="modal">
+    <div class="modal-title">Public Export Data</div>
+    <p style="font-size:12px;color:var(--sub);margin-bottom:1rem">Copy this code and paste it into the PUBLIC Instructor Map file, replacing the existing data block.</p>
+    <textarea id="export-text" readonly></textarea>
+    <div style="display:flex;gap:8px;margin-top:1rem">
+      <button class="submit-btn" id="copy-btn" onclick="copyExport()" style="flex:1">Copy to Clipboard</button>
+      <button class="submit-btn secondary" onclick="document.getElementById('export-modal').style.display='none'" style="flex:1">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+//  DATA LAYER
+// ══════════════════════════════════════════
+const ADMIN_PASSWORD = '420';
+const STORAGE_KEY = 'hexcore_instructors';
+let instructors = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+let nextId = instructors.length ? Math.max(...instructors.map(i=>i.id)) + 1 : 1;
+let editingId = null;
+let highlightedId = null;
+let projectionFn = null;
+
+const US_STATES = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"];
+
+const STATE_CENTROIDS = {
+  "Alabama":[-86.9023,32.3182],"Alaska":[-153.4937,61.3707],"Arizona":[-111.0937,34.0489],"Arkansas":[-92.3731,34.7999],
+  "California":[-119.4179,36.7783],"Colorado":[-105.3111,39.5501],"Connecticut":[-72.7554,41.6032],"Delaware":[-75.5071,38.9108],
+  "Florida":[-81.5158,27.6648],"Georgia":[-83.6431,32.6415],"Hawaii":[-155.5828,19.8968],"Idaho":[-114.7420,44.0682],
+  "Illinois":[-89.1965,40.6331],"Indiana":[-86.1349,40.2672],"Iowa":[-93.0977,41.8780],"Kansas":[-98.4842,38.5266],
+  "Kentucky":[-84.2700,37.8393],"Louisiana":[-91.9623,31.1695],"Maine":[-69.4455,45.2538],"Maryland":[-76.6413,39.0458],
+  "Massachusetts":[-71.3824,42.4072],"Michigan":[-85.6024,44.3148],"Minnesota":[-94.6859,46.7296],"Mississippi":[-89.3985,32.3547],
+  "Missouri":[-91.8318,37.9643],"Montana":[-110.3626,46.8797],"Nebraska":[-99.9018,41.4925],"Nevada":[-116.4194,38.8026],
+  "New Hampshire":[-71.5724,43.1939],"New Jersey":[-74.4057,40.0583],"New Mexico":[-106.2485,34.5199],"New York":[-74.9654,43.2994],
+  "North Carolina":[-79.0193,35.7596],"North Dakota":[-101.0020,47.5515],"Ohio":[-82.9071,40.4173],"Oklahoma":[-97.0929,35.4676],
+  "Oregon":[-120.5542,43.8041],"Pennsylvania":[-77.1945,41.2033],"Rhode Island":[-71.4774,41.5801],"South Carolina":[-80.9450,33.8361],
+  "South Dakota":[-99.9018,43.9695],"Tennessee":[-86.5804,35.5175],"Texas":[-99.3413,31.9686],"Utah":[-111.0937,39.3210],
+  "Vermont":[-72.5778,44.5588],"Virginia":[-78.6569,37.4316],"Washington":[-120.7401,47.7511],"West Virginia":[-80.4549,38.5976],
+  "Wisconsin":[-88.7879,43.7844],"Wyoming":[-107.2903,43.0760]
+};
+
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(instructors)); }
+
+// ══════════════════════════════════════════
+//  UI: TABS
+// ══════════════════════════════════════════
+function showTab(t) {
+  document.querySelectorAll('.stab').forEach((b,i) => { b.classList.toggle('active', ['add','list','settings'][i]===t); });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  if (t==='list') renderList();
+  if (t==='settings') updateStorageInfo();
+}
+
+// ══════════════════════════════════════════
+//  UI: ADD / EDIT
+// ══════════════════════════════════════════
+function addInstructor() {
+  const first = document.getElementById('f-first').value.trim();
+  const last = document.getElementById('f-last').value.trim();
+  const city = document.getElementById('f-city').value.trim();
+  const state = document.getElementById('f-state').value;
+  if (!first || !last || !city || !state) { showToast('First, Last, City, State required',true); return; }
+
+  const data = {
+    id: editingId || nextId++,
+    first, last,
+    biz: document.getElementById('f-biz').value.trim(),
+    city, state,
+    lat: parseFloat(document.getElementById('f-lat').value) || null,
+    lon: parseFloat(document.getElementById('f-lon').value) || null,
+    phone: document.getElementById('f-phone').value.trim(),
+    email: document.getElementById('f-email').value.trim(),
+    website: document.getElementById('f-website').value.trim(),
+    instagram: document.getElementById('f-ig').value.trim(),
+    facebook: document.getElementById('f-fb').value.trim(),
+    youtube: document.getElementById('f-yt').value.trim(),
+    bio: document.getElementById('f-bio').value.trim(),
+    certs: document.getElementById('f-certs').value.trim(),
+    courses: document.getElementById('f-courses').value.split(',').map(c=>c.trim()).filter(Boolean),
+    type: document.getElementById('f-type').value,
+    format: document.getElementById('f-format').value,
+    schedule: document.getElementById('f-schedule').value.trim(),
+    price: document.getElementById('f-price').value.trim(),
+    langs: document.getElementById('f-langs').value.trim(),
+    certnum: document.getElementById('f-certnum').value.trim(),
+    notes: document.getElementById('f-notes').value.trim(),
+    dateAdded: editingId ? (instructors.find(i=>i.id===editingId)||{}).dateAdded || new Date().toISOString() : new Date().toISOString(),
+    active: true
+  };
+
+  if (editingId) {
+    const idx = instructors.findIndex(i=>i.id===editingId);
+    if (idx>=0) instructors[idx] = data;
+    editingId = null;
+    document.getElementById('add-btn').textContent = 'Add Instructor';
+    document.getElementById('cancel-edit-btn').style.display = 'none';
+    showToast('Instructor updated!');
+  } else {
+    instructors.push(data);
+    showToast('Instructor added!');
+  }
+
+  save();
+  clearForm();
+  updateStats();
+  renderPins();
+}
+
+function editInstructor(id) {
+  const a = instructors.find(i=>i.id===id);
+  if (!a) return;
+  editingId = id;
+  document.getElementById('f-first').value = a.first||'';
+  document.getElementById('f-last').value = a.last||'';
+  document.getElementById('f-biz').value = a.biz||'';
+  document.getElementById('f-city').value = a.city||'';
+  document.getElementById('f-state').value = a.state||'';
+  document.getElementById('f-lat').value = a.lat||'';
+  document.getElementById('f-lon').value = a.lon||'';
+  document.getElementById('f-phone').value = a.phone||'';
+  document.getElementById('f-email').value = a.email||'';
+  document.getElementById('f-website').value = a.website||'';
+  document.getElementById('f-ig').value = a.instagram||'';
+  document.getElementById('f-fb').value = a.facebook||'';
+  document.getElementById('f-yt').value = a.youtube||'';
+  document.getElementById('f-bio').value = a.bio||'';
+  document.getElementById('f-certs').value = a.certs||'';
+  document.getElementById('f-courses').value = (a.courses||[]).join(', ');
+  document.getElementById('f-type').value = a.type||'Both';
+  document.getElementById('f-format').value = a.format||'Both';
+  document.getElementById('f-schedule').value = a.schedule||'';
+  document.getElementById('f-price').value = a.price||'';
+  document.getElementById('f-langs').value = a.langs||'';
+  document.getElementById('f-certnum').value = a.certnum||'';
+  document.getElementById('f-notes').value = a.notes||'';
+  document.getElementById('add-btn').textContent = 'Update Instructor';
+  document.getElementById('cancel-edit-btn').style.display = 'block';
+  showTab('add');
+}
+
+function cancelEdit() {
+  editingId = null;
+  clearForm();
+  document.getElementById('add-btn').textContent = 'Add Instructor';
+  document.getElementById('cancel-edit-btn').style.display = 'none';
+}
+
+function deleteInstructor(id) {
+  if (!confirm('Delete this instructor?')) return;
+  instructors = instructors.filter(i=>i.id!==id);
+  save(); updateStats(); renderPins(); renderList();
+  showToast('Instructor deleted');
+}
+
+function clearForm() {
+  ['f-first','f-last','f-biz','f-city','f-lat','f-lon','f-phone','f-email','f-website','f-ig','f-fb','f-yt','f-bio','f-certs','f-courses','f-schedule','f-price','f-langs','f-certnum','f-notes'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('f-state').value = '';
+  document.getElementById('f-type').value = 'Both';
+  document.getElementById('f-format').value = 'Both';
+}
+
+// ══════════════════════════════════════════
+//  UI: LIST
+// ══════════════════════════════════════════
+function renderList() {
+  const q = (document.getElementById('search').value||'').toLowerCase();
+  const el = document.getElementById('instructor-list');
+  const filtered = instructors.filter(a => {
+    const str = `${a.first} ${a.last} ${a.biz} ${a.city} ${a.state} ${(a.courses||[]).join(' ')}`.toLowerCase();
+    return str.includes(q);
+  });
+  if (!filtered.length) { el.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--sub);font-size:12px">No instructors found</div>'; return; }
+  el.innerHTML = filtered.map(a => `
+    <div class="instructor-item ${highlightedId===a.id?'highlighted':''}" onclick="highlightPin(${a.id})">
+      <div style="flex:1;min-width:0">
+        <div class="ii-name">${a.first} ${a.last}</div>
+        ${a.biz ? `<div class="ii-biz">${a.biz}</div>` : ''}
+        <div class="ii-loc">${a.city}, ${a.state}</div>
+        ${a.courses&&a.courses.length ? `<div class="ii-tags">${a.courses.map(c=>`<span class="ii-tag">${c}</span>`).join('')}</div>` : ''}
+      </div>
+      <div class="ii-actions">
+        <button class="act-btn" onclick="event.stopPropagation();editInstructor(${a.id})" title="Edit">✎</button>
+        <button class="act-btn del" onclick="event.stopPropagation();deleteInstructor(${a.id})" title="Delete">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+function highlightPin(id) {
+  highlightedId = highlightedId===id ? null : id;
+  renderPins();
+  renderList();
+}
+
+// ══════════════════════════════════════════
+//  STATS
+// ══════════════════════════════════════════
+function updateStats() {
+  document.getElementById('s-total').textContent = instructors.length;
+  document.getElementById('s-states').textContent = new Set(instructors.map(a=>a.state)).size;
+  const allCourses = instructors.flatMap(a=>a.courses||[]);
+  document.getElementById('s-courses').textContent = new Set(allCourses).size;
+  document.getElementById('s-range').textContent = instructors.filter(a=>a.type==='Range'||a.type==='Both').length;
+  document.getElementById('map-count').textContent = instructors.length + ' Instructor' + (instructors.length!==1?'s':'');
+}
+
+function updateStorageInfo() {
+  const bytes = new Blob([JSON.stringify(instructors)]).size;
+  const kb = (bytes/1024).toFixed(1);
+  document.getElementById('storage-info').innerHTML = `<strong>${instructors.length}</strong> instructors · <strong>${kb} KB</strong> localStorage used · Last saved: ${new Date().toLocaleString()}`;
+}
+
+// ══════════════════════════════════════════
+//  MAP: D3 + HEXAGONAL PINS
+// ══════════════════════════════════════════
+function hexPoints(cx, cy, r) {
+  const pts=[];
+  for(let i=0;i<6;i++){const a=(Math.PI/180)*(60*i-30);pts.push(`${(cx+r*Math.cos(a)).toFixed(2)},${(cy+r*Math.sin(a)).toFixed(2)}`);}
+  return pts.join(' ');
+}
+
+function getCoord(a) {
+  if (a.lat && a.lon && projectionFn) {
+    const c = projectionFn([a.lon, a.lat]);
+    if (c) return c;
+  }
+  const ll = STATE_CENTROIDS[a.state];
+  if (ll && projectionFn) return projectionFn(ll);
+  return null;
+}
+
+function renderPins() {
+  const layer = document.getElementById('pins-g');
+  layer.innerHTML = '';
+  const tooltip = document.getElementById('map-tooltip');
+  const wrap = document.getElementById('map-svg-wrap');
+  const sz = 7;
+
+  instructors.forEach(a => {
+    const coord = getCoord(a);
+    if (!coord) return;
+    const cx=coord[0], cy=coord[1];
+    const isHL = highlightedId===a.id;
+
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.style.cursor = 'pointer';
+
+    if (isHL) {
+      const glow = document.createElementNS('http://www.w3.org/2000/svg','polygon');
+      glow.setAttribute('points', hexPoints(cx,cy,sz+6));
+      glow.setAttribute('fill','none');
+      glow.setAttribute('stroke','#20FDF0');
+      glow.setAttribute('stroke-width','1.5');
+      glow.setAttribute('opacity','0.4');
+      g.appendChild(glow);
+    }
+
+    const hex = document.createElementNS('http://www.w3.org/2000/svg','polygon');
+    hex.setAttribute('points', hexPoints(cx,cy,sz));
+    hex.setAttribute('fill', isHL ? '#ffffff' : '#20FDF0');
+    hex.setAttribute('stroke', isHL ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.4)');
+    hex.setAttribute('stroke-width', isHL ? '1.5' : '0.8');
+    hex.setAttribute('opacity','0.93');
+    g.appendChild(hex);
+
+    g.addEventListener('mouseenter', () => {
+      hex.setAttribute('fill','#ffffff');
+      hex.setAttribute('stroke','rgba(255,255,255,0.6)');
+      const svgRect = document.getElementById('usa-svg').getBoundingClientRect();
+      const wrapRect = wrap.getBoundingClientRect();
+      const px = cx*(svgRect.width/960)+(svgRect.left-wrapRect.left);
+      const py = cy*(svgRect.height/600)+(svgRect.top-wrapRect.top);
+      const courseTags = (a.courses||[]).map(c=>`<span class="tt-tag">${c}</span>`).join('');
+      tooltip.innerHTML = `
+        <div class="tt-name">${a.first} ${a.last}</div>
+        ${a.biz?`<div class="tt-biz">${a.biz}</div>`:''}
+        <div class="tt-loc">${a.city}, ${a.state}</div>
+        ${courseTags?`<div class="tt-courses">${courseTags}</div>`:''}
+        <div class="tt-hint">Click to highlight</div>`;
+      tooltip.style.display='block';
+      tooltip.style.left=Math.min(px+12,wrapRect.width-260)+'px';
+      tooltip.style.top=Math.max(py-120,8)+'px';
+    });
+    g.addEventListener('mouseleave', () => {
+      hex.setAttribute('fill', isHL ? '#ffffff' : '#20FDF0');
+      hex.setAttribute('stroke', isHL ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.4)');
+      tooltip.style.display='none';
+    });
+    g.addEventListener('click', () => { highlightPin(a.id); showTab('list'); });
+    layer.appendChild(g);
+  });
+}
+
+function drawStates() {
+  fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(r=>r.json()).then(us=>{
+    const proj = d3.geoAlbersUsa().scale(1280).translate([480,300]);
+    projectionFn = proj;
+    const path = d3.geoPath().projection(proj);
+    const states = topojson.feature(us, us.objects.states);
+    d3.select('#states-g').selectAll('path').data(states.features).enter().append('path')
+      .attr('d',path).attr('fill','#16181c').attr('stroke','#2a2d35').attr('stroke-width','0.8');
+    renderPins();
+  }).catch(()=>{
+    projectionFn = d3.geoAlbersUsa().scale(1280).translate([480,300]);
+    document.getElementById('states-g').innerHTML=`<rect x="60" y="80" width="840" height="440" rx="4" fill="#16181c" stroke="#2a2d35"/><text x="480" y="300" text-anchor="middle" font-size="14" fill="#3a3d47" font-family="Barlow,sans-serif">Map loading failed — check network</text>`;
+    renderPins();
+  });
+}
+
+// ══════════════════════════════════════════
+//  EXPORT / BACKUP
+// ══════════════════════════════════════════
+function exportPublicData() {
+  const data = instructors.filter(a=>a.active!==false).map(a=>({
+    g:a.id, a:btoa(a.first), b:btoa(a.last), c:btoa(a.city), d:btoa(a.state),
+    e:btoa(a.bio||''), f:btoa(a.instagram||''), h:btoa(a.facebook||''), k:btoa(a.youtube||''),
+    i:a.lat||null, j:a.lon||null,
+    m:btoa(a.biz||''), n:btoa((a.courses||[]).join('|')), o:btoa(a.type||''), p:btoa(a.format||''),
+    q:btoa(a.certs||''), r:btoa(a.phone||''), s:btoa(a.email||''), t:btoa(a.website||''),
+    u:btoa(a.schedule||''), v:btoa(a.price||''), w:btoa(a.langs||'')
+  }));
+  const encoded = btoa(JSON.stringify(data));
+  const output = `const _d = "${encoded}";
+
+function _x(s){try{return atob(s)}catch(e){return s}}
+function _decode(raw){
+  try {
+    return JSON.parse(_x(raw)).map(r=>({
+      id:r.g, first:_x(r.a), last:_x(r.b),
+      city:_x(r.c), state:_x(r.d), bio:_x(r.e),
+      instagram:_x(r.f), facebook:_x(r.h), youtube:_x(r.k),
+      lat:r.i||null, lon:r.j||null,
+      biz:_x(r.m), courses:_x(r.n).split('|').filter(Boolean), type:_x(r.o), format:_x(r.p),
+      certs:_x(r.q), phone:_x(r.r), email:_x(r.s), website:_x(r.t),
+      schedule:_x(r.u), price:_x(r.v), langs:_x(r.w)
+    }));
+  } catch(e){ return []; }
+}
+const INSTRUCTORS = _decode(_d);`;
+  document.getElementById('export-text').value = output;
+  document.getElementById('export-modal').style.display = 'flex';
+}
+
+function copyExport() {
+  const ta = document.getElementById('export-text');
+  ta.select();
+  document.execCommand('copy');
+  const btn = document.getElementById('copy-btn');
+  btn.textContent = '✓ Copied!';
+  setTimeout(()=>btn.textContent='Copy to Clipboard',2500);
+}
+
+function downloadBackup() {
+  const blob = new Blob([JSON.stringify({version:1,exported:new Date().toISOString(),instructors},null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=`hexcore-instructors-backup-${new Date().toISOString().slice(0,10)}.json`; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Backup downloaded!');
+}
+
+function importBackup(event) {
+  const file=event.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try {
+      const data=JSON.parse(e.target.result);
+      if(data.instructors&&Array.isArray(data.instructors)){
+        instructors=data.instructors;
+        nextId=Math.max(...instructors.map(a=>a.id),0)+1;
+        save(); renderPins(); updateStats(); renderList();
+        showToast(`Restored ${instructors.length} instructors!`);
+      } else showToast('Invalid backup file',true);
+    } catch(e){ showToast('Error importing backup',true); }
+  };
+  reader.readAsText(file); event.target.value='';
+}
+
+function clearAllData() {
+  if(confirm('Delete ALL instructor data? This cannot be undone.')){
+    instructors=[]; nextId=1; save(); renderPins(); updateStats(); renderList();
+    showToast('All data cleared');
+  }
+}
+
+// ══════════════════════════════════════════
+//  PASSWORD
+// ══════════════════════════════════════════
+function checkPw() {
+  if(document.getElementById('pw-input').value===ADMIN_PASSWORD){document.getElementById('gate').style.display='none';}
+  else{document.getElementById('pw-err').style.display='block';setTimeout(()=>{document.getElementById('pw-err').style.display='none';},2000);}
+}
+
+// ══════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════
+function showToast(msg,isError=false){
+  const t=document.getElementById('toast');t.textContent=msg;t.style.background=isError?'#ef4444':'#16a34a';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+(function init(){
+  const sel = document.getElementById('f-state');
+  US_STATES.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o);});
+  updateStats();
+  renderList();
+  drawStates();
+})();
+</script>
+</body>
+</html>
