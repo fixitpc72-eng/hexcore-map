@@ -89,20 +89,6 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2r
 
 .no-results{text-align:center;padding:3rem;color:var(--sub);font-size:14px;grid-column:span 3}
 
-/* ── INSTRUCTOR SIGNUP ── */
-.signup-section{width:100%;max-width:1200px;padding:0 1.5rem}
-.signup-card{background:var(--dark);border:2px solid var(--accent);border-radius:10px;padding:3rem 2.5rem;text-align:center;position:relative;overflow:hidden}
-.signup-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(32,253,240,.04) 0%,transparent 70%);pointer-events:none}
-.signup-icon{font-size:48px;margin-bottom:1rem;display:block;opacity:.8}
-.signup-eyebrow{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--sub);margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;gap:10px}
-.signup-eyebrow::before,.signup-eyebrow::after{content:'';width:24px;height:1px;background:var(--accent);opacity:.4}
-.signup-title{font-family:var(--font-head);font-size:clamp(32px,5vw,52px);font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:var(--text);line-height:1;margin-bottom:.75rem}
-.signup-title span{color:var(--accent)}
-.signup-sub{font-size:16px;color:var(--sub);line-height:1.65;max-width:560px;margin:0 auto 1.75rem}
-.signup-arrow{display:block;margin-top:1.5rem;font-size:28px;color:var(--accent);animation:bounce 2s infinite;opacity:.6}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
-.signup-note{font-size:11px;color:var(--muted);margin-top:1rem}
-
 /* ── CTA ── */
 .cta-block{width:100%;max-width:1200px;background:var(--card);border:1px solid var(--accent);border-radius:6px;padding:3rem 2rem;text-align:center;margin:0 1.5rem 3rem}
 .cta-brand{font-family:var(--font-head);font-size:clamp(28px,5vw,48px);font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:var(--text);line-height:1;margin-bottom:6px}
@@ -190,20 +176,12 @@ footer{border-top:1px solid var(--border);background:var(--dark);padding:1.75rem
   <div class="bio-grid" id="bio-grid"></div>
 </div>
 
-<!-- INSTRUCTOR SIGNUP -->
-<div class="signup-section" id="instructor-signup">
-  <div class="signup-card">
-    <span class="signup-icon">⬡</span>
-    <div class="signup-eyebrow">Are You a Firearms Instructor?</div>
-    <div class="signup-title">Get <span>Listed</span> on the Map</div>
-    <div class="signup-sub">Submit your training details below and we'll add your program to the HexCore Instructor Map — free of charge. Help students in your area find the training they need.</div>
-    <div class="signup-note">Submissions are reviewed manually. All instructor details are provided by the instructor and are not verified or endorsed by HexCore Mounts.</div>
-    <span class="signup-arrow">↓</span>
-  </div>
+<!-- CTA -->
+<div class="cta-block">
+  <div class="cta-brand">Hex<span>Core</span> Mounts</div>
+  <div class="cta-tagline">Purpose-Built Mounts for the Modern Armory</div>
+  <a class="cta-btn" href="https://hexcoremounts.com/collections/all">Shop Mounts</a>
 </div>
-
-<!-- YOUR FORM GOES DIRECTLY BELOW THIS LINE -->
-
 
 <!-- DISCLAIMER -->
 <div class="disclaimer-bar">
