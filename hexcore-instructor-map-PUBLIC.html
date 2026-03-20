@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script defer data-preview-inject="true" src="https://app.base44.com/builder-bridge.js?t=1774019330"></script>
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Instructor Map — Find Firearm Training | HexCore Mounts</title>
@@ -12,12 +12,20 @@
 <style>
 :root{--black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;--text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--ig:#e1306c;--fb:#1877f2;--yt:#ff0000;--pin-color:#20FDF0;--pin-color-hl:#ffffff;--font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center}
 
-/* Body: NO min-height, NO flex — just natural flow */
-body{background:var(--black);color:var(--text);font-family:var(--font-body);overflow:visible}
+/* ── HEADER ── */
+header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;width:100%}
+.logo{font-family:var(--font-head);font-weight:900;font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);text-decoration:none}
+.logo span{color:var(--accent)}
+.header-nav{display:flex;gap:2rem;align-items:center}
+.header-nav a{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}
+.header-nav a:hover{color:var(--text)}
+.header-nav a.active{color:var(--accent)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;text-decoration:none}
 
 /* ── MAP SECTION ── */
-.map-wrap{width:100%;position:relative;border-bottom:1px solid var(--border)}
+.map-wrap{width:100%;max-width:1200px;position:relative;border-bottom:1px solid var(--border)}
 .map-area{width:100%;height:520px;background:var(--black);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
 #map-svg-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1rem}
 #usa-svg{width:100%;height:100%}
@@ -37,7 +45,7 @@ body{background:var(--black);color:var(--text);font-family:var(--font-body);over
 .map-count{position:absolute;top:1rem;right:1rem;background:rgba(22,24,28,.92);border:1px solid var(--border);border-radius:6px;padding:8px 14px;backdrop-filter:blur(4px);font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.06em;z-index:10}
 
 /* ── FILTER BAR ── */
-.filter-bar{width:100%;background:var(--dark);border-bottom:1px solid var(--border);padding:1rem 1.5rem;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.filter-bar{width:100%;max-width:1200px;background:var(--dark);border-bottom:1px solid var(--border);padding:1rem 1.5rem;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .filter-bar select,.filter-bar input{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:8px 12px;color:var(--text);font-family:var(--font-body);font-size:13px;outline:none;transition:border-color .15s}
 .filter-bar select:focus,.filter-bar input:focus{border-color:var(--accent)}
 .filter-bar select option{background:var(--card)}
@@ -46,7 +54,7 @@ body{background:var(--black);color:var(--text);font-family:var(--font-body);over
 .filter-count{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.06em;margin-left:auto}
 
 /* ── INSTRUCTOR CARDS ── */
-.cards-section{width:100%;padding:2rem 1.5rem 4rem}
+.cards-section{width:100%;max-width:1200px;padding:2rem 1.5rem 4rem}
 .bio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
 .bio-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;display:flex;flex-direction:column;gap:.65rem;transition:border-color .2s,transform .2s;cursor:default}
 .bio-card:hover{border-color:var(--accent);transform:translateY(-2px)}
@@ -82,7 +90,7 @@ body{background:var(--black);color:var(--text);font-family:var(--font-body);over
 .no-results{text-align:center;padding:3rem;color:var(--sub);font-size:14px;grid-column:span 3}
 
 /* ── INSTRUCTOR SIGNUP ── */
-.signup-section{width:100%;padding:0 1.5rem}
+.signup-section{width:100%;max-width:1200px;padding:0 1.5rem}
 .signup-card{background:var(--dark);border:2px solid var(--accent);border-radius:10px;padding:3rem 2.5rem;text-align:center;position:relative;overflow:hidden}
 .signup-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(32,253,240,.04) 0%,transparent 70%);pointer-events:none}
 .signup-icon{font-size:48px;margin-bottom:1rem;display:block;opacity:.8}
@@ -95,14 +103,27 @@ body{background:var(--black);color:var(--text);font-family:var(--font-body);over
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
 .signup-note{font-size:11px;color:var(--muted);margin-top:1rem}
 
+/* ── CTA ── */
+.cta-block{width:100%;max-width:1200px;background:var(--card);border:1px solid var(--accent);border-radius:6px;padding:3rem 2rem;text-align:center;margin:0 1.5rem 3rem}
+.cta-brand{font-family:var(--font-head);font-size:clamp(28px,5vw,48px);font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:var(--text);line-height:1;margin-bottom:6px}
+.cta-brand span{color:var(--accent)}
+.cta-tagline{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin-bottom:1.75rem}
+.cta-btn{display:inline-block;background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:16px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:.85rem 2.5rem;border-radius:4px;transition:opacity .15s,transform .15s}
+.cta-btn:hover{opacity:.88;transform:translateY(-1px)}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);background:var(--dark);padding:1.75rem 2rem;text-align:center;font-family:var(--font-head);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);width:100%}
+
 /* ── DISCLAIMER ── */
-.disclaimer-bar{width:100%;padding:1rem 1.5rem 3rem;font-size:11px;color:var(--muted);line-height:1.6;text-align:center}
+.disclaimer-bar{width:100%;max-width:1200px;padding:1rem 1.5rem;font-size:11px;color:var(--muted);line-height:1.6;text-align:center}
 
 @media(max-width:900px){
   .map-area{height:55vw;min-height:250px;max-height:400px}
   .bio-grid{grid-template-columns:1fr 1fr}
   .filter-bar{flex-direction:column;gap:8px}
   .filter-bar input,.filter-bar select{width:100%}
+  .header-nav{display:none}
+  header{padding:0 1rem}
 }
 @media(max-width:540px){
   .bio-grid{grid-template-columns:1fr}
@@ -112,6 +133,19 @@ body{background:var(--black);color:var(--text);font-family:var(--font-body);over
 </style>
 </head>
 <body>
+
+<!-- HEADER -->
+<header>
+  <a class="logo" href="https://hexcoremounts.com">Hex<span>Core</span> Mounts</a>
+  <nav class="header-nav">
+    <a href="https://hexcoremounts.com/collections/all">Products</a>
+    <a href="https://hexcoremounts.com/pages/why-hexcore">Why HexCore</a>
+    <a href="https://hexcoremounts.com/pages/about-us">About</a>
+    <a href="https://hexcoremounts.com/blogs/news">Intel</a>
+    <a href="https://hexcoremounts.com/pages/instructor-map" class="active">Instructor Map</a>
+    <a class="header-badge" href="https://hexcoremounts.com/collections/all">Shop Now</a>
+  </nav>
+</header>
 
 <!-- MAP -->
 <div class="map-wrap">
@@ -176,38 +210,15 @@ body{background:var(--black);color:var(--text);font-family:var(--font-body);over
   HexCore Mounts does not verify, endorse, or certify any instructor listed on this map. Training details are provided by the instructors themselves. Always verify credentials, certifications, and insurance independently before enrolling in any training program. HexCore Mounts is not responsible for the quality, safety, or legality of any training services listed.
 </div>
 
-<script>
-/* ============================================================
-   AUTO-RESIZE: reports height to Shopify parent so iframe
-   expands to full content — no inner scroll
-   ============================================================ */
-function reportHeight() {
-  const h = document.documentElement.scrollHeight;
-  window.parent.postMessage({ type: 'hexcore-resize', height: h }, '*');
-}
-const ro = new ResizeObserver(reportHeight);
-ro.observe(document.body);
-reportHeight();
+<!-- FOOTER -->
+<footer>
+  &copy; 2026 HexCore Mounts &nbsp;·&nbsp; Designed and Manufactured in the USA &nbsp;·&nbsp; Atlanta, Georgia
+</footer>
 
+<script>
 /* ============================================================
    DATA — Replace this block with export from ADMIN tool
    ============================================================ */
-const _d = "W3siZyI6MSwiYSI6IlMzbHNaUT09IiwiYiI6IlYzSnZZbXhsYzJ0cGIiLCJjIjoiVG1WM2NHOXlkQT09IiwiZCI6IlRXbGphR2xuWVc0PSIsImUiOiJWMlVnWVhKbElHRWdjSEpsYldsemNDQm1hWEpsWVhKdGN5QmhiblFnZEdGamRHbGpjeUIwY21GcGJtbHVaeUJqYjIxd1lXNTVMaUJYWlNCb1lYWmxJRFlnYVc1emRISjFZM1J2Y25NZ2QybDBhQ0JoSUdOdmJXSnBibVZrSUdWNGNHVnlhV1Z1WTJVdmdtOXZaSE1nZDJsMGFDQmhJR052YldKcGJtVmtJR1ZKVnlCaGNtVWdZV3hzSUdOdmJXSmhkQ0JqYjIxaVlYUWdkbVYwY3l3Z2QyVWdhR0YyWlNCbGVIQmxjbWxsYm1ObElHbHVJSEpsWVd3Z2QyOXliR1FnWTI5dVptbG9ZWFJzTENCamIyMXdaWFJwZEdsdmJpQnoKYUc5dmRHbHVaeUJoYm1RZ2JXOXlaUzRnVjJVZ2RHVmhZMmdnWVd4c0lHOTJaWElnWm5KdmJTQk5hV05vYVdaaGJpQjBieUJVWlc1dVpYTnpaV1VnZEc4Z1RtOXlkR2dnUTJGeWIyeHBibUV1IiwiZiI6IiIsImgiOiJhSFIwY0hNNkx5OTNkM2N1Wm1GalpXSnZiMnN1WTI5dEwzTm9ZWEpsTHpGaVJUZDFUV1E1ZURNdiIsImsiOiIiLCJpIjo0Mi4wMDI0ODE0MzkyNDI3MTUsImoiOjgzLjMwOTIwNzY3OTM3NjE5LCJtIjoiTWlCV1pYUnpJRVJsZG1Wc2IzQnRaVzUwSUVkeWIzVnciLCJuIjoiVUdWeVptOXliV0Z1WTJVZ1VHbHpkRzlzZkZCbGNtWnZjbTFoYm1ObElFTmhjbUpwYm1WOFRHOTNJRXhwWjJoMEwwNXBaMmgwSUZOb2IyOTBhVzVuZkVOUlFpQnliMjl0SUdOc1pXRnlhVzVuZkdOdmJXSmhkQ0J0WldScFkyRnMiLCJvIjoiUW05MGFBPT0iLCJwIjoiUW05MGFBPT0iLCJxIjoiVlZORFEwRWdZVzVrSUU1U1FTQmpaWEowYVdacFkyRjBaWE09IiwiciI6Ikt6RXpNVE15T0RNNE1UUTMiLCJzIjoiIiwidCI6ImFIUjBjSE02THk4eWRtUm5MbTl5Wnc9PSIsInUiOiJWSGx3YVdOaGJHeDVJSGRsWld0bGJtUnpMQ0J2Y2lCaWVTQmhjSEJ2YVc1MGJXVnVkQT09IiwidiI6IkpESTFNQ0IwYnlBa05EQXciLCJ3IjoiUlc1bmJHbHphQT09In0seyJnIjoyLCJhIjoiVW05aSIsImIiOiJSWEJwWm1GdWFXRT0iLCJjIjoiUW14MVpTQndiMmx1ZEE9PSIsImQiOiJUbVYzSUZsdmNtcz0iLCJlIjoiVlZOUVUwRWdaM0poYm1RZ2JXRnpkR1Z5TENCeWRXNGdkR2hsSUc5dWJHbHVaU0JoWTJObGJHVnlZWFJ2Y2lCb2RIUndjem92TDNkM2R5NXphMjl2YkM1amIyMHZZMjl0Y0dWMGFYUnBiMjR0WVdOalpXeGxjbUYwYjNJdllXSnZkWFE9IiwiZiI6IlFISnZZbVZ3YVdaaGJtbGgiLCJoIjoiIiwiayI6ImFIUjBjSE02THk5M2QzY3VlVzkxZEhWaVpTNWpiMjB2UUhKdlltVndhV1poYm1saCIsImkiOjQwLjc1NjU3NTcxMjU3MDE1NCwiaiI6LTcyLjkzOTIyNjk3ODAzMDE1LCJtIjoiVTFCRElHbHVZeTQ9IiwibiI6IlVHVnlabTl5YldGdVkyVWdhR0Z1WkdkMWJueGpiMjF3WlhScGRHbHZiaUJ6YTJsc2JITjhiMjVzYVc1bElHeGxZWEp1YVc1bklIQnNZWFJtYjNKdCIsIm8iOiJRbTkwYUE9PSIsInAiOiJRbTkwYUE9PSIsInEiOiIiLCJyIjoiS3pFZ0tEVXhOaWtnT1RjMExUZzRNREk9IiwicyI6ImNtOWlMbVZ3YVdaaGJtbGhRR2R0WVdsc0xtTnZiUT09IiwidCI6IlVtOWlaWEJwWm1GdWFXRXVibVYwIiwidSI6IlFua2dZWEJ3YjJsdWRHMWxiblE9IiwidiI6IkpEYzFMU1EyTURBPSIsInciOiJSVzVuYkdsemFBPT0ifSx7ImciOjUsImEiOiJRbkpoYm1SdmJnPT0iLCJiIjoiVW1Wa1lXcGgiLCJjIjoiVEdGeklGWmxaMkZ6IiwiZCI6IlRtVjJZV1JoIiwiZSI6IlYybDBhQ0F4TUNCNVpXRnljeUJ2WmlCbGVIQmxjbWxsYm1ObExDQkpJSEJ5YjNacFpHVWdabWx5WldGeWJYTWdkSEpoYVc1cGJtY2dabTl5SUdGc2JDQnNaWFpsYkhNc0lFNWxkbUZrWVNCRFExY2dZMlZ5ZEdsbWFXTmhkR2x2Yml3Z1lXNWtJR04xYzNSdmJTQnpaV04xY21sMGVTQndiR0Z1Ym1sdVp5Qm1iM0lnYUc5dFpYTXNJSGR2Y210d2JHRmpaWE1zSUdGdVpDQndiR0ZqWlhNZ2IyWWdkMjl5YzJocGNDND0iLCJmIjoiIiwiaCI6IiIsImsiOiIiLCJpIjozNi4xNjk3OTkwNjQyNDY2MywiaiI6LTExNS4xNjE5NjY0NDIwNDUwMSwibSI6IlRrVlRJR05qZHlCaGJtUWdkSEpoYVc1cGJtY2diR3hqIiwibiI6IlFtRnphV01nYUdGdVpHZDFibnhPWlhaaFpHRWdZMk4zZkdWdVkyOTFiblJsY21sdVp5QnRZWE16SUhOb2IyOTBaWEo4WTJocGJHUnlaVzRnWm1seVpXRnliU0J6WVdabGRIbDhkMjl0Wlc0Z2FHRnVaR2QxYmlCelpXeG1JR1JsWm1WdWMyVjhZbUZ6YVdNZ1pXMWxjbWRsYm1ONUlHWnBjbk4wSUdGcFpHVT0iLCJvIjoiUW05MGFBPT0iLCJwIjoiUW05MGFBPT0iLCJxIjoiVlZORFEwRT0iLCJyIjoiS3pFZ0tEY3lOU2tnTXpJNUxUUTRPVEE9IiwicyI6IlRtVnpZMk4zWVc1a2RISmhhVzVwYm1kc2JHTkFaMjFoYVd3dVkyOXQiLCJ0IjoiIiwidSI6IlYyVmxhMlZ1WkhNZ2IyNXNlUT09IiwidiI6IkpERXlOUzBrTWpBdyIsInciOiJSVzVuYkdsemFBPT0ifV0=";
-
-function _x(s){try{return atob(s)}catch(e){return s}}
-function _decode(raw){
-  try {
-    return JSON.parse(_x(raw)).map(r=>({
-      id:r.g, first:_x(r.a), last:_x(r.b),
-      city:_x(r.c), state:_x(r.d), bio:_x(r.e),
-      instagram:_x(r.f), facebook:_x(r.h), youtube:_x(r.k),
-      lat:r.i||null, lon:r.j||null,
-      biz:_x(r.m), courses:_x(r.n).split('|').filter(Boolean), type:_x(r.o), format:_x(r.p),
-      certs:_x(r.q), phone:_x(r.r), email:_x(r.s), website:_x(r.t),
-      schedule:_x(r.u), price:_x(r.v), langs:_x(r.w)
-    }));
-  } catch(e){ return []; }
-}
 const _d = "W3siZyI6MSwiYSI6IlMzbHNaUT09IiwiYiI6IlYzSnZZbXhsYzJ0cCIsImMiOiJUbVYzY0c5eWRBPT0iLCJkIjoiVFdsamFHbG5ZVzQ9IiwiZSI6IlYyVWdZWEpsSUdFZ2NISmxiV2xsY2lCbWFYSmxZWEp0Y3lCaGJtUWdkR0ZqZEdsamN5QjBjbUZwYm1sdVp5QmpiMjF3WVc1NUxpQlhaU0JvWVhabElEWWdhVzV6ZEhKMVkzUnZjbk1nZDJsMGFDQmhJR052YldKcGJtVmtJR1Y0Y0dWeWFXVnVZMlVnYjJZZ2IzWmxjaUE1TUNCNVpXRnljeTRnVjJVZ1lYSmxJR0ZzYkNCamIyMWlZWFFnZG1WMGN5d2dkMlVnYUdGMlpTQmxlSEJsY21sbGJtTmxJR2x1SUhKbFlXd2dkMjl5YkdRZ1kyOXVabXhwWTNSekxDQmpiMjF3WlhScGRHbHZiaUJ6YUc5dmRHbHVaeUJoYm1RZ2JXOXlaUzRnVjJVZ2RHVmhZMmdnWVd4c0lHOTJaWElnWm5KdmJTQk5hV05vYVdkaGJpQjBieUJVWlc1dVpYTnpaV1VnZEc4Z1RtOXlkR2dnUTJGeWIyeHBibUV1IiwiZiI6IiIsImgiOiJhSFIwY0hNNkx5OTNkM2N1Wm1GalpXSnZiMnN1WTI5dEwzTm9ZWEpsTHpGaVJUZDFUV1E1ZURNdiIsImsiOiIiLCJpIjo0Mi4wMDI0ODE0MzkyNDI3MTUsImoiOjgzLjMwOTIwNzY3OTM3NjE5LCJtIjoiTWlCV1pYUnpJRVJsZG1Wc2IzQnRaVzUwSUVkeWIzVnciLCJuIjoiVUdWeVptOXliV0Z1WTJVZ1VHbHpkRzlzZkZCbGNtWnZjbTFoYm1ObElFTmhjbUpwYm1WOFRHOTNJRXhwWjJoMEwwNXBaMmgwSUZOb2IyOTBhVzVuZkVOUlFpQnliMjl0SUdOc1pXRnlhVzVuZkdOdmJXSmhkQ0J0WldScFkyRnMiLCJvIjoiUW05MGFBPT0iLCJwIjoiUW05MGFBPT0iLCJxIjoiVlZORFEwRWdZVzVrSUU1U1FTQmpaWEowYVdacFkyRjBaWE09IiwiciI6Ikt6RXpNVE15T0RNNE1UUTMiLCJzIjoiIiwidCI6ImFIUjBjSE02THk4eWRtUm5MbTl5Wnc9PSIsInUiOiJWSGx3YVdOaGJHeDVJSGRsWld0bGJtUnpMQ0J2Y2lCaWVTQmhjSEJ2YVc1MGJXVnVkQT09IiwidiI6IkpESTFNQ0IwYnlBa05EQXciLCJ3IjoiUlc1bmJHbHphQT09In0seyJnIjoyLCJhIjoiVW05aSIsImIiOiJSWEJwWm1GdWFXRT0iLCJjIjoiUW14MVpTQndiMmx1ZEE9PSIsImQiOiJUbVYzSUZsdmNtcz0iLCJlIjoiVlZOUVUwRWdaM0poYm1RZ2JXRnpkR1Z5TENCeWRXNGdkR2hsSUc5dWJHbHVaU0JoWTJObGJHVnlZWFJ2Y2lCb2RIUndjem92TDNkM2R5NXphMjl2YkM1amIyMHZZMjl0Y0dWMGFYUnBiMjR0WVdOalpXeGxjbUYwYjNJdllXSnZkWFE9IiwiZiI6IlFISnZZbVZ3YVdaaGJtbGgiLCJoIjoiIiwiayI6ImFIUjBjSE02THk5M2QzY3VlVzkxZEhWaVpTNWpiMjB2UUhKdlltVndhV1poYm1saCIsImkiOjQwLjc1NjU3NTcxMjU3MDE1NCwiaiI6LTcyLjkzOTIyNjk3ODAzMDE1LCJtIjoiVTFCRElHbHVZeTQ9IiwibiI6IlVHVnlabTl5YldGdVkyVWdhR0Z1WkdkMWJueGpiMjF3WlhScGRHbHZiaUJ6YTJsc2JITjhiMjVzYVc1bElHeGxZWEp1YVc1bklIQnNZWFJtYjNKdCIsIm8iOiJRbTkwYUE9PSIsInAiOiJRbTkwYUE9PSIsInEiOiIiLCJyIjoiS3pFZ0tEVXhOaWtnT1RjMExUZzRNREk9IiwicyI6ImNtOWlMbVZ3YVdaaGJtbGhRR2R0WVdsc0xtTnZiUT09IiwidCI6IlVtOWlaWEJwWm1GdWFXRXVibVYwIiwidSI6IlFua2dZWEJ3YjJsdWRHMWxiblE9IiwidiI6IkpEYzFMU1EyTURBPSIsInciOiJSVzVuYkdsemFBPT0ifSx7ImciOjUsImEiOiJRbkpoYm1SdmJnPT0iLCJiIjoiVW1Wa1lXcGgiLCJjIjoiVEdGeklGWmxaMkZ6IiwiZCI6IlRtVjJZV1JoIiwiZSI6IlYybDBhQ0F4TUNCNVpXRnljeUJ2WmlCbGVIQmxjbWxsYm1ObExDQkpJSEJ5YjNacFpHVWdabWx5WldGeWJYTWdkSEpoYVc1cGJtY2dabTl5SUdGc2JDQnNaWFpsYkhNc0lFNWxkbUZrWVNCRFExY2dZMlZ5ZEdsbWFXTmhkR2x2Yml3Z1lXNWtJR04xYzNSdmJTQnpaV04xY21sMGVTQndiR0Z1Ym1sdVp5Qm1iM0lnYUc5dFpYTXNJSGR2Y210d2JHRmpaWE1zSUdGdVpDQndiR0ZqWlhNZ2IyWWdkMjl5YzJocGNDND0iLCJmIjoiIiwiaCI6IiIsImsiOiIiLCJpIjozNi4xNjk3OTkwNjQyNDY2MywiaiI6LTExNS4xNjE5NjY0NDIwNDUwMSwibSI6IlRrVlRJR05qZHlCaGJtUWdkSEpoYVc1cGJtY2diR3hqIiwibiI6IlFtRnphV01nYUdGdVpHZDFibnhPWlhaaFpHRWdZMk4zZkdWdVkyOTFiblJsY21sdVp5QnRZWE56SUhOb2IyOTBaWEo4WTJocGJHUnlaVzRnWm1seVpXRnliU0J6WVdabGRIbDhkMjl0Wlc0Z2FHRnVaR2QxYmlCelpXeG1JR1JsWm1WdWMyVjhZbUZ6YVdNZ1pXMWxjbWRsYm1ONUlHWnBjbk4wSUdGcFpHVT0iLCJvIjoiUW05MGFBPT0iLCJwIjoiUW05MGFBPT0iLCJxIjoiVlZORFEwRT0iLCJyIjoiS3pFZ0tEY3lOU2tnTXpJNUxUUTRPVEE9IiwicyI6IlRtVnpZMk4zWVc1a2RISmhhVzVwYm1kc2JHTkFaMjFoYVd3dVkyOXQiLCJ0IjoiIiwidSI6IlYyVmxhMlZ1WkhNZ2IyNXNlUT09IiwidiI6IkpERXlOUzBrTWpBdyIsInciOiJSVzVuYkdsemFBPT0ifSx7ImciOjYsImEiOiJRMmh5YVhNPSIsImIiOiJVbUZ1WjJWcyIsImMiOiJVMkZ1SUVGdWRHOXVhVzg9IiwiZCI6IlZHVjRZWE09IiwiZSI6Ik1qVXRlV1ZoY2lCc1lYY2daVzVtYjNKalpXMWxiblFnZG1WMFpYSmhiaUJoYm1RZ1UxZEJWQ0JVWldGdElFeGxZV1JsY2lCemNHVmphV0ZzYVhwcGJtY2dhVzRnZEdGamRHbGpZV3dnYjNCbGNtRjBhVzl1Y3lCaGJtUWdkSEpoYVc1cGJtY3VJRVp2ZFc1a1pYSWdiMllnWVNCd2NtOW1aWE56YVc5dVlXd2dkSEpoYVc1cGJtY2dZMjl0Y0dGdWVTQmtaV3hwZG1WeWFXNW5JSEpsWVd3dGQyOXliR1FzSUcxcGMzTnBiMjR0Wm05amRYTmxaQ0J3Y205bmNtRnRjeUJwYmlCVFYwRlVJSFJoWTNScFkzTXNJR0p5WldGamFHbHVaeXdnWVc1a0lIVnpaU0J2WmlCbWIzSmpaU0IwYnlCbGJtaGhibU5sSUhKbFlXUnBibVZ6Y3l3Z1pHVmphWE5wYjI0dGJXRnJhVzVuTENCaGJtUWdjM1Z5ZG1sMllXSnBiR2wwZVM0PSIsImYiOiJkR0Z3ZFhBMU5EQT0iLCJoIjoiIiwiayI6IiIsImkiOjI5LjQyMDcwMTU3MzE5NzQ4LCJqIjotOTguNTAzMDI3NTc0OTM0NTMsIm0iOiJWRUZRTFZWUUlEVTBNQ0JNVEVNdSIsIm4iOiJRbUZ6YVdNZ1VHbHpkRzlzZkVKaGMybGpJRkpwWm14bGZFRmtkbUZ1WTJWa0lGQnBjM1J2YkNCaGJtUWdZU0JTYVdac1pYeENZWE5wWXlCaGJtUWdRV1IySUZOWFFWUjhTRzl6ZEdGblpTQlNaWE5qZFdWOFFtRnljbWxqWVdSbElGTjFZbXBsWTNSOFFXTjBhWFpsSUZOb2IyOTBaWEo4VEdGeVoyVWdWbVZ1ZFdVZ1EzSnBjMmx6SUZKbGMzQnZibk5sIiwibyI6IlFtOTBhQT09IiwicCI6IlFtOTBhQT09IiwicSI6IlRsUlBRU3dnVkZSUVQwRXNJRUZNUlZKU1ZDd2dRMlZ1ZEdWeUlHWnZjaUJTWVdRdlRuVmpJRlJ5WVdsdWFXNW4iLCJyIjoiS3pFZ0tESXhNQ2tnTWpnMkxURTNPVEk9IiwicyI6IlkzSmhibWRsYkVCMFlYQjFjRFUwTUM1amIyMD0iLCJ0IjoiZDNkM0xuUmhjSFZ3TlRRd0xtTnZiUT09IiwidSI6IlUyTm9aV1IxYkdVZ1pHRjBaWE1zSUZkbFpXdGxibVJ6SUc5eUlHSjVJR0Z3Y0c5cGJuUnRaVzUwIiwidiI6IlEyOXVkR0ZqZENCbWIzSWdjSEpwWTJsdVp3PT0iLCJ3IjoiUlc1bmJHbHphQT09In1d";
 
 function _x(s){try{return atob(s)}catch(e){return s}}
@@ -253,6 +264,7 @@ let filtered = [];
    INIT
    ============================================================ */
 function init() {
+  // Populate filter dropdowns
   const stateSelect = document.getElementById('flt-state');
   const states = [...new Set(INSTRUCTORS.map(i=>i.state))].sort();
   states.forEach(s => { const o=document.createElement('option'); o.value=s; o.textContent=s; stateSelect.appendChild(o); });
