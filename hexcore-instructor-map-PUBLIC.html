@@ -13,23 +13,15 @@
 :root{--black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;--text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--ig:#e1306c;--fb:#1877f2;--yt:#ff0000;--pin-color:#20FDF0;--pin-color-hl:#ffffff;--font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center}
-
-/* ── HEADER ── */
 header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;width:100%}
-.logo{font-family:var(--font-head);font-weight:900;font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);text-decoration:none}
-.logo span{color:var(--accent)}
+.logo{font-family:var(--font-head);font-weight:900;font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}
 .header-nav{display:flex;gap:2rem;align-items:center}
-.header-nav a{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}
-.header-nav a:hover{color:var(--text)}
-.header-nav a.active{color:var(--accent)}
+.header-nav a{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}.header-nav a:hover{color:var(--text)}.header-nav a.active{color:var(--accent)}
 .header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;text-decoration:none}
-
-/* ── MAP SECTION ── */
 .map-wrap{width:100%;max-width:1200px;position:relative;border-bottom:1px solid var(--border)}
-.map-area{width:100%;height:520px;background:var(--black);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.map-area{width:100%;height:580px;background:var(--black);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
 #map-svg-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1rem}
 #usa-svg{width:100%;height:100%}
-
 .map-tooltip{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px 16px;pointer-events:none;display:none;z-index:20;min-width:220px;max-width:300px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
 .tt-name{font-family:var(--font-head);font-weight:900;font-size:16px;color:var(--text);text-transform:uppercase;letter-spacing:.03em;margin-bottom:1px}
 .tt-biz{font-size:12px;color:var(--accent);margin-bottom:4px}
@@ -37,14 +29,40 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2r
 .tt-courses{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:5px}
 .tt-tag{display:inline-block;padding:2px 7px;border-radius:3px;font-size:9px;font-weight:700;text-transform:uppercase;background:rgba(32,253,240,.1);color:var(--accent)}
 .tt-hint{font-size:10px;color:var(--muted);font-style:italic;margin-top:4px}
-
 .map-legend{position:absolute;bottom:1rem;left:1rem;background:rgba(22,24,28,.92);border:1px solid var(--border);border-radius:6px;padding:10px 14px;backdrop-filter:blur(4px);z-index:10}
 .map-legend-title{font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:6px}
-.leg-row{display:flex;align-items:center;gap:7px;margin-bottom:4px;font-size:11px;color:var(--sub)}
+.leg-row{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--sub)}
 .map-tagline{position:absolute;top:1rem;left:50%;transform:translateX(-50%);font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);white-space:nowrap;pointer-events:none;opacity:.5}
 .map-count{position:absolute;top:1rem;right:1rem;background:rgba(22,24,28,.92);border:1px solid var(--border);border-radius:6px;padding:8px 14px;backdrop-filter:blur(4px);font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.06em;z-index:10}
-
-/* ── FILTER BAR ── */
+.detail-overlay{position:absolute;top:1rem;right:1rem;width:340px;max-height:calc(100% - 2rem);background:rgba(17,18,20,.96);border:1px solid var(--border);border-radius:8px;backdrop-filter:blur(10px);overflow-y:auto;display:none;z-index:25;scrollbar-width:thin;scrollbar-color:var(--muted) transparent;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.detail-overlay.visible{display:block;animation:slideIn .25s ease-out}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.do-header{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.do-header-info{flex:1;min-width:0}
+.do-name{font-family:var(--font-head);font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:var(--text);line-height:1.1}
+.do-biz{font-size:12px;color:var(--accent);margin-top:3px}
+.do-close{background:none;border:none;color:var(--sub);font-size:20px;cursor:pointer;padding:4px 8px;transition:color .15s;flex-shrink:0;line-height:1}.do-close:hover{color:var(--accent)}
+.do-body{padding:1.25rem}
+.do-loc{font-size:12px;color:var(--sub);margin-bottom:1rem;display:flex;align-items:center;gap:5px}.do-loc svg{opacity:.5;flex-shrink:0}
+.do-section{margin-bottom:1rem}.do-section:last-child{margin-bottom:0}
+.do-section-title{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.5rem}
+.do-bio{font-size:13px;color:var(--sub);line-height:1.6}
+.do-certs{font-size:12px;color:var(--sub);font-style:italic}
+.do-tags{display:flex;flex-wrap:wrap;gap:4px}
+.do-tag{display:inline-block;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;background:rgba(32,253,240,.08);color:var(--accent);border:1px solid rgba(32,253,240,.18)}
+.do-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.do-detail{background:rgba(32,253,240,.03);border:1px solid var(--border);border-radius:5px;padding:8px 10px}
+.do-detail-label{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.do-detail-value{font-size:13px;color:var(--text);font-weight:600}
+.do-contact{display:flex;flex-direction:column;gap:6px}
+.do-contact-link{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;transition:opacity .15s}.do-contact-link:hover{opacity:.8}
+.do-contact-link.phone{background:rgba(34,197,94,.08);color:#4ade80;border:1px solid rgba(34,197,94,.18)}
+.do-contact-link.email-link{background:rgba(59,130,246,.08);color:#60a5fa;border:1px solid rgba(59,130,246,.18)}
+.do-contact-link.web{background:rgba(32,253,240,.06);color:var(--accent);border:1px solid rgba(32,253,240,.18)}
+.do-contact-link.ig{background:rgba(225,48,108,.08);color:#f472b6;border:1px solid rgba(225,48,108,.18)}
+.do-contact-link.fb{background:rgba(24,119,242,.08);color:#60a5fa;border:1px solid rgba(24,119,242,.18)}
+.do-contact-link.yt{background:rgba(255,0,0,.06);color:#f87171;border:1px solid rgba(255,0,0,.15)}
+.do-disclaimer{margin-top:.75rem;padding:8px 10px;background:rgba(234,179,8,.05);border:1px solid rgba(234,179,8,.12);border-radius:5px;font-size:10px;color:var(--sub);line-height:1.5}.do-disclaimer strong{color:var(--yellow);font-weight:700}
 .filter-bar{width:100%;max-width:1200px;background:var(--dark);border-bottom:1px solid var(--border);padding:1rem 1.5rem;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .filter-bar select,.filter-bar input{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:8px 12px;color:var(--text);font-family:var(--font-body);font-size:13px;outline:none;transition:border-color .15s}
 .filter-bar select:focus,.filter-bar input:focus{border-color:var(--accent)}
@@ -52,45 +70,7 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2r
 .filter-bar input{flex:1;min-width:180px}
 .filter-label{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);white-space:nowrap}
 .filter-count{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.06em;margin-left:auto}
-
-/* ── INSTRUCTOR CARDS ── */
-.cards-section{width:100%;max-width:1200px;padding:2rem 1.5rem 4rem}
-.bio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
-.bio-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;display:flex;flex-direction:column;gap:.65rem;transition:border-color .2s,transform .2s;cursor:default}
-.bio-card:hover{border-color:var(--accent);transform:translateY(-2px)}
-.bio-card.highlighted{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 8px 24px rgba(32,253,240,.1)}
-
-.bc-top{display:flex;align-items:flex-start;gap:.75rem}
-.bc-avatar{width:44px;height:44px;border-radius:8px;background:var(--muted);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:18px;font-weight:900;color:var(--accent);flex-shrink:0}
-.bc-name{font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--text);letter-spacing:.03em;line-height:1.1}
-.bc-biz{font-size:12px;color:var(--accent);margin-top:2px}
-.bc-loc{font-size:11px;color:var(--sub);margin-top:2px;display:flex;align-items:center;gap:4px}
-.bc-loc svg{opacity:.5;flex-shrink:0}
-
-.bc-bio{font-size:13px;color:var(--sub);line-height:1.6}
-.bc-certs{font-size:11px;color:var(--sub);font-style:italic}
-
-.bc-tags{display:flex;flex-wrap:wrap;gap:4px}
-.bc-tag{display:inline-block;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;background:rgba(32,253,240,.08);color:var(--accent);border:1px solid rgba(32,253,240,.18)}
-
-.bc-details{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding-top:.5rem;border-top:1px solid var(--border)}
-.bc-detail{font-size:11px;color:var(--sub)}
-.bc-detail strong{color:var(--text);font-weight:600}
-
-.bc-contact{display:flex;flex-wrap:wrap;gap:6px;padding-top:.5rem;border-top:1px solid var(--border);margin-top:auto}
-.contact-link{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:5px;font-size:11px;font-weight:600;text-decoration:none;transition:opacity .15s}
-.contact-link:hover{opacity:.8}
-.contact-link.phone{background:rgba(34,197,94,.1);color:#4ade80;border:1px solid rgba(34,197,94,.2)}
-.contact-link.email-link{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
-.contact-link.web{background:rgba(32,253,240,.08);color:var(--accent);border:1px solid rgba(32,253,240,.2)}
-.contact-link.ig{background:rgba(225,48,108,.1);color:#f472b6;border:1px solid rgba(225,48,108,.2)}
-.contact-link.fb{background:rgba(24,119,242,.1);color:#60a5fa;border:1px solid rgba(24,119,242,.2)}
-.contact-link.yt{background:rgba(255,0,0,.08);color:#f87171;border:1px solid rgba(255,0,0,.18)}
-
-.no-results{text-align:center;padding:3rem;color:var(--sub);font-size:14px;grid-column:span 3}
-
-/* ── INSTRUCTOR SIGNUP ── */
-.signup-section{width:100%;max-width:1200px;padding:0 1.5rem}
+.signup-section{width:100%;max-width:1200px;padding:2rem 1.5rem 0}
 .signup-card{background:var(--dark);border:2px solid var(--accent);border-radius:10px;padding:3rem 2.5rem;text-align:center;position:relative;overflow:hidden}
 .signup-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(32,253,240,.04) 0%,transparent 70%);pointer-events:none}
 .signup-icon{font-size:48px;margin-bottom:1rem;display:block;opacity:.8}
@@ -102,39 +82,13 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2r
 .signup-arrow{display:block;margin-top:1.5rem;font-size:28px;color:var(--accent);animation:bounce 2s infinite;opacity:.6}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
 .signup-note{font-size:11px;color:var(--muted);margin-top:1rem}
-
-/* ── CTA ── */
-.cta-block{width:100%;max-width:1200px;background:var(--card);border:1px solid var(--accent);border-radius:6px;padding:3rem 2rem;text-align:center;margin:0 1.5rem 3rem}
-.cta-brand{font-family:var(--font-head);font-size:clamp(28px,5vw,48px);font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:var(--text);line-height:1;margin-bottom:6px}
-.cta-brand span{color:var(--accent)}
-.cta-tagline{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin-bottom:1.75rem}
-.cta-btn{display:inline-block;background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:16px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:.85rem 2.5rem;border-radius:4px;transition:opacity .15s,transform .15s}
-.cta-btn:hover{opacity:.88;transform:translateY(-1px)}
-
-/* ── FOOTER ── */
 footer{border-top:1px solid var(--border);background:var(--dark);padding:1.75rem 2rem;text-align:center;font-family:var(--font-head);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);width:100%}
-
-/* ── DISCLAIMER ── */
 .disclaimer-bar{width:100%;max-width:1200px;padding:1rem 1.5rem;font-size:11px;color:var(--muted);line-height:1.6;text-align:center}
-
-@media(max-width:900px){
-  .map-area{height:55vw;min-height:250px;max-height:400px}
-  .bio-grid{grid-template-columns:1fr 1fr}
-  .filter-bar{flex-direction:column;gap:8px}
-  .filter-bar input,.filter-bar select{width:100%}
-  .header-nav{display:none}
-  header{padding:0 1rem}
-}
-@media(max-width:540px){
-  .bio-grid{grid-template-columns:1fr}
-  .no-results{grid-column:span 1}
-  .bc-details{grid-template-columns:1fr}
-}
+@media(max-width:900px){.map-area{height:55vw;min-height:280px;max-height:420px}.detail-overlay{width:calc(100% - 2rem);left:1rem;right:1rem}.filter-bar{flex-direction:column;gap:8px}.filter-bar input,.filter-bar select{width:100%}.header-nav{display:none}header{padding:0 1rem}.map-tagline{display:none}}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <a class="logo" href="https://hexcoremounts.com">Hex<span>Core</span> Mounts</a>
   <nav class="header-nav">
@@ -147,9 +101,8 @@ footer{border-top:1px solid var(--border);background:var(--dark);padding:1.75rem
   </nav>
 </header>
 
-<!-- MAP -->
 <div class="map-wrap">
-  <div class="map-area">
+  <div class="map-area" id="map-area">
     <div class="map-tagline">HexCore Mounts — Instructor Map</div>
     <div class="map-count" id="map-count">0 Instructors</div>
     <div id="map-svg-wrap">
@@ -163,14 +116,23 @@ footer{border-top:1px solid var(--border);background:var(--dark);padding:1.75rem
     <div class="map-legend">
       <div class="map-legend-title">Instructor</div>
       <div class="leg-row">
-        <svg width="14" height="13" viewBox="-7 -6 14 13"><polygon points="0,-6 5.2,-3 5.2,3 0,6 -5.2,3 -5.2,-3" fill="#20FDF0"/></svg>
+        <svg width="12" height="11" viewBox="-6 -5 12 11"><polygon points="0,-5 4.3,-2.5 4.3,2.5 0,5 -4.3,2.5 -4.3,-2.5" fill="#20FDF0"/></svg>
         <span>Training Location</span>
       </div>
+    </div>
+    <div class="detail-overlay" id="detail-overlay">
+      <div class="do-header">
+        <div class="do-header-info">
+          <div class="do-name" id="do-name"></div>
+          <div class="do-biz" id="do-biz"></div>
+        </div>
+        <button class="do-close" onclick="closeDetail()">✕</button>
+      </div>
+      <div class="do-body" id="do-body"></div>
     </div>
   </div>
 </div>
 
-<!-- FILTER BAR -->
 <div class="filter-bar">
   <span class="filter-label">Filter:</span>
   <input type="text" id="flt-search" placeholder="Search name, city, or course..." oninput="applyFilters()">
@@ -180,17 +142,11 @@ footer{border-top:1px solid var(--border);background:var(--dark);padding:1.75rem
     <option value="">All Types</option>
     <option value="Classroom">Classroom</option>
     <option value="Range">Range</option>
-    <option value="Both">Classroom & Range</option>
+    <option value="Both">Classroom &amp; Range</option>
   </select>
   <span class="filter-count" id="flt-count"></span>
 </div>
 
-<!-- INSTRUCTOR CARDS -->
-<div class="cards-section">
-  <div class="bio-grid" id="bio-grid"></div>
-</div>
-
-<!-- INSTRUCTOR SIGNUP -->
 <div class="signup-section" id="instructor-signup">
   <div class="signup-card">
     <span class="signup-icon">⬡</span>
@@ -205,20 +161,13 @@ footer{border-top:1px solid var(--border);background:var(--dark);padding:1.75rem
 <!-- YOUR FORM GOES DIRECTLY BELOW THIS LINE -->
 
 
-<!-- DISCLAIMER -->
 <div class="disclaimer-bar">
   HexCore Mounts does not verify, endorse, or certify any instructor listed on this map. Training details are provided by the instructors themselves. Always verify credentials, certifications, and insurance independently before enrolling in any training program. HexCore Mounts is not responsible for the quality, safety, or legality of any training services listed.
 </div>
 
-<!-- FOOTER -->
-<footer>
-  &copy; 2026 HexCore Mounts &nbsp;·&nbsp; Designed and Manufactured in the USA &nbsp;·&nbsp; Atlanta, Georgia
-</footer>
+<footer>&copy; 2026 HexCore Mounts &nbsp;&middot;&nbsp; Designed and Manufactured in the USA &nbsp;&middot;&nbsp; Atlanta, Georgia</footer>
 
 <script>
-/* ============================================================
-   DATA — Replace this block with export from ADMIN tool
-   ============================================================ */
 const _d = "W3siZyI6MSwiYSI6IlMzbHNaUT09IiwiYiI6IlYzSnZZbXhsYzJ0cCIsImMiOiJUbVYzY0c5eWRBPT0iLCJkIjoiVFdsamFHbG5ZVzQ9IiwiZSI6IlYyVWdZWEpsSUdFZ2NISmxiV2xsY2lCbWFYSmxZWEp0Y3lCaGJtUWdkR0ZqZEdsamN5QjBjbUZwYm1sdVp5QmpiMjF3WVc1NUxpQlhaU0JvWVhabElEWWdhVzV6ZEhKMVkzUnZjbk1nZDJsMGFDQmhJR052YldKcGJtVmtJR1Y0Y0dWeWFXVnVZMlVnYjJZZ2IzWmxjaUE1TUNCNVpXRnljeTRnVjJVZ1lYSmxJR0ZzYkNCamIyMWlZWFFnZG1WMGN5d2dkMlVnYUdGMlpTQmxlSEJsY21sbGJtTmxJR2x1SUhKbFlXd2dkMjl5YkdRZ1kyOXVabXhwWTNSekxDQmpiMjF3WlhScGRHbHZiaUJ6YUc5dmRHbHVaeUJoYm1RZ2JXOXlaUzRnVjJVZ2RHVmhZMmdnWVd4c0lHOTJaWElnWm5KdmJTQk5hV05vYVdkaGJpQjBieUJVWlc1dVpYTnpaV1VnZEc4Z1RtOXlkR2dnUTJGeWIyeHBibUV1IiwiZiI6IiIsImgiOiJhSFIwY0hNNkx5OTNkM2N1Wm1GalpXSnZiMnN1WTI5dEwzTm9ZWEpsTHpGaVJUZDFUV1E1ZURNdiIsImsiOiIiLCJpIjo0Mi4wMDI0ODE0MzkyNDI3MTUsImoiOjgzLjMwOTIwNzY3OTM3NjE5LCJtIjoiTWlCV1pYUnpJRVJsZG1Wc2IzQnRaVzUwSUVkeWIzVnciLCJuIjoiVUdWeVptOXliV0Z1WTJVZ1VHbHpkRzlzZkZCbGNtWnZjbTFoYm1ObElFTmhjbUpwYm1WOFRHOTNJRXhwWjJoMEwwNXBaMmgwSUZOb2IyOTBhVzVuZkVOUlFpQnliMjl0SUdOc1pXRnlhVzVuZkdOdmJXSmhkQ0J0WldScFkyRnMiLCJvIjoiUW05MGFBPT0iLCJwIjoiUW05MGFBPT0iLCJxIjoiVlZORFEwRWdZVzVrSUU1U1FTQmpaWEowYVdacFkyRjBaWE09IiwiciI6Ikt6RXpNVE15T0RNNE1UUTMiLCJzIjoiIiwidCI6ImFIUjBjSE02THk4eWRtUm5MbTl5Wnc9PSIsInUiOiJWSGx3YVdOaGJHeDVJSGRsWld0bGJtUnpMQ0J2Y2lCaWVTQmhjSEJ2YVc1MGJXVnVkQT09IiwidiI6IkpESTFNQ0IwYnlBa05EQXciLCJ3IjoiUlc1bmJHbHphQT09In0seyJnIjoyLCJhIjoiVW05aSIsImIiOiJSWEJwWm1GdWFXRT0iLCJjIjoiUW14MVpTQndiMmx1ZEE9PSIsImQiOiJUbVYzSUZsdmNtcz0iLCJlIjoiVlZOUVUwRWdaM0poYm1RZ2JXRnpkR1Z5TENCeWRXNGdkR2hsSUc5dWJHbHVaU0JoWTJObGJHVnlZWFJ2Y2lCb2RIUndjem92TDNkM2R5NXphMjl2YkM1amIyMHZZMjl0Y0dWMGFYUnBiMjR0WVdOalpXeGxjbUYwYjNJdllXSnZkWFE9IiwiZiI6IlFISnZZbVZ3YVdaaGJtbGgiLCJoIjoiIiwiayI6ImFIUjBjSE02THk5M2QzY3VlVzkxZEhWaVpTNWpiMjB2UUhKdlltVndhV1poYm1saCIsImkiOjQwLjc1NjU3NTcxMjU3MDE1NCwiaiI6LTcyLjkzOTIyNjk3ODAzMDE1LCJtIjoiVTFCRElHbHVZeTQ9IiwibiI6IlVHVnlabTl5YldGdVkyVWdhR0Z1WkdkMWJueGpiMjF3WlhScGRHbHZiaUJ6YTJsc2JITjhiMjVzYVc1bElHeGxZWEp1YVc1bklIQnNZWFJtYjNKdCIsIm8iOiJRbTkwYUE9PSIsInAiOiJRbTkwYUE9PSIsInEiOiIiLCJyIjoiS3pFZ0tEVXhOaWtnT1RjMExUZzRNREk9IiwicyI6ImNtOWlMbVZ3YVdaaGJtbGhRR2R0WVdsc0xtTnZiUT09IiwidCI6IlVtOWlaWEJwWm1GdWFXRXVibVYwIiwidSI6IlFua2dZWEJ3YjJsdWRHMWxiblE9IiwidiI6IkpEYzFMU1EyTURBPSIsInciOiJSVzVuYkdsemFBPT0ifSx7ImciOjUsImEiOiJRbkpoYm1SdmJnPT0iLCJiIjoiVW1Wa1lXcGgiLCJjIjoiVEdGeklGWmxaMkZ6IiwiZCI6IlRtVjJZV1JoIiwiZSI6IlYybDBhQ0F4TUNCNVpXRnljeUJ2WmlCbGVIQmxjbWxsYm1ObExDQkpJSEJ5YjNacFpHVWdabWx5WldGeWJYTWdkSEpoYVc1cGJtY2dabTl5SUdGc2JDQnNaWFpsYkhNc0lFNWxkbUZrWVNCRFExY2dZMlZ5ZEdsbWFXTmhkR2x2Yml3Z1lXNWtJR04xYzNSdmJTQnpaV04xY21sMGVTQndiR0Z1Ym1sdVp5Qm1iM0lnYUc5dFpYTXNJSGR2Y210d2JHRmpaWE1zSUdGdVpDQndiR0ZqWlhNZ2IyWWdkMjl5YzJocGNDND0iLCJmIjoiIiwiaCI6IiIsImsiOiIiLCJpIjozNi4xNjk3OTkwNjQyNDY2MywiaiI6LTExNS4xNjE5NjY0NDIwNDUwMSwibSI6IlRrVlRJR05qZHlCaGJtUWdkSEpoYVc1cGJtY2diR3hqIiwibiI6IlFtRnphV01nYUdGdVpHZDFibnhPWlhaaFpHRWdZMk4zZkdWdVkyOTFiblJsY21sdVp5QnRZWE56SUhOb2IyOTBaWEo4WTJocGJHUnlaVzRnWm1seVpXRnliU0J6WVdabGRIbDhkMjl0Wlc0Z2FHRnVaR2QxYmlCelpXeG1JR1JsWm1WdWMyVjhZbUZ6YVdNZ1pXMWxjbWRsYm1ONUlHWnBjbk4wSUdGcFpHVT0iLCJvIjoiUW05MGFBPT0iLCJwIjoiUW05MGFBPT0iLCJxIjoiVlZORFEwRT0iLCJyIjoiS3pFZ0tEY3lOU2tnTXpJNUxUUTRPVEE9IiwicyI6IlRtVnpZMk4zWVc1a2RISmhhVzVwYm1kc2JHTkFaMjFoYVd3dVkyOXQiLCJ0IjoiIiwidSI6IlYyVmxhMlZ1WkhNZ2IyNXNlUT09IiwidiI6IkpERXlOUzBrTWpBdyIsInciOiJSVzVuYkdsemFBPT0ifV0=";
 
 function _x(s){try{return atob(s)}catch(e){return s}}
@@ -237,227 +186,122 @@ function _decode(raw){
 }
 const INSTRUCTORS = _decode(_d);
 
-/* ============================================================
-   STATE CENTROIDS
-   ============================================================ */
-const STATE_CENTROIDS = {
-  "Alabama":[-86.9023,32.3182],"Alaska":[-153.4937,61.3707],"Arizona":[-111.0937,34.0489],"Arkansas":[-92.3731,34.7999],
-  "California":[-119.4179,36.7783],"Colorado":[-105.3111,39.5501],"Connecticut":[-72.7554,41.6032],"Delaware":[-75.5071,38.9108],
-  "Florida":[-81.5158,27.6648],"Georgia":[-83.6431,32.6415],"Hawaii":[-155.5828,19.8968],"Idaho":[-114.7420,44.0682],
-  "Illinois":[-89.1965,40.6331],"Indiana":[-86.1349,40.2672],"Iowa":[-93.0977,41.8780],"Kansas":[-98.4842,38.5266],
-  "Kentucky":[-84.2700,37.8393],"Louisiana":[-91.9623,31.1695],"Maine":[-69.4455,45.2538],"Maryland":[-76.6413,39.0458],
-  "Massachusetts":[-71.3824,42.4072],"Michigan":[-85.6024,44.3148],"Minnesota":[-94.6859,46.7296],"Mississippi":[-89.3985,32.3547],
-  "Missouri":[-91.8318,37.9643],"Montana":[-110.3626,46.8797],"Nebraska":[-99.9018,41.4925],"Nevada":[-116.4194,38.8026],
-  "New Hampshire":[-71.5724,43.1939],"New Jersey":[-74.4057,40.0583],"New Mexico":[-106.2485,34.5199],"New York":[-74.9654,43.2994],
-  "North Carolina":[-79.0193,35.7596],"North Dakota":[-101.0020,47.5515],"Ohio":[-82.9071,40.4173],"Oklahoma":[-97.0929,35.4676],
-  "Oregon":[-120.5542,43.8041],"Pennsylvania":[-77.1945,41.2033],"Rhode Island":[-71.4774,41.5801],"South Carolina":[-80.9450,33.8361],
-  "South Dakota":[-99.9018,43.9695],"Tennessee":[-86.5804,35.5175],"Texas":[-99.3413,31.9686],"Utah":[-111.0937,39.3210],
-  "Vermont":[-72.5778,44.5588],"Virginia":[-78.6569,37.4316],"Washington":[-120.7401,47.7511],"West Virginia":[-80.4549,38.5976],
-  "Wisconsin":[-88.7879,43.7844],"Wyoming":[-107.2903,43.0760]
-};
+const STATE_CENTROIDS = {"Alabama":[-86.9023,32.3182],"Alaska":[-153.4937,61.3707],"Arizona":[-111.0937,34.0489],"Arkansas":[-92.3731,34.7999],"California":[-119.4179,36.7783],"Colorado":[-105.3111,39.5501],"Connecticut":[-72.7554,41.6032],"Delaware":[-75.5071,38.9108],"Florida":[-81.5158,27.6648],"Georgia":[-83.6431,32.6415],"Hawaii":[-155.5828,19.8968],"Idaho":[-114.7420,44.0682],"Illinois":[-89.1965,40.6331],"Indiana":[-86.1349,40.2672],"Iowa":[-93.0977,41.8780],"Kansas":[-98.4842,38.5266],"Kentucky":[-84.2700,37.8393],"Louisiana":[-91.9623,31.1695],"Maine":[-69.4455,45.2538],"Maryland":[-76.6413,39.0458],"Massachusetts":[-71.3824,42.4072],"Michigan":[-85.6024,44.3148],"Minnesota":[-94.6859,46.7296],"Mississippi":[-89.3985,32.3547],"Missouri":[-91.8318,37.9643],"Montana":[-110.3626,46.8797],"Nebraska":[-99.9018,41.4925],"Nevada":[-116.4194,38.8026],"New Hampshire":[-71.5724,43.1939],"New Jersey":[-74.4057,40.0583],"New Mexico":[-106.2485,34.5199],"New York":[-74.9654,43.2994],"North Carolina":[-79.0193,35.7596],"North Dakota":[-101.0020,47.5515],"Ohio":[-82.9071,40.4173],"Oklahoma":[-97.0929,35.4676],"Oregon":[-120.5542,43.8041],"Pennsylvania":[-77.1945,41.2033],"Rhode Island":[-71.4774,41.5801],"South Carolina":[-80.9450,33.8361],"South Dakota":[-99.9018,43.9695],"Tennessee":[-86.5804,35.5175],"Texas":[-99.3413,31.9686],"Utah":[-111.0937,39.3210],"Vermont":[-72.5778,44.5588],"Virginia":[-78.6569,37.4316],"Washington":[-120.7401,47.7511],"West Virginia":[-80.4549,38.5976],"Wisconsin":[-88.7879,43.7844],"Wyoming":[-107.2903,43.0760]};
 
-let projectionFn = null;
-let highlightedId = null;
-let filtered = [];
+let projectionFn=null, selectedId=null, filtered=[];
 
-/* ============================================================
-   INIT
-   ============================================================ */
-function init() {
-  // Populate filter dropdowns
-  const stateSelect = document.getElementById('flt-state');
-  const states = [...new Set(INSTRUCTORS.map(i=>i.state))].sort();
-  states.forEach(s => { const o=document.createElement('option'); o.value=s; o.textContent=s; stateSelect.appendChild(o); });
-
-  const courseSelect = document.getElementById('flt-course');
-  const courses = [...new Set(INSTRUCTORS.flatMap(i=>i.courses||[]))].sort();
-  courses.forEach(c => { const o=document.createElement('option'); o.value=c; o.textContent=c; courseSelect.appendChild(o); });
-
-  document.getElementById('map-count').textContent = INSTRUCTORS.length + ' Instructor' + (INSTRUCTORS.length!==1?'s':'');
-  applyFilters();
-  drawStates();
+function init(){
+  const ss=document.getElementById('flt-state');
+  [...new Set(INSTRUCTORS.map(i=>i.state))].sort().forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;ss.appendChild(o)});
+  const cs=document.getElementById('flt-course');
+  [...new Set(INSTRUCTORS.flatMap(i=>i.courses||[]))].sort().forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;cs.appendChild(o)});
+  document.getElementById('map-count').textContent=INSTRUCTORS.length+' Instructor'+(INSTRUCTORS.length!==1?'s':'');
+  applyFilters();drawStates();
 }
 
-/* ============================================================
-   FILTERS
-   ============================================================ */
-function applyFilters() {
-  const q = (document.getElementById('flt-search').value||'').toLowerCase();
-  const state = document.getElementById('flt-state').value;
-  const course = document.getElementById('flt-course').value;
-  const type = document.getElementById('flt-type').value;
-
-  filtered = INSTRUCTORS.filter(a => {
-    if (state && a.state !== state) return false;
-    if (course && !(a.courses||[]).includes(course)) return false;
-    if (type && a.type !== type && a.type !== 'Both') return false;
-    if (q) {
-      const str = `${a.first} ${a.last} ${a.biz} ${a.city} ${a.state} ${(a.courses||[]).join(' ')} ${a.certs}`.toLowerCase();
-      if (!str.includes(q)) return false;
-    }
+function applyFilters(){
+  const q=(document.getElementById('flt-search').value||'').toLowerCase();
+  const state=document.getElementById('flt-state').value;
+  const course=document.getElementById('flt-course').value;
+  const type=document.getElementById('flt-type').value;
+  filtered=INSTRUCTORS.filter(a=>{
+    if(state&&a.state!==state)return false;
+    if(course&&!(a.courses||[]).includes(course))return false;
+    if(type&&a.type!==type&&a.type!=='Both')return false;
+    if(q){const str=`${a.first} ${a.last} ${a.biz} ${a.city} ${a.state} ${(a.courses||[]).join(' ')} ${a.certs}`.toLowerCase();if(!str.includes(q))return false;}
     return true;
   });
-
-  document.getElementById('flt-count').textContent = filtered.length + ' of ' + INSTRUCTORS.length;
-  renderCards();
+  document.getElementById('flt-count').textContent=filtered.length+' of '+INSTRUCTORS.length;
   renderPins();
 }
 
-/* ============================================================
-   CARDS
-   ============================================================ */
-function getInitials(f, l) { return ((f||'').charAt(0)+(l||'').charAt(0)).toUpperCase(); }
+function normIg(h){if(!h)return'';return'https://instagram.com/'+h.replace(/^@/,'').replace(/^https?:\/\/(www\.)?instagram\.com\//,'');}
+function normUrl(u){if(!u)return'';return u.startsWith('http')?u:'https://'+u;}
 
-function normIg(h) { if(!h)return''; const c=h.replace(/^@/,'').replace(/^https?:\/\/(www\.)?instagram\.com\//,''); return 'https://instagram.com/'+c; }
-function normFb(u) { if(!u)return''; return u.startsWith('http')?u:'https://'+u; }
-function normYt(u) { if(!u)return''; return u.startsWith('http')?u:'https://'+u; }
-function normWeb(u) { if(!u)return''; return u.startsWith('http')?u:'https://'+u; }
-
-function renderCards() {
-  const grid = document.getElementById('bio-grid');
-  if (!filtered.length) {
-    grid.innerHTML = '<div class="no-results">No instructors match your filters. Try broadening your search.</div>';
-    return;
-  }
-  grid.innerHTML = filtered.map(a => `
-    <div class="bio-card ${highlightedId===a.id?'highlighted':''}" id="card-${a.id}">
-      <div class="bc-top">
-        <div class="bc-avatar">${getInitials(a.first,a.last)}</div>
-        <div>
-          <div class="bc-name">${a.first} ${a.last}</div>
-          ${a.biz?`<div class="bc-biz">${a.biz}</div>`:''}
-          <div class="bc-loc">
-            <svg width="10" height="12" viewBox="0 0 10 12" fill="none"><path d="M5 0C2.79 0 1 1.79 1 4C1 7 5 12 5 12C5 12 9 7 9 4C9 1.79 7.21 0 5 0ZM5 5.5C4.17 5.5 3.5 4.83 3.5 4C3.5 3.17 4.17 2.5 5 2.5C5.83 2.5 6.5 3.17 6.5 4C6.5 4.83 5.83 5.5 5 5.5Z" fill="#7a7f8e"/></svg>
-            ${a.city}, ${a.state}
-          </div>
-        </div>
-      </div>
-      ${a.bio?`<div class="bc-bio">${a.bio}</div>`:''}
-      ${a.certs?`<div class="bc-certs">${a.certs}</div>`:''}
-      ${(a.courses&&a.courses.length)?`<div class="bc-tags">${a.courses.map(c=>`<span class="bc-tag">${c}</span>`).join('')}</div>`:''}
-      <div class="bc-details">
-        <div class="bc-detail"><strong>Type:</strong> ${a.type||'—'}</div>
-        <div class="bc-detail"><strong>Format:</strong> ${a.format||'—'}</div>
-        ${a.schedule?`<div class="bc-detail"><strong>Schedule:</strong> ${a.schedule}</div>`:''}
-        ${a.price?`<div class="bc-detail"><strong>Price:</strong> ${a.price}</div>`:''}
-        ${a.langs?`<div class="bc-detail"><strong>Languages:</strong> ${a.langs}</div>`:''}
-      </div>
-      <div class="bc-contact">
-        ${a.phone?`<a href="tel:${a.phone.replace(/[^\d+]/g,'')}" class="contact-link phone">☎ ${a.phone}</a>`:''}
-        ${a.email?`<a href="mailto:${a.email}" class="contact-link email-link">✉ Email</a>`:''}
-        ${a.website?`<a href="${normWeb(a.website)}" target="_blank" rel="noopener" class="contact-link web">🌐 Website</a>`:''}
-        ${a.instagram?`<a href="${normIg(a.instagram)}" target="_blank" rel="noopener" class="contact-link ig">IG @${a.instagram.replace(/^@/,'')}</a>`:''}
-        ${a.facebook?`<a href="${normFb(a.facebook)}" target="_blank" rel="noopener" class="contact-link fb">Facebook</a>`:''}
-        ${a.youtube?`<a href="${normYt(a.youtube)}" target="_blank" rel="noopener" class="contact-link yt">YouTube</a>`:''}
-      </div>
-    </div>`).join('');
+function showDetail(id){
+  const a=INSTRUCTORS.find(i=>i.id===id);if(!a)return;
+  if(selectedId===id){closeDetail();return;}
+  selectedId=id;renderPins();
+  document.getElementById('do-name').textContent=a.first+' '+a.last;
+  const bizEl=document.getElementById('do-biz');bizEl.textContent=a.biz||'';bizEl.style.display=a.biz?'block':'none';
+  let h=`<div class="do-loc"><svg width="10" height="12" viewBox="0 0 10 12" fill="none"><path d="M5 0C2.79 0 1 1.79 1 4C1 7 5 12 5 12C5 12 9 7 9 4C9 1.79 7.21 0 5 0ZM5 5.5C4.17 5.5 3.5 4.83 3.5 4C3.5 3.17 4.17 2.5 5 2.5C5.83 2.5 6.5 3.17 6.5 4C6.5 4.83 5.83 5.5 5 5.5Z" fill="#7a7f8e"/></svg>${a.city}, ${a.state}</div>`;
+  if(a.bio)h+=`<div class="do-section"><div class="do-section-title">About</div><div class="do-bio">${a.bio}</div></div>`;
+  if(a.certs)h+=`<div class="do-section"><div class="do-section-title">Certifications</div><div class="do-certs">${a.certs}</div></div>`;
+  if(a.courses&&a.courses.length)h+=`<div class="do-section"><div class="do-section-title">Courses Offered</div><div class="do-tags">${a.courses.map(c=>`<span class="do-tag">${c}</span>`).join('')}</div></div>`;
+  const dd=[];
+  if(a.type)dd.push({l:'Type',v:a.type});if(a.format)dd.push({l:'Format',v:a.format});
+  if(a.schedule)dd.push({l:'Schedule',v:a.schedule});if(a.price)dd.push({l:'Price',v:a.price});
+  if(a.langs)dd.push({l:'Languages',v:a.langs});
+  if(dd.length)h+=`<div class="do-section"><div class="do-section-title">Details</div><div class="do-grid">${dd.map(d=>`<div class="do-detail"><div class="do-detail-label">${d.l}</div><div class="do-detail-value">${d.v}</div></div>`).join('')}</div></div>`;
+  const cc=[];
+  if(a.phone)cc.push(`<a href="tel:${a.phone.replace(/[^\d+]/g,'')}" class="do-contact-link phone">☎ ${a.phone}</a>`);
+  if(a.email)cc.push(`<a href="mailto:${a.email}" class="do-contact-link email-link">✉ ${a.email}</a>`);
+  if(a.website)cc.push(`<a href="${normUrl(a.website)}" target="_blank" rel="noopener" class="do-contact-link web">🌐 Website</a>`);
+  if(a.instagram)cc.push(`<a href="${normIg(a.instagram)}" target="_blank" rel="noopener" class="do-contact-link ig">@${a.instagram.replace(/^@/,'')}</a>`);
+  if(a.facebook)cc.push(`<a href="${normUrl(a.facebook)}" target="_blank" rel="noopener" class="do-contact-link fb">Facebook</a>`);
+  if(a.youtube)cc.push(`<a href="${normUrl(a.youtube)}" target="_blank" rel="noopener" class="do-contact-link yt">YouTube</a>`);
+  if(cc.length)h+=`<div class="do-section"><div class="do-section-title">Contact</div><div class="do-contact">${cc.join('')}</div></div>`;
+  h+=`<div class="do-disclaimer"><strong>⚠</strong> HexCore Mounts does not verify or endorse this instructor. Always verify credentials independently.</div>`;
+  document.getElementById('do-body').innerHTML=h;
+  document.getElementById('detail-overlay').classList.add('visible');
 }
 
-function scrollToCard(id) {
-  const el = document.getElementById('card-'+id);
-  if (!el) return;
-  el.scrollIntoView({behavior:'smooth',block:'center'});
-  document.querySelectorAll('.bio-card').forEach(c=>c.classList.remove('highlighted'));
-  el.classList.add('highlighted');
-  highlightedId = id;
-  renderPins();
-  setTimeout(()=>{ el.classList.remove('highlighted'); highlightedId=null; renderPins(); }, 3000);
+function closeDetail(){selectedId=null;document.getElementById('detail-overlay').classList.remove('visible');renderPins();}
+
+function hexPoints(cx,cy,r){const pts=[];for(let i=0;i<6;i++){const a=(Math.PI/180)*(60*i-30);pts.push(`${(cx+r*Math.cos(a)).toFixed(2)},${(cy+r*Math.sin(a)).toFixed(2)}`);}return pts.join(' ');}
+
+function getCoord(a){
+  if(a.lat&&a.lon&&projectionFn){const c=projectionFn([a.lon,a.lat]);if(c)return c;}
+  const ll=STATE_CENTROIDS[a.state];if(ll&&projectionFn)return projectionFn(ll);return null;
 }
 
-/* ============================================================
-   MAP
-   ============================================================ */
-function hexPoints(cx, cy, r) {
-  const pts=[];
-  for(let i=0;i<6;i++){const a=(Math.PI/180)*(60*i-30);pts.push(`${(cx+r*Math.cos(a)).toFixed(2)},${(cy+r*Math.sin(a)).toFixed(2)}`);}
-  return pts.join(' ');
-}
-
-function getCoord(a) {
-  if (a.lat && a.lon && projectionFn) { const c=projectionFn([a.lon,a.lat]); if(c) return c; }
-  const ll = STATE_CENTROIDS[a.state];
-  if (ll && projectionFn) return projectionFn(ll);
-  return null;
-}
-
-function renderPins() {
-  const layer = document.getElementById('pins-g');
-  layer.innerHTML = '';
-  const tooltip = document.getElementById('map-tooltip');
-  const wrap = document.getElementById('map-svg-wrap');
-  const sz = 7;
-
-  filtered.forEach(a => {
-    const coord = getCoord(a);
-    if (!coord) return;
-    const cx=coord[0], cy=coord[1];
-    const isHL = highlightedId===a.id;
-
-    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
-    g.style.cursor = 'pointer';
-
-    if (isHL) {
-      const glow = document.createElementNS('http://www.w3.org/2000/svg','polygon');
-      glow.setAttribute('points', hexPoints(cx,cy,sz+6));
-      glow.setAttribute('fill','none');
-      glow.setAttribute('stroke','#20FDF0');
-      glow.setAttribute('stroke-width','1.5');
-      glow.setAttribute('opacity','0.4');
-      g.appendChild(glow);
-    }
-
-    const hex = document.createElementNS('http://www.w3.org/2000/svg','polygon');
-    hex.setAttribute('points', hexPoints(cx,cy,sz));
-    hex.setAttribute('fill', isHL ? '#ffffff' : '#20FDF0');
-    hex.setAttribute('stroke', isHL ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.4)');
-    hex.setAttribute('stroke-width', isHL ? '1.5' : '0.8');
-    hex.setAttribute('opacity','0.93');
-    g.appendChild(hex);
-
-    g.addEventListener('mouseenter', () => {
-      hex.setAttribute('fill','#ffffff');
-      hex.setAttribute('stroke','rgba(255,255,255,0.6)');
-      const svgRect = document.getElementById('usa-svg').getBoundingClientRect();
-      const wrapRect = wrap.getBoundingClientRect();
-      const px = cx*(svgRect.width/960)+(svgRect.left-wrapRect.left);
-      const py = cy*(svgRect.height/600)+(svgRect.top-wrapRect.top);
-      const courseTags = (a.courses||[]).slice(0,4).map(c=>`<span class="tt-tag">${c}</span>`).join('');
-      tooltip.innerHTML = `
-        <div class="tt-name">${a.first} ${a.last}</div>
-        ${a.biz?`<div class="tt-biz">${a.biz}</div>`:''}
-        <div class="tt-loc">${a.city}, ${a.state}</div>
-        ${courseTags?`<div class="tt-courses">${courseTags}</div>`:''}
-        <div class="tt-hint">Click for details ↓</div>`;
+function renderPins(){
+  const layer=document.getElementById('pins-g');layer.innerHTML='';
+  const tooltip=document.getElementById('map-tooltip');
+  const wrap=document.getElementById('map-svg-wrap');
+  const sz=5;
+  filtered.forEach(a=>{
+    const coord=getCoord(a);if(!coord)return;
+    const cx=coord[0],cy=coord[1],isSel=selectedId===a.id;
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.style.cursor='pointer';
+    if(isSel){const glow=document.createElementNS('http://www.w3.org/2000/svg','polygon');glow.setAttribute('points',hexPoints(cx,cy,sz+5));glow.setAttribute('fill','none');glow.setAttribute('stroke','#20FDF0');glow.setAttribute('stroke-width','1.5');glow.setAttribute('opacity','0.4');g.appendChild(glow);}
+    const hex=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+    hex.setAttribute('points',hexPoints(cx,cy,sz));
+    hex.setAttribute('fill',isSel?'#ffffff':'#20FDF0');
+    hex.setAttribute('stroke',isSel?'rgba(255,255,255,0.7)':'rgba(0,0,0,0.4)');
+    hex.setAttribute('stroke-width',isSel?'1.5':'0.8');
+    hex.setAttribute('opacity','0.93');g.appendChild(hex);
+    g.addEventListener('mouseenter',()=>{
+      hex.setAttribute('fill','#ffffff');hex.setAttribute('stroke','rgba(255,255,255,0.6)');
+      const svgRect=document.getElementById('usa-svg').getBoundingClientRect();
+      const wrapRect=wrap.getBoundingClientRect();
+      const px=cx*(svgRect.width/960)+(svgRect.left-wrapRect.left);
+      const py=cy*(svgRect.height/600)+(svgRect.top-wrapRect.top);
+      const tags=(a.courses||[]).slice(0,4).map(c=>`<span class="tt-tag">${c}</span>`).join('');
+      tooltip.innerHTML=`<div class="tt-name">${a.first} ${a.last}</div>${a.biz?`<div class="tt-biz">${a.biz}</div>`:''}<div class="tt-loc">${a.city}, ${a.state}</div>${tags?`<div class="tt-courses">${tags}</div>`:''}<div class="tt-hint">Click for details</div>`;
       tooltip.style.display='block';
       tooltip.style.left=Math.min(px+12,wrapRect.width-280)+'px';
       tooltip.style.top=Math.max(py-140,8)+'px';
     });
-    g.addEventListener('mouseleave', () => {
-      hex.setAttribute('fill', isHL?'#ffffff':'#20FDF0');
-      hex.setAttribute('stroke', isHL?'rgba(255,255,255,0.7)':'rgba(0,0,0,0.4)');
-      tooltip.style.display='none';
-    });
-    g.addEventListener('click', () => scrollToCard(a.id));
+    g.addEventListener('mouseleave',()=>{hex.setAttribute('fill',isSel?'#ffffff':'#20FDF0');hex.setAttribute('stroke',isSel?'rgba(255,255,255,0.7)':'rgba(0,0,0,0.4)');tooltip.style.display='none';});
+    g.addEventListener('click',()=>showDetail(a.id));
     layer.appendChild(g);
   });
 }
 
-function drawStates() {
+function drawStates(){
   fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(r=>r.json()).then(us=>{
-    const proj = d3.geoAlbersUsa().scale(1280).translate([480,300]);
-    projectionFn = proj;
-    const path = d3.geoPath().projection(proj);
-    const states = topojson.feature(us, us.objects.states);
-    d3.select('#states-g').selectAll('path').data(states.features).enter().append('path')
-      .attr('d',path).attr('fill','#16181c').attr('stroke','#2a2d35').attr('stroke-width','0.8');
+    const proj=d3.geoAlbersUsa().scale(1280).translate([480,300]);projectionFn=proj;
+    const path=d3.geoPath().projection(proj);
+    const states=topojson.feature(us,us.objects.states);
+    d3.select('#states-g').selectAll('path').data(states.features).enter().append('path').attr('d',path).attr('fill','#16181c').attr('stroke','#2a2d35').attr('stroke-width','0.8');
     renderPins();
   }).catch(()=>{
-    projectionFn = d3.geoAlbersUsa().scale(1280).translate([480,300]);
+    projectionFn=d3.geoAlbersUsa().scale(1280).translate([480,300]);
     document.getElementById('states-g').innerHTML=`<rect x="60" y="80" width="840" height="440" rx="4" fill="#16181c" stroke="#2a2d35"/><text x="480" y="300" text-anchor="middle" font-size="14" fill="#3a3d47" font-family="Barlow,sans-serif">Map — check connection</text>`;
     renderPins();
   });
 }
-
 init();
 </script>
 </body>
