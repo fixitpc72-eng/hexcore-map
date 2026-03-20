@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Explore HexCore resources in one place — permit guides, reciprocity tools, instructor listings, legal resources, safety guidance, glossary terms, and the Intel blog hub.">
+<title>HexCore Resource Directory | Guides, Maps & Intel</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap">
+<style>
+:root{--black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;--text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--yellow:#eab308;--font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);font-size:17px;line-height:1.75;-webkit-font-smoothing:antialiased}
+header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-family:var(--font-head);font-weight:900;font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);text-decoration:none}
+.logo span{color:var(--accent)}
+.header-nav{display:flex;gap:2rem;align-items:center}
+.header-nav a{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}
+.header-nav a:hover{color:var(--text)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;text-decoration:none}
+.hero{max-width:900px;margin:0 auto;padding:5.5rem 2rem 4rem;border-bottom:1px solid var(--border)}
+.hero-label{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;display:flex;align-items:center;gap:10px}
+.hero-label::before{content:'';display:inline-block;width:28px;height:1px;background:var(--accent)}
+h1{font-family:var(--font-head);font-size:clamp(44px,7.5vw,80px);font-weight:900;line-height:.93;letter-spacing:-.01em;text-transform:uppercase;color:var(--text);margin-bottom:2rem}
+h1 em{font-style:normal;color:var(--accent)}
+.hero-intro{font-size:18px;color:var(--sub);max-width:680px;line-height:1.75}
+.hero-intro p{margin-bottom:.75rem}
+.hero-intro p:last-child{margin-bottom:0}
+.hero-intro strong{color:var(--text);font-weight:600}
+.page{max-width:900px;margin:0 auto;padding:0 2rem 5rem}
+.section-label{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--sub);margin-top:4rem;margin-bottom:1.25rem;padding-top:2.75rem;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.section-label::before{content:'';display:inline-block;width:16px;height:1px;background:var(--accent)}
+h2{font-family:var(--font-head);font-size:clamp(26px,4vw,40px);font-weight:900;text-transform:uppercase;letter-spacing:.02em;color:var(--text);line-height:1.05;margin-bottom:1.1rem}
+p{color:var(--sub);margin-bottom:1rem;max-width:700px;font-weight:400}
+p strong{color:var(--text);font-weight:600}
+.punch{font-family:var(--font-head);font-size:clamp(20px,3vw,28px);font-weight:900;text-transform:uppercase;color:var(--text);letter-spacing:.02em;line-height:1.1;margin:1.25rem 0 .5rem;max-width:none}
+.announce-card{background:var(--card);border:1px solid var(--accent);border-radius:6px;padding:1.75rem 1.5rem;margin:2rem 0}
+.announce-label{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.announce-title{font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:var(--text);margin-bottom:8px}
+.announce-body{font-size:15px;color:var(--sub);line-height:1.65;max-width:none;margin:0}
+.quote-block{background:var(--card);border-left:4px solid var(--accent);border-radius:0 6px 6px 0;padding:1.5rem 1.75rem;margin:2rem 0}
+.quote-block p{font-size:16px;color:var(--text);line-height:1.65;font-style:italic;margin:0;max-width:none}
+.warn-block{background:#14120d;border:1px solid var(--yellow);border-left:4px solid var(--yellow);border-radius:0 6px 6px 0;padding:1.25rem 1.5rem;margin:2rem 0;font-size:14px;color:#c4a755;line-height:1.65}
+.warn-block strong{display:block;font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--yellow);margin-bottom:4px}
+.eng-grid,.resource-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:1.75rem 0}
+.eng-card,.resource-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:1.5rem 1.25rem;transition:border-color .15s}
+.eng-card:hover,.resource-card:hover{border-color:var(--accent)}
+.eng-card-title,.resource-tag{font-family:var(--font-head);font-size:17px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:8px}
+.eng-card-body,.resource-body{font-size:15px;color:var(--sub);line-height:1.6}
+.resource-title{font-family:var(--font-head);font-size:24px;font-weight:900;text-transform:uppercase;line-height:1.05;margin-bottom:8px}
+.resource-link{display:inline-block;margin-top:12px;font-family:var(--font-head);font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);text-decoration:none}
+.cta-block{background:var(--card);border:1px solid var(--accent);border-radius:6px;padding:3rem 2rem;margin-top:3.5rem;text-align:center}
+.cta-label{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem}
+.cta-brand{font-family:var(--font-head);font-size:clamp(28px,5vw,48px);font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:var(--text);line-height:1;margin-bottom:6px}
+.cta-brand span{color:var(--accent)}
+.cta-tagline{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin-bottom:1.75rem}
+.cta-btn{display:inline-block;background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:16px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:.85rem 2.5rem;border-radius:4px;transition:opacity .15s,transform .15s;margin:0 .5rem}
+.cta-btn:hover{opacity:.88;transform:translateY(-1px)}
+.cta-btn.secondary{background:transparent;border:2px solid var(--accent);color:var(--accent)}
+footer{border-top:1px solid var(--border);background:var(--dark);padding:1.75rem 2rem;text-align:center;font-family:var(--font-head);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
+.pulse-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:4px;animation:pulse 2s infinite;vertical-align:middle}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+@media (max-width:680px){.eng-grid,.resource-grid{grid-template-columns:1fr}.hero{padding:3.5rem 1.25rem 3rem}.page{padding:0 1.25rem 3rem}header{padding:0 1rem}.header-nav{display:none}.cta-block{padding:2.5rem 1.25rem}.cta-btn{display:block;margin:.5rem auto}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="https://hexcoremounts.com">Hex<span>Core</span> Mounts</a>
+  <nav class="header-nav">
+    <a href="https://hexcoremounts.com/collections/all">Products</a>
+    <a href="https://hexcoremounts.com/pages/why-hexcore">Why HexCore</a>
+    <a href="https://hexcoremounts.com/pages/about-us">About</a>
+    <a href="https://hexcoremounts.com/blogs/news">Intel</a>
+    <a class="header-badge" href="https://hexcoremounts.com/blogs/news">View Intel</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div class="hero-label">Resource Directory</div>
+  <h1>Everything<br>In <em>One Place</em></h1>
+  <div class="hero-intro">
+    <p>We’ve built more than products. We’ve built tools, maps, guides, and reference pages to help firearm owners find answers faster.</p>
+    <p>The <strong>HexCore Resource Directory</strong> brings those pages together in one place — from concealed carry permit guidance and reciprocity tools to instructor listings, legal notices, safety guidance, and firearm terminology.</p>
+    <p>If you’re not sure where to start, start here.</p>
+  </div>
+</div>
+
+<div class="page">
+  <div class="section-label"><span class="pulse-dot"></span>What’s Inside</div>
+  <h2>One Hub. Multiple Resources.</h2>
+  <p>HexCore’s resources currently include a CCW Permit Guide feature post, a CCW Reciprocity Map page, an Instructor Map page, an Attorneys on Retainer page, a Legal restrictions page, Firearm Responsibility & Safety Guidelines, a Gun Terms Glossary, and the broader News / Intel hub.</p>
+
+  <div class="announce-card">
+    <div class="announce-label">Directory Overview</div>
+    <div class="announce-title">Built to Make the Right Page Easier to Find</div>
+    <div class="announce-body">Instead of making users bounce between unrelated pages, this directory gives them one clean starting point for the tools and information already live on the site.</div>
+  </div>
+
+  <div class="section-label">Featured Resources</div>
+  <h2>Maps, Guides & Reference Pages</h2>
+
+  <div class="resource-grid">
+    <div class="resource-card">
+      <div class="resource-tag">Feature Post</div>
+      <div class="resource-title">CCW Permit Guide</div>
+      <div class="resource-body">A feature post introducing the state-by-state concealed carry permit guide, including one-state-at-a-time display, official source links, and permit-process summaries.</div>
+      <a class="resource-link" href="https://hexcoremounts.com/blogs/news/introducing-the-hexcore-mounts-ccw-permit-guide">Read the feature →</a>
+    </div>
+    <div class="resource-card">
+      <div class="resource-tag">Map Tool</div>
+      <div class="resource-title">CCW Reciprocity Map</div>
+      <div class="resource-body">A reciprocity-focused resource designed to help users research where a concealed carry permit may be recognized.</div>
+      <a class="resource-link" href="https://hexcoremounts.com/pages/ccw-reciprocity-map">Open the map →</a>
+    </div>
+    <div class="resource-card">
+      <div class="resource-tag">Training</div>
+      <div class="resource-title">Instructor Map</div>
+      <div class="resource-body">A map and training resource page built to help users locate firearm instructors and connect with training programs more directly.</div>
+      <a class="resource-link" href="https://hexcoremounts.com/pages/instructor-map">Find instructors →</a>
+    </div>
+    <div class="resource-card">
+      <div class="resource-tag">Legal Support</div>
+      <div class="resource-title">Attorneys on Retainer</div>
+      <div class="resource-body">A page outlining AOR coverage backed by Attorneys For Freedom, including representation across all 50 states and D.C. with local co-counsel support.</div>
+      <a class="resource-link" href="https://hexcoremounts.com/pages/attorneys-on-retainer">View support info →</a>
+    </div>
+    <div class="resource-card">
+      <div class="resource-tag">Compliance</div>
+      <div class="resource-title">Legal</div>
+      <div class="resource-body">A state-law and restrictions page reminding customers that some states restrict magazines, basepads, and certain firearm accessories, and that buyers are responsible for knowing their local laws.</div>
+      <a class="resource-link" href="https://hexcoremounts.com/pages/legal">Review legal page →</a>
+    </div>
+    <div class="resource-card">
+      <div class="resource-tag">Safety</div>
+      <div class="resource-title">Responsibility & Safety</div>
+      <div class="resource-body">A firearm safety page reinforcing responsible ownership, including the guidance to never store a loaded firearm in a mount.</div>
+      <a class="resource-link" href="https://hexcoremounts.com/pages/firearm-responsibility-safety-guidelines">Read safety guidelines →</a>
+    </div>
+    <div class="resource-card">
+      <div class="resource-tag">Reference</div>
+      <div class="resource-title">Gun Terms Glossary</div>
+      <div class="resource-body">A searchable glossary that explains firearm terms, calibers, actions, accessories, and safety terminology in clear language.</div>
+      <a class="resource-link" href="https://hexcoremounts.com/pages/gun-terms-glossary">Open the glossary →</a>
+    </div>
+    <div class="resource-card">
+      <div class="resource-tag">Intel Hub</div>
+      <div class="resource-title">News / Intel</div>
+      <div class="resource-body">The main blog hub for feature announcements and educational content, including posts about the CCW guide, Instructor Map, reciprocity tool, magazine capacity, and veteran resources.</div>
+      <a class="resource-link" href="https://hexcoremounts.com/blogs/news">Browse Intel →</a>
+    </div>
+  </div>
+
+  <div class="section-label">Why This Directory Matters</div>
+  <h2>Because Good Information Is Easy to Lose When It’s Spread Out</h2>
+  <p>When tools and reference pages live separately, users miss things. They find the permit guide but not the reciprocity tool. They find the instructor map but not the safety page. They hit the blog hub but don’t know where the practical resources are.</p>
+  <p><strong>This page fixes that by creating one clean launch point for the full resource ecosystem.</strong></p>
+  <p class="punch">Less digging. Faster access. Better decisions.</p>
+
+  <div class="section-label">How to Use It</div>
+  <div class="eng-grid">
+    <div class="eng-card">
+      <div class="eng-card-title">Start with the Question</div>
+      <div class="eng-card-body">Need permit info, reciprocity guidance, training, legal support, or safety references? Start with the resource that matches the exact question.</div>
+    </div>
+    <div class="eng-card">
+      <div class="eng-card-title">Move to Verification</div>
+      <div class="eng-card-body">Use these pages as structured starting points, then verify important legal or procedural details with the appropriate official source when needed.</div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <p>HexCore doesn’t just organize firearms. We organize the information around them too.</p>
+  </div>
+
+  <div class="section-label">Important Note</div>
+  <div class="warn-block">
+    <strong>Use the Right Source for the Right Question</strong>
+    Some pages in this directory are informational tools, some are educational references, and some point users to outside providers. Laws, permit requirements, support coverage, and policies can change. Always verify important legal or procedural information with the correct official authority or provider before relying on it.
+  </div>
+
+  <p>This directory is meant to make the resource side of the site easier to navigate — not replace the official source where final verification is required.</p>
+
+  <div class="cta-block">
+    <div class="cta-label">HexCore Resources</div>
+    <div class="cta-brand">Resource <span>Directory</span></div>
+    <div class="cta-tagline">Maps · Guides · Legal · Safety · Intel</div>
+    <a class="cta-btn" href="https://hexcoremounts.com/blogs/news">Browse Intel</a>
+    <a class="cta-btn secondary" href="https://hexcoremounts.com/collections/all">Shop Mounts</a>
+  </div>
+</div>
+
+<footer>© 2026 HexCore Mounts · Designed and Manufactured in the USA · Atlanta, Georgia</footer>
+</body>
+</html>
