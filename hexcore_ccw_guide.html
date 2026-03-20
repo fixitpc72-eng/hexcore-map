@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HexCore — Concealed Carry Permit Process by State</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --black:#0a0a0a; --dark:#111214; --card:#16181c; --border:#2a2d35; --text:#e8e9ec;
+      --sub:#7a7f8e; --accent:#20FDF0; --yellow:#facc15;
+      --font-head:'Barlow Condensed',sans-serif; --font-body:'Barlow',sans-serif;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--black);color:var(--text);font-family:var(--font-body);line-height:1.5}
+    header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--dark);border-bottom:1px solid var(--border);padding:12px 18px}
+    .logo{font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+    .logo span{color:var(--accent)}
+    .header-center{flex:1;max-width:700px;display:flex;justify-content:center}
+    .state-select{width:100%;background:var(--card);color:var(--text);border:1px solid var(--border);padding:10px 12px;border-radius:6px;font-size:14px;outline:none}
+    .header-badge{font-family:var(--font-head);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;background:var(--accent);color:#000;padding:5px 10px;border-radius:4px;white-space:nowrap}
+    .layout{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 58px)}
+    .sidebar{background:var(--dark);border-right:1px solid var(--border);padding:20px}
+    .main{padding:20px}
+    h1,h2,h3,h4{font-family:var(--font-head);text-transform:uppercase;letter-spacing:.02em}
+    .hero{background:linear-gradient(180deg,rgba(32,253,240,.06),rgba(32,253,240,.02));border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:18px}
+    .eyebrow{font-family:var(--font-head);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+    .hero h1{font-size:54px;line-height:.95;margin-bottom:10px}
+    .hero h1 span{color:var(--accent)}
+    .hero p{font-size:15px;line-height:1.7;color:var(--sub);max-width:940px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .btn{display:inline-flex;padding:12px 18px;border-radius:8px;text-decoration:none;font-family:var(--font-head);font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+    .btn.primary{background:var(--accent);color:#000}
+    .btn.secondary{border:1px solid var(--border);color:var(--text)}
+    .panel{background:var(--dark);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px}
+    .panel p{color:var(--sub);line-height:1.7;font-size:14px}
+    .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+    .stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px}
+    .stat .num{font-family:var(--font-head);font-size:30px;font-weight:900;color:var(--accent)}
+    .stat .lbl{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em}
+    .info-list{display:grid;gap:10px}
+    .info-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+    .info-item strong{display:block;font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+    .info-item span{font-size:13px;line-height:1.55;color:var(--text)}
+    .steps{display:grid;gap:12px}
+    .step{display:grid;grid-template-columns:52px 1fr;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
+    .n{width:52px;height:52px;border-radius:9px;background:rgba(32,253,240,.08);border:1px solid rgba(32,253,240,.15);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:28px;font-weight:900;color:var(--accent)}
+    .step h3{font-size:22px;margin-bottom:4px}
+    .listgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .jump{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 12px;text-decoration:none;color:var(--text);font-size:13px;font-weight:600;transition:.2s ease;cursor:pointer}
+    .jump:hover,.jump.active{border-color:var(--accent);background:rgba(32,253,240,.04);color:var(--accent)}
+    .cards-wrap{display:block}
+    .card{display:none;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px}
+    .card.active{display:block}
+    .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px}
+    .card h3{font-size:32px;line-height:1}
+    .status{font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;padding:4px 8px;border-radius:4px;background:rgba(32,253,240,.12);color:var(--accent);white-space:nowrap}
+    .facts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+    .fact{background:#111317;border:1px solid var(--border);border-radius:10px;padding:10px}
+    .fact .k{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+    .fact .v{font-size:13px;line-height:1.45}
+    .mini-steps{display:grid;gap:8px;margin:12px 0}
+    .mini{display:flex;gap:8px;align-items:flex-start}
+    .dot{width:22px;height:22px;border-radius:999px;background:rgba(32,253,240,.12);color:var(--accent);font-family:var(--font-head);font-weight:900;display:flex;align-items:center;justify-content:center;flex:0 0 22px;font-size:14px}
+    .mini span{font-size:13px;line-height:1.55;color:var(--sub)}
+    .links{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .links a{text-decoration:none;border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-family:var(--font-head);font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text)}
+    .links a:hover{border-color:var(--accent);color:var(--accent)}
+    .placeholder{text-align:center;padding:32px 20px;border:1px dashed var(--border);border-radius:14px;color:var(--sub);background:rgba(255,255,255,.02)}
+    .note{margin-top:14px;padding:14px 16px;background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.14);border-radius:10px;font-size:13px;color:var(--sub);line-height:1.65}
+    .faq-grid{display:grid;gap:10px;margin-top:14px}
+    .faq-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px}
+    .faq-item h4{font-size:20px;margin-bottom:6px}
+    .footer{border-top:1px solid var(--border);padding:18px;text-align:center;color:var(--sub);font-size:12px}
+    @media(max-width:1150px){.listgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{border-right:none;border-bottom:1px solid var(--border)}.hero h1{font-size:40px}}
+    @media(max-width:620px){header{padding:10px 12px}.logo{font-size:17px}.header-badge{display:none}.main,.sidebar{padding:12px}.hero{padding:18px}.hero h1{font-size:32px}.facts{grid-template-columns:1fr}.listgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Hex<span>Core</span> CCW</div>
+    <div class="header-center">
+      <select id="stateSelect" class="state-select">
+        <option value="">Select a state...</option>
+      </select>
+    </div>
+    <div class="header-badge">Permit Process</div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="panel">
+        <h2 style="font-size:24px;margin-bottom:10px">Permit Process Overview</h2>
+        <div class="stats">
+          <div class="stat"><div class="num">50</div><div class="lbl">States</div></div>
+          <div class="stat"><div class="num">4</div><div class="lbl">Core Steps</div></div>
+        </div>
+        <div class="info-list">
+          <div class="info-item"><strong>State-Controlled Process</strong><span>There is no single federal concealed-carry permit process. Each state controls its own licensing rules.</span></div>
+          <div class="info-item"><strong>What Changes Most</strong><span>Issuing authority, training, fingerprints, fees, renewal period, and whether the process is handled online, locally, or both.</span></div>
+          <div class="info-item"><strong>Best Practice</strong><span>Use this page as a guide, then verify the current process on the official state or local source before applying.</span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 style="font-size:24px;margin-bottom:12px">The 4-Step Path</h2>
+        <div class="steps">
+          <div class="step"><div class="n">1</div><div><h3>Check Eligibility</h3><p>Confirm age, residency, permit type, and disqualifiers for your state.</p></div></div>
+          <div class="step"><div class="n">2</div><div><h3>Complete Training</h3><p>Take the required class if your state requires one and keep the proof.</p></div></div>
+          <div class="step"><div class="n">3</div><div><h3>Submit the Application</h3><p>Use the correct state or local process, including fingerprints, forms, and payment.</p></div></div>
+          <div class="step"><div class="n">4</div><div><h3>Track Renewal</h3><p>Follow your state’s validity, renewal, and recertification rules.</p></div></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="hero">
+        <div class="eyebrow">Working Real-Data Version</div>
+        <h1>How to Get a <span>Concealed Carry Permit</span></h1>
+        <p>
+          This version loads real state-specific card content and only shows one state card at a time.
+          The dropdown and jump list are populated after the page loads, then the selected state card is shown on demand.
+        </p>
+        <div class="actions">
+          <a href="#jump" class="btn primary">Jump by State</a>
+          <a href="#cards" class="btn secondary">View Selected Card</a>
+        </div>
+      </section>
+
+      <section class="panel" id="jump">
+        <h2 style="font-size:30px;margin-bottom:8px">State Jump List</h2>
+        <p style="margin-bottom:14px">Choose a state from the dropdown above or click one below.</p>
+        <div class="listgrid" id="jumpList"></div>
+      </section>
+
+      <section class="panel" id="cards">
+        <h2 style="font-size:30px;margin-bottom:8px">State Permit Card</h2>
+        <p style="margin-bottom:14px">Only the selected state appears below.</p>
+        <div id="placeholder" class="placeholder">
+          Select a state from the dropdown or click a state name above to view its permit card.
+        </div>
+        <div id="cardsWrap" class="cards-wrap"></div>
+        <div class="note">
+          <strong style="color:var(--yellow)">Important:</strong> Permit rules, fees, timelines, and issuing methods can change. Always verify the current process on the official source linked in the selected card.
+        </div>
+      </section>
+
+      <section class="panel" id="faq">
+        <h2 style="font-size:30px;margin-bottom:8px">Frequently Asked Questions</h2>
+        <div class="faq-grid">
+          <div class="faq-item">
+            <h4>Do all states require a permit?</h4>
+            <p>No. Some states allow permitless carry, but may still issue permits for reciprocity or other legal reasons.</p>
+          </div>
+          <div class="faq-item">
+            <h4>Can I carry as soon as I apply?</h4>
+            <p>No. In general, you should not carry concealed until you have satisfied your state’s legal requirements and, where required, received your permit.</p>
+          </div>
+          <div class="faq-item">
+            <h4>Is training always required?</h4>
+            <p>No. Training requirements vary by state, but quality instruction is still recommended even where it is not required.</p>
+          </div>
+          <div class="faq-item">
+            <h4>Why use official sources?</h4>
+            <p>Because permit rules, fees, timelines, and application methods can change. Always verify your process with the official issuing authority.</p>
+          </div>
+        </div>
+        <div class="note" style="margin-top:16px">
+          <strong style="color:var(--yellow)">Legal Disclaimer:</strong> This page is for informational purposes only and is not legal advice. Firearm laws, concealed carry laws, permit requirements, fees, and state procedures can change at any time. Always verify current information with the official issuing authority in your jurisdiction before applying for, renewing, or relying on a concealed carry permit.
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="footer">© 2026 HexCore Mounts — All rights reserved.</div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const stateData = [{"name": "Alabama", "status": "Optional permit", "authority": "County sheriff of residence", "application": "Apply through the sheriff in your county of residence; many counties use an online vendor plus pickup.", "training": "Training not listed on ALEA overview; county requirements may vary.", "term": "County-set term options are common; example county guidance shows yearly increments up to 5 years.", "steps": ["Check your county sheriff’s process.", "Complete the county application and background review.", "Pick up the permit from the sheriff if approved."], "links": [["ALEA overview", "https://www.alea.gov/gun-laws"], ["Example county process", "https://www.limestonecounty-al.gov/Departments/Sheriff%E2%80%99s-Office/Pistol-Permit-Info"]]}, {"name": "Alaska", "status": "Optional permit", "authority": "Alaska DPS / State Troopers", "application": "Apply in person at an Alaska State Troopers, Alaska Wildlife Troopers, or municipal police office.", "training": "Permit applicants must meet the state permit requirements; official application materials govern the exact paperwork.", "term": "Permit expires on the permit holder’s birthday in the fifth year after the last birthday.", "steps": ["Confirm you are an Alaska resident and meet age / eligibility rules.", "Apply in person using the Alaska permit packet.", "Wait for DPS processing and keep the permit for reciprocity where needed."], "links": [["Alaska DPS permits", "https://dps.alaska.gov/Statewide/R-I/PermitsLicensing/Permits"], ["Permit application PDF", "https://dps.alaska.gov/getmedia/fcbc993e-a097-48ed-9f6c-f01442f9a363/ConcealedHandgunPermitApplicati"]]}, {"name": "Arizona", "status": "Optional permit", "authority": "Arizona DPS Concealed Weapons Permit Unit", "application": "Apply through AZDPS; new and renewal workflows are available online / by packet.", "training": "Documentation of firearms competence is required for the permit.", "term": "See AZDPS application materials for current term and fee.", "steps": ["Review the permit packet and eligibility rules.", "Gather firearms-competency documentation.", "Apply through AZDPS and follow permit-unit instructions."], "links": [["AZDPS permit page", "https://www.azdps.gov/services/public-services-center/concealed-weapons-and-permits"], ["New application packet", "https://www.azdps.gov/sites/default/files/2023-06/CCW_New_Permit_Application.pdf"]]}, {"name": "Arkansas", "status": "License system", "authority": "Arkansas State Police", "application": "Apply online or through the Arkansas State Police concealed handgun carry licensing process.", "training": "The online service states you must contact an instructor and complete required training.", "term": "See Arkansas State Police licensing portal for current term / fee.", "steps": ["Start the license application through Arkansas State Police / state portal.", "Complete the required training through a concealed handgun instructor.", "Submit the full application and track status online."], "links": [["Arkansas State Police licensing", "https://dps.arkansas.gov/law-enforcement/arkansas-state-police/services-programs/concealed-handgun-carry-licensing/"], ["Online apply service", "https://portal.arkansas.gov/service/apply-for-concealed-handgun-carry-online-license/"]]}, {"name": "California", "status": "Local license system", "authority": "County sheriff or local police chief", "application": "Handled locally; many issuing agencies use online portals plus appointments.", "training": "Training, fingerprints, and local documentation are generally part of the issuing-agency process.", "term": "See your local issuing authority and California DOJ materials.", "steps": ["Identify your local issuing authority.", "Complete the local application and appointment steps.", "Finish the local training / fingerprint / fee requirements."], "links": [["California DOJ CCW regulations", "https://oag.ca.gov/firearms/regs/ccwl"], ["Example local issuer", "https://www.ocsheriff.gov/commands-divisions/professional-services-command/professional-standards/ccw-licensing"]]}, {"name": "Colorado", "status": "Local permit system", "authority": "County sheriff", "application": "County sheriffs are the issuing authorities; applications are handled through the sheriff where you qualify to apply.", "training": "Proof of handgun training is part of the application process.", "term": "See county sheriff / CBI resources for current term and fee.", "steps": ["Check your county sheriff’s concealed handgun process.", "Complete the application and training documentation.", "Submit fingerprints / background materials through the county process."], "links": [["Colorado CBI CHP overview", "https://cbi.colorado.gov/firearms/concealed-handgun-permit-chp"], ["Example county process", "https://bouldercounty.gov/safety/firearms/concealed-handgun-permit/"]]}, {"name": "Connecticut", "status": "Permit required", "authority": "Local police / first selectman for temporary permit, then DESPP for state permit", "application": "Applicants start locally for a temporary permit and then complete the state permit process through DESPP.", "training": "State safety / training documentation is part of the permit process.", "term": "State pistol permit is listed as valid for 5 years; official state fee page lists $70 for the state permit.", "steps": ["Start with your local police department or first selectman.", "Complete the temporary permit application, fingerprints, and supporting documents.", "After local approval, complete the DESPP state pistol permit process."], "links": [["Connecticut state pistol permit", "https://portal.ct.gov/despp/division-of-state-police/special-licensing-and-firearms/state-pistol-permit"], ["Connecticut firearms portal", "https://portal.ct.gov/Services/Public-Safety/Firearms"]]}, {"name": "Delaware", "status": "Permit required", "authority": "Superior Court / county Prothonotary", "application": "Applications are filed with the Prothonotary in the county of residence using the court process.", "training": "See Delaware Courts instructions for current requirements.", "term": "Statutory filing fee and court forms apply; see court instructions for current amounts.", "steps": ["Use the Delaware Courts instructions and forms.", "Complete the county filing requirements, photos, and supporting documents.", "Submit through the county Prothonotary and track the court process."], "links": [["Delaware Courts weapons page", "https://courts.delaware.gov/superior/weapons.aspx"], ["New application instructions PDF", "https://courts.delaware.gov/forms/download.aspx?ID=33278"]]}, {"name": "Florida", "status": "State license system", "authority": "Florida Department of Agriculture and Consumer Services", "application": "Apply with FDACS at a regional office or authorized tax collector office, or use the state process shown on FDACS pages.", "training": "Proof of firearm competency is required.", "term": "FDACS fee schedule and FAQ pages control current fees and timelines; FAQ says FDACS has 90 days after receiving a complete application.", "steps": ["Gather ID and acceptable training documentation.", "Submit electronic fingerprints at an approved location.", "Apply through FDACS or an authorized office and track status."], "links": [["Applying for a Florida CWL", "https://www.fdacs.gov/Consumer-Resources/Concealed-Weapon-License/Applying-for-a-Concealed-Weapon-License"], ["Florida CWL FAQ", "https://www.fdacs.gov/Consumer-Resources/Concealed-Weapon-License/Concealed-Weapon-License-FAQ"]]}, {"name": "Georgia", "status": "Optional permit", "authority": "County probate court", "application": "Apply through the probate court in your county of residence.", "training": "Training is not listed on Georgia.gov’s WCL overview page.", "term": "County process generally issues a multi-year license; example counties show 5-year WCLs.", "steps": ["Check your county probate court instructions.", "Complete the county application and identification requirements.", "Finish fingerprinting / background checks through the county process."], "links": [["Georgia.gov WCL overview", "https://georgia.gov/apply-firearms-license"], ["Example county process", "https://www.bryancountyga.gov/government/courts/probate-court/firearm-permit"]]}, {"name": "Hawaii", "status": "License required", "authority": "County police department", "application": "Applications for licenses to carry are submitted to the county police departments.", "training": "State and county materials reference training / proficiency documentation for carry licensing.", "term": "Hawaii AG reporting states concealed licenses are valid for 4 years.", "steps": ["Contact your county police firearms section.", "Gather the firearm registration, training, and identification documents required by your county.", "Submit through the county licensing process and follow county instructions."], "links": [["Hawaii AG carry-license report", "https://ag.hawaii.gov/cpja/files/2023/05/Licenses-To-Carry-Handguns-in-Hawaii-2024-REVISED.pdf"], ["Example county firearms section", "https://www.hawaiipolice.gov/services/firearm-services/"]]}, {"name": "Idaho", "status": "County license system", "authority": "County sheriff", "application": "Applications are typically submitted in person to the county sheriff or county driver-license office handling permits.", "training": "Idaho guidance references a firearms training / safety course for the standard license and enhanced path.", "term": "See county sheriff / Idaho state resources for current term and fee.", "steps": ["Review your county sheriff’s concealed weapons process.", "Complete the required training documentation for the license type you want.", "Apply in person through the county process."], "links": [["Idaho AG concealed weapons overview", "https://www.ag.idaho.gov/office-resources/concealed-weapons/"], ["Example county process", "https://www.canyoncounty.id.gov/elected-officials/sheriff/drivers-license/concealed-weapons-permit/"]]}, {"name": "Illinois", "status": "Permit required", "authority": "Illinois State Police", "application": "Apply through Illinois State Police concealed carry licensing resources.", "training": "ISP requires training and other eligibility criteria; state law controls the exact hours / documents.", "term": "Illinois law and county materials indicate a 5-year license term.", "steps": ["Confirm you qualify and hold the required Illinois credentials.", "Complete the required training and gather supporting documents.", "Apply through the Illinois State Police concealed carry system."], "links": [["Illinois ISP CCL page", "https://isp.illinois.gov/Foid/Ccl"], ["Illinois service page", "https://www.illinois.gov/services/service.ccw.html"]]}, {"name": "Indiana", "status": "Optional license", "authority": "Indiana State Police plus local law-enforcement processing", "application": "Start online through the Indiana State Police Handgun Licensing Portal, then complete fingerprints and local processing.", "training": "Indiana’s official licensing pages focus on the portal, fingerprints, and local processing.", "term": "Indiana official guidance notes both five-year and lifetime LTCH paths; current state pages should be checked for status and applicability.", "steps": ["Complete the handgun license application online.", "Schedule and complete electronic fingerprints.", "Finish local law-enforcement processing and wait for ISP review."], "links": [["Indiana new license process", "https://www.in.gov/isp/firearms-licensing/apply-for-a-new-license-to-carry/"], ["Indiana firearms licensing", "https://www.in.gov/isp/firearms-licensing/"]]}, {"name": "Iowa", "status": "Optional permit", "authority": "County sheriff", "application": "Permit to Carry Weapons applications are filed with the sheriff in the county of residence.", "training": "County / state guidance should be checked for current training documentation rules.", "term": "See Iowa DPS and county sheriff resources for current term / fee.", "steps": ["Apply with the sheriff in your county of residence.", "Use the current Iowa permit application form.", "Complete the county review and issuance process."], "links": [["Iowa DPS weapon permits", "https://dps.iowa.gov/iowa-dps/weapon-permits"], ["Iowa permit application forms", "https://dps.iowa.gov/weapon-permit-applications"]]}, {"name": "Kansas", "status": "Optional license", "authority": "Kansas Attorney General + county sheriff", "application": "Apply through the county sheriff and Kansas concealed-carry licensing process.", "training": "Kansas concealed-carry licensing requires application paperwork and statutory training requirements.", "term": "Kansas AG says processing times are currently 8–12 weeks; fee structure is published on AG / county materials.", "steps": ["Review Kansas AG concealed-carry licensing requirements.", "Submit the application with your county sheriff and complete fingerprints / paperwork.", "Wait for AG processing and issuance."], "links": [["Kansas concealed carry licensing", "https://www.ag.ks.gov/divisions/civil/licensing-inspections/concealed-carry-licensing"], ["Kansas application contact page", "https://www.kansas.gov/conceal/contact.html"]]}, {"name": "Kentucky", "status": "Optional CCDW license", "authority": "Kentucky State Police + county sheriff", "application": "Start online with the KSP CCDW portal and complete the sheriff’s-office application process.", "training": "Kentucky DOCJT says applicants first complete an approved firearms safety / training course.", "term": "Kentucky sources state KSP shall issue or deny within 90 days of a completed application.", "steps": ["Take the required CCDW class from an approved instructor.", "Complete the application at the sheriff’s office in your county of residence.", "Use the KSP portal to monitor status and updates."], "links": [["Kentucky CCDW home", "https://wp.kentuckystatepolice.ky.gov/ccdw/ccdw-home/"], ["Kentucky application process", "https://wp.kentuckystatepolice.ky.gov/ccdw/ccdw-home/application/"]]}, {"name": "Louisiana", "status": "State permit system", "authority": "Louisiana State Police / Department of Public Safety", "application": "Apply online through the Louisiana concealed handgun permit portal and follow state instructions.", "training": "See Louisiana State Police permit guidance and statute for current training requirements.", "term": "Louisiana statute provides for state-issued concealed handgun permits, including lifetime permits under law.", "steps": ["Start with the Louisiana State Police CHP portal.", "Complete the state application and upload / provide required documents.", "Follow state instructions for training and any additional processing steps."], "links": [["Louisiana CHP portal", "https://chp.la.gov/"], ["Louisiana official service page", "https://www.louisiana.gov/"]]}, {"name": "Maine", "status": "Optional permit", "authority": "Maine State Police or local issuing authority", "application": "Maine State Police handles many municipalities and all out-of-state permits; some local agencies issue local resident permits.", "training": "Application materials require handgun safety course / proof as applicable.", "term": "See Maine State Police fee memo and application materials for current amounts and terms.", "steps": ["Determine whether your local town / police agency or Maine State Police is your issuing authority.", "Complete the permit application and gather photo / identity / training documents.", "Submit to the proper issuing authority and follow the permit booklet instructions."], "links": [["Maine State Police concealed carry", "https://www.maine.gov/dps/msp/licenses-permits/concealed-carry-maine"], ["Resident application PDF", "https://www.maine.gov/dps/msp/sites/maine.gov.dps.msp/files/inline-files/CHP_Res_Full25.pdf"]]}, {"name": "Maryland", "status": "Permit required", "authority": "Maryland State Police", "application": "Apply through the Maryland State Police licensing division / portal.", "training": "MSP training guidance lists 16 hours for an original Wear and Carry application and 8 hours for renewal.", "term": "Use MSP pages for current permit validity, fee, and portal rules.", "steps": ["Create or access your Maryland State Police licensing portal account.", "Complete the required training with a qualified handgun instructor.", "Submit the Wear and Carry application and follow MSP portal instructions."], "links": [["Maryland Wear and Carry Permit", "https://mdsp.maryland.gov/Organization/Pages/CriminalInvestigationBureau/LicensingDivision/Firearms/WearandCarryPermit.aspx"], ["Maryland training page", "https://mdsp.maryland.gov/Organization/Pages/CriminalInvestigationBureau/LicensingDivision/Training/WearandCarryPermit.aspx"]]}, {"name": "Massachusetts", "status": "License required", "authority": "Local licensing authority using state portal", "application": "Apply or renew via the MIRCS Unified Gun Portal and follow local licensing-authority instructions.", "training": "Massachusetts law requires a basic firearms safety certificate for LTC issuance.", "term": "Check state / local licensing sources for current term and fee.", "steps": ["Use the Massachusetts online licensing system and review local police instructions.", "Complete the required firearms safety certificate.", "Submit through the local licensing authority and follow local appointment / fingerprint steps if required."], "links": [["Mass.gov firearms license apply / renew", "https://www.mass.gov/how-to/apply-for-or-renew-a-firearms-license"], ["Massachusetts LTC statute section", "https://malegislature.gov/Laws/GeneralLaws/Parti/Titlexx/Chapter140/Section131"]]}, {"name": "Michigan", "status": "Permit required", "authority": "County clerk / Michigan State Police framework", "application": "Concealed pistol application kits are available from county clerks or online through Michigan State Police resources.", "training": "Michigan CPL applicants must meet statutory requirements including training.", "term": "Check county clerk and MSP materials for current term, fee, and renewal process.", "steps": ["Get the CPL application kit from your county clerk or MSP resources.", "Complete the required training and gather supporting documents.", "Apply through your county clerk and follow the county process."], "links": [["Michigan CPL application and instructions", "https://www.michigan.gov/msp/services/ccw/concealed-pistol-application-and-instructions"], ["Michigan CPL requirements", "https://www.michigan.gov/msp/services/ccw/concealed-pistol-license-requirements"]]}, {"name": "Minnesota", "status": "Permit required", "authority": "County sheriff", "application": "Permit to Carry applications are submitted in person to the sheriff.", "training": "County guidance states proof of training from a certified instructor completed within 12 months is required.", "term": "County guidance says the sheriff must act within 30 days; check your county for current fee and term.", "steps": ["Complete the Minnesota Uniform Permit to Carry application.", "Bring your current ID and training certificate to the sheriff.", "Submit in person and wait for the sheriff’s decision."], "links": [["Example Minnesota county process", "https://www.washingtoncountymn.gov/2973/Gun-Permits"], ["Minnesota permit services page", "https://mn.gov/elicense/a-z/?id=1083-231173"]]}, {"name": "Mississippi", "status": "Optional permit system", "authority": "Mississippi DPS Driver Service Bureau", "application": "Mississippi firearm permit applications and renewals are handled through DPS permit locations and forms.", "training": "Enhanced endorsement has separate documentation and training requirements.", "term": "Use Mississippi DPS fee and application pages for current costs and permit options.", "steps": ["Determine the permit type or endorsement you need.", "Use the DPS application / fee materials to complete the correct form.", "Submit through a DPS permit location and follow processing instructions."], "links": [["Mississippi firearm permit division", "https://www.driverservicebureau.dps.ms.gov/Firearms/Home"], ["Mississippi permit applications", "https://www.driverservicebureau.dps.ms.gov/Firearms/ms-firearm-permits"]]}, {"name": "Missouri", "status": "Optional permit system", "authority": "County sheriff", "application": "Apply in person with the sheriff in the county or city process that serves your residence.", "training": "Missouri county guidance states applicants must complete firearms safety training for the permit.", "term": "Missouri law provides lifetime and extended permits; check current county guidance for fees and exact options.", "steps": ["Review your sheriff’s concealed-carry process.", "Complete the firearms safety training required for issuance.", "Apply in person with the sheriff and complete the county permit steps."], "links": [["Missouri permit statute", "https://revisor.mo.gov/main/OneSection.aspx?section=571.205"], ["Example sheriff process", "https://www.stlouis-mo.gov/government/departments/sheriff/permits-to-carry-a-concealed-firearm.cfm"]]}, {"name": "Montana", "status": "Optional permit system", "authority": "County sheriff", "application": "Concealed weapon permits are issued through county sheriffs under Montana law.", "training": "County guidance commonly requires proof of training, hunter safety, or DD214-type documentation.", "term": "Montana law states an issuance fee of $50 and renewals for additional 4-year periods at $25.", "steps": ["Contact the sheriff in your county of residence.", "Complete the county application and provide Montana ID / residency proof.", "Provide training documentation and finish fingerprints / background review if required."], "links": [["Montana DOJ concealed weapons", "https://dojmt.gov/dci-home/concealed-weapons/"], ["Montana fee statute", "https://archive.legmt.gov/bills/mca/title_0450/chapter_0080/part_0030/section_0220/0450-0080-0030-0220.html"]]}, {"name": "Nebraska", "status": "Permit required", "authority": "Nebraska State Patrol", "application": "If you do not currently hold a valid Nebraska CHP, you must apply in person at Nebraska State Patrol headquarters locations.", "training": "The Nebraska State Patrol says you must complete an approved handgun training and safety course and does not recognize online training for this requirement.", "term": "Use NSP materials for current term, fee, and renewal details.", "steps": ["Complete an approved handgun safety course.", "Fill out the Nebraska concealed handgun permit application.", "Present the application and documents in person at a Nebraska State Patrol headquarters office."], "links": [["Nebraska CHP overview", "https://statepatrol.nebraska.gov/services/concealed-handgun-permits"], ["Nebraska application PDF", "https://statepatrol.nebraska.gov/sites/default/files/1710-Nebraska-Concealed-Handgun-Permit-Application---03062025.pdf"]]}, {"name": "Nevada", "status": "County permit system", "authority": "County sheriff / local law enforcement issuing office", "application": "Nevada concealed firearm permits are handled through county-level issuing processes.", "training": "Check your county sheriff for Nevada-approved course requirements.", "term": "Example county guidance shows permits valid for 5 years and processing may take up to 120 days.", "steps": ["Apply in the county that handles your permit.", "Complete the Nevada training required by your issuing county.", "Schedule your appointment, fingerprints, and payment through the county process."], "links": [["Nevada state CCW resources", "https://www.rccd.nv.gov/resources/carry-concealed-weapon-ccw-permit/"], ["Example Nevada county process", "https://sheriff.douglascountynv.gov/services/concealed_weapon_permits"]]}, {"name": "New Hampshire", "status": "Optional license", "authority": "Local law enforcement for residents; NH State Police for non-residents", "application": "Resident pistol / revolver licenses are handled by local law enforcement; NH State Police handles non-resident licensing.", "training": "Check current state or local guidance for documentation and references.", "term": "Use NH State Police / local application materials for current term and fee.", "steps": ["Residents should contact their local law-enforcement agency for the resident license.", "Non-residents apply through NH State Police.", "Submit the application and references required by the licensing form."], "links": [["NH pistol / revolver licensing", "https://www.nhsp.dos.nh.gov/our-services/justice-information-bureau/permits-and-licensing/pistol-and-revolver-licensing"], ["NH licensing FAQs", "https://www.nhsp.dos.nh.gov/our-services/justice-information-bureau/permits-and-licensing/permits-and-licensing-faqs"]]}, {"name": "New Jersey", "status": "Permit required", "authority": "New Jersey electronic permit system / local law enforcement", "application": "New Jersey uses the electronic permit-to-carry system and FARS-based local firearms workflows.", "training": "Local guidance references qualification, proof of ownership, and other required New Jersey materials.", "term": "Use the New Jersey permit system and local agency guidance for current fee and renewal rules.", "steps": ["Begin through the New Jersey permit-to-carry system.", "Make sure you already have the state firearm-identification / fingerprint path required for your case.", "Submit qualifications, ownership proof, and local supporting documents through the electronic process."], "links": [["New Jersey permit to carry", "https://www.njoag.gov/permittocarry/"], ["Example local instructions", "https://florence-nj.gov/instructions-for-permit-to-carry-a-handgun/"]]}, {"name": "New Mexico", "status": "License system", "authority": "New Mexico DPS Concealed Carry Unit", "application": "Apply through the New Mexico DPS Concealed Carry Unit and its web portal.", "training": "Application materials reference DPS-approved training certificates and fingerprint receipts.", "term": "Use DPS license materials for current term, fee, and renewal timing.", "steps": ["Create an account or review instructions from the NM DPS concealed carry unit.", "Gather the application, ID, fingerprint receipt, and training certificate.", "Submit through the DPS concealed-carry process and follow portal instructions."], "links": [["New Mexico concealed carry licenses", "https://www.dps.nm.gov/law-enforcement-records-bureau/concealed-carry-licenses/"], ["New Mexico application checklist PDF", "https://www.dps.nm.gov/wp-content/uploads/2023/06/Concealed-Carry-Handgun-Application062323.pdf"]]}, {"name": "New York", "status": "License required", "authority": "State and local licensing authorities", "application": "Application handling depends on where you live; New York State and local licensing authorities control the process.", "training": "New York State says new concealed carry applicants must take 16 hours of classroom and 2 hours of live-fire training.", "term": "State Police says concealed-carry permit holders must recertify every 3 years.", "steps": ["Check the process used by your local licensing authority.", "Complete the required New York training for concealed carry.", "Submit through the local or city licensing authority and follow state recertification rules."], "links": [["NY concealed carry law FAQ", "https://gunsafety.ny.gov/frequently-asked-questions-new-concealed-carry-law"], ["NY recertification page", "https://gunsafety.ny.gov/pistol-permit-recertification"]]}, {"name": "North Carolina", "status": "Permit required", "authority": "County sheriff", "application": "Apply through your county sheriff’s office or permit portal.", "training": "Original issue requires a concealed carry course certificate.", "term": "County guidance varies; check your sheriff for current timelines, fees, and appointments.", "steps": ["Complete the concealed handgun course.", "Apply with your county sheriff and bring the course certificate.", "Complete any appointment, fingerprint, and background-check steps required by the county."], "links": [["Example county CHP process", "https://www.personcountync.gov/government/departments-i-z/sheriff-s-office/gun-permit/concealed-handgun-permit-information"], ["Example local training guidance", "https://www.greensboro-nc.gov/departments/police/i-want-to/apply-for-handgun-permit-or-concealed-carry-permit"]]}, {"name": "North Dakota", "status": "Optional license system", "authority": "North Dakota Attorney General / BCI", "application": "Applications are reviewed by the BCI under the Attorney General’s concealed-weapon licensing system.", "training": "All new applicants complete the open-book test; Class 1 applicants also complete classroom instruction, familiarity, and a proficiency test.", "term": "Check the AG licensing page and manual for the current class structure, fees, and renewal path.", "steps": ["Choose the license class that fits your needs.", "Complete the state-required testing and instruction path.", "Submit to the BCI licensing process and follow the AG manual."], "links": [["North Dakota concealed weapon licenses", "https://attorneygeneral.nd.gov/public-safety/concealed-weapon-licenses-2/"], ["North Dakota CWL manual PDF", "https://attorneygeneral.nd.gov/wp-content/uploads/2024/01/CWL-Manual.pdf"]]}, {"name": "Ohio", "status": "Optional license system", "authority": "County sheriff / Ohio AG forms and guidance", "application": "Concealed-carry applications are generally processed by county sheriffs, usually by appointment.", "training": "County guidance references the certificate of competency or equivalent documentation.", "term": "County fee examples show a new-license fee of $67, renewal $50, and additional FBI fee in some cases; check your sheriff for current numbers.", "steps": ["Download or obtain the Ohio concealed-handgun application.", "Complete the required competency / training documentation.", "Schedule with the county sheriff and submit fingerprints, ID, and payment."], "links": [["Ohio concealed carry resource", "https://ohio.gov/wps/portal/gov/site/residents/resources/concealed-carry"], ["Example county process", "https://sheriff.franklincountyohio.gov/Services/Concealed-Carry-Permit"]]}, {"name": "Oklahoma", "status": "Optional handgun license", "authority": "Oklahoma State Bureau of Investigation", "application": "Apply online through the Oklahoma Self-Defense Act licensing system.", "training": "Use OSBI SDA instructions for current course / documentation requirements.", "term": "OSBI online application system references 5-year or 10-year SDA handgun licenses; instructions say allow 60–90 days for processing.", "steps": ["Start your SDA application online through OSBI.", "Complete the required training and gather your paperwork.", "Submit the application and follow the OSBI processing instructions."], "links": [["Oklahoma handgun licensing", "https://oklahoma.gov/osbi/services/information-services-division/self-defense-act-unit/handgun-licensing.html"], ["Oklahoma SDA instructions", "https://oklahoma.gov/osbi/services/information-services-division/self-defense-act-unit/handgun-licensing/application-instructions.html"]]}, {"name": "Oregon", "status": "Permit required", "authority": "County sheriff", "application": "Oregon CHLs are issued by county sheriffs and often require online pre-application plus an in-person appointment.", "training": "Check your county sheriff for accepted training.", "term": "County and state sources indicate Oregon CHLs are valid for 4 years.", "steps": ["Apply with the sheriff in the county that issues your Oregon CHL.", "Complete the county application and schedule your in-person appointment if required.", "Bring identification, citizenship / residency documents, and training records."], "links": [["Oregon license directory entry", "https://apps.oregon.gov/SOS/LicenseDirectory/LicenseDetail/1457"], ["Example county sheriff process", "https://www.lanecountyor.gov/government/county_departments/sheriff_s_office/concealed_handgun_licensing"]]}, {"name": "Pennsylvania", "status": "License required", "authority": "County sheriff or Philadelphia police", "application": "Apply with the sheriff where you live; Philadelphia applicants apply through the city’s police permitting unit.", "training": "Check local issuing authority guidance for what documents and process apply.", "term": "Pennsylvania State Police says the LTCF is valid for 5 years.", "steps": ["Determine whether your issuer is the county sheriff or the Philadelphia police unit.", "Complete the Pennsylvania License to Carry application.", "Submit through the local issuer and follow local intake instructions."], "links": [["Pennsylvania State Police carrying-firearms page", "https://www.pa.gov/agencies/psp/programs/firearms/carrying-firearms-in-pennsylvania"], ["Philadelphia application page", "https://www.phila.gov/documents/application-for-a-pennsylvania-license-to-carry-firearm/"]]}, {"name": "Rhode Island", "status": "Permit required", "authority": "Attorney General or local authority depending path", "application": "Rhode Island maintains multiple permit avenues; applicants should use the correct Attorney General or local police route for their circumstances.", "training": "Local and AG guidance control current qualification, references, and fingerprints.", "term": "Check the AG and local application packet for current fee and term details.", "steps": ["Review whether the Attorney General path or local path fits your application.", "Complete the application packet, qualification, and supporting documents.", "Submit through the proper Rhode Island issuing authority."], "links": [["RI Attorney General pistol permits", "https://riag.ri.gov/about-our-office/divisions-and-units/bureau-criminal-identification-bci/pistol-permits"], ["RI concealed-carry guidance", "https://riag.ri.gov/bruen_guidance"]]}, {"name": "South Carolina", "status": "Permit system", "authority": "South Carolina Law Enforcement Division", "application": "Apply through the South Carolina CWP process under SLED.", "training": "Use the SLED application packet and current state guidance for required proof of training and documents.", "term": "The SLED application packet states processing may take up to 90 days.", "steps": ["Use the South Carolina CWP application materials from SLED.", "Gather ID and training / competency documents.", "Submit through the SLED permit process and monitor processing."], "links": [["South Carolina CWP", "https://www.sled.sc.gov/concealed-weapons-permit"], ["SC application form PDF", "https://www.sled.sc.gov/sites/sled/files/forms/regulatory/CWPApplicationForm.pdf"]]}, {"name": "South Dakota", "status": "Optional permit system", "authority": "County sheriff / Secretary of State system", "application": "South Dakota has regular, gold-card, and enhanced concealed pistol permits issued through the county sheriff process.", "training": "Enhanced permits require the handgun course and live-fire training described by South Dakota sources.", "term": "South Dakota says all three permit types are valid for 5 years.", "steps": ["Choose the permit type you want: regular, gold card, or enhanced.", "Complete the required training if applying for the enhanced permit.", "Apply through the sheriff in your county of residence."], "links": [["South Dakota permit types", "https://sdsos.gov/general-services/concealed-pistol-permits/cc-permit-types.aspx"], ["Enhanced handgun course", "https://sdsos.gov/general-services/concealed-pistol-permits/cc-handgun-course.aspx"]]}, {"name": "Tennessee", "status": "Optional permit system", "authority": "Tennessee Department of Safety / Highway Patrol", "application": "Start online under Tennessee’s handgun permit process and complete any required driver-services or follow-up steps.", "training": "Tennessee permit pages list training or exemption requirements depending permit type.", "term": "State fee and permit-type pages control current duration and cost.", "steps": ["Choose the Tennessee permit type that fits your needs.", "Begin the original application online.", "Complete training / exemption documentation and any appointment steps required by the state."], "links": [["Tennessee apply page", "https://www.tn.gov/safety/tnhp/handgun/apply.html"], ["Tennessee permit types", "https://www.tn.gov/safety/tnhp/handgun/permittypes.html"]]}, {"name": "Texas", "status": "Optional LTC system", "authority": "Texas Department of Public Safety", "application": "Use the DPS LTC service to apply, renew, or check status online.", "training": "Check DPS eligibility and training requirements for the current LTC process.", "term": "Texas DPS fee schedule and LTC materials control current duration and cost.", "steps": ["Start the LTC application through the DPS portal.", "Complete any training and document-upload steps required by DPS.", "Track status through the DPS system until the license is issued."], "links": [["Texas LTC portal", "https://txapps.texas.gov/txapp/txdps/ltc/loginTexas.do"], ["Texas handgun licensing page", "https://www.dps.texas.gov/section/handgun-licensing"]]}, {"name": "Utah", "status": "State permit system", "authority": "Utah BCI", "application": "Apply through Utah BCI using the state permit instructions and forms.", "training": "Utah BCI materials provide the training and application instructions for the concealed firearm permit.", "term": "Utah BCI states application fees of $52 for residents and $87 for non-residents; renewal page lists separate online renewal fees.", "steps": ["Review Utah BCI’s concealed-firearm permit instructions.", "Complete the required training and application packet.", "Submit to Utah BCI and follow the permit or renewal process."], "links": [["Utah concealed firearm overview", "https://bci.utah.gov/concealed-firearm/"], ["Utah apply instructions", "https://bci.utah.gov/concealed-firearm/how-do-i-apply-for-a-concealed-firearm-permit/"]]}, {"name": "Vermont", "status": "No permit required", "authority": "No state permit system for concealed carry", "application": "Vermont does not require a state permit to carry concealed.", "training": "Training is not required by a state permit system, but users should still know carry restrictions and prohibited places.", "term": "No state concealed-carry permit required.", "steps": ["Review Vermont carry restrictions and prohibited places.", "Follow federal, state, and local building restrictions.", "Train and carry responsibly even though no state permit is required."], "links": [["Example Vermont local guidance", "https://www.essexvt.gov/481/Firearms"]]}, {"name": "Virginia", "status": "Permit system", "authority": "Circuit court clerk in county or city of residence", "application": "Resident concealed handgun permits are issued by the circuit court where the applicant resides.", "training": "Virginia application materials require proof of competency.", "term": "Virginia sources identify a 5-year permit; local clerk sites list filing fees such as $50 in some courts.", "steps": ["Obtain the Virginia concealed handgun permit application.", "File with the circuit court clerk where you reside.", "Submit proof of competency and other required documents with the filing fee."], "links": [["Virginia resident CHP overview", "https://vsp.virginia.gov/services/firearms/resident-concealed-handgun-permits/"], ["Fairfax Circuit Court CHP page", "https://www.fairfaxcounty.gov/circuit/civil-case-information/concealed-handgun-permit"]]}, {"name": "Washington", "status": "Permit system", "authority": "Local sheriff or city police department", "application": "Apply with the sheriff of the county where you live, or with your city police department if you live in an incorporated city.", "training": "Washington official CPL materials focus on the application, local agency processing, and statutory rules.", "term": "Washington statute says CPLs are issued for 5 years.", "steps": ["Find the sheriff or police department that handles your residence.", "Submit the concealed pistol license application through the local agency.", "Complete fingerprints and local processing under Washington law."], "links": [["Washington firearms recordkeeping / forms", "https://dol.wa.gov/professional-licenses/firearms"], ["Washington CPL statute", "https://app.leg.wa.gov/rcw/default.aspx?cite=9.41.070"]]}, {"name": "West Virginia", "status": "Optional CHL system", "authority": "County sheriff", "application": "State resident concealed-weapon licenses are issued through the sheriff in the applicant’s county.", "training": "West Virginia code and state materials control the exact application requirements and supporting documents.", "term": "West Virginia code lists a $50 resident fee and separate provisional-license path for ages 18–20.", "steps": ["Apply with the sheriff in your county if you want the optional license.", "Complete the application packet prepared by the state.", "Follow sheriff instructions for submission and issuance."], "links": [["West Virginia code section 61-7-4", "https://code.wvlegislature.gov/61-7-4/"], ["WV guide PDF", "https://ago.wv.gov/media/37591/download?inline="]]}, {"name": "Wisconsin", "status": "Permit required", "authority": "Wisconsin Department of Justice", "application": "Apply online or by Wisconsin DOJ form for a new CCW license or renewal.", "training": "Wisconsin DOJ requires approved training for a new CCW license.", "term": "Wisconsin DOJ says new licenses require a $40 fee; renewals cost $22 and renewed licenses run 5 years.", "steps": ["Use the Wisconsin DOJ CCW site to apply or renew.", "Provide approved training and payment with the application.", "Track your status through the DOJ CCW system."], "links": [["Wisconsin CCW application site", "https://concealedcarry.doj.wi.gov/"], ["Wisconsin CCW license info", "https://www.wisdoj.gov/Pages/PublicSafety/concealed-carry-weapon-license-information.aspx"]]}, {"name": "Wyoming", "status": "Optional permit system", "authority": "County sheriff / Wyoming DCI", "application": "Applications are available online, but each applicant should apply in the county where they reside.", "training": "Check county sheriff and Wyoming DCI materials for required proof of training.", "term": "Wyoming DCI states a new application fee of $64 and a 5-year permit term, while local sheriff processing fees may also apply.", "steps": ["Download or review the Wyoming DCI application materials.", "Apply through the sheriff in your county of residence.", "Pay the state and local fees and complete the county submission process."], "links": [["Wyoming DCI permit page", "https://wyomingdci.wyo.gov/criminal-justice-information-services-cjis/concealed-firearm-permits"], ["Wyoming FAQ", "https://wyomingdci.wyo.gov/criminal-justice-information-services-cjis/concealed-firearm-permits/cfp-faq"]]}];
+      const stateSelect = document.getElementById("stateSelect");
+      const jumpList = document.getElementById("jumpList");
+      const cardsWrap = document.getElementById("cardsWrap");
+      const placeholder = document.getElementById("placeholder");
+
+      function slugify(text) {
+        return text.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function buildDropdown() {
+        stateData.forEach(state => {
+          const option = document.createElement("option");
+          option.value = state.name;
+          option.textContent = state.name;
+          stateSelect.appendChild(option);
+        });
+      }
+
+      function buildJumpList() {
+        stateData.forEach(state => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "jump";
+          btn.textContent = state.name;
+          btn.dataset.state = state.name;
+          btn.addEventListener("click", function () {
+            stateSelect.value = state.name;
+            showState(state.name);
+          });
+          jumpList.appendChild(btn);
+        });
+      }
+
+      function buildCards() {
+        stateData.forEach(state => {
+          const card = document.createElement("article");
+          card.className = "card";
+          card.id = slugify(state.name);
+          card.dataset.state = state.name;
+
+          const stepsHtml = state.steps.map((step, i) => `
+            <div class="mini"><div class="dot">${i + 1}</div><span>${escapeHtml(step)}</span></div>
+          `).join("");
+
+          const linksHtml = state.links.map(link => `
+            <a href="${escapeHtml(link[1])}" target="_blank" rel="noopener">${escapeHtml(link[0])}</a>
+          `).join("");
+
+          card.innerHTML = `
+            <div class="top">
+              <h3>${escapeHtml(state.name)}</h3>
+              <div class="status">${escapeHtml(state.status)}</div>
+            </div>
+            <div class="facts">
+              <div class="fact">
+                <div class="k">Issuing Authority</div>
+                <div class="v">${escapeHtml(state.authority)}</div>
+              </div>
+              <div class="fact">
+                <div class="k">Application Method</div>
+                <div class="v">${escapeHtml(state.application)}</div>
+              </div>
+              <div class="fact">
+                <div class="k">Training / Docs</div>
+                <div class="v">${escapeHtml(state.training)}</div>
+              </div>
+              <div class="fact">
+                <div class="k">Term / Fee</div>
+                <div class="v">${escapeHtml(state.term)}</div>
+              </div>
+            </div>
+            <div class="mini-steps">${stepsHtml}</div>
+            <div class="links">${linksHtml}</div>
+          `;
+
+          cardsWrap.appendChild(card);
+        });
+      }
+
+      function hideAllCards() {
+        cardsWrap.querySelectorAll(".card").forEach(card => card.classList.remove("active"));
+        jumpList.querySelectorAll(".jump").forEach(btn => btn.classList.remove("active"));
+      }
+
+      function showState(stateName) {
+        hideAllCards();
+        const slug = slugify(stateName);
+        const card = document.getElementById(slug);
+        const jumpButton = jumpList.querySelector(`[data-state="${CSS.escape(stateName)}"]`);
+
+        if (card) {
+          card.classList.add("active");
+          placeholder.style.display = "none";
+          card.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        if (jumpButton) {
+          jumpButton.classList.add("active");
+        }
+      }
+
+      stateSelect.addEventListener("change", function () {
+        const selected = this.value;
+        if (!selected) {
+          hideAllCards();
+          placeholder.style.display = "block";
+          return;
+        }
+        showState(selected);
+      });
+
+      buildDropdown();
+      buildJumpList();
+      buildCards();
+      hideAllCards();
+      placeholder.style.display = "block";
+    });
+  </script>
+</body>
+</html>
