@@ -113,19 +113,31 @@ footer{border-top:1px solid var(--border);background:var(--dark);padding:1.75rem
 #map-root{transition:transform .35s ease,opacity .25s ease;transform-origin:0 0}
 .state-path{cursor:pointer;transition:filter .15s ease,opacity .2s ease}
 @media(max-width:900px){.map-area{height:55vw;min-height:280px;max-height:420px}.detail-overlay{width:calc(100% - 2rem);left:1rem;right:1rem}.filter-bar{flex-direction:column;gap:8px}.filter-bar input,.filter-bar select{width:100%}.header-nav{display:none}header{padding:0 1rem}.map-tagline{display:none}.map-focus-ui{top:.75rem;left:.75rem;max-width:calc(100% - 1.5rem)}.map-focus-pill,.map-reset-btn{font-size:11px;padding:7px 10px}.map-close-btn{top:.75rem;right:.75rem;width:34px;height:34px;font-size:16px}.map-count{top:auto;bottom:1rem;right:1rem}.quick-links-grid{grid-template-columns:1fr 1fr}.quick-link-card{border-radius:10px;padding:.58rem .72rem}}
+
+@media (max-width:900px){
+  .map-tooltip,
+  .map-hover-pill{
+    display:none !important;
+  }
+
+  #pins-g g{
+    pointer-events:all;
+  }
+}
+
 </style>
 </head>
 <body>
 
 <header>
-  <a class="logo" href="https://hexcoremounts.com" target="_top">Hex<span>Core</span> Mounts</a>
+  <a class="logo" href="https://hexcoremounts.com">Hex<span>Core</span> Mounts</a>
   <nav class="header-nav">
-    <a href="https://hexcoremounts.com/collections/all" target="_top">Products</a>
-    <a href="https://hexcoremounts.com/pages/why-hexcore" target="_top">Why HexCore</a>
-    <a href="https://hexcoremounts.com/pages/about-us" target="_top">About</a>
-    <a href="https://hexcoremounts.com/blogs/news" target="_top">Intel</a>
-    <a href="https://hexcoremounts.com/pages/instructor-map" class="active" target="_top">Instructor Map</a>
-    <a class="header-badge" href="https://hexcoremounts.com/collections/all" target="_top">Shop Now</a>
+    <a href="https://hexcoremounts.com/collections/all">Products</a>
+    <a href="https://hexcoremounts.com/pages/why-hexcore">Why HexCore</a>
+    <a href="https://hexcoremounts.com/pages/about-us">About</a>
+    <a href="https://hexcoremounts.com/blogs/news">Intel</a>
+    <a href="https://hexcoremounts.com/pages/instructor-map" class="active">Instructor Map</a>
+    <a class="header-badge" href="https://hexcoremounts.com/collections/all">Shop Now</a>
   </nav>
 </header>
 
@@ -427,17 +439,22 @@ function updateMapView(){
 }
 
 function showStateTooltip(evt,stateName){
+  if(isMobileTouch()) return;
+
   const tooltip=document.getElementById('map-tooltip');
   const wrap=document.getElementById('map-svg-wrap');
   const hoverPill=document.getElementById('map-hover-pill');
   const wrapRect=wrap.getBoundingClientRect();
   const count=stateCountMap.get(stateName)||0;
+
   hoveredStateName=stateName;
   updateStateLayerStyles();
+
   tooltip.innerHTML=`<div class="tt-name">${esc(stateName)}</div><div class="tt-loc">${count} Instructor${count!==1?'s':''} currently visible</div><div class="tt-hint">Click to focus this state</div>`;
   tooltip.style.display='block';
   tooltip.style.left=Math.min((evt.clientX-wrapRect.left)+14,wrapRect.width-240)+'px';
   tooltip.style.top=Math.max((evt.clientY-wrapRect.top)-70,8)+'px';
+
   if(hoverPill && !selectedStateName){
     hoverPill.innerHTML=`<strong>${esc(stateName)}</strong><span class="map-hover-count">${count} Instructor${count!==1?'s':''}</span>`;
     hoverPill.style.display='inline-flex';
@@ -493,20 +510,26 @@ function getCoord(a){
 }
 
 function renderPins(){
-  const layer=document.getElementById('pins-g');layer.innerHTML='';
+  const layer=document.getElementById('pins-g');
+  layer.innerHTML='';
   const tooltip=document.getElementById('map-tooltip');
   const wrap=document.getElementById('map-svg-wrap');
-  const sz=selectedStateName?2.35:5;
-  const strokeW=selectedStateName?0.45:0.8;
+  const mobileTouch=isMobileTouch();
+
+  const sz=selectedStateName ? 2.35 : 5;
+  const strokeW=selectedStateName ? 0.45 : 0.8;
+  const touchRadius=mobileTouch ? (selectedStateName ? 14 : 16) : (selectedStateName ? 8 : 10);
+
   const coordBuckets=new Map();
   const pinData=[];
 
   filtered.forEach(a=>{
-    const coord=getCoord(a);if(!coord)return;
+    const coord=getCoord(a);
+    if(!coord) return;
     const key=`${Math.round(coord[0])}:${Math.round(coord[1])}`;
     const item={a,baseX:coord[0],baseY:coord[1],key};
     pinData.push(item);
-    if(!coordBuckets.has(key))coordBuckets.set(key,[]);
+    if(!coordBuckets.has(key)) coordBuckets.set(key,[]);
     coordBuckets.get(key).push(item);
   });
 
@@ -516,7 +539,11 @@ function renderPins(){
       group[0].cy=group[0].baseY;
       return;
     }
-    const radius=selectedStateName?Math.max(5,Math.min(10,group.length*1.45)):Math.max(5,Math.min(10,group.length*1.4));
+
+    const radius=selectedStateName
+      ? Math.max(5,Math.min(10,group.length*1.45))
+      : Math.max(5,Math.min(10,group.length*1.4));
+
     group.forEach((item,idx)=>{
       const angle=(Math.PI*2*idx)/group.length-(Math.PI/2);
       item.cx=item.baseX+Math.cos(angle)*radius;
@@ -526,28 +553,70 @@ function renderPins(){
 
   pinData.forEach(({a,cx,cy})=>{
     const isSel=selectedId===a.id;
-    const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.style.cursor='pointer';
-    if(isSel){const glow=document.createElementNS('http://www.w3.org/2000/svg','polygon');glow.setAttribute('points',hexPoints(cx,cy,sz+(selectedStateName?1.9:4)));glow.setAttribute('fill','none');glow.setAttribute('stroke','#20FDF0');glow.setAttribute('stroke-width',selectedStateName?'0.8':'1.5');glow.setAttribute('opacity','0.4');g.appendChild(glow);}
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.style.cursor='pointer';
+
+    const hit=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    hit.setAttribute('cx',cx);
+    hit.setAttribute('cy',cy);
+    hit.setAttribute('r',touchRadius);
+    hit.setAttribute('fill','transparent');
+    hit.setAttribute('stroke','transparent');
+    hit.style.pointerEvents='all';
+    g.appendChild(hit);
+
+    if(isSel){
+      const glow=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+      glow.setAttribute('points',hexPoints(cx,cy,sz+(selectedStateName?1.9:4)));
+      glow.setAttribute('fill','none');
+      glow.setAttribute('stroke','#20FDF0');
+      glow.setAttribute('stroke-width',selectedStateName?'0.8':'1.5');
+      glow.setAttribute('opacity','0.4');
+      g.appendChild(glow);
+    }
+
     const hex=document.createElementNS('http://www.w3.org/2000/svg','polygon');
     hex.setAttribute('points',hexPoints(cx,cy,sz));
     hex.setAttribute('fill',isSel?'#ffffff':'#20FDF0');
     hex.setAttribute('stroke',isSel?'rgba(255,255,255,0.7)':'rgba(0,0,0,0.4)');
     hex.setAttribute('stroke-width',isSel?(selectedStateName?'0.8':'1.5'):strokeW);
-    hex.setAttribute('opacity','0.93');g.appendChild(hex);
-    g.addEventListener('mouseenter',()=>{
-      hex.setAttribute('fill','#ffffff');hex.setAttribute('stroke','rgba(255,255,255,0.6)');
-      const svgRect=document.getElementById('usa-svg').getBoundingClientRect();
-      const wrapRect=wrap.getBoundingClientRect();
-      const px=cx*(svgRect.width/960)+(svgRect.left-wrapRect.left);
-      const py=cy*(svgRect.height/600)+(svgRect.top-wrapRect.top);
-      const tags=(a.courses||[]).slice(0,4).map(c=>`<span class="tt-tag">${esc(c)}</span>`).join('');
-      tooltip.innerHTML=`<div class="tt-name">${esc(a.first)} ${esc(a.last)}</div>${a.biz?`<div class="tt-biz">${esc(a.biz)}</div>`:''}<div class="tt-loc">${esc(a.city)}, ${esc(a.state)}</div>${tags?`<div class="tt-courses">${tags}</div>`:''}<div class="tt-hint">Click for details</div>`;
-      tooltip.style.display='block';
-      tooltip.style.left=Math.min(px+12,wrapRect.width-280)+'px';
-      tooltip.style.top=Math.max(py-140,8)+'px';
+    hex.setAttribute('opacity','0.93');
+    g.appendChild(hex);
+
+    if(!mobileTouch){
+      g.addEventListener('mouseenter',()=>{
+        hex.setAttribute('fill','#ffffff');
+        hex.setAttribute('stroke','rgba(255,255,255,0.6)');
+
+        const svgRect=document.getElementById('usa-svg').getBoundingClientRect();
+        const wrapRect=wrap.getBoundingClientRect();
+        const px=cx*(svgRect.width/960)+(svgRect.left-wrapRect.left);
+        const py=cy*(svgRect.height/600)+(svgRect.top-wrapRect.top);
+        const tags=(a.courses||[]).slice(0,4).map(c=>`<span class="tt-tag">${esc(c)}</span>`).join('');
+
+        tooltip.innerHTML=`<div class="tt-name">${esc(a.first)} ${esc(a.last)}</div>${a.biz?`<div class="tt-biz">${esc(a.biz)}</div>`:''}<div class="tt-loc">${esc(a.city)}, ${esc(a.state)}</div>${tags?`<div class="tt-courses">${tags}</div>`:''}<div class="tt-hint">Click for details</div>`;
+        tooltip.style.display='block';
+        tooltip.style.left=Math.min(px+12,wrapRect.width-280)+'px';
+        tooltip.style.top=Math.max(py-140,8)+'px';
+      });
+
+      g.addEventListener('mouseleave',()=>{
+        hex.setAttribute('fill',isSel?'#ffffff':'#20FDF0');
+        hex.setAttribute('stroke',isSel?'rgba(255,255,255,0.7)':'rgba(0,0,0,0.4)');
+        tooltip.style.display='none';
+      });
+    }
+
+    g.addEventListener('click',e=>{
+      e.stopPropagation();
+      hideTooltip();
+      showDetail(a.id);
     });
-    g.addEventListener('mouseleave',()=>{hex.setAttribute('fill',isSel?'#ffffff':'#20FDF0');hex.setAttribute('stroke',isSel?'rgba(255,255,255,0.7)':'rgba(0,0,0,0.4)');tooltip.style.display='none';});
-    g.addEventListener('click',()=>showDetail(a.id));
+
+    g.addEventListener('touchstart',e=>{
+      e.stopPropagation();
+    }, {passive:true});
+
     layer.appendChild(g);
   });
 }
