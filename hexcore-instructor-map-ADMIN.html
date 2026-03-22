@@ -290,8 +290,56 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2r
 // ══════════════════════════════════════════
 const ADMIN_PASSWORD = '420';
 const STORAGE_KEY = 'hexcore_instructors';
-let instructors = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-let nextId = instructors.length ? Math.max(...instructors.map(i=>i.id)) + 1 : 1;
+
+function safeJsonParse(raw, fallback) {
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function normalizeStateValue(state) {
+  const map = {AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
+  const value = String(state || '').trim();
+  if (!value) return '';
+  const upper = value.toUpperCase();
+  return map[upper] || value;
+}
+
+function normalizeInstructorRecord(a) {
+  return {
+    ...a,
+    first: String(a?.first || ''),
+    last: String(a?.last || ''),
+    biz: String(a?.biz || ''),
+    city: String(a?.city || ''),
+    state: normalizeStateValue(a?.state || ''),
+    lat: a?.lat === '' || a?.lat == null || Number.isNaN(Number(a?.lat)) ? null : Number(a.lat),
+    lon: a?.lon === '' || a?.lon == null || Number.isNaN(Number(a?.lon)) ? null : Number(a.lon),
+    phone: String(a?.phone || ''),
+    email: String(a?.email || ''),
+    website: String(a?.website || ''),
+    instagram: String(a?.instagram || ''),
+    facebook: String(a?.facebook || ''),
+    youtube: String(a?.youtube || ''),
+    bio: String(a?.bio || ''),
+    certs: String(a?.certs || ''),
+    courses: Array.isArray(a?.courses) ? a.courses.map(v => String(v || '').trim()).filter(Boolean) : String(a?.courses || '').split('|').map(v => v.trim()).filter(Boolean),
+    type: String(a?.type || 'Both'),
+    format: String(a?.format || 'Both'),
+    schedule: String(a?.schedule || ''),
+    price: String(a?.price || ''),
+    langs: String(a?.langs || ''),
+    certnum: String(a?.certnum || ''),
+    notes: String(a?.notes || ''),
+    active: a?.active !== false,
+    id: Number.isFinite(Number(a?.id)) ? Number(a.id) : Date.now() + Math.floor(Math.random() * 1000)
+  };
+}
+
+let instructors = safeJsonParse(localStorage.getItem(STORAGE_KEY) || '[]', []).map(normalizeInstructorRecord);
+let nextId = instructors.length ? Math.max(...instructors.map(i=>Number(i.id) || 0)) + 1 : 1;
 let editingId = null;
 let highlightedId = null;
 let projectionFn = null;
@@ -314,7 +362,10 @@ const STATE_CENTROIDS = {
   "Wisconsin":[-88.7879,43.7844],"Wyoming":[-107.2903,43.0760]
 };
 
-function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(instructors)); }
+function save() {
+  instructors = instructors.map(normalizeInstructorRecord);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(instructors));
+}
 
 // ══════════════════════════════════════════
 //  UI: TABS
@@ -588,44 +639,87 @@ function drawStates() {
 // ══════════════════════════════════════════
 //  EXPORT / BACKUP
 // ══════════════════════════════════════════
-function exportPublicData() {
-  const data = instructors.filter(a=>a.active!==false).map(a=>({
-    g:a.id, a:btoa(a.first), b:btoa(a.last), c:btoa(a.city), d:btoa(a.state),
-    e:btoa(a.bio||''), f:btoa(a.instagram||''), h:btoa(a.facebook||''), k:btoa(a.youtube||''),
-    i:a.lat||null, j:a.lon||null,
-    m:btoa(a.biz||''), n:btoa((a.courses||[]).join('|')), o:btoa(a.type||''), p:btoa(a.format||''),
-    q:btoa(a.certs||''), r:btoa(a.phone||''), s:btoa(a.email||''), t:btoa(a.website||''),
-    u:btoa(a.schedule||''), v:btoa(a.price||''), w:btoa(a.langs||'')
-  }));
-  const encoded = btoa(JSON.stringify(data));
-  const output = `const _d = "${encoded}";
+function safeEncode(str){
+  return btoa(unescape(encodeURIComponent(String(str ?? ''))));
+}
 
-function _x(s){try{return atob(s)}catch(e){return s}}
+function safeDecode(str){
+  try {
+    return decodeURIComponent(escape(atob(String(str || ''))));
+  } catch(e){
+    return String(str || '');
+  }
+}
+
+function exportPublicData() {
+  try {
+    const data = instructors
+      .map(normalizeInstructorRecord)
+      .filter(a=>a.active!==false)
+      .map(a=>({
+        g:a.id,
+        a:safeEncode(a.first), b:safeEncode(a.last), c:safeEncode(a.city), d:safeEncode(a.state),
+        e:safeEncode(a.bio||''), f:safeEncode(a.instagram||''), h:safeEncode(a.facebook||''), k:safeEncode(a.youtube||''),
+        i:Number.isFinite(a.lat)?a.lat:null, j:Number.isFinite(a.lon)?a.lon:null,
+        m:safeEncode(a.biz||''), n:safeEncode((a.courses||[]).join('|')), o:safeEncode(a.type||''), p:safeEncode(a.format||''),
+        q:safeEncode(a.certs||''), r:safeEncode(a.phone||''), s:safeEncode(a.email||''), t:safeEncode(a.website||''),
+        u:safeEncode(a.schedule||''), v:safeEncode(a.price||''), w:safeEncode(a.langs||'')
+      }));
+
+    const encoded = safeEncode(JSON.stringify(data));
+    const output = `/* START EXPORTED INSTRUCTOR DATA */
+const _d = "${encoded}";
+
+function safeDecode(str){
+  try {
+    return decodeURIComponent(escape(atob(String(str || ''))));
+  } catch(e){
+    return String(str || '');
+  }
+}
+function _x(s){ return safeDecode(s); }
 function _decode(raw){
   try {
     return JSON.parse(_x(raw)).map(r=>({
       id:r.g, first:_x(r.a), last:_x(r.b),
       city:_x(r.c), state:_x(r.d), bio:_x(r.e),
       instagram:_x(r.f), facebook:_x(r.h), youtube:_x(r.k),
-      lat:r.i||null, lon:r.j||null,
+      lat:r.i==null?null:Number(r.i), lon:r.j==null?null:Number(r.j),
       biz:_x(r.m), courses:_x(r.n).split('|').filter(Boolean), type:_x(r.o), format:_x(r.p),
       certs:_x(r.q), phone:_x(r.r), email:_x(r.s), website:_x(r.t),
       schedule:_x(r.u), price:_x(r.v), langs:_x(r.w)
     }));
   } catch(e){ return []; }
 }
-const INSTRUCTORS = _decode(_d);`;
-  document.getElementById('export-text').value = output;
-  document.getElementById('export-modal').style.display = 'flex';
+const INSTRUCTORS = _decode(_d);
+/* END EXPORTED INSTRUCTOR DATA */`;
+    document.getElementById('export-text').value = output;
+    document.getElementById('export-modal').style.display = 'flex';
+  } catch (err) {
+    console.error('Export failed:', err);
+    showToast('Export failed. Check special characters and try again.', true);
+  }
 }
 
 function copyExport() {
   const ta = document.getElementById('export-text');
+  const txt = ta.value;
+  const done = () => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '✓ Copied!';
+    setTimeout(()=>btn.textContent='Copy to Clipboard',2500);
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(txt).then(done).catch(() => {
+      ta.select();
+      document.execCommand('copy');
+      done();
+    });
+    return;
+  }
   ta.select();
   document.execCommand('copy');
-  const btn = document.getElementById('copy-btn');
-  btn.textContent = '✓ Copied!';
-  setTimeout(()=>btn.textContent='Copy to Clipboard',2500);
+  done();
 }
 
 function downloadBackup() {
@@ -643,7 +737,7 @@ function importBackup(event) {
     try {
       const data=JSON.parse(e.target.result);
       if(data.instructors&&Array.isArray(data.instructors)){
-        instructors=data.instructors;
+        instructors=data.instructors.map(normalizeInstructorRecord);
         nextId=Math.max(...instructors.map(a=>a.id),0)+1;
         save(); renderPins(); updateStats(); renderList();
         showToast(`Restored ${instructors.length} instructors!`);
