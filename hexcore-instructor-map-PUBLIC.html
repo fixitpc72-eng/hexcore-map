@@ -192,5 +192,42 @@ function dist(lat1,lon1,lat2,lon2){const dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2
 function init(){fillFilters();document.getElementById('flt-search').addEventListener('input',applyFilters);document.getElementById('flt-state').addEventListener('change',()=>{selectedState=normalizeState(document.getElementById('flt-state').value);applyFilters()});document.getElementById('flt-type').addEventListener('change',applyFilters);document.getElementById('locate-btn').addEventListener('click',locateMe);document.getElementById('map-reset-btn').addEventListener('click',clearStateFocus);document.getElementById('map-close-btn').addEventListener('click',clearStateFocus);document.getElementById('map-area').addEventListener('click',e=>{if(selectedState && !e.target.closest('#states-g') && !e.target.closest('#pins-g') && !e.target.closest('.pill')) clearStateFocus()});drawStates()}
 init();
 </script>
+<script>
+(function () {
+  function isHexCoreInternalLink(href) {
+    return href &&
+      (href.startsWith('https://hexcoremounts.com') ||
+       href.startsWith('http://hexcoremounts.com') ||
+       href.startsWith('/'));
+  }
+
+  function goTop(href) {
+    try {
+      if (window.top && href) {
+        window.top.location.href = href;
+      } else if (href) {
+        window.location.href = href;
+      }
+    } catch (e) {
+      if (href) window.location.href = href;
+    }
+  }
+
+  document.querySelectorAll('a[href]').forEach(function (link) {
+    var rawHref = link.getAttribute('href') || '';
+    if (!isHexCoreInternalLink(rawHref)) return;
+
+    link.setAttribute('target', '_top');
+
+    link.addEventListener('click', function (e) {
+      var resolvedHref = link.href || rawHref;
+      if (!resolvedHref) return;
+      e.preventDefault();
+      e.stopPropagation();
+      goTop(resolvedHref);
+    });
+  });
+})();
+</script>
 </body>
 </html>
