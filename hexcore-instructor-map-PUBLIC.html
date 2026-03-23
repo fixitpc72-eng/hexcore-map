@@ -3,143 +3,225 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Find Firearm Training Near You | HexCore Instructor Map</title>
-<meta name="description" content="Find firearm training near you with the HexCore Instructor Map. Browse instructors by state, course type, and training format across the United States.">
+<title>Instructor Map — Find Firearm Training | HexCore Mounts</title>
+<meta name="description" content="Find certified firearm instructors near you. Browse training programs for CCW/LTC, basic pistol, defensive rifle, and more — mapped across the United States.">
 <link rel="canonical" href="https://hexcoremounts.com/pages/instructor-map">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 <style>
-:root{--black:#0a0a0a;--dark:#111214;--card:#16181c;--card2:#0f1318;--border:#2a2d35;--muted:#3a3d47;--text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--accent2:#0ccfc3;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif}
+:root{--black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;--text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--ig:#e1306c;--fb:#1877f2;--yt:#ff0000;--pin-color:#20FDF0;--pin-color-hl:#ffffff;--font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh}
-a{color:inherit}
-header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:40}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;width:100%}
 .logo{font-family:var(--font-head);font-weight:900;font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}
-.header-nav{display:flex;gap:1.5rem;align-items:center}.header-nav a{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);text-decoration:none}.header-nav a:hover,.header-nav a.active{color:var(--accent)}
-.header-badge{background:var(--accent);color:#000;padding:5px 10px;border-radius:3px}
-.page{max-width:1220px;margin:0 auto;padding:0 0 2rem}
-.hero{padding:1.2rem 1.25rem 0}.hero-shell{border:1px solid rgba(32,253,240,.14);border-radius:16px;background:linear-gradient(180deg,rgba(14,18,24,.96),rgba(7,10,14,.98));padding:1rem 1rem .9rem;box-shadow:0 0 0 1px rgba(32,253,240,.03) inset}.eyebrow{font-family:var(--font-head);font-weight:800;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin-bottom:.45rem}.hero h1{font-family:var(--font-head);font-size:clamp(30px,5vw,54px);line-height:.95;text-transform:uppercase;letter-spacing:.02em}.hero h1 span{color:var(--accent)}.hero p{max-width:760px;color:#c6cad3;font-size:15px;line-height:1.65;margin-top:.7rem}
-.quick-links{padding:1rem 1.25rem 0}.quick-links-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.quick-link-card{display:flex;justify-content:center;align-items:center;padding:.7rem .8rem;border-radius:14px;background:rgba(4,9,14,.78);border:1px solid rgba(32,253,240,.14);text-decoration:none;text-align:center}.quick-link-card.current{background:rgba(32,253,240,.04);border-color:rgba(32,253,240,.26)}.quick-link-title{font-family:var(--font-head);font-size:14px;font-weight:800;line-height:1.02;color:var(--accent)}
-.toolbar{padding:1rem 1.25rem 0}.toolbar-shell{background:var(--dark);border:1px solid var(--border);border-radius:12px;padding:.9rem;display:grid;gap:.75rem}
-.toolbar-top{display:flex;gap:.65rem;flex-wrap:wrap;align-items:center}.action-btn,.chip,.select, .search{border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:999px;padding:.7rem .95rem;font:600 13px var(--font-body);cursor:pointer;text-decoration:none}.action-btn{font-family:var(--font-head);font-size:12px;letter-spacing:.08em;text-transform:uppercase}.action-btn.primary{background:rgba(32,253,240,.08);border-color:rgba(32,253,240,.22);color:var(--accent)}.action-btn:hover,.chip:hover{border-color:rgba(32,253,240,.4)}
-.search{border-radius:10px;min-width:220px;flex:1;cursor:text}.select{border-radius:10px}.chip-row{display:flex;gap:.5rem;flex-wrap:wrap}.chip{padding:.55rem .82rem;font-family:var(--font-head);font-size:11px;letter-spacing:.08em;text-transform:uppercase}.chip.active{background:rgba(32,253,240,.1);color:var(--accent);border-color:rgba(32,253,240,.35)}
-.map-section{padding:1rem 1.25rem 0}.map-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:14px;align-items:start}.map-wrap{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--dark);position:relative}.map-area{height:600px;position:relative;background:#090b0e}.map-topbar{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;gap:10px;pointer-events:none;z-index:12}.pill-group{display:flex;gap:8px;flex-wrap:wrap;max-width:72%}.pill{pointer-events:auto;background:rgba(17,18,20,.94);border:1px solid var(--border);border-radius:999px;padding:9px 13px;font-family:var(--font-head);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text)}.pill span{color:var(--accent)}
-#map-svg-wrap{width:100%;height:100%;padding:1rem;display:flex;align-items:center;justify-content:center}#usa-svg{width:100%;height:100%}
-.map-tooltip{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 14px;display:none;pointer-events:none;z-index:18;min-width:210px;max-width:290px;box-shadow:0 8px 24px rgba(0,0,0,.55)}.tt-name{font-family:var(--font-head);font-size:16px;font-weight:900;text-transform:uppercase}.tt-loc{font-size:11px;color:var(--sub);margin-top:2px}.tt-courses{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}.tt-tag{display:inline-block;background:rgba(32,253,240,.1);border-radius:999px;padding:3px 7px;font-size:9px;color:var(--accent);font-weight:700;text-transform:uppercase}.tt-hint{font-size:10px;color:var(--muted);margin-top:7px;font-style:italic}
-.map-close-btn,.map-reset-btn{pointer-events:auto;border:1px solid rgba(32,253,240,.24);background:rgba(17,18,20,.96);color:var(--accent);cursor:pointer}.map-close-btn{display:none;width:38px;height:38px;border-radius:999px;font:900 18px var(--font-head)}.map-reset-btn{display:none;border-radius:999px;padding:9px 12px;font-family:var(--font-head);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
-.map-count{position:absolute;bottom:12px;right:12px;background:rgba(17,18,20,.94);border:1px solid var(--border);border-radius:999px;padding:8px 13px;font-family:var(--font-head);font-size:13px;font-weight:800;letter-spacing:.08em;color:var(--accent);z-index:12}
-.map-legend{position:absolute;bottom:12px;left:12px;background:rgba(17,18,20,.94);border:1px solid var(--border);border-radius:12px;padding:10px 12px;z-index:12}.map-legend-title{font-family:var(--font-head);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:6px}.leg-row{display:flex;gap:8px;align-items:center;color:var(--sub);font-size:11px}
-#map-root{transition:transform .35s ease,opacity .25s ease;transform-origin:0 0}.state-path{cursor:pointer;transition:filter .15s ease,opacity .2s ease}
-.state-count-badge{fill:rgba(17,18,20,.92);stroke:rgba(32,253,240,.35);stroke-width:1}.state-count-text{font-family:var(--font-head);font-size:11px;font-weight:800;fill:var(--text);text-anchor:middle;dominant-baseline:middle}
-.sidebar{display:grid;gap:14px}.panel{border:1px solid var(--border);border-radius:16px;background:linear-gradient(180deg,rgba(17,18,20,.96),rgba(11,13,16,.98));overflow:hidden}.panel-head{padding:.95rem 1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:10px}.panel-title{font-family:var(--font-head);font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.03em}.panel-sub{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em}.results-panel.is-hidden{display:none}.results-panel{display:none !important}
-.result-list{max-height:600px;overflow:auto;padding:.8rem;display:grid;gap:.7rem}.result-card{border:1px solid rgba(32,253,240,.12);background:rgba(4,9,14,.66);border-radius:14px;padding:.85rem}.result-card.active{border-color:rgba(32,253,240,.35);box-shadow:0 0 0 1px rgba(32,253,240,.06) inset}.result-name{font-family:var(--font-head);font-size:18px;font-weight:900;text-transform:uppercase;line-height:1}.result-biz{font-size:12px;color:var(--accent);margin-top:4px}.result-loc{font-size:12px;color:var(--sub);margin-top:5px}.result-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.result-tag{font-size:10px;padding:4px 8px;border-radius:999px;background:rgba(32,253,240,.08);color:var(--accent);border:1px solid rgba(32,253,240,.14);font-weight:700;text-transform:uppercase}.result-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.mini-btn{border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:999px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none}.mini-btn:hover{border-color:rgba(32,253,240,.35)}.empty{padding:1rem;color:#bfc5cf;font-size:14px;line-height:1.6}.empty strong{color:#fff}
-.detail-wrap{padding:.9rem}.detail-card{border:1px solid rgba(32,253,240,.14);border-radius:14px;background:rgba(4,9,14,.68);padding:.95rem}.detail-name{font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;line-height:1}.detail-biz{font-size:12px;color:var(--accent);margin-top:4px}.detail-loc{font-size:12px;color:var(--sub);margin-top:7px}.detail-bio{font-size:13px;color:#c4c8d0;line-height:1.6;margin-top:11px}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.detail-box{border:1px solid var(--border);border-radius:12px;padding:.7rem;background:rgba(32,253,240,.03)}.detail-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--sub)}.detail-value{font-size:13px;font-weight:700;margin-top:3px}.detail-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.request-box{margin-top:14px;border:1px solid rgba(234,179,8,.18);border-radius:14px;padding:.9rem;background:rgba(234,179,8,.05)}.request-title{font-family:var(--font-head);font-size:18px;font-weight:900;text-transform:uppercase;color:#fff}.request-copy{font-size:13px;line-height:1.6;color:#d7d0b5;margin-top:6px}.request-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.request-grid input,.request-grid textarea{width:100%;border:1px solid var(--border);background:#11161c;color:var(--text);border-radius:10px;padding:.72rem .8rem;font:500 13px var(--font-body)}.request-grid textarea{grid-column:1/-1;min-height:92px;resize:vertical}.request-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.subtle-btn{border:1px solid rgba(234,179,8,.22);background:rgba(234,179,8,.08);color:#f7e3a2;border-radius:999px;padding:8px 12px;font:700 11px var(--font-head);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-decoration:none}
-.signup-section{padding:1rem 1.25rem 0}.signup-card{background:var(--dark);border:2px solid var(--accent);border-radius:12px;padding:2.5rem 2rem;text-align:center;position:relative;overflow:hidden}.signup-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(32,253,240,.04) 0%,transparent 70%);pointer-events:none}.signup-icon{font-size:48px;margin-bottom:1rem;display:block;opacity:.8}.signup-eyebrow{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--sub);margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;gap:10px}.signup-eyebrow::before,.signup-eyebrow::after{content:'';width:24px;height:1px;background:var(--accent);opacity:.4}.signup-title{font-family:var(--font-head);font-size:clamp(32px,5vw,52px);font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:var(--text);line-height:1;margin-bottom:.75rem}.signup-title span{color:var(--accent)}.signup-sub{font-size:16px;color:var(--sub);line-height:1.65;max-width:560px;margin:0 auto 1.75rem}.signup-arrow{display:block;margin-top:1.5rem;font-size:28px;color:var(--accent);animation:bounce 2s infinite;opacity:.6}@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}.signup-note{font-size:11px;color:var(--muted);margin-top:1rem}
-.disclaimer-bar{width:100%;max-width:1220px;padding:1rem 1.25rem;font-size:11px;color:var(--muted);line-height:1.6;text-align:center}.form-placeholder{width:100%;max-width:1220px;padding:0 1.25rem}.form-placeholder-note{border:1px dashed rgba(32,253,240,.18);border-radius:14px;padding:1rem;color:#c4c8d0;background:rgba(4,9,14,.55)}
-footer{margin-top:1.2rem;border-top:1px solid var(--border);background:var(--dark);padding:1.5rem;text-align:center;font-family:var(--font-head);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
-@media (max-width:1080px){.map-grid{grid-template-columns:1fr}.sidebar{grid-template-columns:1fr 1fr}.result-list{max-height:none}.quick-links-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:900px){header{padding:0 1rem}.header-nav{display:none}.hero,.quick-links,.toolbar,.map-section,.signup-section,.form-placeholder{padding-left:1rem;padding-right:1rem}.map-area{height:58vw;min-height:320px;max-height:460px}.sidebar{grid-template-columns:1fr}.pill-group{max-width:100%}.map-tooltip{display:none !important}}
+.header-nav{display:flex;gap:2rem;align-items:center}
+.header-nav a{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}.header-nav a:hover{color:var(--text)}.header-nav a.active{color:var(--accent)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;text-decoration:none}
+.map-wrap{width:100%;max-width:1200px;position:relative;border-bottom:1px solid var(--border)}
+.map-area{width:100%;height:580px;background:var(--black);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#map-svg-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1rem}
+#usa-svg{width:100%;height:100%}
+.map-tooltip{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px 16px;pointer-events:none;display:none;z-index:20;min-width:220px;max-width:300px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.tt-name{font-family:var(--font-head);font-weight:900;font-size:16px;color:var(--text);text-transform:uppercase;letter-spacing:.03em;margin-bottom:1px}
+.tt-biz{font-size:12px;color:var(--accent);margin-bottom:4px}
+.tt-loc{font-size:11px;color:var(--sub);margin-bottom:6px}
+.tt-courses{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:5px}
+.tt-tag{display:inline-block;padding:2px 7px;border-radius:3px;font-size:9px;font-weight:700;text-transform:uppercase;background:rgba(32,253,240,.1);color:var(--accent)}
+.tt-hint{font-size:10px;color:var(--muted);font-style:italic;margin-top:4px}
+.map-legend{position:absolute;bottom:1rem;left:1rem;background:rgba(22,24,28,.92);border:1px solid var(--border);border-radius:6px;padding:10px 14px;backdrop-filter:blur(4px);z-index:10}
+.map-legend-title{font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:6px}
+.leg-row{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--sub)}
+.map-tagline{position:absolute;top:1rem;left:50%;transform:translateX(-50%);font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);white-space:nowrap;pointer-events:none;opacity:.5}
+.map-count{position:absolute;top:1rem;right:1rem;background:rgba(22,24,28,.92);border:1px solid var(--border);border-radius:6px;padding:8px 14px;backdrop-filter:blur(4px);font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.06em;z-index:10}
+.detail-overlay{position:absolute;top:1rem;right:1rem;width:340px;max-height:calc(100% - 2rem);background:rgba(17,18,20,.96);border:1px solid var(--border);border-radius:8px;backdrop-filter:blur(10px);overflow-y:auto;display:none;z-index:25;scrollbar-width:thin;scrollbar-color:var(--muted) transparent;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.detail-overlay.visible{display:block;animation:slideIn .25s ease-out}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.do-header{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.do-header-info{flex:1;min-width:0}
+.do-name{font-family:var(--font-head);font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:var(--text);line-height:1.1}
+.do-biz{font-size:12px;color:var(--accent);margin-top:3px}
+.do-close{background:none;border:none;color:var(--sub);font-size:20px;cursor:pointer;padding:4px 8px;transition:color .15s;flex-shrink:0;line-height:1}.do-close:hover{color:var(--accent)}
+.do-body{padding:1.25rem}
+.do-loc{font-size:12px;color:var(--sub);margin-bottom:1rem;display:flex;align-items:center;gap:5px}.do-loc svg{opacity:.5;flex-shrink:0}
+.do-section{margin-bottom:1rem}.do-section:last-child{margin-bottom:0}
+.do-section-title{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.5rem}
+.do-bio{font-size:13px;color:var(--sub);line-height:1.6}
+.do-certs{font-size:12px;color:var(--sub);font-style:italic}
+.do-tags{display:flex;flex-wrap:wrap;gap:4px}
+.do-tag{display:inline-block;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;background:rgba(32,253,240,.08);color:var(--accent);border:1px solid rgba(32,253,240,.18)}
+.do-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.do-detail{background:rgba(32,253,240,.03);border:1px solid var(--border);border-radius:5px;padding:8px 10px}
+.do-detail-label{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.do-detail-value{font-size:13px;color:var(--text);font-weight:600}
+.do-contact{display:flex;flex-direction:column;gap:6px}
+.do-contact-link{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;transition:opacity .15s}.do-contact-link:hover{opacity:.8}
+.do-contact-link.phone{background:rgba(34,197,94,.08);color:#4ade80;border:1px solid rgba(34,197,94,.18)}
+.do-contact-link.email-link{background:rgba(59,130,246,.08);color:#60a5fa;border:1px solid rgba(59,130,246,.18)}
+.do-contact-link.web{background:rgba(32,253,240,.06);color:var(--accent);border:1px solid rgba(32,253,240,.18)}
+.do-contact-link.ig{background:rgba(225,48,108,.08);color:#f472b6;border:1px solid rgba(225,48,108,.18)}
+.do-contact-link.fb{background:rgba(24,119,242,.08);color:#60a5fa;border:1px solid rgba(24,119,242,.18)}
+.do-contact-link.yt{background:rgba(255,0,0,.06);color:#f87171;border:1px solid rgba(255,0,0,.15)}
+.do-disclaimer{margin-top:.75rem;padding:8px 10px;background:rgba(234,179,8,.05);border:1px solid rgba(234,179,8,.12);border-radius:5px;font-size:10px;color:var(--sub);line-height:1.5}.do-disclaimer strong{color:var(--yellow);font-weight:700}
+.filter-bar{width:100%;max-width:1200px;background:var(--dark);border-bottom:1px solid var(--border);padding:1rem 1.5rem;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.filter-bar select,.filter-bar input{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:8px 12px;color:var(--text);font-family:var(--font-body);font-size:13px;outline:none;transition:border-color .15s}
+.filter-bar select:focus,.filter-bar input:focus{border-color:var(--accent)}
+.filter-bar select option{background:var(--card)}
+.filter-bar input{flex:1;min-width:180px}
+.filter-label{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);white-space:nowrap}
+.filter-count{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.06em;margin-left:auto}
+.quick-links{width:100%;max-width:1200px;padding:1rem 1.5rem 0}
+.quick-links-shell{background:linear-gradient(180deg,rgba(9,16,24,.95),rgba(5,10,16,.98));border:1px solid rgba(32,253,240,.14);border-radius:12px;padding:1rem;box-shadow:0 0 0 1px rgba(32,253,240,.03) inset}
+.quick-links-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:.85rem;flex-wrap:wrap}
+.quick-links-title{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-head);font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text)}
+.quick-links-title::before{content:'⬡';color:var(--accent);font-size:14px;line-height:1}
+.quick-links-sub{font-size:11px;color:var(--sub)}
+.quick-links-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.quick-link-card{display:flex;align-items:center;justify-content:center;min-height:0;background:rgba(4,9,14,.78);border:1px solid rgba(32,253,240,.14);border-radius:14px;padding:.62rem .78rem;text-decoration:none;text-align:center;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease;box-shadow:0 0 0 1px rgba(32,253,240,.02) inset}
+.quick-link-card:hover{transform:translateY(-1px);border-color:rgba(32,253,240,.34);box-shadow:0 8px 20px rgba(0,0,0,.24),0 0 18px rgba(32,253,240,.07)}
+.quick-link-card.current{background:rgba(32,253,240,.04);border-color:rgba(32,253,240,.26)}
+.quick-link-title{font-family:var(--font-head);font-size:14px;font-weight:800;line-height:1.02;color:var(--accent)}
+.quick-link-desc{font-size:11.5px;line-height:1.55;color:#c5cad4;flex:1}
+.quick-link-cta{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.signup-section{width:100%;max-width:1200px;padding:1.35rem 1.5rem 0}
+.signup-card{background:var(--dark);border:2px solid var(--accent);border-radius:10px;padding:3rem 2.5rem;text-align:center;position:relative;overflow:hidden}
+.signup-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(32,253,240,.04) 0%,transparent 70%);pointer-events:none}
+.signup-icon{font-size:48px;margin-bottom:1rem;display:block;opacity:.8}
+.signup-eyebrow{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--sub);margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;gap:10px}
+.signup-eyebrow::before,.signup-eyebrow::after{content:'';width:24px;height:1px;background:var(--accent);opacity:.4}
+.signup-title{font-family:var(--font-head);font-size:clamp(32px,5vw,52px);font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:var(--text);line-height:1;margin-bottom:.75rem}
+.signup-title span{color:var(--accent)}
+.signup-sub{font-size:16px;color:var(--sub);line-height:1.65;max-width:560px;margin:0 auto 1.75rem}
+.signup-arrow{display:block;margin-top:1.5rem;font-size:28px;color:var(--accent);animation:bounce 2s infinite;opacity:.6}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+.signup-note{font-size:11px;color:var(--muted);margin-top:1rem}
+footer{border-top:1px solid var(--border);background:var(--dark);padding:1.75rem 2rem;text-align:center;font-family:var(--font-head);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);width:100%}
+.disclaimer-bar{width:100%;max-width:1200px;padding:1rem 1.5rem;font-size:11px;color:var(--muted);line-height:1.6;text-align:center}
+.map-focus-ui{position:absolute;top:1rem;left:1rem;display:flex;align-items:center;gap:8px;z-index:14;flex-wrap:wrap;max-width:min(58%,520px)}
+.map-focus-pill{background:rgba(22,24,28,.94);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text);backdrop-filter:blur(6px)}
+.map-focus-pill span{color:var(--accent)}
+.map-reset-btn{display:none;background:rgba(32,253,240,.08);border:1px solid rgba(32,253,240,.25);color:var(--accent);border-radius:6px;padding:8px 12px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.map-reset-btn:hover{background:rgba(32,253,240,.14);border-color:rgba(32,253,240,.45);color:#fff}
+.map-close-btn{display:none;position:absolute;top:1rem;right:1rem;width:38px;height:38px;border-radius:999px;background:rgba(17,18,20,.96);border:1px solid rgba(32,253,240,.22);color:var(--text);font-family:var(--font-head);font-size:18px;font-weight:900;line-height:1;cursor:pointer;z-index:16;backdrop-filter:blur(6px);box-shadow:0 10px 24px rgba(0,0,0,.35);transition:background .15s,border-color .15s,color .15s,transform .15s}
+.map-close-btn:hover{background:rgba(32,253,240,.12);border-color:rgba(32,253,240,.45);color:#fff;transform:scale(1.04)}
+.map-hover-pill{position:absolute;top:14px;left:14px;z-index:7;display:none;align-items:center;gap:8px;padding:9px 14px;border:1px solid rgba(32,253,240,.28);background:rgba(9,13,16,.88);backdrop-filter:blur(10px);border-radius:999px;color:#d9fefe;font-size:12px;font-weight:700;letter-spacing:.04em;box-shadow:0 10px 24px rgba(0,0,0,.34)}
+.map-hover-pill strong{color:#fff;font-weight:800}
+.map-hover-pill .map-hover-count{color:var(--accent)}
+.state-label-layer{pointer-events:none}
+.state-count-badge{fill:rgba(17,18,20,.92);stroke:rgba(32,253,240,.35);stroke-width:1}
+.state-count-text{font-family:var(--font-head);font-size:11px;font-weight:800;letter-spacing:.03em;fill:var(--text);text-anchor:middle;dominant-baseline:middle}
+#map-root{transition:transform .35s ease,opacity .25s ease;transform-origin:0 0}
+.state-path{cursor:pointer;transition:filter .15s ease,opacity .2s ease}
+@media(max-width:900px){.map-tooltip,.map-hover-pill{display:none !important}#pins-g g{pointer-events:all}.map-area{height:55vw;min-height:280px;max-height:420px}.detail-overlay{width:calc(100% - 2rem);left:1rem;right:1rem}.filter-bar{flex-direction:column;gap:8px}.filter-bar input,.filter-bar select{width:100%}.header-nav{display:none}header{padding:0 1rem}.map-tagline{display:none}.map-focus-ui{top:.75rem;left:.75rem;max-width:calc(100% - 1.5rem)}.map-focus-pill,.map-reset-btn{font-size:11px;padding:7px 10px}.map-close-btn{top:.75rem;right:.75rem;width:34px;height:34px;font-size:16px}.map-count{top:auto;bottom:1rem;right:1rem}.quick-links-grid{grid-template-columns:1fr 1fr}.quick-link-card{border-radius:10px;padding:.58rem .72rem}}
 </style>
 </head>
 <body>
+
 <header>
-  <a class="logo" href="https://hexcoremounts.com" target="_top">Hex<span>Core</span> Mounts</a>
+  <a class="logo" href="https://hexcoremounts.com">Hex<span>Core</span> Mounts</a>
   <nav class="header-nav">
-    <a href="https://hexcoremounts.com/collections/all" target="_top">Products</a>
-    <a href="https://hexcoremounts.com/pages/why-hexcore" target="_top">Why HexCore</a>
-    <a href="https://hexcoremounts.com/pages/about-us" target="_top">About</a>
-    <a href="https://hexcoremounts.com/blogs/news" target="_top">Intel</a>
-    <a href="https://hexcoremounts.com/pages/instructor-map" class="active" target="_top">Instructor Map</a>
-    <a class="header-badge" href="https://hexcoremounts.com/collections/all" target="_top">Shop Now</a>
+    <a href="https://hexcoremounts.com/collections/all">Products</a>
+    <a href="https://hexcoremounts.com/pages/why-hexcore">Why HexCore</a>
+    <a href="https://hexcoremounts.com/pages/about-us">About</a>
+    <a href="https://hexcoremounts.com/blogs/news">Intel</a>
+    <a href="https://hexcoremounts.com/pages/instructor-map" class="active">Instructor Map</a>
+    <a class="header-badge" href="https://hexcoremounts.com/collections/all">Shop Now</a>
   </nav>
 </header>
-<div class="page">
-  <section class="hero">
-    <div class="hero-shell">
-      <div class="eyebrow">HexCore Instructor Map</div>
-      <h1>Find <span>Training</span> Near You</h1>
-      <p>Search for firearm instructors by state, course type, and training format. Use the map to explore available training and drill into a state to see instructors in that area.</p>
+
+<div class="map-wrap">
+  <div class="map-area" id="map-area">
+    <div class="map-tagline">HexCore Mounts — Instructor Map</div>
+    <div class="map-focus-ui"><div class="map-focus-pill" id="map-focus-pill">Viewing: <span>All States</span></div><button class="map-reset-btn" id="map-reset-btn" type="button" onclick="clearStateFocus()">Back to U.S. Map</button></div>
+    <button class="map-close-btn" id="map-close-btn" type="button" aria-label="Close state focus" title="Back to U.S. Map" onclick="clearStateFocus()">✕</button><div class="map-hover-pill" id="map-hover-pill" aria-live="polite"></div>
+    <div class="map-count" id="map-count">0 Instructors</div>
+    <div id="map-svg-wrap">
+      <svg id="usa-svg" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg">
+        <rect width="960" height="600" fill="#0a0a0a"/>
+        <g id="map-root">
+          <g id="states-g"></g>
+          <g id="state-labels-g" class="state-label-layer"></g>
+          <g id="pins-g"></g>
+        </g>
+      </svg>
     </div>
-  </section>
-  <section class="quick-links" aria-label="Related HexCore tools">
-    <div class="quick-links-grid">
-      <a class="quick-link-card" href="https://hexcoremounts.com/pages/ccw-reciprocity-map" target="_top"><div class="quick-link-title">Reciprocity Map</div></a>
-      <a class="quick-link-card" href="https://hexcoremounts.com/pages/50-state-permit-guide" target="_top"><div class="quick-link-title">50-State Permit Guide</div></a>
-      <a class="quick-link-card current" href="https://hexcoremounts.com/pages/instructor-map" aria-current="page" target="_top"><div class="quick-link-title">Instructor Map</div></a>
-      <a class="quick-link-card" href="https://hexcoremounts.com/pages/where-can-i-carry-law-tool" target="_top"><div class="quick-link-title">Where Can I Carry?</div></a>
-    </div>
-  </section>
-  <section class="toolbar">
-    <div class="toolbar-shell">
-      <div class="toolbar-top">
-        <button class="action-btn primary" type="button" id="locate-btn">Closest Instructor to Me</button>
-        <input class="search" id="flt-search" type="text" placeholder="Search name, city, ZIP, course, company...">
-        <input class="search" id="zip-search" type="text" inputmode="numeric" maxlength="5" placeholder="ZIP Code" style="min-width:140px;max-width:160px;flex:0 0 160px;">
-        <button class="action-btn" type="button" id="zip-btn">Find by ZIP</button>
-        <select class="select" id="flt-state"><option value="">All States</option></select>
-        <select class="select" id="flt-type"><option value="">All Formats</option><option value="Classroom">Classroom</option><option value="Range">Range</option><option value="Both">Classroom &amp; Range</option></select>
+    <div class="map-tooltip" id="map-tooltip"></div>
+    <div class="map-legend">
+      <div class="map-legend-title">Instructor</div>
+      <div class="leg-row">
+        <svg width="12" height="11" viewBox="-6 -5 12 11"><polygon points="0,-5 4.3,-2.5 4.3,2.5 0,5 -4.3,2.5 -4.3,-2.5" fill="#20FDF0"/></svg>
+        <span>Training Location</span>
       </div>
-      <div class="chip-row" id="chip-row"></div>
     </div>
-  </section>
-  <section class="map-section">
-    <div class="map-grid">
-      <div class="map-wrap">
-        <div class="map-area" id="map-area">
-          <div class="map-topbar">
-            <div class="pill-group">
-              <div class="pill" id="map-focus-pill">Viewing: <span>All States</span></div>
-              <button class="map-reset-btn" id="map-reset-btn" type="button">Back to U.S. Map</button>
-            </div>
-            <button class="map-close-btn" id="map-close-btn" type="button" aria-label="Close state focus">✕</button>
-          </div>
-          <div id="map-svg-wrap">
-            <svg id="usa-svg" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg">
-              <rect width="960" height="600" fill="#090b0e"></rect>
-              <g id="map-root">
-                <g id="states-g"></g>
-                <g id="state-labels-g"></g>
-                <g id="pins-g"></g>
-              </g>
-            </svg>
-          </div>
-          <div class="map-tooltip" id="map-tooltip"></div>
-          <div class="map-count" id="map-count">0 Instructors</div>
-          <div class="map-legend">
-            <div class="map-legend-title">Instructor</div>
-            <div class="leg-row"><svg width="12" height="11" viewBox="-6 -5 12 11"><polygon points="0,-5 4.3,-2.5 4.3,2.5 0,5 -4.3,2.5 -4.3,-2.5" fill="#20FDF0"></polygon></svg><span>Training Location</span></div>
-          </div>
+    <div class="detail-overlay" id="detail-overlay">
+      <div class="do-header">
+        <div class="do-header-info">
+          <div class="do-name" id="do-name"></div>
+          <div class="do-biz" id="do-biz"></div>
         </div>
+        <button class="do-close" onclick="closeDetail()">✕</button>
       </div>
-      <aside class="sidebar">
-        <section class="panel">
-          <div class="panel-head"><div><div class="panel-title">Instructors</div><div class="panel-sub" id="result-sub">All visible results</div></div></div>
-          <div class="result-list" id="result-list"></div>
-        </section>
-        <section class="panel">
-          <div class="panel-head"><div><div class="panel-title">Selected Profile</div><div class="panel-sub">Tap a hexagon or result card</div></div></div>
-          <div class="detail-wrap" id="detail-wrap"><div class="empty"><strong>No instructor selected yet.</strong><br>Choose a state and select an instructor to view more details here.</div></div>
-        </section>
-      </aside>
+      <div class="do-body" id="do-body"></div>
     </div>
-  </section>
-  <section class="signup-section" id="instructor-signup">
-    <div class="signup-card">
-      <span class="signup-icon">⬡</span>
-      <div class="signup-eyebrow">Are You a Firearms Instructor?</div>
-      <div class="signup-title">Get <span>Listed</span> on the Map</div>
-      <div class="signup-sub">Submit your training details to be considered for the HexCore Instructor Map. Help students find your classes and grow your reach with a public listing focused on training and instruction.</div>
-      <div class="signup-note">Submissions are reviewed before they are added. Public listing details are provided by the instructor and should be verified by students independently.</div>
-      <span class="signup-arrow">↓</span>
-    </div>
-  </section>
-  <div class="form-placeholder">
-    <!-- YOUR FORM GOES DIRECTLY BELOW THIS LINE -->
   </div>
-  <div class="disclaimer-bar">HexCore Mounts does not verify, endorse, or certify any instructor listed on this map. Training details are provided by the instructors themselves. Always verify credentials, certifications, insurance, and legal compliance independently before enrolling in any training program.</div>
 </div>
-<footer>&copy; 2026 HexCore Mounts · Instructor Map</footer>
+
+<div class="filter-bar">
+  <span class="filter-label">Filter:</span>
+  <button type="button" id="locate-btn" style="background:rgba(32,253,240,.08);border:1px solid rgba(32,253,240,.25);border-radius:5px;padding:8px 12px;color:var(--accent);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;">Closest Instructor</button>
+  <input type="text" id="zip-search" placeholder="ZIP Code" inputmode="numeric" maxlength="5" style="max-width:130px;">
+  <button type="button" id="zip-btn" style="background:var(--card);border:1px solid var(--border);border-radius:5px;padding:8px 12px;color:var(--text);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;">Find by ZIP</button>
+  <input type="text" id="flt-search" placeholder="Search name, city, ZIP, or course..." oninput="applyFilters()">
+  <select id="flt-state" onchange="applyFilters()"><option value="">All States</option></select>
+  <select id="flt-course" onchange="applyFilters()"><option value="">All Courses</option></select>
+  <select id="flt-type" onchange="applyFilters()">
+    <option value="">All Types</option>
+    <option value="Classroom">Classroom</option>
+    <option value="Range">Range</option>
+    <option value="Both">Classroom &amp; Range</option>
+  </select>
+  <span class="filter-count" id="flt-count"></span>
+</div>
+
+<section class="quick-links" aria-label="Related HexCore tools">
+  <div class="quick-links-shell">
+    <div class="quick-links-grid">
+      <a class="quick-link-card" href="https://hexcoremounts.com/pages/ccw-reciprocity-map">
+        <div class="quick-link-title">Reciprocity Map</div>
+      </a>
+      <a class="quick-link-card" href="https://hexcoremounts.com/pages/50-state-permit-guide">
+        <div class="quick-link-title">50-State Permit Guide</div>
+      </a>
+      <a class="quick-link-card current" href="https://hexcoremounts.com/pages/instructor-map" aria-current="page">
+        <div class="quick-link-title">Instructor Map</div>
+      </a>
+      <a class="quick-link-card" href="https://hexcoremounts.com/pages/where-can-i-carry-law-tool">
+        <div class="quick-link-title">Where Can I Carry?</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="signup-section" id="instructor-signup">
+  <div class="signup-card">
+    <span class="signup-icon">⬡</span>
+    <div class="signup-eyebrow">Are You a Firearms Instructor?</div>
+    <div class="signup-title">Get <span>Listed</span> on the Map</div>
+    <div class="signup-sub">Submit your training details below and we'll add your program to the HexCore Instructor Map — free of charge. Help students in your area find the training they need.</div>
+    <div class="signup-note">Submissions are reviewed manually. All instructor details are provided by the instructor and are not verified or endorsed by HexCore Mounts.</div>
+    <span class="signup-arrow">↓</span>
+  </div>
+</div>
+
+<!-- YOUR FORM GOES DIRECTLY BELOW THIS LINE -->
+
+
+<div class="disclaimer-bar">
+  HexCore Mounts does not verify, endorse, or certify any instructor listed on this map. Training details are provided by the instructors themselves. Always verify credentials, certifications, and insurance independently before enrolling in any training program. HexCore Mounts is not responsible for the quality, safety, or legality of any training services listed.
+</div>
+
+<footer>&copy; 2026 HexCore Mounts &nbsp;&middot;&nbsp; Designed and Manufactured in the USA &nbsp;&middot;&nbsp; Atlanta, Georgia</footer>
+
 <script>
 /* START EXPORTED INSTRUCTOR DATA */
 const _d = "W3siZyI6MSwiYSI6IlMzbHNaUT09IiwiYiI6IlYzSnZZbXhsYzJ0cCIsImMiOiJUbVYzY0c5eWRBPT0iLCJkIjoiVFdsamFHbG5ZVzQ9IiwieiI6IiIsImUiOiJWMlVnWVhKbElHRWdjSEpsYldsbGNpQm1hWEpsWVhKdGN5QmhibVFnZEdGamRHbGpjeUIwY21GcGJtbHVaeUJqYjIxd1lXNTVMaUJYWlNCb1lYWmxJRFlnYVc1emRISjFZM1J2Y25NZ2QybDBhQ0JoSUdOdmJXSnBibVZrSUdWNGNHVnlhV1Z1WTJVZ2IyWWdiM1psY2lBNU1DQjVaV0Z5Y3k0Z1YyVWdZWEpsSUdGc2JDQmpiMjFpWVhRZ2RtVjBjeXdnZDJVZ2FHRjJaU0JsZUhCbGNtbGxibU5sSUdsdUlISmxZV3dnZDI5eWJHUWdZMjl1Wm14cFkzUnpMQ0JqYjIxd1pYUnBkR2x2YmlCemFHOXZkR2x1WnlCaGJtUWdiVzl5WlM0Z1YyVWdkR1ZoWTJnZ1lXeHNJRzkyWlhJZ1puSnZiU0JOYVdOb2FXZGhiaUIwYnlCVVpXNXVaWE56WldVZ2RHOGdUbTl5ZEdnZ1EyRnliMnhwYm1FdSIsImYiOiIiLCJoIjoiYUhSMGNITTZMeTkzZDNjdVptRmpaV0p2YjJzdVkyOXRMM05vWVhKbEx6RmlSVGQxVFdRNWVETXYiLCJrIjoiIiwiaSI6NDIuMDAyNDgxNDM5MjQyNzE1LCJqIjo4My4zMDkyMDc2NzkzNzYxOSwibSI6Ik1pQldaWFJ6SUVSbGRtVnNiM0J0Wlc1MElFZHliM1Z3IiwibiI6IlVHVnlabTl5YldGdVkyVWdVR2x6ZEc5c2ZGQmxjbVp2Y20xaGJtTmxJRU5oY21KcGJtVjhURzkzSUV4cFoyaDBMMDVwWjJoMElGTm9iMjkwYVc1bmZFTlJRaUJ5YjI5dElHTnNaV0Z5YVc1bmZHTnZiV0poZENCdFpXUnBZMkZzIiwibyI6IlFtOTBhQT09IiwicCI6IlFtOTBhQT09IiwicSI6IlZWTkRRMEVnWVc1a0lFNVNRU0JqWlhKMGFXWnBZMkYwWlhNPSIsInIiOiJLekV6TVRNeU9ETTRNVFEzIiwicyI6IiIsInQiOiJhSFIwY0hNNkx5OHlkbVJuTG05eVp3PT0iLCJ1IjoiVkhsd2FXTmhiR3g1SUhkbFpXdGxibVJ6TENCdmNpQmllU0JoY0hCdmFXNTBiV1Z1ZEE9PSIsInYiOiJKREkxTUNCMGJ5QWtOREF3IiwidyI6IlJXNW5iR2x6YUE9PSJ9LHsiZyI6MiwiYSI6IlVtOWkiLCJiIjoiUlhCcFptRnVhV0U9IiwiYyI6IlFteDFaU0J3YjJsdWRBPT0iLCJkIjoiVG1WM0lGbHZjbXM9IiwieiI6IiIsImUiOiJWVk5RVTBFZ1ozSmhibVFnYldGemRHVnlMQ0J5ZFc0Z2RHaGxJRzl1YkdsdVpTQmhZMk5sYkdWeVlYUnZjaUJvZEhSd2N6b3ZMM2QzZHk1emEyOXZiQzVqYjIwdlkyOXRjR1YwYVhScGIyNHRZV05qWld4bGNtRjBiM0l2WVdKdmRYUT0iLCJmIjoiUUhKdlltVndhV1poYm1saCIsImgiOiIiLCJrIjoiYUhSMGNITTZMeTkzZDNjdWVXOTFkSFZpWlM1amIyMHZRSEp2WW1Wd2FXWmhibWxoIiwiaSI6NDAuNzU2NTc1NzEyNTcwMTU0LCJqIjotNzIuOTM5MjI2OTc4MDMwMTUsIm0iOiJVMUJESUdsdVl5ND0iLCJuIjoiVUdWeVptOXliV0Z1WTJVZ2FHRnVaR2QxYm54amIyMXdaWFJwZEdsdmJpQnphMmxzYkhOOGIyNXNhVzVsSUd4bFlYSnVhVzVuSUhCc1lYUm1iM0p0IiwibyI6IlFtOTBhQT09IiwicCI6IlFtOTBhQT09IiwicSI6IiIsInIiOiJLekVnS0RVeE5pa2dPVGMwTFRnNE1EST0iLCJzIjoiY205aUxtVndhV1poYm1saFFHZHRZV2xzTG1OdmJRPT0iLCJ0IjoiVW05aVpYQnBabUZ1YVdFdWJtVjAiLCJ1IjoiUW5rZ1lYQndiMmx1ZEcxbGJuUT0iLCJ2IjoiSkRjMUxTUTJNREE9IiwidyI6IlJXNW5iR2x6YUE9PSJ9LHsiZyI6NSwiYSI6IlFuSmhibVJ2Ymc9PSIsImIiOiJVbVZrWVdwaCIsImMiOiJUR0Z6SUZabFoyRnoiLCJkIjoiVG1WMllXUmgiLCJ6IjoiIiwiZSI6IlYybDBhQ0F4TUNCNVpXRnljeUJ2WmlCbGVIQmxjbWxsYm1ObExDQkpJSEJ5YjNacFpHVWdabWx5WldGeWJYTWdkSEpoYVc1cGJtY2dabTl5SUdGc2JDQnNaWFpsYkhNc0lFNWxkbUZrWVNCRFExY2dZMlZ5ZEdsbWFXTmhkR2x2Yml3Z1lXNWtJR04xYzNSdmJTQnpaV04xY21sMGVTQndiR0Z1Ym1sdVp5Qm1iM0lnYUc5dFpYTXNJSGR2Y210d2JHRmpaWE1zSUdGdVpDQndiR0ZqWlhNZ2IyWWdkMjl5YzJocGNDND0iLCJmIjoiIiwiaCI6IiIsImsiOiIiLCJpIjozNi4xNjk3OTkwNjQyNDY2MywiaiI6LTExNS4xNjE5NjY0NDIwNDUwMSwibSI6IlRrVlRJR05qZHlCaGJtUWdkSEpoYVc1cGJtY2diR3hqIiwibiI6IlFtRnphV01nYUdGdVpHZDFibnhPWlhaaFpHRWdZMk4zZkdWdVkyOTFiblJsY21sdVp5QnRZWE56SUhOb2IyOTBaWEo4WTJocGJHUnlaVzRnWm1seVpXRnliU0J6WVdabGRIbDhkMjl0Wlc0Z2FHRnVaR2QxYmlCelpXeG1JR1JsWm1WdWMyVjhZbUZ6YVdNZ1pXMWxjbWRsYm1ONUlHWnBjbk4wSUdGcFpHVT0iLCJvIjoiUW05MGFBPT0iLCJwIjoiUW05MGFBPT0iLCJxIjoiVlZORFEwRT0iLCJyIjoiS3pFZ0tEY3lOU2tnTXpJNUxUUTRPVEE9IiwicyI6IlRtVnpZMk4zWVc1a2RISmhhVzVwYm1kc2JHTkFaMjFoYVd3dVkyOXQiLCJ0IjoiIiwidSI6IlYyVmxhMlZ1WkhNZ2IyNXNlUT09IiwidiI6IkpERXlOUzBrTWpBdyIsInciOiJSVzVuYkdsemFBPT0ifSx7ImciOjYsImEiOiJRMmh5YVhNPSIsImIiOiJVbUZ1WjJWcyIsImMiOiJVMkZ1SUVGdWRHOXVhVzg9IiwiZCI6IlZHVjRZWE09IiwieiI6IiIsImUiOiJNalV0ZVdWaGNpQnNZWGNnWlc1bWIzSmpaVzFsYm5RZ2RtVjBaWEpoYmlCaGJtUWdVMWRCVkNCVVpXRnRJRXhsWVdSbGNpQnpjR1ZqYVdGc2FYcHBibWNnYVc0Z2RHRmpkR2xqWVd3Z2IzQmxjbUYwYVc5dWN5QmhibVFnZEhKaGFXNXBibWN1SUVadmRXNWtaWElnYjJZZ1lTQndjbTltWlhOemFXOXVZV3dnZEhKaGFXNXBibWNnWTI5dGNHRnVlU0JrWld4cGRtVnlhVzVuSUhKbFlXd3RkMjl5YkdRc0lHMXBjM05wYjI0dFptOWpkWE5sWkNCd2NtOW5jbUZ0Y3lCcGJpQlRWMEZVSUhSaFkzUnBZM01zSUdKeVpXRmphR2x1Wnl3Z1lXNWtJSFZ6WlNCdlppQm1iM0pqWlNCMGJ5QmxibWhoYm1ObElISmxZV1JwYm1WemN5d2daR1ZqYVhOcGIyNHRiV0ZyYVc1bkxDQmhibVFnYzNWeWRtbDJZV0pwYkdsMGVTND0iLCJmIjoiZEdGd2RYQTFOREE9IiwiaCI6IiIsImsiOiIiLCJpIjoyOS40MjA3MDE1NzMxOTc0OCwiaiI6LTk4LjUwMzAyNzU3NDkzNDUzLCJtIjoiVkVGUUxWVlFJRFUwTUNCTVRFTXUiLCJuIjoiUW1GemFXTWdVR2x6ZEc5c2ZFSmhjMmxqSUZKcFpteGxmRUZrZG1GdVkyVmtJRkJwYzNSdmJDQmhibVFnWVNCU2FXWnNaWHhDWVhOcFl5QmhibVFnUVdSMklGTlhRVlI4U0c5emRHRm5aU0JTWlhOamRXVjhRbUZ5Y21sallXUmxJRk4xWW1wbFkzUjhRV04wYVhabElGTm9iMjkwWlhKOFRHRnlaMlVnVm1WdWRXVWdRM0pwYzJseklGSmxjM0J2Ym5ObCIsIm8iOiJRbTkwYUE9PSIsInAiOiJRbTkwYUE9PSIsInEiOiJUbFJQUVN3Z1ZGUlFUMEVzSUVGTVJWSlNWQ3dnUTJWdWRHVnlJR1p2Y2lCU1lXUXZUblZqSUZSeVlXbHVhVzVuIiwiciI6Ikt6RWdLREl4TUNrZ01qZzJMVEUzT1RJPSIsInMiOiJZM0poYm1kbGJFQjBZWEIxY0RVME1DNWpiMjA9IiwidCI6ImQzZDNMblJoY0hWd05UUXdMbU52YlE9PSIsInUiOiJVMk5vWldSMWJHVWdaR0YwWlhNc0lGZGxaV3RsYm1SeklHOXlJR0o1SUdGd2NHOXBiblJ0Wlc1MCIsInYiOiJRMjl1ZEdGamRDQm1iM0lnY0hKcFkybHVadz09IiwidyI6IlJXNW5iR2x6YUE9PSJ9LHsiZyI6NywiYSI6IlJIVnpkR2x1IiwiYiI6IlNHRm5aMngxYm1RPSIsImMiOiJVbTluZFdVZ1VtbDJaWEk9IiwiZCI6IlQzSmxaMjl1IiwieiI6IiIsImUiOiJWbVYwWlhKaGJpQlBkMjVsWkNCaGJtUWdUM0JsY21GMFpXUWdVSEp2Wm1WemMybHZibUZzSUVSbFptVnVjMmwyWlNCVWNtRnBibWx1WnlCaGJtUWdRMjl1YzNWc2RHRjBhVzl1TGlCWFpTQmhjbVVnYkc5allYUmxaQ0JwYmlCMGFHVWdZbVZoZFhScFpuVnNJRkJPVnk0Z1NTZHRJR0VnVlZOTlF5QnBibVpoYm5SeWVTQjJaWFJsY21GdUlHRnVaQ0JPWVhScGIyNWhiQ0JIZFdGeVpDQW9ZM1Z5Y21WdWRHeDVLUzRnVEc5MlpTQjBjbUZwYm1sdVp5d2dkWE5sSUhSb1pTQnRiMjVsZVNCbWNtOXRJSFJvYVhNZ2RHOGdjbVZwYm5abGMzUWdhVzRnYlc5eVpTQjBjbUZwYm1sdVp5QnpieUJKSUdOaGJpQmljbWx1WnlCdGIzSmxJSFJ5WVdsdWFXNW5JR0poWTJzZ2RHOGdiWGtnYkc5allXd2dZWEpsWVM0PSIsImYiOiJVbTluZFdWd2NtOTBaV04wYVc5dVozSnZkWEE9IiwiaCI6ImFIUjBjSE02THk5M2QzY3VabUZqWldKdmIyc3VZMjl0TDNKdlozVmxjSEp2ZEdWamRHbHZibWR5YjNWdyIsImsiOiJhSFIwY0hNNkx5OTNkM2N1ZVc5MWRIVmlaUzVqYjIwdlFISnZaM1ZsY0hKdmRHVmpkR2x2Ym1keWIzVnciLCJpIjo0Mi42NDk0MjMzMjcxMjc2MSwiaiI6LTEyMy41ODUxNzA0OTY3MTgyOSwibSI6IlVtOW5kV1VnVUhKdmRHVmpkR2x2YmlCSGNtOTFjQT09IiwibiI6IlJIQnpjM1FnWTJWeWRITjhhR0Z1WkdkMWJpQXhMekl2TTN4RFlYSmlhVzVsSURFdk1pOHpmR052Ym1ObFlXeGxaSHhwYm5SeWJ5QjBieUJzYjI1bklISmhibWRsZkc1cFoyaDBJR1pwWjJoMFpYSWdNUzh5THpOOFkyOW5ibWwwYVhabElIUnlZV05yYVc1bkxnPT0iLCJvIjoiUW05MGFBPT0iLCJwIjoiUW05MGFBPT0iLCJxIjoiVGxKQkxDQk5hV3hwZEdGeWVTd2dUM0psWjI5dUlFUlFVMU5VIiwiciI6Ikt6RWdLRFUwTVNrZ09EUXdMVGd4TVRBPSIsInMiOiJSR291YUdGbloyeDFibVJBYkdsMlpTNWpiMjA9IiwidCI6IlVtOW5kV1Z3Wnk1amIyMD0iLCJ1IjoiVDI0Z2QyVmljMmwwWlM5R1lXTmxZbTl2YXc9PSIsInYiOiJKREV3TUMwa016QXciLCJ3IjoiUlc1bmJHbHphQT09In0seyJnIjo4LCJhIjoiUldSbllYST0iLCJiIjoiVFdsc2JITT0iLCJjIjoiVW05dFpRPT0iLCJkIjoiUjJWdmNtZHBZUT09IiwieiI6IiIsImUiOiJVbVYwYVhKbFpDQW9NalVnZVdWaGNuTXBJRlZUSUZOd1pXTnBZV3dnUm05eVkyVnpMQ0J3Y21sMllYUmxJR2x1YzNSeWRXTjBiM0lnYzJsdVkyVWdNakF4Tnk0Z1YyVWdkSEpoYVc0Z2FXNGdjSEpoWTNScFkyRnNJSE5vYjI5MGFXNW5MQ0JsZG1WeWVTQmtZWGtnWTJGeWNua3NJR052YlhCbGRHbDBhVzl1SUhCeVpYQXNJRXhGTDAxcGJDd2dlVzkxZEdnZ2NISnZaM0poYlhNZ1pYUmpMZz09IiwiZiI6ImIzTndjbVY1YzJodmIzUnBibWR6YjJ4MWRHbHZibk09IiwiaCI6IiIsImsiOiIiLCJpIjozNC4yNTY0ODk2OTUyMTYxMiwiaiI6LTg1LjE3MDI2NzMxNjc5MjEsIm0iOiJUM053Y21WNUlGTm9iMjkwYVc1bklGTnZiSFYwYVc5dWN3PT0iLCJuIjoiVUdsemRHOXNmRkpwWm14bGZFVkVRM3hEYjIxd1pYUnBkR2x2Ym54TVJTOU5TVXc9IiwibyI6IlFtOTBhQT09IiwicCI6IlFtOTBhQT09IiwicSI6IlRsSkJMQ0JWVTBORFFTd2dVMDlEVDAwPSIsInIiOiJLekVnS0RjeE9Ta2dNek13TFRreU5EVT0iLCJzIjoiUldSbllYSnRhV3hzYzBCdmMzQnlaWGx6YUc5dmRHbHVaM052YkhWMGFXOXVjeTVqYjIwPSIsInQiOiJiM053Y21WNWMyaHZiM1JwYm1kemIyeDFkR2x2Ym5NdVkyOXQiLCJ1IjoiUW5rZ1lYQndiMmx1ZEcxbGJuUWdZVzVrSUhCeVpTMXpZMmhsWkhWc1pXUWdZMjkxY25ObGN3PT0iLCJ2IjoiSkRjMUxTUXpOVEE9IiwidyI6IlJXNW5iR2x6YUE9PSJ9LHsiZyI6OSwiYSI6IlFtRnljbms9IiwiYiI6IlRXVjVaWEp6YjI0PSIsImMiOiJSV0Z6ZENCSVlXMXdkRzl1IiwiZCI6IlRtVjNJRmx2Y21zPSIsInoiOiIiLCJlIjoiUVdOMGFYWmxJRXhGVHlCaFkyRmtaVzE1TENCbWFYSmxZWEp0Y3lCcGJuTjBjblZqZEc5eUxnPT0iLCJmIjoiUUVoaGJYQjBiMjV6UTJOMyIsImgiOiIiLCJrIjoiIiwiaSI6NDAuOTYzMDIzMTE4NjQyNDQsImoiOi03Mi4xODU1ODkwNzc1MDI5NCwibSI6IlNHRnRjSFJ2Ym5NZ1EwTlgiLCJuIjoiVGxrZ1EwTlhJRk5oWm1WMGVTQkRiM1Z5YzJWOFZYUmhhQ0JOZFd4MGFTMXpkR0Z5SUVOR1VDQnBibk4wY25WamRHOXlmRTVLTDBOVUwwWk1JRzV2Ym5KbGMybGtaVzUwZkhCcGMzUnZiQ0JzYVdObGJuTmxJR05sY25ScFptbGpZWFJwYjI1OFltRnphV01nWVc1a0lHRmtkbUZ1WTJWa0lIQnBjM1J2YkNCaGJtUWdjbWxtYkdVZ1kyeGhjM05sY3k0PSIsIm8iOiJRbTkwYUE9PSIsInAiOiJRbTkwYUE9PSIsInEiOiJSRU5LVXlCTlVGUkRJSEJ2YkdsalpTQm1hWEpsWVhKdGN5QnBibk4wY25WamRHOXlMaUJCVEVWRlVsUWdZV04wYVhabElITm9iMjkwWlhJZ2FXNXpkSEoxWTNSdmNpNHNJRTVTUVNCSmJuTjBjblZqZEc5eUxnPT0iLCJyIjoiS3pFZ0tEa3hOeWdnT0RVMExUUXpNVEU9IiwicyI6IlRsbEdTWEpsWVhKdGMwbHVjM1JsZFdOMGIzSkFaMjFoYVd3dVkyOXQiLCJ0IjoiIiwidSI6IlFua2dZWEJ3YjJsdWRHMWxiblE9IiwidiI6IkpERXdNQzBrTXpBd0xpQkRiMjUwWVdOMElHWnZjaUJrWlhSaGFXeHpMZz09IiwidyI6IlJXNW5iR2x6YUE9PSJ9LHsiZyI6MTAsImEiOiJTbTlvYmc9PSIsImIiOiJSV1IzWVhKa2N3PT0iLCJjIjoiUW1GMGIyNGdVbTkxWjJVPSIsImQiOiJURzkxYVhOcFlXNWgiLCJ6IjoiIiwiZSI6IlEyRjBhRzlzYVdNZ1NIVnpZbUZ1WkNBbUlFWmhkR2hsY2k0Z1ZISmhhVzVwYm1jZ2QybDBhQ0JoSUdocFoyaGxjaUJ3ZFhKd2IzTmxMZz09IiwiZiI6IlFFaFBVMU5FUlVaRlRsTkpWa1ZVVWtGSlRrbE9Sdz09IiwiaCI6ImFIUjBjSE02THk5M2QzY3VabUZqWldKdmIyc3VZMjl0TDBoUFUxTkdWRU09IiwiayI6IiIsImkiOjMwLjQ0OTgzMjYwNDM0MzEwOCwiaiI6LTkxLjE5NDMyNDUxNTg5NDg2LCJtIjoiU0U5VFV5QkVaV1psYm5OcGRtVWdWSEpoYVc1cGJtY2dURXhEIiwibiI6IlFtRnphV01nVUdsemRHOXNmRXhCSUVOSVVIeEVaV1psYm5OcGRtVWdVR2x6ZEc5c2ZFbHVkSEp2SUhSdklGQmxjbk52Ym1Gc0lGTmhabVYwZVh4RGFIVnlZMmdnVTJGbVpYUjVJRTFwYm1semRISjVJRVJsZG1Wc2IzQnRaVzUwZkVOdmNuQnZjbUYwWlNCVFpXTjFjbWwwZVNCVVpXRnRJRVJsZG1Wc2IzQnRaVzUwIiwibyI6IlFtOTBhQT09IiwicCI6IlFtOTBhQT09IiwicSI6IlRsSkJJRUpoYzJsaklGQnBjM1J2YkN3Z1RsSkJJRkJRYVVnc0lFeEJJRU5JVUNCSmJuTjBjblZqZEc5eUlDTXlORGM9IiwiciI6Ikt6RWdLREl5TlNrZ05EUTFMVEUzT0RjPSIsInMiOiJTRzl6YzJacGNtVmhjbTEwY21GcGJtbHVaMEJuYldGcGJDNWpiMjA9IiwidCI6ImQzZDNMbWh2YzNObWFYSmxZWEp0ZEhKaGFXNXBibWN1WTI5dCIsInUiOiJRbmtnWVhCd2IybHVkRzFsYm5RPSIsInYiOiJRMjl1ZEdGamRDQm1iM0lnY0hKcFkybHVadz09IiwidyI6IlJXNW5iR2x6YUE9PSJ9LHsiZyI6MTEsImEiOiJUV0YwZEdobGR3PT0iLCJiIjoiVm1Wc1oyVnkiLCJjIjoiV1c5eWEzUnZkMjRnU0dWcFoyaDBjdz09IiwiZCI6IlRtVjNJRmx2Y21zPSIsInoiOiIiLCJlIjoiVjJVZ1lYSmxJR0VnWm5Wc2JDQnpaWEoyYVdObElHMTFiSFJwSUdScGMyTnBjR3hwYm1Wa0lITmxZM1Z5YVhSNUlHTnZibk4xYkhScGJtY2dZVzVrSUhSeVlXbHVhVzVuSUdacGNtMHVJRmRsSUdoaGRtVWdZU0IzYVdSbElIWmhjbWxsZEhrZ2IyWWdkSEpoYVc1cGJtY2diM0IwYVc5dWN5QmhibVFnYUdsbmFHeDVJSEYxWVd4cFptbGxaQ0JoYm1RZ1kzSmxaR1Z1ZEdsaGJHVmtJR2x1YzNSeWRXTjBiM0p6SUhSdklHMWxaWFFnZEdobElHNWxaV1J6SUc5bUlHVjJaWEo1SUdSaGVTQndaVzl3YkdVc0lITmxZM1Z5YVhSNUlIQnliMlpsYzNOcGIyNWhiSE1zSUdGdVpDQnNZWGNnWlc1bWIzSmpaVzFsYm5RZ2IyWm1hV05sY25NdSIsImYiOiJRR0pzWVdOclgybGpaVjlqYjI1emRXeDBZVzUwY3c9PSIsImgiOiJhSFIwY0hNNkx5OTNkM2N1Wm1GalpXSnZiMnN1WTI5dEwySnNZV05yYVdObFkyOXVjM1ZzZEdGdWRITT0iLCJrIjoiIiwiaSI6NDEuMjcwNzU0MTIwNzgxMjIsImoiOi03My43NzcxOTY4OTkzMjUyMiwibSI6IlFteGhZMnNnU1dObElFTnZibk4xYkhSaGJuUnpMQ0JNVEVNPSIsIm4iOiJRbUZ6YVdNZ1VHbHpkRzlzZkZKcFpteGxJRTl3WlhKaGRHOXlmR0ZzYkNCT1dWTWdVMlZqZFhKcGRIa2dRMjkxY25ObGMzeENZV2xzSUVWdVptOXlZMlZ0Wlc1MGZFTlJRbnhPV1ZNZ1EwTlhmRTVLSUVORFYzeERWQ0JEUTFkOFZWUWdRME5YZkZOd1pXTnBZV3hwZW1Wa0lFTjFjM1J2YlNCVWNtRnBibWx1WjN4RFVVSjhWRVZOVTN4VVJVTkQiLCJvIjoiUW05MGFBPT0iLCJwIjoiUW05MGFBPT0iLCJxIjoiVGxKQklFbHVjM1J5ZFdOMGIzSXNJRTVTUVNCTVJTQkpibk4wY25WamRHOXlMQ0JPV1ZNZ1JFTktVeUJNWVhjZ1JXNW1iM0pqWlcxbGJuUWdTVzV6ZEhKMVkzUnZjaXdnU0c5dFpXeGhibVFnVTJWamRYSnBkSGtnU1c1emRISjFZM1J2Y2l3Z1JrVk5RU0JKYm5OMGNuVmpkRzl5TEE9PSIsInIiOiJLekVnS0RreE5Da2dORE00TFRjME5qYz0iLCJzIjoiWjNWaGNtUXdOamMyUUdodmRHMWhhV3d1WTI5dCIsInQiOiJZbXhoWTJ0cFkyVmpiMjV6ZFd4MFlXNTBjeTV1WlhRPSIsInUiOiJVMk5vWldSMWJHVmtJR0Z6SUc1bFpXUmxaQ0J2Y2lCaWVTQmhjSEJ2YVc1MGJXVnVkQT09IiwidiI6IkpESTFNQ0F0SUNRMk1EQT0iLCJ3IjoiUlc1bmJHbHphQT09In0seyJnIjoxMiwiYSI6IlZHbHQiLCJiIjoiUm1WeWNtVnNiQT09IiwiYyI6IlJHRnNiR0Z6IiwiZCI6IlZHVjRZWE09IiwieiI6IiIsImUiOiJWSGR2SUZOd1pXTnBZV3dnVDNCbGNtRjBhVzl1Y3lCcGJuTjBjblZqZEc5eWN5QjBjbUZwYmlCaGJHd2djMnRwYkd3Z2JHVjJaV3h6SUdsdUlISnBabXhsTENCd2FYTjBiMndzSUdGdVpDQnNiMjVuTFhKaGJtZGxJSEJ5WldOcGMybHZiaUJ6YUc5dmRHbHVaeXdnY0d4MWN5QjBZV04wYVdOaGJDQmpiMjF3WlhScGRHbHZiaUJqYjJGamFHbHVaeTQ9IiwiZiI6IlFGUnlZV2x1WDJOdmJtWnBaR1Z1ZEE9PSIsImgiOiJhSFIwY0hNNkx5OTNkM2N1Wm1GalpXSnZiMnN1WTI5dEwzQnliMlpwYkdVdWNHaHdQMmxrUFRZeE5UVTBPVE01T1RNM016UTEiLCJrIjoiYUhSMGNITTZMeTkzZDNjdWVXOTFkSFZpWlM1amIyMHZRSFJ5WVdsdVkyOXVabWxrWlc1MCIsImkiOjMyLjc3ODU3MDYxNTM0NDEyLCJqIjotOTYuODAzNTIwMzU5ODM4ODYsIm0iOiJWSEpoYVc0Z1EyOXVabWxrWlc1MElDaFVReUJUZVc1a2FXTmhkR1VzSUV4TVF5az0iLCJuIjoiUW1GemFXTjhTVzUwWlhKdFpXUnBZWFJsZkVGa2RtRnVZMlZrSUdadmNpQlFhWE4wYjJ4OFEyRnlZbWx1Wlh4aGJtUWdURzl1WnlCU1lXNW5aU0JRY21WamFYTnBiMjR1SUZkbElHRnNjMjhnYjJabVpYSWdZM1Z6ZEc5dElHTnZkWEp6WlhNZ1ptOXlJR052YlhCbGRHbDBiM0p6SUc5bUlIUmhZM1JwWTJGc0lHVjJaVzV6ZkhOdWFYQmxjaUJqYUdGc2JHVnVaMlZ6ZkdGdVpDQlNkVzdpZ0psdTRvQ1pSM1Z1SUdWMlpXNTBjeTQ9IiwibyI6IlFtOTBhQT09IiwicCI6IlFtOTBhQT09IiwicSI6IlRsSkJMQ0JUY0dWamFXRnNJRTl3WlhKaGRHbHZibk1nVW1sbWJHVXNJRkJwYzNSdmJDd2dURzl1WnlCU1lXNW5aU0JRY21WamFYTnBiMjRnU1c1emRISjFZM1J2Y25NPSIsInIiOiJLekVnS0RVd01Ta2dOVGd4TFRnNU1EZz0iLCJzIjoiUW14aFkydGhjbkp2ZDJNeFFIQnliM1J2Ym0xaGFXd3VZMjl0IiwidCI6ImFIUjBjSE02THk5MFkzTjVibVJwWTJGMFpTNWpiMjB2IiwidSI6IlEyeGhjM01nWkdGMFpYTWdZWFpoYVd4aFlteGxJR1YyWlhKNUlIZGxaV3RsYm1RZ0tISmxjWFZsYzNRZ01pQjNaV1ZyY3lCcGJpQmhaSFpoYm1ObElHMXBibWx0ZFcwcCIsInYiOiJKREkxTUNCaGJtUWdkWEFzSUVOdmJuUmhZM1FnWm05eUlHUmxkR0ZwYkhNPSIsInciOiJSVzVuYkdsemFDd2dWbWxsZEc1aGJXVnpaU0JpZVNCeVpYRjFaWE4wTENCVGNHRnVhWE5vSUdKNUlISmxjWFZsYzNRPSJ9LHsiZyI6MTMsImEiOiJWR2x0IiwiYiI6IlJtVnljbVZzYkE9PSIsImMiOiJVMkZ1SUVGdWRHOXVhVzg9IiwiZCI6IlZHVjRZWE09IiwieiI6IiIsImUiOiJWSGR2SUZOd1pXTnBZV3dnVDNCbGNtRjBhVzl1Y3lCcGJuTjBjblZqZEc5eWN5QjBjbUZwYmlCaGJHd2djMnRwYkd3Z2JHVjJaV3h6SUdsdUlISnBabXhsTENCd2FYTjBiMndzSUdGdVpDQnNiMjVuTFhKaGJtZGxJSEJ5WldOcGMybHZiaUJ6YUc5dmRHbHVaeXdnY0d4MWN5QjBZV04wYVdOaGJDQmpiMjF3WlhScGRHbHZiaUJqYjJGamFHbHVaeTQ9IiwiZiI6IlFGUnlZV2x1WDJOdmJtWnBaR1Z1ZEE9PSIsImgiOiJhSFIwY0hNNkx5OTNkM2N1Wm1GalpXSnZiMnN1WTI5dEwzQnliMlpwYkdVdWNHaHdQMmxrUFRZeE5UVTBPVE01T1RNM016UTEiLCJrIjoiYUhSMGNITTZMeTkzZDNjdWVXOTFkSFZpWlM1amIyMHZRSFJ5WVdsdVkyOXVabWxrWlc1MCIsImkiOjI5LjQzMTQ2NjY4MDU0MjA4NywiaiI6LTk4LjQ4NTE3NDc5MzY5NTUsIm0iOiJWSEpoYVc0Z1EyOXVabWxrWlc1MElDaFVReUJUZVc1a2FXTmhkR1VzSUV4TVF5az0iLCJuIjoiUW1GemFXTjhTVzUwWlhKdFpXUnBZWFJsZkVGa2RtRnVZMlZrSUdadmNpQlFhWE4wYjJ4OFEyRnlZbWx1Wlh4aGJtUWdURzl1WnlCU1lXNW5aU0JRY21WamFYTnBiMjR1SUZkbElHRnNjMjhnYjJabVpYSWdZM1Z6ZEc5dElHTnZkWEp6WlhNZ1ptOXlJR052YlhCbGRHbDBiM0p6SUc5bUlIUmhZM1JwWTJGc0lHVjJaVzV6ZkhOdWFYQmxjaUJqYUdGc2JHVnVaMlZ6ZkdGdVpDQlNkVzdpZ0psdTRvQ1pSM1Z1SUdWMlpXNTBjeTQ9IiwibyI6IlFtOTBhQT09IiwicCI6IlFtOTBhQT09IiwicSI6IlRsSkJMQ0JUY0dWamFXRnNJRTl3WlhKaGRHbHZibk1nVW1sbWJHVXNJRkJwYzNSdmJDd2dURzl1WnlCU1lXNW5aU0JRY21WamFYTnBiMjRnU1c1emRISjFZM1J2Y25NPSIsInIiOiJLekVnS0RVd01Ta2dJRFU0TVMwNE9UQTQiLCJzIjoiUW14aFkydGhjbkp2ZDJNeFFIQnliM1J2Ym0xaGFXd3VZMjl0IiwidCI6ImFIUjBjSE02THk5MFkzTjVibVJwWTJGMFpTNWpiMjB2IiwidSI6IlEyeGhjM01nWkdGMFpYTWdZWFpoYVd4aFlteGxJR1YyWlhKNUlIZGxaV3RsYm1RZ0tISmxjWFZsYzNRZ01pQjNaV1ZyY3lCcGJpQmhaSFpoYm1ObElHMXBibWx0ZFcwcCIsInYiOiJKREkxTUNCaGJtUWdkWEFzSUVOdmJuUmhZM1FnWm05eUlHUmxkR0ZwYkhNPSIsInciOiJSVzVuYkdsemFDd2dWbWxsZEc1aGJXVnpaU0JpZVNCeVpYRjFaWE4wTENCVGNHRnVhWE5vSUdKNUlISmxjWFZsYzNRPSJ9LHsiZyI6MTQsImEiOiJUV0Z5WTI4PSIsImIiOiJUVzl1ZEdGaVlYVnUiLCJjIjoiVUdsMGRITmlkWEpuYUE9PSIsImQiOiJVR1Z1Ym5ONWJIWmhibWxoIiwieiI6IiIsImUiOiJVSEp2ZG1sa2FXNW5JR05wZG1sc2FXRnVJR0Z1WkNCc1lYY2daVzVtYjNKalpXMWxiblFnYzNCbFkybG1hV01nWTI5MWNuTmxjeTQ9IiwiZiI6IlFHRnNjR2hoWDJkeWIzVndYMlpwY21WaGNtMXpYM1J5WVdsdWFXNW4iLCJoIjoiIiwiayI6IiIsImkiOjQwLjQ0MDM5MjI1MzU5MTYzLCJqIjotNzkuOTk5NDcxMjE1MDE1MDYsIm0iOiJRV3h3YUdFZ1IzSnZkWEFnUm1seVpXRnliWE1nVkhKaGFXNXBibWNnVEV4RCIsIm4iOiJRbUZ6YVdNZ2NHbHpkRzlzTHlCeWFXWnNaWHh3Y21GamRHbGpZV3dnY0dsemRHOXNMeUJ5YVdac1pTNGdTVzVrYVhacFpIVmhiQ0J3Y21sMllYUmxJR05zWVhOelpYTjhSR1ZtWlc1emFYWmxJR05oY25KNWZHeHZkeUJzYVdkb2RDQndhWE4wYjJ3dmNtbG1iR1U9IiwibyI6IlVtRnVaMlU9IiwicCI6IlIzSnZkWEE9IiwicSI6IlRsSkJMQ0JWVTBORFFRPT0iLCJyIjoiS3pFZ0tEUXhNaWtnSURRM09DMHdOREF5IiwicyI6IlFXeHdhR0ZuY205MWNHWnBjbVZoY20xemRISmhhVzVwYm1kc2JHTkFaMjFoYVd3dVkyOXQiLCJ0IjoiUVd4d2FHRm5jbTkxY0dacGNtVmhjbTF6ZEhKaGFXNXBibWN1WTI5dCIsInUiOiJVMk5vWldSMWJHVmtJR05zWVhOelpYTWdjSFZpYkdsemFHVmtJRzl1SUhkbFluTnBkR1V1IiwidiI6IkpERXlNQzBrTXpVdyIsInciOiJSVzVuYkdsemFDQXRJRk53WVc1cGMyZz0ifSx7ImciOjE1LCJhIjoiVW1samFHRnlaQT09IiwiYiI6IlEyRnpkR1ZzYkdGdWJ3PT0iLCJjIjoiVTJGdUlFRnVkRzl1YVc4PSIsImQiOiJWR1Y0WVhNPSIsInoiOiJOemd5TlRNPSIsImUiOiJTU0JoYlNCaElIWmxkR1Z5WVc0Z2IzZHVaV1FnWW5WemFXNWxjM01nWm05amRYTmxaQ0J2YmlCdVpYY2djMmh2YjNSbGNuTXNJSE5oWm1WMGVTQmhibVFnWTI5dVptbGtaVzVqWlM0Z1NTQnZabVpsY2lCamIzVnljMlZ6SUd4bFlXUnBibWNnZEc4Z1RGUkRJSGRvYVd4bElHVnVZV0pzYVc1bklITjBkV1JsYm5SeklIUnZJR05oY25KNUlIZHBkR2dnWTI5dVptbGtaVzVqWlM0PSIsImYiOiIiLCJoIjoiYUhSMGNITTZMeTkzZDNjdVptRmpaV0p2YjJzdVkyOXRMM0J5YjJacGJHVXVjR2h3UDJsa1BUWXhOVGMzTlRZNE5EVTVOamsxIiwiayI6ImFIUjBjSE02THk5M2QzY3VlVzkxZEhWaVpTNWpiMjB2UUVGeWJXRjBkWE5RWVhKaGRIVnoiLCJpIjoyOS40NjYzOTY2MTIwMTczNywiaiI6LTk4Ljc5MTAwNTUyMzY5MjE4LCJtIjoiUVhKdFlYUjFjeUJRWVhKaGRIVnpJRVpwY21WaGNtMXpJRlJ5WVdsdWFXNW4iLCJuIjoiUW1GemFXTWdVR2x6ZEc5c2ZGUmxlR0Z6SUV4VVEzeEVaV1psYm5OcGRtVWdRMkZ5Y25sOFVHbHpkRzlzSUVadmRXNWtZWFJwYjI1emZFSmhjMmxqSUVGUyIsIm8iOiJRbTkwYUE9PSIsInAiOiJRbTkwYUE9PSIsInEiOiJUbEpCSUVObGNuUnBabWxsWkN3Z1UzUmhkR1VnYjJZZ1ZHVjRZWE1nUTJWeWRHbG1hV1ZrTGc9PSIsInIiOiJLekVnS0RJeE1Da2dNekV6TFRrM05EST0iLCJzIjoiUVhKdFlYUjFjM0JoY21GMGRYTkFaMjFoYVd3dVkyOXQiLCJ0IjoiUVhKdFlYUjFjMUJoY21GMGRYTXVZMjl0IiwidSI6IlUyRjBkWEprWVhseklIZGxaV3RzZVNCaGJtUWdZbmtnWVhCd2IybHVkRzFsYm5RPSIsInYiOiJKRGMxTFNReU5UQT0iLCJ3IjoiUlc1bmJHbHphQT09In0seyJnIjoxNiwiYSI6IlNtOWwiLCJiIjoiUzJsdCIsImMiOiJRVzVqYUc5eVlXZGwiLCJkIjoiUVd4aGMydGgiLCJ6IjoiT1RrMU1UWT0iLCJlIjoiTVRnZ2VXVmhjbk1nYVc0Z2RHaGxJRk5sWTNWeWFYUjVJRU52Ym5SeVlXTjBJR2x1WkhWemRISjVMQ0J5WldObGJuUWdNVEFnZVdWaGNuTWdjMlZ5ZG1Wa0lHRnpJSFJvWlNCU1pXZHBiMjVoYkNCVWNtRnBibWx1WnlCTlozSXVJR1p2Y2lCMGFHVWdSRWhUTDBaUVV5QkJTeUJHWldSbGNtRnNJRk5sWTNWeWFYUjVJRU52Ym5SeVlXTjBMaUJUYVc1alpYSmxiSGtnZDI5eWEybHVaeUIzYVhSb0lHVjJaWEo1YjI1bElHWnliMjBnZEdobElFMUpUQzlNUlNCaGJtUWdVbVZ6Y0c5dWMybGliR1VnUVhKdFpXUWdVMlZqZFhKcGRIa2dZMjl0YlhWdWFYUjVMZz09IiwiZiI6IiIsImgiOiJhSFIwY0hNNkx5OTNkM2N1Wm1GalpXSnZiMnN1WTI5dEwzQm9ZV3hoYm5oaFkyRmtaVzE1IiwiayI6ImQzZDNMbmx2ZFhSMVltVXVZMjl0TDNCb1lXeGhibmhoWTJGa1pXMTUiLCJpIjo2MS4wOTE2MjAyMjM4NTQyNCwiaiI6LTE0OS43NzAzMzIxMzM4NDk4NSwibSI6IlVHaGhiR0Z1ZUNCQlkyRmtaVzE1IiwibiI6IlVHbHpkRzlzZkZKcFpteGxmRk5vYjNSbmRXNThURzkzYkdsbmFIUjhUbWxuYUhRZ1ZtbHphVzl1ZkVGdVoyeGxJRTFoYm1GblpXMWxiblI4VTJWamRYSnBkSGtnUTI5dWMzVnNkR0YwYVc5dSIsIm8iOiJRbTkwYUE9PSIsInAiOiJRbTkwYUE9PSIsInEiOiJSRUZTUXl3Z1FXeGhjMnRoSUZCdmJHbGpaU0JUZEdGdVpHRnlaSE1nUTI5MWJtTnBiQ3dnUmt4RlZFTXNJRTFUVUN3Z1UxVlNSVVpKVWtVc0lFTlVWQ3dnVGxKQkxDQlNaV1FnUTNKdmMzTXNJR1YwWXk0PSIsInIiOiJLekVnS0Rrd055a2dNelV4TFRNek56Yz0iLCJzIjoiYW05bExtdHBiVUJ3YUdGc1lXNTRMV0ZqWVdSbGJYa3VZMjl0IiwidCI6ImQzZDNMbkJvWVd4aGJuZ3RZV05oWkdWdGVTNWpiMjA9IiwidSI6IldXVmhjaUJTYjNWdVpBPT0iLCJ2IjoiUTI5dWRHRmpkQ0JtYjNJZ1VISnBZMmx1Wnc9PSIsInciOiJSVzVuYkdsemFDOGdTMjl1WjJ4cGMyZ2dLRUp5YjJ0bGJpQkxiM0psWVc0dFJXNW5iR2x6YUNrPSJ9XQ==";
@@ -164,85 +246,452 @@ function _decode(raw){
 }
 const INSTRUCTORS = _decode(_d);
 /* END EXPORTED INSTRUCTOR DATA */
-const STATE_CENTROIDS={"Alabama":[-86.9023,32.3182],"Alaska":[-153.4937,61.3707],"Arizona":[-111.0937,34.0489],"Arkansas":[-92.3731,34.7999],"California":[-119.4179,36.7783],"Colorado":[-105.3111,39.5501],"Connecticut":[-72.7554,41.6032],"Delaware":[-75.5071,38.9108],"Florida":[-81.5158,27.6648],"Georgia":[-83.6431,32.6415],"Hawaii":[-155.5828,19.8968],"Idaho":[-114.742,44.0682],"Illinois":[-89.1965,40.6331],"Indiana":[-86.1349,40.2672],"Iowa":[-93.0977,41.878],"Kansas":[-98.4842,38.5266],"Kentucky":[-84.27,37.8393],"Louisiana":[-91.9623,31.1695],"Maine":[-69.4455,45.2538],"Maryland":[-76.6413,39.0458],"Massachusetts":[-71.3824,42.4072],"Michigan":[-84.5361,44.3148],"Minnesota":[-94.6859,46.7296],"Mississippi":[-89.3985,32.3547],"Missouri":[-91.8318,37.9643],"Montana":[-110.3626,46.8797],"Nebraska":[-99.9018,41.4925],"Nevada":[-116.4194,38.8026],"New Hampshire":[-71.5724,43.1939],"New Jersey":[-74.4057,40.0583],"New Mexico":[-105.8701,34.5199],"New York":[-74.2179,43.2994],"North Carolina":[-79.0193,35.7596],"North Dakota":[-101.002,47.5515],"Ohio":[-82.9071,40.4173],"Oklahoma":[-97.0929,35.0078],"Oregon":[-120.5542,43.8041],"Pennsylvania":[-77.1945,41.2033],"Rhode Island":[-71.4774,41.5801],"South Carolina":[-81.1637,33.8361],"South Dakota":[-99.9018,43.9695],"Tennessee":[-86.5804,35.5175],"Texas":[-99.9018,31.9686],"Utah":[-111.0937,39.321],"Vermont":[-72.5778,44.5588],"Virginia":[-78.6569,37.4316],"Washington":[-120.7401,47.7511],"West Virginia":[-80.4549,38.5976],"Wisconsin":[-89.6165,43.7844],"Wyoming":[-107.2903,43.076],"District Of Columbia":[-77.0369,38.9072]};
-const STATE_ID_TO_NAME={1:"Alabama",2:"Alaska",4:"Arizona",5:"Arkansas",6:"California",8:"Colorado",9:"Connecticut",10:"Delaware",11:"District Of Columbia",12:"Florida",13:"Georgia",15:"Hawaii",16:"Idaho",17:"Illinois",18:"Indiana",19:"Iowa",20:"Kansas",21:"Kentucky",22:"Louisiana",23:"Maine",24:"Maryland",25:"Massachusetts",26:"Michigan",27:"Minnesota",28:"Mississippi",29:"Missouri",30:"Montana",31:"Nebraska",32:"Nevada",33:"New Hampshire",34:"New Jersey",35:"New Mexico",36:"New York",37:"North Carolina",38:"North Dakota",39:"Ohio",40:"Oklahoma",41:"Oregon",42:"Pennsylvania",44:"Rhode Island",45:"South Carolina",46:"South Dakota",47:"Tennessee",48:"Texas",49:"Utah",50:"Vermont",51:"Virginia",53:"Washington",54:"West Virginia",55:"Wisconsin",56:"Wyoming"};
-const COURSE_CHIPS=['CCW / LTC','Basic Pistol','Defensive Pistol','Defensive Rifle','AR-15 / Carbine','Women\'s Classes','Private Lessons','Medical / Trauma','Performance Pistol'];
-const esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-const isTouch=()=>window.matchMedia('(pointer: coarse)').matches||window.matchMedia('(hover: none)').matches||window.innerWidth<=900;
-function isMobileLayout(){return window.innerWidth<=900;}
-function scrollToDetailCard(){if(!isMobileLayout())return;const panel=document.getElementById('detail-panel');if(panel){setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}),120);}}
-let projectionFn=null,selectedState='',selectedId=null,activeChip='',filtered=[],statePathMap=new Map(),stateCountMap=new Map();
-const DATA=(Array.isArray(INSTRUCTORS)?INSTRUCTORS:[]).map(a=>({id:Number(a.id)||Date.now(),first:String(a.first||''),last:String(a.last||''),city:String(a.city||''),state:String(a.state||''),zip:String(a.zip||''),bio:String(a.bio||''),biz:String(a.biz||''),courses:Array.isArray(a.courses)?a.courses:(String(a.courses||'').split('|').map(v=>v.trim()).filter(Boolean)),type:String(a.type||''),format:String(a.format||''),certs:String(a.certs||''),phone:String(a.phone||''),email:String(a.email||''),website:String(a.website||''),instagram:String(a.instagram||''),facebook:String(a.facebook||''),youtube:String(a.youtube||''),schedule:String(a.schedule||''),price:String(a.price||''),langs:String(a.langs||''),lat:a.lat==null||a.lat===''?null:Number(a.lat),lon:a.lon==null||a.lon===''?null:Number(a.lon)}));
-function normalizeState(v){return String(v||'').trim().replace(/\b\w/g,m=>m.toUpperCase())}
-function getCoord(a){if(a.lat!=null&&a.lon!=null&&projectionFn){const c=projectionFn([Number(a.lon),Number(a.lat)]);if(c)return c;}const fallback=STATE_CENTROIDS[normalizeState(a.state)];return fallback&&projectionFn?projectionFn(fallback):null;}
-function hexPoints(cx,cy,r){const pts=[];for(let i=0;i<6;i++){const ang=(Math.PI/180)*(60*i-30);pts.push(`${(cx+r*Math.cos(ang)).toFixed(2)},${(cy+r*Math.sin(ang)).toFixed(2)}`)}return pts.join(' ')}
-function fillFilters(){const stateSel=document.getElementById('flt-state');const states=[...new Set(DATA.map(i=>normalizeState(i.state)).filter(Boolean))].sort();stateSel.innerHTML='<option value="">All States</option>'+states.map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join('');const chipRow=document.getElementById('chip-row');chipRow.innerHTML='<button class="chip active" data-chip="">All Training</button>'+COURSE_CHIPS.map(c=>`<button class="chip" data-chip="${esc(c)}">${esc(c)}</button>`).join('');chipRow.querySelectorAll('.chip').forEach(btn=>btn.addEventListener('click',()=>{activeChip=btn.dataset.chip||'';chipRow.querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x===btn));applyFilters();}))}
-function computeStateCounts(rows){stateCountMap=new Map();rows.forEach(a=>{const s=normalizeState(a.state);if(!s)return;stateCountMap.set(s,(stateCountMap.get(s)||0)+1)})}
-function applyFilters(){const q=document.getElementById('flt-search').value.toLowerCase().trim();const stateVal=normalizeState(document.getElementById('flt-state').value);const typeVal=document.getElementById('flt-type').value;if(stateVal!==selectedState)selectedId=null;selectedState=stateVal;filtered=DATA.filter(a=>{const s=normalizeState(a.state);const byState=!selectedState||s===selectedState;const byType=!typeVal||a.type===typeVal||a.format===typeVal;const byChip=!activeChip||(a.courses||[]).includes(activeChip);const hay=[a.first,a.last,a.city,a.state,a.zip,a.biz,a.bio,a.certs,a.schedule,a.price,a.langs,(a.courses||[]).join(' ')].join(' ').toLowerCase();const bySearch=!q||hay.includes(q);return byState&&byType&&byChip&&bySearch});computeStateCounts(selectedState?DATA.filter(a=>normalizeState(a.state)===selectedState):filtered);updateFocusUi();updateStateLayerStyles();updateStateBadges();updateMapView();renderPins();renderResultList();renderDetail()}
-function updateFocusUi(){document.getElementById('map-count').textContent=`${filtered.length} Instructor${filtered.length!==1?'s':''}`;document.getElementById('result-sub').textContent=selectedState?`${selectedState} results`:'All visible results';const pill=document.getElementById('map-focus-pill'),closeBtn=document.getElementById('map-close-btn'),resetBtn=document.getElementById('map-reset-btn');if(selectedState){pill.innerHTML=`Viewing: <span>${esc(selectedState)}</span>`;closeBtn.style.display='inline-flex';resetBtn.style.display='inline-flex'}else{pill.innerHTML='Viewing: <span>All States</span>';closeBtn.style.display='none';resetBtn.style.display='none'}}
-function focusState(name){hideTooltip();selectedState=normalizeState(name);selectedId=null;document.getElementById('flt-state').value=selectedState;applyFilters()}
-function clearStateFocus(){selectedState='';selectedId=null;document.getElementById('flt-state').value='';hideTooltip();applyFilters()}
-function updateMapView(){const root=document.getElementById('map-root'),el=statePathMap.get(selectedState);if(!root||!selectedState||!el){root.style.transform='translate(0px,0px) scale(1)';return;}const bbox=el.getBBox(),pad=28,vw=960,vh=600;const scale=Math.max(1.65,Math.min(4.25,Math.min((vw-pad*2)/bbox.width,(vh-pad*2)/bbox.height)));const tx=vw/2-(bbox.x+bbox.width/2)*scale,ty=vh/2-(bbox.y+bbox.height/2)*scale;root.style.transform=`translate(${tx}px,${ty}px) scale(${scale})`}
-function updateStateLayerStyles(){statePathMap.forEach((node,name)=>{const count=stateCountMap.get(name)||0;const isSelected=selectedState===name;node.setAttribute('fill',isSelected?'#122126':'#16181c');node.setAttribute('stroke',isSelected?'#20FDF0':'#2a2d35');node.setAttribute('stroke-width',isSelected?'1.4':'0.85');node.style.opacity=selectedState?(isSelected?'1':'0.22'):(count?'0.95':'0.72');node.style.filter=isSelected?'drop-shadow(0 0 14px rgba(32,253,240,0.25))':'none'})}
-function updateStateBadges(){const layer=document.getElementById('state-labels-g');layer.innerHTML='';if(selectedState)return;statePathMap.forEach((node,name)=>{const count=stateCountMap.get(name)||0;if(!count)return;const bbox=node.getBBox(),cx=bbox.x+bbox.width/2,cy=bbox.y+bbox.height/2;const g=document.createElementNS('http://www.w3.org/2000/svg','g');const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');const w=Math.max(22,String(count).length*8+14),h=18;rect.setAttribute('x',cx-w/2);rect.setAttribute('y',cy-h/2);rect.setAttribute('width',w);rect.setAttribute('height',h);rect.setAttribute('rx',9);rect.setAttribute('class','state-count-badge');const text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('x',cx);text.setAttribute('y',cy+.5);text.setAttribute('class','state-count-text');text.textContent=String(count);g.appendChild(rect);g.appendChild(text);layer.appendChild(g)})}
-function showTooltip(evt,html){if(isTouch())return;const tooltip=document.getElementById('map-tooltip'),wrapRect=document.getElementById('map-svg-wrap').getBoundingClientRect();tooltip.innerHTML=html;tooltip.style.display='block';tooltip.style.left=Math.min((evt.clientX-wrapRect.left)+12,wrapRect.width-290)+'px';tooltip.style.top=Math.max((evt.clientY-wrapRect.top)-120,8)+'px'}
-function hideTooltip(){document.getElementById('map-tooltip').style.display='none'}
-function selectInstructor(id){selectedId=id;renderPins();renderResultList();renderDetail();scrollToDetailCard()}
-function renderPins(){const layer=document.getElementById('pins-g');layer.innerHTML='';const mobile=isTouch(),isFocused=!!selectedState,size=isFocused?2.5:5,touchRadius=mobile?(isFocused?15:18):(isFocused?8:10);const buckets=new Map(),pins=[];filtered.forEach(a=>{const c=getCoord(a);if(!c)return;const key=`${Math.round(c[0])}:${Math.round(c[1])}`;const item={a,baseX:c[0],baseY:c[1],key};pins.push(item);if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push(item)});buckets.forEach(group=>{if(group.length===1){group[0].cx=group[0].baseX;group[0].cy=group[0].baseY;return;}const radius=isFocused?Math.max(5,Math.min(10,group.length*1.45)):Math.max(5,Math.min(10,group.length*1.35));group.forEach((item,idx)=>{const angle=(Math.PI*2*idx)/group.length-(Math.PI/2);item.cx=item.baseX+Math.cos(angle)*radius;item.cy=item.baseY+Math.sin(angle)*radius})});pins.forEach(({a,cx,cy})=>{const isSel=isFocused&&selectedId===a.id;const g=document.createElementNS('http://www.w3.org/2000/svg','g');const hit=document.createElementNS('http://www.w3.org/2000/svg','circle');hit.setAttribute('cx',cx);hit.setAttribute('cy',cy);hit.setAttribute('r',touchRadius);hit.setAttribute('fill','transparent');hit.setAttribute('stroke','transparent');g.appendChild(hit);if(isSel){const glow=document.createElementNS('http://www.w3.org/2000/svg','polygon');glow.setAttribute('points',hexPoints(cx,cy,size+(isFocused?1.8:4)));glow.setAttribute('fill','none');glow.setAttribute('stroke','#20FDF0');glow.setAttribute('stroke-width',isFocused?'0.8':'1.5');glow.setAttribute('opacity','0.4');g.appendChild(glow)}const hex=document.createElementNS('http://www.w3.org/2000/svg','polygon');hex.setAttribute('points',hexPoints(cx,cy,size));hex.setAttribute('fill',isSel?'#fff':'#20FDF0');hex.setAttribute('stroke',isSel?'rgba(255,255,255,0.7)':'rgba(0,0,0,0.4)');hex.setAttribute('stroke-width',isSel?(isFocused?'0.8':'1.4'):(isFocused?'0.45':'0.8'));hex.setAttribute('opacity',isFocused?'0.93':'0.82');g.appendChild(hex);if(isFocused){g.style.cursor='pointer';if(!mobile){g.addEventListener('mouseenter',e=>{hex.setAttribute('fill','#fff');const tags=(a.courses||[]).slice(0,4).map(c=>`<span class="tt-tag">${esc(c)}</span>`).join('');showTooltip(e,`<div class="tt-name">${esc(a.first)} ${esc(a.last)}</div>${a.biz?`<div class="tt-loc">${esc(a.biz)}</div>`:''}<div class="tt-loc">${esc(a.city)}, ${esc(a.state)}</div>${tags?`<div class="tt-courses">${tags}</div>`:''}<div class="tt-hint">Click for details</div>`)});g.addEventListener('mouseleave',()=>{hex.setAttribute('fill',isSel?'#fff':'#20FDF0');hideTooltip()})}g.addEventListener('click',e=>{e.stopPropagation();hideTooltip();selectInstructor(a.id)})}layer.appendChild(g)})}
-function renderResultList(){
-  const panel=document.getElementById('results-panel');
-  const list=document.getElementById('result-list');
-  if(panel){
-    panel.classList.add('is-hidden');
-    panel.style.display='none';
-  }
-  if(list){
-    list.innerHTML='';
+
+
+const STATE_CENTROIDS = {"Alabama":[-86.9023,32.3182],"Alaska":[-153.4937,61.3707],"Arizona":[-111.0937,34.0489],"Arkansas":[-92.3731,34.7999],"California":[-119.4179,36.7783],"Colorado":[-105.3111,39.5501],"Connecticut":[-72.7554,41.6032],"Delaware":[-75.5071,38.9108],"Florida":[-81.5158,27.6648],"Georgia":[-83.6431,32.6415],"Hawaii":[-155.5828,19.8968],"Idaho":[-114.7420,44.0682],"Illinois":[-89.1965,40.6331],"Indiana":[-86.1349,40.2672],"Iowa":[-93.0977,41.8780],"Kansas":[-98.4842,38.5266],"Kentucky":[-84.2700,37.8393],"Louisiana":[-91.9623,31.1695],"Maine":[-69.4455,45.2538],"Maryland":[-76.6413,39.0458],"Massachusetts":[-71.3824,42.4072],"Michigan":[-85.6024,44.3148],"Minnesota":[-94.6859,46.7296],"Mississippi":[-89.3985,32.3547],"Missouri":[-91.8318,37.9643],"Montana":[-110.3626,46.8797],"Nebraska":[-99.9018,41.4925],"Nevada":[-116.4194,38.8026],"New Hampshire":[-71.5724,43.1939],"New Jersey":[-74.4057,40.0583],"New Mexico":[-106.2485,34.5199],"New York":[-74.9654,43.2994],"North Carolina":[-79.0193,35.7596],"North Dakota":[-101.0020,47.5515],"Ohio":[-82.9071,40.4173],"Oklahoma":[-97.0929,35.4676],"Oregon":[-120.5542,43.8041],"Pennsylvania":[-77.1945,41.2033],"Rhode Island":[-71.4774,41.5801],"South Carolina":[-80.9450,33.8361],"South Dakota":[-99.9018,43.9695],"Tennessee":[-86.5804,35.5175],"Texas":[-99.3413,31.9686],"Utah":[-111.0937,39.3210],"Vermont":[-72.5778,44.5588],"Virginia":[-78.6569,37.4316],"Washington":[-120.7401,47.7511],"West Virginia":[-80.4549,38.5976],"Wisconsin":[-88.7879,43.7844],"Wyoming":[-107.2903,43.0760]};
+
+let projectionFn=null, selectedId=null, filtered=[];
+
+const STATE_ABBR = {AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
+const STATE_ID_TO_NAME = {1:'Alabama',2:'Alaska',4:'Arizona',5:'Arkansas',6:'California',8:'Colorado',9:'Connecticut',10:'Delaware',11:'District of Columbia',12:'Florida',13:'Georgia',15:'Hawaii',16:'Idaho',17:'Illinois',18:'Indiana',19:'Iowa',20:'Kansas',21:'Kentucky',22:'Louisiana',23:'Maine',24:'Maryland',25:'Massachusetts',26:'Michigan',27:'Minnesota',28:'Mississippi',29:'Missouri',30:'Montana',31:'Nebraska',32:'Nevada',33:'New Hampshire',34:'New Jersey',35:'New Mexico',36:'New York',37:'North Carolina',38:'North Dakota',39:'Ohio',40:'Oklahoma',41:'Oregon',42:'Pennsylvania',44:'Rhode Island',45:'South Carolina',46:'South Dakota',47:'Tennessee',48:'Texas',49:'Utah',50:'Vermont',51:'Virginia',53:'Washington',54:'West Virginia',55:'Wisconsin',56:'Wyoming'};
+let selectedStateName=null, hoveredStateName=null, statePathMap=new Map(), stateCountMap=new Map();
+
+function normalizeStateValue(state){
+  const value = String(state || '').trim();
+  if (!value) return '';
+  const upper = value.toUpperCase();
+  return STATE_ABBR[upper] || value;
+}
+
+function esc(v){
+  return String(v ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+function isMobileTouch(){
+  return window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(hover: none)').matches || window.innerWidth <= 900;
+}
+
+function distanceMiles(lat1,lon1,lat2,lon2){
+  const R=3958.8, dLat=(lat2-lat1)*Math.PI/180, dLon=(lon2-lon1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R*(2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)));
+}
+function getDistanceToInstructor(a,lat,lon){
+  if(a.lat==null||a.lon==null) return Infinity;
+  return distanceMiles(lat,lon,Number(a.lat),Number(a.lon));
+}
+async function lookupZip(zip){
+  const clean=String(zip||'').trim();
+  if(!/^\d{5}$/.test(clean)) throw new Error('Please enter a valid 5-digit ZIP code.');
+  const res=await fetch('https://api.zippopotam.us/us/'+clean);
+  if(!res.ok) throw new Error('ZIP code not found.');
+  const data=await res.json();
+  const place=(data.places&&data.places[0])||null;
+  if(!place) throw new Error('ZIP code not found.');
+  return {zip:clean, city:place['place name']||'', state:place['state']||'', lat:Number(place.latitude), lon:Number(place.longitude)};
+}
+function populateRequestTraining(zip='',city='',state=''){
+  const body=document.getElementById('do-body');
+  document.getElementById('do-name').textContent='No Nearby Instructors Found';
+  const bizEl=document.getElementById('do-biz'); bizEl.textContent=''; bizEl.style.display='none';
+  body.innerHTML=`<div class="do-loc"><svg width="10" height="12" viewBox="0 0 10 12" fill="none"><path d="M5 0C2.79 0 1 1.79 1 4C1 7 5 12 5 12C5 12 9 7 9 4C9 1.79 7.21 0 5 0ZM5 5.5C4.17 5.5 3.5 4.83 3.5 4C3.5 3.17 4.17 2.5 5 2.5C5.83 2.5 6.5 3.17 6.5 4C6.5 4.83 5.83 5.5 5 5.5Z" fill="#7a7f8e"/></svg>${esc(city)}${city&&state?', ':''}${esc(state)}${zip?` · ${esc(zip)}`:''}</div><div class="do-section"><div class="do-section-title">Training Request</div><div class="do-bio">We do not currently have a nearby instructor match for this area. You can still submit a request so we know where training demand exists.</div><div class="request-box"><div class="request-title">Request Training in Your Area</div><div class="request-copy">Submit a quick request with your ZIP code and preferred training type.</div><div class="request-grid"><input id="req-name" type="text" placeholder="Your name"><input id="req-email" type="email" placeholder="Your email"><input id="req-zip" type="text" placeholder="ZIP code" value="${esc(zip)}"><input id="req-training" type="text" placeholder="Training needed (ex: CCW / LTC)"><textarea id="req-notes" placeholder="Anything else we should know?"></textarea></div><div class="request-actions"><button class="subtle-btn" type="button" id="req-send-btn">Send Request</button></div></div></div>`;
+  document.getElementById('detail-overlay').classList.add('visible');
+  const btn=document.getElementById('req-send-btn');
+  if(btn){
+    btn.addEventListener('click',()=>{
+      const name=document.getElementById('req-name').value.trim();
+      const email=document.getElementById('req-email').value.trim();
+      const reqZip=document.getElementById('req-zip').value.trim();
+      const training=document.getElementById('req-training').value.trim();
+      const notes=document.getElementById('req-notes').value.trim();
+      const subject=encodeURIComponent('Training request from '+(reqZip||zip||'website visitor'));
+      const body=encodeURIComponent(`Name: ${name}\nEmail: ${email}\nZIP: ${reqZip}\nRequested training: ${training}\nNotes: ${notes}`);
+      window.location.href=`mailto:info@hexcoremounts.com?subject=${subject}&body=${body}`;
+    });
   }
 }
-function renderDetail(){const wrap=document.getElementById('detail-wrap');const item=DATA.find(x=>x.id===selectedId);if(!item){wrap.innerHTML='<div class="empty"><strong>Select an instructor pin.</strong><br>The map starts with all pins visible. Select a state to activate its pins, then choose a white hexagon to load that instructor\'s details here.</div>';return;}const website=item.website?(item.website.startsWith('http')?item.website:'https://'+item.website):'';wrap.innerHTML=`<div class="detail-card"><div class="detail-name">${esc(item.first)} ${esc(item.last)}</div>${item.biz?`<div class="detail-biz">${esc(item.biz)}</div>`:''}<div class="detail-loc">${esc(item.city)}, ${esc(item.state)}${item.zip?` · ${esc(item.zip)}`:''}</div><div class="detail-bio">${esc(item.bio||'No public bio yet.')}</div><div class="result-tags" style="margin-top:12px">${(item.courses||[]).map(c=>`<span class="result-tag">${esc(c)}</span>`).join('')}</div><div class="detail-grid"><div class="detail-box"><div class="detail-label">Type</div><div class="detail-value">${esc(item.type||'—')}</div></div><div class="detail-box"><div class="detail-label">Format</div><div class="detail-value">${esc(item.format||'—')}</div></div><div class="detail-box"><div class="detail-label">Schedule</div><div class="detail-value">${esc(item.schedule||'—')}</div></div><div class="detail-box"><div class="detail-label">Price</div><div class="detail-value">${esc(item.price||'—')}</div></div></div><div class="detail-links">${item.phone?`<a class="mini-btn" href="tel:${esc(String(item.phone).replace(/[^\d+]/g,''))}">Call</a>`:''}${item.email?`<a class="mini-btn" href="mailto:${esc(item.email)}">Email</a>`:''}${website?`<a class="mini-btn" href="${esc(website)}" target="_blank" rel="noopener">Website</a>`:''}</div></div>`}
-function drawStates(){fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(r=>r.json()).then(us=>{projectionFn=d3.geoAlbersUsa().scale(1280).translate([480,300]);const path=d3.geoPath().projection(projectionFn);const states=topojson.feature(us,us.objects.states);statePathMap=new Map();const sel=d3.select('#states-g').selectAll('path').data(states.features).enter().append('path').attr('d',path).attr('class','state-path');sel.each(function(d){const name=STATE_ID_TO_NAME[Number(d.id)]||'';if(!name)return;statePathMap.set(name,this);this.addEventListener('mouseenter',e=>{if(isTouch())return;const count=stateCountMap.get(name)||0;showTooltip(e,`<div class="tt-name">${esc(name)}</div><div class="tt-loc">${count} Instructor${count!==1?'s':''} currently visible</div><div class="tt-hint">Click to focus this state</div>`)});this.addEventListener('mouseleave',hideTooltip);this.addEventListener('click',()=>focusState(name))});applyFilters()}).catch(()=>{document.getElementById('states-g').innerHTML='<rect x="60" y="80" width="840" height="440" rx="4" fill="#16181c" stroke="#2a2d35"></rect><text x="480" y="300" text-anchor="middle" font-size="16" fill="#59606c" font-family="Barlow,sans-serif">Map could not load right now.</text>';applyFilters()})}
-function locateMe(){return locateClosestInstructor()}
-function dist(lat1,lon1,lat2,lon2){const dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;return 6371*(2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)))}
-function init(){fillFilters();document.getElementById('flt-search').addEventListener('input',applyFilters);document.getElementById('flt-state').addEventListener('change',()=>{selectedState=normalizeState(document.getElementById('flt-state').value);selectedId=null;applyFilters()});document.getElementById('flt-type').addEventListener('change',applyFilters);document.getElementById('locate-btn').addEventListener('click',locateMe);document.getElementById('zip-btn').addEventListener('click',runZipSearch);document.getElementById('zip-search').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();runZipSearch()}});document.getElementById('map-reset-btn').addEventListener('click',clearStateFocus);document.getElementById('map-close-btn').addEventListener('click',clearStateFocus);document.getElementById('map-area').addEventListener('click',e=>{if(selectedState && !e.target.closest('#states-g') && !e.target.closest('#pins-g') && !e.target.closest('.pill')) clearStateFocus()});drawStates()}
-init();
-</script>
-<script>
-(function () {
-  function isHexCoreInternalLink(href) {
-    return href &&
-      (href.startsWith('https://hexcoremounts.com') ||
-       href.startsWith('http://hexcoremounts.com') ||
-       href.startsWith('/'));
-  }
+async function runZipSearch(){
+  const input=document.getElementById('zip-search'), btn=document.getElementById('zip-btn'), old=btn.textContent;
+  btn.textContent='Searching...'; btn.disabled=true;
+  try{
+    const place=await lookupZip(input.value);
+    document.getElementById('flt-state').value=place.state;
+    selectedStateName=place.state;
+    closeDetail();
+    applyFilters();
+    const nearestAll=INSTRUCTOR_DATA.map(a=>({...a,distance:getDistanceToInstructor(a,place.lat,place.lon)})).filter(a=>Number.isFinite(a.distance)).sort((a,b)=>a.distance-b.distance);
+    const nearby=nearestAll.filter(a=>a.distance<=75 && normalizeStateValue(a.state)===selectedStateName);
+    if(nearby.length){ showDetail(nearby[0].id); }
+    else { populateRequestTraining(place.zip,place.city,place.state); }
+  }catch(err){ alert(err.message||'ZIP search failed.'); }
+  finally{ btn.textContent=old; btn.disabled=false; }
+}
+function locateClosestInstructor(){
+  if(!navigator.geolocation){ alert('Geolocation is not supported on this device.'); return; }
+  const btn=document.getElementById('locate-btn'), old=btn.textContent;
+  btn.textContent='Locating...'; btn.disabled=true;
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const {latitude,longitude}=pos.coords;
+    const nearestAll=INSTRUCTOR_DATA.map(a=>({...a,distance:getDistanceToInstructor(a,latitude,longitude)})).filter(a=>Number.isFinite(a.distance)).sort((a,b)=>a.distance-b.distance);
+    if(!nearestAll.length){ populateRequestTraining(); btn.textContent=old; btn.disabled=false; return; }
+    const nearest=nearestAll[0];
+    document.getElementById('flt-state').value=nearest.state;
+    selectedStateName=nearest.state;
+    closeDetail();
+    applyFilters();
+    showDetail(nearest.id);
+    btn.textContent=old; btn.disabled=false;
+  },()=>{ alert('Location permission was denied or unavailable.'); btn.textContent=old; btn.disabled=false; },{enableHighAccuracy:false,timeout:10000,maximumAge:60000});
+}
 
-  function goTop(href) {
-    try {
-      if (window.top && href) {
-        window.top.location.href = href;
-      } else if (href) {
-        window.location.href = href;
-      }
-    } catch (e) {
-      if (href) window.location.href = href;
+function normalizeInstructor(a){
+  return {
+    ...a,
+    id: Number.isFinite(Number(a?.id)) ? Number(a.id) : Date.now() + Math.floor(Math.random() * 1000),
+    first: String(a?.first || ''),
+    last: String(a?.last || ''),
+    city: String(a?.city || ''),
+    state: normalizeStateValue(a?.state || ''),
+    bio: String(a?.bio || ''),
+    instagram: String(a?.instagram || ''),
+    facebook: String(a?.facebook || ''),
+    youtube: String(a?.youtube || ''),
+    lat: a?.lat === '' || a?.lat == null || Number.isNaN(Number(a?.lat)) ? null : Number(a.lat),
+    lon: a?.lon === '' || a?.lon == null || Number.isNaN(Number(a?.lon)) ? null : Number(a.lon),
+    biz: String(a?.biz || ''),
+    courses: Array.isArray(a?.courses) ? a.courses.map(v => String(v || '').trim()).filter(Boolean) : String(a?.courses || '').split('|').map(v => v.trim()).filter(Boolean),
+    type: String(a?.type || ''),
+    format: String(a?.format || ''),
+    certs: String(a?.certs || ''),
+    phone: String(a?.phone || ''),
+    email: String(a?.email || ''),
+    website: String(a?.website || ''),
+    zip: String(a?.zip || ''),
+    schedule: String(a?.schedule || ''),
+    price: String(a?.price || ''),
+    langs: String(a?.langs || '')
+  };
+}
+
+const INSTRUCTOR_DATA = Array.isArray(INSTRUCTORS) ? INSTRUCTORS.map(normalizeInstructor) : [];
+
+function init(){
+  const ss=document.getElementById('flt-state');
+  [...new Set(INSTRUCTOR_DATA.map(i=>i.state).filter(Boolean))].sort().forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;ss.appendChild(o)});
+  const cs=document.getElementById('flt-course');
+  [...new Set(INSTRUCTOR_DATA.flatMap(i=>i.courses||[]))].sort().forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;cs.appendChild(o)});
+  document.getElementById('map-count').textContent=INSTRUCTOR_DATA.length+' Instructor'+(INSTRUCTOR_DATA.length!==1?'s':'');
+  const locateBtn=document.getElementById('locate-btn'); if(locateBtn) locateBtn.addEventListener('click', locateClosestInstructor);
+  const zipBtn=document.getElementById('zip-btn'); if(zipBtn) zipBtn.addEventListener('click', runZipSearch);
+  const zipInput=document.getElementById('zip-search'); if(zipInput) zipInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); runZipSearch(); }});
+  applyFilters();drawStates();
+}
+
+function applyFilters(){
+  const q=(document.getElementById('flt-search').value||'').toLowerCase();
+  const state=document.getElementById('flt-state').value;
+  const course=document.getElementById('flt-course').value;
+  const type=document.getElementById('flt-type').value;
+  selectedStateName=state||null;
+  filtered=INSTRUCTOR_DATA.filter(a=>{
+    if(state&&a.state!==state)return false;
+    if(course&&!(a.courses||[]).includes(course))return false;
+    if(type&&a.type!==type&&a.type!=='Both')return false;
+    if(q){const str=`${a.first} ${a.last} ${a.biz} ${a.city} ${a.state} ${(a.courses||[]).join(' ')} ${a.certs}`.toLowerCase();if(!str.includes(q))return false;}
+    return true;
+  });
+  stateCountMap=new Map();
+  filtered.forEach(a=>stateCountMap.set(a.state,(stateCountMap.get(a.state)||0)+1));
+  document.getElementById('flt-count').textContent=filtered.length+' of '+INSTRUCTOR_DATA.length;
+  updateMapUi();
+  updateStateBadges();
+  updateStateLayerStyles();
+  updateMapView();
+  renderPins();
+}
+
+
+function updateMapUi(){
+  const pill=document.getElementById('map-focus-pill');
+  const resetBtn=document.getElementById('map-reset-btn');
+  const closeBtn=document.getElementById('map-close-btn');
+  const count=selectedStateName?(stateCountMap.get(selectedStateName)||0):filtered.length;
+  pill.innerHTML=selectedStateName?`Viewing: <span>${esc(selectedStateName)}</span> · ${count} Instructor${count!==1?'s':''}`:'Viewing: <span>All States</span>';
+  resetBtn.style.display=selectedStateName?'inline-flex':'none';
+  if(closeBtn) closeBtn.style.display=selectedStateName?'inline-flex':'none';
+  document.getElementById('map-count').textContent=selectedStateName?`${count} in ${selectedStateName}`:filtered.length+' Instructor'+(filtered.length!==1?'s':'');
+}
+
+function clearStateFocus(){
+  document.getElementById('flt-state').value='';
+  selectedStateName=null;
+  closeDetail();
+  applyFilters();
+}
+
+function focusState(stateName){
+  if(!stateName)return;
+  hideTooltip();
+  document.getElementById('flt-state').value=stateName;
+  closeDetail();
+  applyFilters();
+}
+
+function updateStateLayerStyles(){
+  statePathMap.forEach((pathEl,stateName)=>{
+    const count=stateCountMap.get(stateName)||0;
+    const isSelected=selectedStateName===stateName;
+    const isHovered=!selectedStateName && hoveredStateName===stateName;
+    pathEl.setAttribute('fill', isSelected ? '#1a2426' : isHovered ? '#132022' : count ? '#11181a' : '#16181c');
+    pathEl.setAttribute('stroke', isSelected ? '#20FDF0' : isHovered ? 'rgba(32,253,240,0.85)' : count ? 'rgba(32,253,240,0.3)' : '#2a2d35');
+    pathEl.setAttribute('stroke-width', isSelected ? '1.4' : isHovered ? '1.25' : count ? '1.0' : '0.8');
+    pathEl.style.opacity = selectedStateName ? (isSelected ? '1' : '0.25') : (isHovered ? '1' : count ? '0.92' : '1');
+    pathEl.style.filter = isSelected ? 'drop-shadow(0 0 12px rgba(32,253,240,0.35))' : isHovered ? 'drop-shadow(0 0 10px rgba(32,253,240,0.22))' : 'none';
+  });
+}
+
+function updateStateBadges(){
+  const layer=document.getElementById('state-labels-g');
+  if(!layer)return;
+  layer.innerHTML='';
+  if(selectedStateName)return;
+  statePathMap.forEach((pathEl,stateName)=>{
+    const count=stateCountMap.get(stateName)||0;
+    if(!count) return;
+    let box;
+    try{ box=pathEl.getBBox(); }catch(e){ return; }
+    if(!box||!isFinite(box.x)||box.width<18||box.height<12) return;
+    const cx=box.x+box.width/2, cy=box.y+box.height/2;
+    const label=count>99?'99+':String(count);
+    const width=Math.max(22, label.length*8+10), height=18;
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x', (cx-width/2).toFixed(1));
+    rect.setAttribute('y', (cy-height/2).toFixed(1));
+    rect.setAttribute('width', width.toFixed(1));
+    rect.setAttribute('height', height.toFixed(1));
+    rect.setAttribute('rx', '9');
+    rect.setAttribute('class','state-count-badge');
+    const txt=document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('x', cx.toFixed(1));
+    txt.setAttribute('y', (cy+0.5).toFixed(1));
+    txt.setAttribute('class','state-count-text');
+    txt.textContent=label;
+    g.appendChild(rect);g.appendChild(txt);layer.appendChild(g);
+  });
+}
+
+function updateMapView(){
+  const root=document.getElementById('map-root');
+  if(!root) return;
+  if(!selectedStateName||!statePathMap.has(selectedStateName)){
+    root.style.transform='translate(0px,0px) scale(1)';
+    return;
+  }
+  let box;
+  try{ box=statePathMap.get(selectedStateName).getBBox(); }catch(e){ box=null; }
+  if(!box||!isFinite(box.x)||box.width<=0||box.height<=0){
+    root.style.transform='translate(0px,0px) scale(1)';
+    return;
+  }
+  const pad=30;
+  const scale=Math.max(1.9, Math.min(4.8, Math.min((960-pad*2)/box.width, (600-pad*2)/box.height)));
+  const tx=480-(box.x+box.width/2)*scale;
+  const ty=300-(box.y+box.height/2)*scale;
+  root.style.transform=`translate(${tx.toFixed(2)}px,${ty.toFixed(2)}px) scale(${scale.toFixed(3)})`;
+}
+
+function showStateTooltip(evt,stateName){
+  if(isMobileTouch()) return;
+  const tooltip=document.getElementById('map-tooltip');
+  const wrap=document.getElementById('map-svg-wrap');
+  const hoverPill=document.getElementById('map-hover-pill');
+  const wrapRect=wrap.getBoundingClientRect();
+  const count=stateCountMap.get(stateName)||0;
+  hoveredStateName=stateName;
+  updateStateLayerStyles();
+  tooltip.innerHTML=`<div class="tt-name">${esc(stateName)}</div><div class="tt-loc">${count} Instructor${count!==1?'s':''} currently visible</div><div class="tt-hint">Click to focus this state</div>`;
+  tooltip.style.display='block';
+  tooltip.style.left=Math.min((evt.clientX-wrapRect.left)+14,wrapRect.width-240)+'px';
+  tooltip.style.top=Math.max((evt.clientY-wrapRect.top)-70,8)+'px';
+  if(hoverPill && !selectedStateName){
+    hoverPill.innerHTML=`<strong>${esc(stateName)}</strong><span class="map-hover-count">${count} Instructor${count!==1?'s':''}</span>`;
+    hoverPill.style.display='inline-flex';
+  }
+}
+
+function hideTooltip(){
+  document.getElementById('map-tooltip').style.display='none';
+  hoveredStateName=null;
+  const hoverPill=document.getElementById('map-hover-pill');
+  if(hoverPill) hoverPill.style.display='none';
+  updateStateLayerStyles();
+}
+
+function normIg(h){if(!h)return'';const val=String(h).trim();if(/^(javascript:|data:)/i.test(val))return'';return'https://instagram.com/'+val.replace(/^@/,'').replace(/^https?:\/\/(www\.)?instagram\.com\//,'');}
+function normUrl(u){if(!u)return'';const val=String(u).trim();if(/^(javascript:|data:)/i.test(val))return'';return val.startsWith('http')?val:'https://'+val;}
+
+function showDetail(id){
+  const a=INSTRUCTOR_DATA.find(i=>i.id===id);if(!a)return;
+  if(selectedId===id){closeDetail();return;}
+  selectedId=id;renderPins();
+  document.getElementById('do-name').textContent=a.first+' '+a.last;
+  const bizEl=document.getElementById('do-biz');bizEl.textContent=a.biz||'';bizEl.style.display=a.biz?'block':'none';
+  let h=`<div class="do-loc"><svg width="10" height="12" viewBox="0 0 10 12" fill="none"><path d="M5 0C2.79 0 1 1.79 1 4C1 7 5 12 5 12C5 12 9 7 9 4C9 1.79 7.21 0 5 0ZM5 5.5C4.17 5.5 3.5 4.83 3.5 4C3.5 3.17 4.17 2.5 5 2.5C5.83 2.5 6.5 3.17 6.5 4C6.5 4.83 5.83 5.5 5 5.5Z" fill="#7a7f8e"/></svg>${esc(a.city)}, ${esc(a.state)}</div>`;
+  if(a.bio)h+=`<div class="do-section"><div class="do-section-title">About</div><div class="do-bio">${esc(a.bio)}</div></div>`;
+  if(a.certs)h+=`<div class="do-section"><div class="do-section-title">Certifications</div><div class="do-certs">${esc(a.certs)}</div></div>`;
+  if(a.courses&&a.courses.length)h+=`<div class="do-section"><div class="do-section-title">Courses Offered</div><div class="do-tags">${a.courses.map(c=>`<span class="do-tag">${esc(c)}</span>`).join('')}</div></div>`;
+  const dd=[];
+  if(a.type)dd.push({l:'Type',v:a.type});if(a.format)dd.push({l:'Format',v:a.format});
+  if(a.schedule)dd.push({l:'Schedule',v:a.schedule});if(a.price)dd.push({l:'Price',v:a.price});
+  if(a.langs)dd.push({l:'Languages',v:a.langs});
+  if(dd.length)h+=`<div class="do-section"><div class="do-section-title">Details</div><div class="do-grid">${dd.map(d=>`<div class="do-detail"><div class="do-detail-label">${esc(d.l)}</div><div class="do-detail-value">${esc(d.v)}</div></div>`).join('')}</div></div>`;
+  const cc=[];
+  if(a.phone)cc.push(`<a href="tel:${esc(a.phone.replace(/[^\d+]/g,''))}" class="do-contact-link phone">☎ ${esc(a.phone)}</a>`);
+  if(a.email)cc.push(`<a href="mailto:${esc(a.email)}" class="do-contact-link email-link">✉ ${esc(a.email)}</a>`);
+  if(a.website){const website=normUrl(a.website); if(website) cc.push(`<a href="${esc(website)}" target="_blank" rel="noopener" class="do-contact-link web">🌐 Website</a>`);}
+  if(a.instagram){const ig=normIg(a.instagram); if(ig) cc.push(`<a href="${esc(ig)}" target="_blank" rel="noopener" class="do-contact-link ig">@${esc(a.instagram.replace(/^@/,''))}</a>`);}
+  if(a.facebook){const fb=normUrl(a.facebook); if(fb) cc.push(`<a href="${esc(fb)}" target="_blank" rel="noopener" class="do-contact-link fb">Facebook</a>`);}
+  if(a.youtube){const yt=normUrl(a.youtube); if(yt) cc.push(`<a href="${esc(yt)}" target="_blank" rel="noopener" class="do-contact-link yt">YouTube</a>`);}
+  if(cc.length)h+=`<div class="do-section"><div class="do-section-title">Contact</div><div class="do-contact">${cc.join('')}</div></div>`;
+  h+=`<div class="do-disclaimer"><strong>⚠</strong> HexCore Mounts does not verify or endorse this instructor. Always verify credentials independently.</div>`;
+  document.getElementById('do-body').innerHTML=h;
+  document.getElementById('detail-overlay').classList.add('visible');
+}
+
+function closeDetail(){selectedId=null;document.getElementById('detail-overlay').classList.remove('visible');renderPins();}
+
+function hexPoints(cx,cy,r){const pts=[];for(let i=0;i<6;i++){const a=(Math.PI/180)*(60*i-30);pts.push(`${(cx+r*Math.cos(a)).toFixed(2)},${(cy+r*Math.sin(a)).toFixed(2)}`);}return pts.join(' ');}
+
+function getCoord(a){
+  if(a.lat&&a.lon&&projectionFn){const c=projectionFn([a.lon,a.lat]);if(c)return c;}
+  const ll=STATE_CENTROIDS[normalizeStateValue(a.state)];if(ll&&projectionFn)return projectionFn(ll);return null;
+}
+
+function renderPins(){
+  const layer=document.getElementById('pins-g');layer.innerHTML='';
+  const tooltip=document.getElementById('map-tooltip');
+  const wrap=document.getElementById('map-svg-wrap');
+  const mobileTouch=isMobileTouch();
+  const isFocused=!!selectedStateName;
+  const sz=isFocused?2.35:5;
+  const strokeW=isFocused?0.45:0.8;
+  const touchRadius=mobileTouch ? (isFocused ? 14 : 16) : (isFocused ? 8 : 10);
+  const coordBuckets=new Map();
+  const pinData=[];
+
+  filtered.forEach(a=>{
+    const coord=getCoord(a);if(!coord)return;
+    const key=`${Math.round(coord[0])}:${Math.round(coord[1])}`;
+    const item={a,baseX:coord[0],baseY:coord[1],key};
+    pinData.push(item);
+    if(!coordBuckets.has(key))coordBuckets.set(key,[]);
+    coordBuckets.get(key).push(item);
+  });
+
+  coordBuckets.forEach(group=>{
+    if(group.length===1){
+      group[0].cx=group[0].baseX;
+      group[0].cy=group[0].baseY;
+      return;
     }
-  }
-
-  document.querySelectorAll('a[href]').forEach(function (link) {
-    var rawHref = link.getAttribute('href') || '';
-    if (!isHexCoreInternalLink(rawHref)) return;
-
-    link.setAttribute('target', '_top');
-
-    link.addEventListener('click', function (e) {
-      var resolvedHref = link.href || rawHref;
-      if (!resolvedHref) return;
-      e.preventDefault();
-      e.stopPropagation();
-      goTop(resolvedHref);
+    const radius=isFocused?Math.max(5,Math.min(10,group.length*1.45)):Math.max(5,Math.min(10,group.length*1.4));
+    group.forEach((item,idx)=>{
+      const angle=(Math.PI*2*idx)/group.length-(Math.PI/2);
+      item.cx=item.baseX+Math.cos(angle)*radius;
+      item.cy=item.baseY+Math.sin(angle)*radius;
     });
   });
-})();
+
+  pinData.forEach(({a,cx,cy})=>{
+    const isSel=isFocused && selectedId===a.id;
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    if(isFocused) g.style.cursor='pointer';
+
+    const hit=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    hit.setAttribute('cx',cx);
+    hit.setAttribute('cy',cy);
+    hit.setAttribute('r',touchRadius);
+    hit.setAttribute('fill','transparent');
+    hit.setAttribute('stroke','transparent');
+    hit.style.pointerEvents='all';
+    g.appendChild(hit);
+
+    if(isSel){const glow=document.createElementNS('http://www.w3.org/2000/svg','polygon');glow.setAttribute('points',hexPoints(cx,cy,sz+(isFocused?1.9:4)));glow.setAttribute('fill','none');glow.setAttribute('stroke','#20FDF0');glow.setAttribute('stroke-width',isFocused?'0.8':'1.5');glow.setAttribute('opacity','0.4');g.appendChild(glow);}
+    const hex=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+    hex.setAttribute('points',hexPoints(cx,cy,sz));
+    hex.setAttribute('fill',isFocused?'#ffffff':'#20FDF0');
+    hex.setAttribute('stroke',isSel?'rgba(255,255,255,0.75)':'rgba(0,0,0,0.4)');
+    hex.setAttribute('stroke-width',isSel?(isFocused?'0.8':'1.5'):strokeW);
+    hex.setAttribute('opacity',isFocused?'0.96':'0.93');
+    g.appendChild(hex);
+
+    if(isFocused && !mobileTouch){
+      g.addEventListener('mouseenter',()=>{
+        const svgRect=document.getElementById('usa-svg').getBoundingClientRect();
+        const wrapRect=wrap.getBoundingClientRect();
+        const px=cx*(svgRect.width/960)+(svgRect.left-wrapRect.left);
+        const py=cy*(svgRect.height/600)+(svgRect.top-wrapRect.top);
+        const tags=(a.courses||[]).slice(0,4).map(c=>`<span class="tt-tag">${esc(c)}</span>`).join('');
+        tooltip.innerHTML=`<div class="tt-name">${esc(a.first)} ${esc(a.last)}</div>${a.biz?`<div class="tt-biz">${esc(a.biz)}</div>`:''}<div class="tt-loc">${esc(a.city)}, ${esc(a.state)}</div>${tags?`<div class="tt-courses">${tags}</div>`:''}<div class="tt-hint">Click for details</div>`;
+        tooltip.style.display='block';
+        tooltip.style.left=Math.min(px+12,wrapRect.width-280)+'px';
+        tooltip.style.top=Math.max(py-140,8)+'px';
+      });
+      g.addEventListener('mouseleave',()=>{tooltip.style.display='none';});
+    }
+
+    if(isFocused){
+      g.addEventListener('click',e=>{e.stopPropagation();hideTooltip();showDetail(a.id);});
+      g.addEventListener('touchstart',e=>{e.stopPropagation();},{passive:true});
+    }
+    layer.appendChild(g);
+  });
+}
+
+function drawStates(){
+  fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(r=>r.json()).then(us=>{
+    const proj=d3.geoAlbersUsa().scale(1280).translate([480,300]);
+    projectionFn=proj;
+    statePathMap=new Map();
+    const path=d3.geoPath().projection(proj);
+    const states=topojson.feature(us,us.objects.states);
+    const sel=d3.select('#states-g').selectAll('path').data(states.features).enter().append('path')
+      .attr('d',path)
+      .attr('fill','#16181c')
+      .attr('stroke','#2a2d35')
+      .attr('stroke-width','0.8')
+      .style('cursor','pointer');
+
+    sel.each(function(d){
+      const stateName=STATE_ID_TO_NAME[Number(d.id)] || '';
+      if(!stateName) return;
+      statePathMap.set(stateName, this);
+      this.addEventListener('mouseenter',(evt)=>showStateTooltip(evt,stateName));
+      this.addEventListener('mousemove',(evt)=>showStateTooltip(evt,stateName));
+      this.addEventListener('mouseleave',hideTooltip);
+      this.addEventListener('click',()=>focusState(stateName));
+    });
+
+    updateStateLayerStyles();
+    updateStateBadges();
+    updateMapView();
+    renderPins();
+  }).catch(()=>{
+    projectionFn=d3.geoAlbersUsa().scale(1280).translate([480,300]);
+    statePathMap=new Map();
+    document.getElementById('states-g').innerHTML=`<rect x="60" y="80" width="840" height="440" rx="4" fill="#16181c" stroke="#2a2d35"/><text x="480" y="300" text-anchor="middle" font-size="14" fill="#3a3d47" font-family="Barlow,sans-serif">Map — check connection</text>`;
+    updateStateBadges();
+    updateMapView();
+    renderPins();
+  });
+}
+init();
 </script>
 </body>
 </html>
