@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><script defer data-preview-inject="true" src="https://app.base44.com/builder-bridge.js?t=1774231615"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HexCore — CCW Reciprocity Map</title>
+<title>HexCore — CCW Reciprocity Map (Enhanced)</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
@@ -11,11 +11,26 @@
 :root{--black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;--text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--cyan:#22d3ee;--font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
 body{background:var(--black);color:var(--text);font-family:var(--font-body);display:flex;flex-direction:column;min-height:100vh}
-header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;flex-shrink:0;gap:1rem;position:sticky;top:0;z-index:100}
-.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);white-space:nowrap;cursor:pointer;transition:opacity .15s}.logo:hover{opacity:.8}.logo span{color:var(--accent)}
-.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;white-space:nowrap}
-.header-center{display:flex;align-items:center;gap:10px;flex:1;justify-content:center;max-width:420px}
-.state-select{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:7px 12px;color:var(--text);font-family:var(--font-body);font-size:14px;font-weight:500;outline:none;cursor:pointer;flex:1;max-width:300px;transition:border-color .15s}.state-select:focus{border-color:var(--accent)}.state-select option{background:var(--card);color:var(--text)}
+h1,h2,h3{font-family:var(--font-head)}
+
+/* ── HEADER ── */
+header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;flex-shrink:0;gap:.75rem;position:sticky;top:0;z-index:100}
+.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);white-space:nowrap;cursor:pointer;transition:opacity .15s;flex-shrink:0}.logo:hover{opacity:.8}.logo span{color:var(--accent)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;white-space:nowrap;flex-shrink:0}
+.header-center{display:flex;align-items:center;gap:8px;flex:1;justify-content:center;min-width:0}
+.permit-chips-area{display:flex;align-items:center;gap:6px;flex:1;flex-wrap:nowrap;overflow:hidden;min-width:0}
+.permit-chip{display:inline-flex;align-items:center;gap:4px;background:rgba(32,253,240,.1);border:1px solid rgba(32,253,240,.3);border-radius:20px;padding:3px 10px 3px 10px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);white-space:nowrap;flex-shrink:0}
+.chip-x{background:none;border:none;color:var(--accent);cursor:pointer;font-size:13px;line-height:1;padding:0 0 0 3px;opacity:.6;transition:opacity .15s}.chip-x:hover{opacity:1}
+.add-permit-wrap{position:relative;flex-shrink:0}
+.add-permit-btn{display:flex;align-items:center;gap:5px;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:6px 11px;color:var(--accent);font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:all .15s}.add-permit-btn:hover{border-color:var(--accent);background:rgba(32,253,240,.06)}
+.permit-dropdown{position:absolute;top:calc(100% + 6px);left:0;background:var(--card);border:1px solid var(--border);border-radius:6px;z-index:200;min-width:220px;max-height:320px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.6);display:none;scrollbar-width:thin;scrollbar-color:var(--muted) transparent}
+.permit-dropdown.open{display:block;animation:fadeIn .15s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.pd-item{padding:8px 14px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text);transition:background .1s;display:flex;align-items:center;gap:8px}.pd-item:hover{background:rgba(32,253,240,.06);color:var(--accent)}.pd-item.selected{color:var(--accent);opacity:.5;pointer-events:none}.pd-item.enhanced{font-style:italic}
+.pd-group{padding:6px 14px 2px;font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
+.no-permits-hint{font-size:12px;color:var(--sub);white-space:nowrap;font-style:italic}
+
+/* ── LAYOUT ── */
 .layout{display:grid;grid-template-columns:300px 1fr;height:calc(100vh - 56px);min-height:500px}
 .sidebar{background:var(--dark);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
 .sidebar-hdr{padding:1rem 1.25rem .75rem;border-bottom:1px solid var(--border);flex-shrink:0}
@@ -39,7 +54,7 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.
 .ir-label{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;font-weight:600;min-width:90px}
 .ir-value{font-size:13px;color:var(--text);font-weight:500;text-align:right;max-width:180px}
 .tag{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
-.tag-green{background:rgba(34,197,94,.15);color:#4ade80}.tag-yellow{background:rgba(234,179,8,.15);color:#facc15}.tag-red{background:rgba(239,68,68,.15);color:#f87171}.tag-blue{background:rgba(59,130,246,.15);color:#60a5fa}.tag-accent{background:rgba(32,253,240,.12);color:var(--accent)}.tag-cyan{background:rgba(34,211,238,.15);color:#22d3ee}
+.tag-green{background:rgba(34,197,94,.15);color:#4ade80}.tag-yellow{background:rgba(234,179,8,.15);color:#facc15}.tag-red{background:rgba(239,68,68,.15);color:#f87171}.tag-blue{background:rgba(59,130,246,.15);color:#60a5fa}.tag-accent{background:rgba(32,253,240,.12);color:var(--accent)}.tag-cyan{background:rgba(34,211,238,.15);color:#22d3ee}.tag-purple{background:rgba(168,85,247,.15);color:#c084fc}
 .state-list-wrap{margin-top:.75rem}
 .sl-item{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--card);border:1px solid var(--border);border-radius:5px;margin-bottom:4px;cursor:pointer;transition:all .15s}.sl-item:hover{border-color:var(--accent);background:rgba(32,253,240,.04)}
 .sl-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
@@ -53,7 +68,7 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.
 .map-area{background:var(--black);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
 #map-svg-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1rem}
 #usa-svg{width:100%;height:100%;max-height:calc(100vh - 80px)}
-.map-tooltip{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 14px;pointer-events:none;display:none;z-index:30;min-width:180px;max-width:280px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.map-tooltip{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 14px;pointer-events:none;display:none;z-index:30;min-width:180px;max-width:300px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
 .tt-name{font-family:var(--font-head);font-weight:700;font-size:16px;color:var(--text);margin-bottom:2px;text-transform:uppercase;letter-spacing:.03em}
 .tt-status{font-size:12px;font-weight:600;margin-bottom:4px}
 .tt-detail{font-size:11px;color:var(--sub);line-height:1.4}
@@ -83,18 +98,28 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.
 .mode-dot{width:6px;height:6px;border-radius:50%}
 .disclaimer{margin-top:1rem;padding:10px;background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.15);border-radius:5px;font-size:10px;color:var(--sub);line-height:1.5}.disclaimer strong{color:var(--yellow);font-weight:700}
 .map-instruction{position:absolute;bottom:1rem;right:1rem;background:rgba(22,24,28,.9);border:1px solid var(--border);border-radius:6px;padding:8px 14px;backdrop-filter:blur(4px);font-size:11px;color:var(--sub);display:flex;align-items:center;gap:6px;z-index:5}
-.set-permit-btn{width:100%;padding:10px;background:rgba(32,253,240,.1);border:1px solid rgba(32,253,240,.3);border-radius:5px;color:var(--accent);font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .15s}.set-permit-btn:hover{background:rgba(32,253,240,.18)}
+.set-permit-btn{width:100%;padding:10px;background:rgba(32,253,240,.1);border:1px solid rgba(32,253,240,.3);border-radius:5px;color:var(--accent);font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .15s;margin-bottom:6px}.set-permit-btn:hover{background:rgba(32,253,240,.18)}
+.multi-coverage-bar{margin-bottom:1rem}
+.mcb-label{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:5px}
+.mcb-track{background:var(--card);border:1px solid var(--border);border-radius:4px;height:10px;overflow:hidden}
+.mcb-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--accent));border-radius:4px;transition:width .4s ease}
 
-/* ── HOW-TO GUIDE ── */
-.guide{position:relative;z-index:1;background:var(--black);border-top:1px solid var(--border)}
-.guide::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(32,253,240,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(32,253,240,.012) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
-.guide-inner{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:3.5rem 2rem 3rem}
+/* ── GUIDE & EDUCATIONAL SECTIONS ── */
+.guide,.edu-section{position:relative;z-index:1;background:var(--black);border-top:1px solid var(--border)}
+.guide::before,.edu-section::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(32,253,240,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(32,253,240,.012) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.guide-inner,.edu-inner{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:3.5rem 2rem 3rem}
 .guide-hero{text-align:center;margin-bottom:3rem;padding-bottom:2.5rem;border-bottom:1px solid var(--border)}
 .guide-eyebrow{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:8px}
 .guide-eyebrow::before,.guide-eyebrow::after{content:'';width:30px;height:1px;background:var(--accent);opacity:.4}
 .guide-title{font-family:var(--font-head);font-weight:900;font-size:48px;text-transform:uppercase;letter-spacing:.02em;line-height:1;color:#fff;margin-bottom:1rem}
 .guide-title .ga{color:var(--accent)}
 .guide-sub{font-size:16px;color:var(--sub);line-height:1.6;max-width:580px;margin:0 auto}
+.edu-hero{text-align:center;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+.edu-eyebrow{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;gap:8px}
+.edu-eyebrow::before,.edu-eyebrow::after{content:'';width:24px;height:1px;background:var(--accent);opacity:.4}
+.edu-title{font-family:var(--font-head);font-weight:900;font-size:38px;text-transform:uppercase;letter-spacing:.02em;line-height:1.1;color:#fff;margin-bottom:.75rem}
+.edu-title .ga{color:var(--accent)}
+.edu-sub{font-size:15px;color:var(--sub);line-height:1.6;max-width:560px;margin:0 auto}
 .g-steps{display:flex;flex-direction:column;gap:2.5rem;margin-bottom:3rem}
 .g-step{display:grid;grid-template-columns:64px 1fr;gap:1.25rem;align-items:start}
 .gs-num-wrap{display:flex;flex-direction:column;align-items:center}
@@ -141,31 +166,113 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.
 .g-cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(32,253,240,.25)}
 .g-disclaimer{padding:12px 16px;background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.15);border-radius:6px;font-size:11px;color:var(--sub);line-height:1.5;text-align:center}
 .g-disclaimer strong{color:var(--yellow);font-weight:700}
+
+/* ── EDU CARDS ── */
+.edu-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:2rem}
+.edu-card-grid.three{grid-template-columns:1fr 1fr 1fr}
+.edu-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem;display:flex;flex-direction:column;gap:8px}
+.edu-card-icon{font-size:24px;margin-bottom:4px}
+.edu-card-title{font-family:var(--font-head);font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff}
+.edu-card-body{font-size:13px;color:var(--sub);line-height:1.5}
+.edu-card-body strong{color:var(--text)}
+.edu-card.accent-border{border-color:rgba(32,253,240,.25)}
+.edu-step-list{display:flex;flex-direction:column;gap:10px;margin-bottom:2rem}
+.edu-step{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px}
+.edu-step-num{background:rgba(32,253,240,.1);border:1px solid rgba(32,253,240,.25);color:var(--accent);font-family:var(--font-head);font-size:18px;font-weight:900;width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.edu-step-content{}
+.edu-step-title{font-family:var(--font-head);font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:4px}
+.edu-step-body{font-size:13px;color:var(--sub);line-height:1.5}
+.edu-step-body strong{color:var(--text)}
+.edu-alert{padding:14px 16px;border-radius:7px;font-size:13px;line-height:1.5;margin-bottom:1.5rem}
+.edu-alert.warn{background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.2);color:var(--sub)}.edu-alert.warn strong{color:var(--yellow)}
+.edu-alert.info{background:rgba(32,253,240,.06);border:1px solid rgba(32,253,240,.15);color:var(--sub)}.edu-alert.info strong{color:var(--accent)}
+.edu-alert.danger{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--sub)}.edu-alert.danger strong{color:var(--red)}
+.edu-alert.success{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:var(--sub)}.edu-alert.success strong{color:var(--green)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+.two-col-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
+.two-col-block h4{font-family:var(--font-head);font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:.75rem}
+.two-col-block ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}
+.two-col-block li{font-size:13px;color:var(--sub);line-height:1.4;padding-left:14px;position:relative}
+.two-col-block li::before{content:'›';position:absolute;left:0;color:var(--accent)}
+.two-col-block li strong{color:var(--text)}
+.state-badge-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.5rem}
+.sbadge{display:inline-block;padding:4px 10px;background:var(--card);border:1px solid var(--border);border-radius:4px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text)}
+.sbadge.cc{background:rgba(32,253,240,.08);border-color:rgba(32,253,240,.2);color:var(--accent)}
+.sbadge.may{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:#f87171}
+.permit-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:1.5rem}
+.permit-table th{background:var(--dark);border:1px solid var(--border);padding:8px 12px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);text-align:left}
+.permit-table td{border:1px solid var(--border);padding:8px 12px;color:var(--text);vertical-align:top}
+.permit-table tr:hover td{background:rgba(32,253,240,.03)}
+.permit-table td:first-child{font-family:var(--font-head);font-weight:700;font-size:14px;color:#fff}
+.nav-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+.nav-pill{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;background:var(--card);border:1px solid var(--border);border-radius:20px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:all .15s}.nav-pill:hover{border-color:var(--accent);color:var(--accent);background:rgba(32,253,240,.05)}
 .g-footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;font-size:12px;color:var(--muted)}
-@media(max-width:900px){.layout{grid-template-columns:1fr;height:auto}.map-area{height:50vw;min-height:250px;max-height:380px;order:1}.sidebar{order:2;height:auto;overflow:visible}.sidebar-body{overflow:visible;padding:.9rem}.stats-grid{grid-template-columns:repeat(4,1fr);gap:5px}.stat-card.full{grid-column:span 4}.stat-num{font-size:20px}.map-tagline{display:none}header{padding:0 .75rem;height:50px;gap:.5rem}.logo{font-size:16px}.state-select{font-size:13px;padding:6px 8px}.header-badge{font-size:10px;padding:3px 8px}.detail-overlay{width:calc(100% - 2rem);left:1rem}.map-instruction{display:none}.guide-inner{padding:2rem 1.25rem}.guide-title{font-size:32px}.gc-grid,.gt-grid{grid-template-columns:1fr}.g-step{grid-template-columns:48px 1fr;gap:1rem}.gs-num{width:42px;height:42px;font-size:20px}.gs-title{font-size:18px}.gm-colors{flex-direction:column}}
-@media(max-width:500px){.stats-grid{grid-template-columns:1fr 1fr}.stat-card.full{grid-column:span 2}.header-center{max-width:200px}.header-badge{display:none}}
+.section-divider{display:flex;align-items:center;gap:1rem;margin:1.5rem 0}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-divider span{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;height:auto}
+  .map-area{height:50vw;min-height:250px;max-height:380px;order:1}
+  .sidebar{order:2;height:auto;overflow:visible}
+  .sidebar-body{overflow:visible;padding:.9rem}
+  .stats-grid{grid-template-columns:repeat(4,1fr);gap:5px}
+  .stat-card.full{grid-column:span 4}
+  .stat-num{font-size:20px}
+  .map-tagline{display:none}
+  header{padding:0 .75rem;height:50px;gap:.5rem}
+  .logo{font-size:16px}
+  .header-badge,.map-instruction{display:none}
+  .detail-overlay{width:calc(100% - 2rem);left:1rem}
+  .guide-inner,.edu-inner{padding:2rem 1.25rem}
+  .guide-title{font-size:32px}
+  .edu-title{font-size:28px}
+  .gc-grid,.gt-grid,.edu-card-grid,.edu-card-grid.three,.two-col{grid-template-columns:1fr}
+  .g-step{grid-template-columns:48px 1fr;gap:1rem}
+  .gs-num{width:42px;height:42px;font-size:20px}
+  .gs-title{font-size:18px}
+  .gm-colors{flex-direction:column}
+  .permit-chips-area{max-width:180px}
+  .permit-table{font-size:11px}
+  .permit-table th,.permit-table td{padding:6px 8px}
+}
+@media(max-width:500px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .stat-card.full{grid-column:span 2}
+  .header-center{max-width:160px}
+}
 </style>
 </head>
 <body>
+
+<!-- ══════════════════════════════════════════ HEADER ══════════════════════════════════════════ -->
 <header>
   <div class="logo" onclick="resetMap()">Hex<span>Core</span> CCW</div>
+
   <div class="header-center">
-    <select class="state-select" id="permit-select" onchange="selectPermitState(this.value)">
-      <option value="">— Or Select Permit State —</option>
-    </select>
+    <div class="permit-chips-area" id="permit-chips-area">
+      <span class="no-permits-hint" id="no-permits-hint">Click a state — or add a permit below</span>
+    </div>
+    <div class="add-permit-wrap">
+      <button class="add-permit-btn" id="add-permit-btn" onclick="togglePermitDropdown()">+ Add Permit</button>
+      <div class="permit-dropdown" id="permit-dropdown"></div>
+    </div>
   </div>
+
   <div style="display:flex;align-items:center;gap:12px">
-    <a href="#how-to-use" style="font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);text-decoration:none;white-space:nowrap;transition:color .15s" onmouseover="this.style.color='#20FDF0'" onmouseout="this.style.color='#7a7f8e'">How to Use ↓</a>
+    <a href="#how-to-use" style="font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);text-decoration:none;white-space:nowrap;transition:color .15s" onmouseover="this.style.color='#20FDF0'" onmouseout="this.style.color='#7a7f8e'">Guide ↓</a>
     <div class="header-badge">Reciprocity Map</div>
   </div>
 </header>
+
+<!-- ══════════════════════════════════════════ MAP LAYOUT ══════════════════════════════════════════ -->
 <div class="layout">
   <div class="sidebar">
     <div class="sidebar-hdr"><div class="sidebar-title"><span class="pulse-dot"></span>CCW Reciprocity</div></div>
     <div class="sidebar-body" id="sidebar-body"><div id="sidebar-content"></div></div>
   </div>
   <div class="map-area" id="map-area">
-    <div class="map-tagline" id="map-tagline">Click a State to Begin</div>
+    <div class="map-tagline" id="map-tagline">Click a State or Add a Permit to Begin</div>
     <div id="map-svg-wrap">
       <svg id="usa-svg" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg">
         <rect width="960" height="600" fill="var(--black)"/>
@@ -174,7 +281,7 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.
     </div>
     <div class="map-legend" id="map-legend" style="display:none">
       <div class="legend-title">Reciprocity Status</div>
-      <div class="leg-row"><div class="leg-sq" style="background:var(--accent)"></div>Your Permit State</div>
+      <div class="leg-row"><div class="leg-sq" style="background:var(--accent)"></div>Your Permit State(s)</div>
       <div class="leg-row"><div class="leg-sq" style="background:var(--green)"></div>Honors Your Permit</div>
       <div class="leg-row"><div class="leg-sq" style="background:var(--cyan)"></div>Constitutional Carry</div>
       <div class="leg-row"><div class="leg-sq" style="background:var(--yellow)"></div>Restricted / Partial</div>
@@ -189,58 +296,53 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- HOW TO USE GUIDE                                           -->
-<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════ HOW TO USE ══════════════════════════════════════════ -->
 <div class="guide" id="how-to-use">
   <div class="guide-inner">
-
     <div class="guide-hero">
       <div class="guide-eyebrow">Quick Start Guide</div>
       <h2 class="guide-title">How to Use the <span class="ga">Map</span></h2>
-      <p class="guide-sub">Three clicks to know where you can legally carry. Here's everything you need to get the most out of the reciprocity map above.</p>
+      <p class="guide-sub">Three clicks to know where you can legally carry. Including the new multi-permit stacking feature for maximum coverage.</p>
     </div>
-
     <div class="g-steps">
-
       <div class="g-step">
         <div class="gs-num-wrap"><div class="gs-num">1</div><div class="gs-line"></div></div>
         <div>
-          <div class="gs-title">Click Your Permit State</div>
-          <p class="gs-desc">Click directly on the state where your concealed carry permit was issued. This sets it as your "home" state and instantly colors the entire map. You can also use the dropdown in the header.</p>
+          <div class="gs-title">Set Your Permit State(s)</div>
+          <p class="gs-desc">Click directly on the state where your CCW permit was issued — <em>or</em> use the <strong style="color:var(--accent)">+ Add Permit</strong> button in the header. New: add <strong>multiple permits</strong> to see combined coverage from your resident + any non-resident permits.</p>
           <div class="gs-visual">
-            <p style="font-size:12px;color:var(--sub);margin-bottom:8px">Example — selecting Florida:</p>
-            <div class="gm-state"><div class="gm-dot"></div> Florida (FL) — Permit State</div>
-            <p class="gs-note">The sidebar fills with your state's permit details, stats, and categorized state lists.</p>
+            <p style="font-size:12px;color:var(--sub);margin-bottom:8px">Example — stacking Florida resident + Utah non-resident:</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <div class="gm-state"><div class="gm-dot"></div> Florida (FL)</div>
+              <div class="gm-state"><div class="gm-dot"></div> Utah (UT)</div>
+            </div>
+            <p class="gs-note">Combined, FL + UT cover 45+ states. Best non-resident combo for near-universal coverage.</p>
           </div>
         </div>
       </div>
-
       <div class="g-step">
         <div class="gs-num-wrap"><div class="gs-num">2</div><div class="gs-line"></div></div>
         <div>
           <div class="gs-title">Read the Color-Coded Map</div>
-          <p class="gs-desc">Every state lights up showing whether they honor your permit, offer constitutional carry, have restrictions, or don't recognize your permit at all.</p>
+          <p class="gs-desc">Every state lights up showing whether they honor your permit(s), offer constitutional carry, have restrictions, or don't recognize your permits at all.</p>
           <div class="gs-visual">
             <div class="gm-colors">
-              <div class="gm-ci"><div class="gm-sw" style="background:var(--accent)"></div><span class="gm-cl">Your State</span></div>
+              <div class="gm-ci"><div class="gm-sw" style="background:var(--accent)"></div><span class="gm-cl">Your State(s)</span></div>
               <div class="gm-ci"><div class="gm-sw" style="background:var(--green)"></div><span class="gm-cl">Honors</span></div>
               <div class="gm-ci"><div class="gm-sw" style="background:var(--cyan)"></div><span class="gm-cl">Const. Carry</span></div>
               <div class="gm-ci"><div class="gm-sw" style="background:var(--yellow)"></div><span class="gm-cl">Restricted</span></div>
               <div class="gm-ci"><div class="gm-sw" style="background:var(--red)"></div><span class="gm-cl">No Honor</span></div>
             </div>
-            <p class="gs-note">Hover over any state to see a quick tooltip with its status and basic info.</p>
+            <p class="gs-note">With multiple permits, a state turns green if ANY of your permits is honored there.</p>
           </div>
         </div>
       </div>
-
       <div class="g-step">
         <div class="gs-num-wrap"><div class="gs-num">3</div><div class="gs-line"></div></div>
         <div>
           <div class="gs-title">Click Any State for Full Details</div>
-          <p class="gs-desc">With your permit state set, click another state to open a detail panel on the right with that state's full carry laws — permit type, constitutional carry, open carry, training, duty to inform, and official resource links.</p>
+          <p class="gs-desc">Click any state to see a full detail panel: permit type, constitutional carry status, open carry, training requirements, duty to inform, castle doctrine, stand your ground, and official resource links.</p>
           <div class="gs-visual">
-            <p style="font-size:12px;color:var(--sub);margin-bottom:8px">Example — clicking Texas with Florida as permit state:</p>
             <div class="gm-detail">
               <div class="gm-dt">Texas</div>
               <div class="gm-ds">Constitutional Carry (No Permit Needed)</div>
@@ -250,132 +352,739 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.
                 <div class="gm-row"><span class="gm-rl">Open Carry</span><span class="gm-rv">Legal</span></div>
                 <div class="gm-row"><span class="gm-rl">Duty to Inform</span><span class="tag tag-yellow">Yes</span></div>
               </div>
-              <div class="gm-dd" style="margin-top:6px">Constitutional carry since 2021. LTC still available for reciprocity. 30.06/30.07 signage carries force of law.</div>
             </div>
           </div>
         </div>
       </div>
-
       <div class="g-step">
         <div class="gs-num-wrap"><div class="gs-num">4</div><div class="gs-line"></div></div>
         <div>
-          <div class="gs-title">Use the Sidebar Lists</div>
-          <p class="gs-desc">The left sidebar shows how many states honor your permit, how many don't, and sorted lists by category. Click any state in the sidebar to jump to its detail panel.</p>
+          <div class="gs-title">Stack Multiple Permits</div>
+          <p class="gs-desc">This is the most powerful feature. Add your resident permit PLUS non-resident permits (like Arizona, Florida, or Utah) to see your combined carry coverage. The map shows the union — any state covered by at least one of your permits.</p>
           <div class="gs-visual">
             <div class="gm-rows">
-              <div class="gm-row"><span class="gm-rl">States That Honor</span><span class="gm-rv num" style="color:var(--green)">36</span></div>
-              <div class="gm-row"><span class="gm-rl">Don't Honor</span><span class="gm-rv num" style="color:var(--red)">9</span></div>
-              <div class="gm-row"><span class="gm-rl">Constitutional Carry</span><span class="gm-rv num" style="color:var(--accent)">24</span></div>
-              <div class="gm-row"><span class="gm-rl">Restricted</span><span class="gm-rv num" style="color:var(--yellow)">2</span></div>
+              <div class="gm-row"><span class="gm-rl">FL Resident Only</span><span class="gm-rv num" style="color:var(--green)">37 States</span></div>
+              <div class="gm-row"><span class="gm-rl">+ UT Non-Resident</span><span class="gm-rv num" style="color:var(--accent)">+8 More</span></div>
+              <div class="gm-row"><span class="gm-rl">+ AZ Non-Resident</span><span class="gm-rv num" style="color:var(--accent)">+3 More</span></div>
+              <div class="gm-row" style="background:rgba(32,253,240,.06);border-color:rgba(32,253,240,.2)"><span class="gm-rl" style="color:var(--accent)">Combined Coverage</span><span class="gm-rv num" style="color:var(--accent)">45+ States</span></div>
             </div>
+            <p class="gs-note">AZ non-resident permit requires no training and is widely recognized. Great for stacking.</p>
           </div>
         </div>
       </div>
-
       <div class="g-step">
         <div class="gs-num-wrap"><div class="gs-num">5</div></div>
         <div>
-          <div class="gs-title">Switch or Reset Anytime</div>
-          <p class="gs-desc">Click your selected permit state again to deselect and reset the map. Or use the <strong>"← Back to Overview"</strong> button in the sidebar. You can also click <strong>"Set as My Permit State"</strong> in any state's detail panel to switch on the fly.</p>
+          <div class="gs-title">Reset or Switch Anytime</div>
+          <p class="gs-desc">Click the <strong style="color:var(--accent)">✕</strong> on any permit chip in the header to remove it, or click <strong>"← Reset All"</strong> in the sidebar. You can also click <strong>"Set as My Permit State"</strong> in any state detail panel to add it to your selection.</p>
         </div>
       </div>
-
     </div>
 
-    <!-- Color Guide -->
     <div class="g-colors">
       <div class="gc-title">What the Colors Mean</div>
       <div class="gc-grid">
-        <div class="gc-item"><div class="gc-sw" style="background:var(--accent)"></div><div><div class="gc-label">Cyan — Your State</div><div class="gc-desc">The state where your permit was issued. Your home base on the map.</div></div></div>
-        <div class="gc-item"><div class="gc-sw" style="background:var(--green)"></div><div><div class="gc-label">Green — Honors Your Permit</div><div class="gc-desc">Recognizes your CCW permit. You can carry legally, but follow their state laws.</div></div></div>
-        <div class="gc-item"><div class="gc-sw" style="background:var(--cyan)"></div><div><div class="gc-label">Teal — Constitutional Carry</div><div class="gc-desc">No permit required. Anyone legally allowed to possess a firearm can carry concealed.</div></div></div>
-        <div class="gc-item"><div class="gc-sw" style="background:var(--yellow)"></div><div><div class="gc-label">Yellow — Restricted / Partial</div><div class="gc-desc">May honor your permit with additional conditions. Research carefully before carrying.</div></div></div>
-        <div class="gc-item"><div class="gc-sw" style="background:var(--red)"></div><div><div class="gc-label">Red — Does Not Honor</div><div class="gc-desc">Does not recognize your permit. Do not carry without their state-specific license.</div></div></div>
-        <div class="gc-item"><div class="gc-sw" style="background:var(--muted)"></div><div><div class="gc-label">Grey — Default</div><div class="gc-desc">No permit state selected yet. Click a state on the map to get started.</div></div></div>
+        <div class="gc-item"><div class="gc-sw" style="background:var(--accent)"></div><div><div class="gc-label">Cyan — Your State(s)</div><div class="gc-desc">States where your permit(s) were issued. Your home base(s) on the map.</div></div></div>
+        <div class="gc-item"><div class="gc-sw" style="background:var(--green)"></div><div><div class="gc-label">Green — Honors Your Permit</div><div class="gc-desc">Recognizes at least one of your CCW permits. Follow their state laws while carrying.</div></div></div>
+        <div class="gc-item"><div class="gc-sw" style="background:var(--cyan)"></div><div><div class="gc-label">Teal — Constitutional Carry</div><div class="gc-desc">No permit required for eligible persons. Still follows their local carry laws.</div></div></div>
+        <div class="gc-item"><div class="gc-sw" style="background:var(--yellow)"></div><div><div class="gc-label">Yellow — Restricted / Partial</div><div class="gc-desc">May honor with additional conditions (age, residency, training equivalency). Research carefully.</div></div></div>
+        <div class="gc-item"><div class="gc-sw" style="background:var(--red)"></div><div><div class="gc-label">Red — Does Not Honor</div><div class="gc-desc">None of your permits recognized. Do not carry without a state-specific license.</div></div></div>
+        <div class="gc-item"><div class="gc-sw" style="background:var(--muted)"></div><div><div class="gc-label">Grey — Default</div><div class="gc-desc">No permit state selected yet. Add a permit using the header button to get started.</div></div></div>
       </div>
     </div>
 
-    <!-- Pro Tips -->
     <div class="g-tips">
       <div class="gt-title">Pro Tips</div>
       <div class="gt-grid">
-        <div class="gt-card"><div class="gt-icon">🔗</div><div class="gt-text"><strong>Check official sources.</strong> Always verify reciprocity with the destination state's official website before traveling. Laws change frequently.</div></div>
-        <div class="gt-card"><div class="gt-icon">📋</div><div class="gt-text"><strong>Know the local rules.</strong> Even in states that honor your permit, you must follow their laws — magazine limits, ammo restrictions, prohibited locations, and signage rules.</div></div>
-        <div class="gt-card"><div class="gt-icon">🛣️</div><div class="gt-text"><strong>Plan your route.</strong> If driving through multiple states, check each one along your path. A single "no honor" state can mean serious legal trouble.</div></div>
-        <div class="gt-card"><div class="gt-icon">📱</div><div class="gt-text"><strong>Use the dropdown too.</strong> On mobile or smaller screens, the header dropdown is the fastest way to select your permit state.</div></div>
+        <div class="gt-card"><div class="gt-icon">🔗</div><div class="gt-text"><strong>Always verify official sources.</strong> Laws change frequently. Verify reciprocity with the destination state's AG office before traveling.</div></div>
+        <div class="gt-card"><div class="gt-icon">📋</div><div class="gt-text"><strong>Follow destination state laws.</strong> Even where honored, you must follow their rules: mag limits, prohibited locations, signage, duty to inform.</div></div>
+        <div class="gt-card"><div class="gt-icon">🛣️</div><div class="gt-text"><strong>Plan your route carefully.</strong> Driving through NJ, MD, NY, CA, IL? Those states don't honor most permits. FOPA safe-passage rules apply for transport.</div></div>
+        <div class="gt-card"><div class="gt-icon">📋</div><div class="gt-text"><strong>MN & WI have date restrictions.</strong> They only honor permits from certain states issued after a specific date. Confirm your permit date qualifies.</div></div>
+        <div class="gt-card"><div class="gt-icon">📱</div><div class="gt-text"><strong>Stack FL + UT + AZ non-resident.</strong> This triple-stack provides near-universal US coverage. AZ requires no training for non-residents.</div></div>
+        <div class="gt-card"><div class="gt-icon">🏙️</div><div class="gt-text"><strong>NYC ≠ New York State.</strong> New York State permits are NOT valid in New York City. NYC is effectively its own jurisdiction with near-zero civilian permits.</div></div>
       </div>
     </div>
 
-    <!-- CTA -->
     <div class="g-cta">
       <div class="g-cta-title">Ready to Check Your Coverage?</div>
-      <p class="g-cta-desc">Scroll up, click your state, and see where your permit is recognized in seconds.</p>
+      <p class="g-cta-desc">Scroll up, add your permit(s), and see where you can legally carry across the country.</p>
       <a class="g-cta-btn" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Back to Map</a>
     </div>
 
-    <!-- Disclaimer -->
     <div class="g-disclaimer">
       <strong>⚠ Disclaimer:</strong> This map and guide are for informational purposes only and do not constitute legal advice. Concealed carry laws change frequently. Always verify current reciprocity with official state sources before traveling with a firearm.
     </div>
-
   </div>
 </div>
 
-<div class="g-footer">© 2026 HexCore Mounts — All rights reserved.</div>
+<!-- ══════════════════════════════════════════ WHAT IS RECIPROCITY ══════════════════════════════════════════ -->
+<div class="edu-section" id="what-is-reciprocity">
+  <div class="edu-inner">
+    <div class="edu-hero">
+      <div class="edu-eyebrow">Education</div>
+      <h2 class="edu-title">What Is <span class="ga">CCW Reciprocity?</span></h2>
+      <p class="edu-sub">Understanding how your concealed carry permit works when you cross state lines — and where the system breaks down.</p>
+    </div>
 
+    <div class="nav-pills">
+      <a href="#what-is-reciprocity" class="nav-pill">📖 Reciprocity Basics</a>
+      <a href="#constitutional-carry" class="nav-pill">🗽 Constitutional Carry</a>
+      <a href="#multi-permit" class="nav-pill">🃏 Multi-Permit Strategy</a>
+      <a href="#vehicle-carry" class="nav-pill">🚗 Vehicle Carry</a>
+      <a href="#flying-guide" class="nav-pill">✈️ Flying with Firearms</a>
+      <a href="#national-parks" class="nav-pill">🏕️ National Parks</a>
+    </div>
+
+    <div class="edu-card-grid">
+      <div class="edu-card accent-border">
+        <div class="edu-card-icon">🤝</div>
+        <div class="edu-card-title">Full Reciprocity</div>
+        <div class="edu-card-body">The destination state fully honors your home state permit with no additional requirements. You carry under their state laws, but your permit is recognized as valid. <strong>Most common relationship between permit-friendly states.</strong></div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">⚠️</div>
+        <div class="edu-card-title">Partial / Restricted</div>
+        <div class="edu-card-body">The state honors permits from specific states only, sometimes with conditions like age requirements, training equivalency, or residency restrictions. <strong>Research the specific conditions before carrying.</strong></div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">🚫</div>
+        <div class="edu-card-title">No Reciprocity</div>
+        <div class="edu-card-body">The state does not honor any out-of-state permits. CA, NY, NJ, IL, HI, MD, MA are the primary examples. <strong>Do not carry without a state-specific permit in these states.</strong></div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">🗽</div>
+        <div class="edu-card-title">Constitutional Carry</div>
+        <div class="edu-card-body">No permit needed for eligible law-abiding citizens. 29 states currently have constitutional carry laws. <strong>You can carry without your home permit, but must still follow that state's carry laws.</strong></div>
+      </div>
+    </div>
+
+    <div class="edu-alert warn">
+      <strong>⚠ Critical Rule:</strong> When carrying in another state, you must follow <em>their laws</em> — not your home state's laws. This includes magazine capacity limits, prohibited locations, duty-to-inform requirements, and signage rules. Ignorance of local law is not a legal defense.
+    </div>
+
+    <h3 style="font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:1rem">Types of CCW Permits Explained</h3>
+    <div class="two-col" style="margin-bottom:1.5rem">
+      <div class="two-col-block">
+        <h4>Shall-Issue</h4>
+        <ul>
+          <li><strong>Must issue</strong> permit if applicant meets requirements</li>
+          <li>Requirements typically: background check, training, age, residency</li>
+          <li>Issuing authority has <strong>no discretion</strong> to deny qualified applicants</li>
+          <li>~40 states are shall-issue</li>
+          <li>Most widely recognized permit type</li>
+        </ul>
+      </div>
+      <div class="two-col-block">
+        <h4>May-Issue</h4>
+        <ul>
+          <li>Issuing authority <strong>may deny</strong> even qualified applicants</li>
+          <li>"Good cause" or "justifiable need" often required</li>
+          <li>CA, NY, MA, MD, HI, NJ are examples</li>
+          <li>Post-<em>Bruen</em> (2022) SCOTUS ruling, many May-Issue restrictions ruled unconstitutional</li>
+          <li>Laws in flux — verify current status</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:1rem">States That Honor No Out-of-State Permits</h3>
+    <div class="edu-alert danger">
+      <strong>⛔ These 9 jurisdictions do not honor any out-of-state CCW permits:</strong> California, Connecticut, Hawaii, Illinois, Maryland, Massachusetts, New Jersey, New York, and the District of Columbia. Do not carry in these states/jurisdictions without their specific state permit.
+    </div>
+    <div class="state-badge-list">
+      <span class="sbadge may">California</span>
+      <span class="sbadge may">Connecticut</span>
+      <span class="sbadge may">Hawaii</span>
+      <span class="sbadge may">Illinois</span>
+      <span class="sbadge may">Maryland</span>
+      <span class="sbadge may">Massachusetts</span>
+      <span class="sbadge may">New Jersey</span>
+      <span class="sbadge may">New York</span>
+      <span class="sbadge may">District of Columbia</span>
+    </div>
+
+    <div class="edu-alert info">
+      <strong>📌 Special Note — NY State vs. New York City:</strong> New York State permits are valid throughout the state — <em>except</em> New York City. NYC has its own separate licensing system with an extremely low approval rate for civilians. A NY State permit is NOT valid in the five boroughs.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ CONSTITUTIONAL CARRY ══════════════════════════════════════════ -->
+<div class="edu-section" id="constitutional-carry">
+  <div class="edu-inner">
+    <div class="edu-hero">
+      <div class="edu-eyebrow">No Permit Needed</div>
+      <h2 class="edu-title"><span class="ga">Constitutional Carry</span> Explained</h2>
+      <p class="edu-sub">29 states now allow permitless concealed carry. Here's what that means, what it doesn't mean, and why you still want a permit.</p>
+    </div>
+
+    <div class="edu-card-grid three" style="margin-bottom:2rem">
+      <div class="edu-card accent-border">
+        <div class="edu-card-icon">✅</div>
+        <div class="edu-card-title">What It Means</div>
+        <div class="edu-card-body">Any person legally allowed to possess a firearm can carry it concealed without obtaining a permit. No training, no application, no fee required for carry within the state.</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">❌</div>
+        <div class="edu-card-title">What It Doesn't Mean</div>
+        <div class="edu-card-body">Constitutional carry does <strong>not</strong> mean anything-goes. Prohibited locations still exist (schools, government buildings, private property with signs). Prohibited persons still cannot carry.</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">🃏</div>
+        <div class="edu-card-title">Still Get a Permit</div>
+        <div class="edu-card-body">Even in constitutional carry states, <strong>getting a permit is strongly recommended</strong> for interstate travel. Permits provide reciprocity in other states that won't honor constitutional carry alone.</div>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:1rem">The 29 Constitutional Carry States (as of 2026)</h3>
+    <div class="state-badge-list">
+      <span class="sbadge cc">Alabama (2023)</span>
+      <span class="sbadge cc">Alaska (2003)</span>
+      <span class="sbadge cc">Arizona (2010)</span>
+      <span class="sbadge cc">Arkansas (2023)</span>
+      <span class="sbadge cc">Florida (2023)</span>
+      <span class="sbadge cc">Georgia (2022)</span>
+      <span class="sbadge cc">Idaho (2016)</span>
+      <span class="sbadge cc">Indiana (2022)</span>
+      <span class="sbadge cc">Iowa (2021)</span>
+      <span class="sbadge cc">Kansas (2015)</span>
+      <span class="sbadge cc">Kentucky (2019)</span>
+      <span class="sbadge cc">Louisiana (2024)</span>
+      <span class="sbadge cc">Maine (2015)</span>
+      <span class="sbadge cc">Mississippi (2016)</span>
+      <span class="sbadge cc">Missouri (2017)</span>
+      <span class="sbadge cc">Montana (2021)</span>
+      <span class="sbadge cc">Nebraska (2023)</span>
+      <span class="sbadge cc">New Hampshire (2017)</span>
+      <span class="sbadge cc">North Carolina (2023)</span>
+      <span class="sbadge cc">Ohio (2022)</span>
+      <span class="sbadge cc">Oklahoma (2019)</span>
+      <span class="sbadge cc">South Carolina (2024)</span>
+      <span class="sbadge cc">South Dakota (2019)</span>
+      <span class="sbadge cc">Tennessee (2021)</span>
+      <span class="sbadge cc">Texas (2021)</span>
+      <span class="sbadge cc">Utah (2021)</span>
+      <span class="sbadge cc">Vermont (since 1791)</span>
+      <span class="sbadge cc">West Virginia (2016)</span>
+      <span class="sbadge cc">Wyoming (2011)</span>
+    </div>
+
+    <div class="edu-alert info">
+      <strong>🗽 Vermont:</strong> The original constitutional carry state — Vermont has allowed permitless carry since its founding in 1791. Because Vermont doesn't issue permits, Vermont residents should obtain non-resident permits (FL, UT, AZ) for interstate carry coverage.
+    </div>
+
+    <div class="two-col">
+      <div class="two-col-block">
+        <h4>Constitutional Carry vs. Permits</h4>
+        <ul>
+          <li><strong>Constitutional carry states</strong> still often issue permits for reciprocity purposes</li>
+          <li>In most CC states, you can carry <strong>without</strong> the permit <em>within that state</em></li>
+          <li>A permit from a CC state is still valuable for <strong>travel to other states</strong></li>
+          <li>Texas HB 1927 (2021) created permitless carry but the LTC remains the best reciprocity tool</li>
+          <li>Florida SB 264 (2023) — residents can carry without permit but non-resident permits still honored</li>
+        </ul>
+      </div>
+      <div class="two-col-block">
+        <h4>Key Restrictions That Still Apply</h4>
+        <ul>
+          <li><strong>Federal prohibited persons</strong> cannot carry regardless of state law</li>
+          <li><strong>School zones</strong> — federal Gun-Free School Zones Act (GFSZA) applies everywhere</li>
+          <li><strong>Federal buildings</strong>, courthouses, polling places</li>
+          <li><strong>Private property</strong> with posted no-carry signs or verbal notice</li>
+          <li><strong>Bars / alcohol</strong> — many CC states still restrict carry while intoxicated or in establishments serving alcohol</li>
+          <li><strong>Age requirements</strong> — most CC states require 18 or 21+</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ MULTI-PERMIT STRATEGY ══════════════════════════════════════════ -->
+<div class="edu-section" id="multi-permit">
+  <div class="edu-inner">
+    <div class="edu-hero">
+      <div class="edu-eyebrow">Advanced Strategy</div>
+      <h2 class="edu-title">The <span class="ga">Multi-Permit</span> Strategy</h2>
+      <p class="edu-sub">Stacking a resident permit with strategic non-resident permits can provide coverage in 45+ states — including states your home permit can't reach alone.</p>
+    </div>
+
+    <div class="edu-alert success">
+      <strong>💡 The Best Non-Resident Combo:</strong> Florida + Utah + Arizona non-resident permits. Combined, these three cover nearly every state that recognizes any permit at all. Arizona is especially valuable — no training required and widely recognized.
+    </div>
+
+    <h3 style="font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:1rem">Top Non-Resident Permits for Stacking</h3>
+    <table class="permit-table">
+      <thead>
+        <tr>
+          <th>State</th>
+          <th>Training Required</th>
+          <th>Non-Resident?</th>
+          <th>Honored In</th>
+          <th>Why It's Valuable</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Florida (FL)</td>
+          <td><span class="tag tag-yellow">Yes</span></td>
+          <td><span class="tag tag-green">Yes</span></td>
+          <td style="color:var(--green);font-family:var(--font-head);font-weight:900">37 States</td>
+          <td style="color:var(--sub);font-size:12px">Most recognized non-resident permit in the US. Online fingerprinting available.</td>
+        </tr>
+        <tr>
+          <td>Utah (UT)</td>
+          <td><span class="tag tag-yellow">Yes</span></td>
+          <td><span class="tag tag-green">Yes</span></td>
+          <td style="color:var(--green);font-family:var(--font-head);font-weight:900">36 States</td>
+          <td style="color:var(--sub);font-size:12px">Covers several states FL doesn't. Strong reciprocity with Western states.</td>
+        </tr>
+        <tr>
+          <td>Arizona (AZ)</td>
+          <td><span class="tag tag-green">Not Required</span></td>
+          <td><span class="tag tag-green">Yes</span></td>
+          <td style="color:var(--green);font-family:var(--font-head);font-weight:900">35 States</td>
+          <td style="color:var(--sub);font-size:12px">No training required for non-residents. Honored in many states. Easy to obtain.</td>
+        </tr>
+        <tr>
+          <td>Virginia (VA)</td>
+          <td><span class="tag tag-yellow">Online OK</span></td>
+          <td><span class="tag tag-green">Yes</span></td>
+          <td style="color:var(--green);font-family:var(--font-head);font-weight:900">32 States</td>
+          <td style="color:var(--sub);font-size:12px">Covers some Mid-Atlantic gaps. Online training accepted. Good supplemental permit.</td>
+        </tr>
+        <tr>
+          <td>New Hampshire (NH)</td>
+          <td><span class="tag tag-green">None</span></td>
+          <td><span class="tag tag-green">Yes</span></td>
+          <td style="color:var(--green);font-family:var(--font-head);font-weight:900">28 States</td>
+          <td style="color:var(--sub);font-size:12px">No training required, no fee. Useful for Northeast coverage supplementation.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="edu-card-grid" style="margin-bottom:2rem">
+      <div class="edu-card">
+        <div class="edu-card-icon">🃏</div>
+        <div class="edu-card-title">Starter Stack</div>
+        <div class="edu-card-body">
+          <strong>Home State + Florida Non-Resident</strong><br><br>
+          The most common combination. FL non-resident costs ~$97 and covers 37 states. Together with most home state permits, you'll cover 40+ states. Best starting point for most people.
+        </div>
+      </div>
+      <div class="edu-card accent-border">
+        <div class="edu-card-icon">🏆</div>
+        <div class="edu-card-title">Maximum Coverage Stack</div>
+        <div class="edu-card-body">
+          <strong>Home State + FL + UT + AZ Non-Resident</strong><br><br>
+          The "triple non-resident stack." Combined coverage reaches 45+ states. Roughly $200–300 total for all three non-resident permits. Best option for frequent interstate travelers.
+        </div>
+      </div>
+    </div>
+
+    <div class="edu-alert warn">
+      <strong>⚠ Important:</strong> Stacking permits gives you <em>reciprocity coverage</em> — but you must still carry the actual physical permit for whichever state's permit the destination honors. Carry all your permit cards when traveling multi-state. Also confirm your permits are current; FL permits expire every 7 years, UT every 5.
+    </div>
+
+    <h3 style="font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:1rem">Enhanced Permits</h3>
+    <p style="font-size:14px;color:var(--sub);line-height:1.6;margin-bottom:1rem">Several states offer "enhanced" permits that allow carry in additional locations (bars, restaurants, schools with permission) within that state. Enhanced permits sometimes offer slightly broader intrastate privileges but generally have the same interstate reciprocity as standard permits.</p>
+    <div class="state-badge-list">
+      <span class="sbadge">Arkansas Enhanced</span>
+      <span class="sbadge">Idaho Enhanced</span>
+      <span class="sbadge">Mississippi Enhanced</span>
+      <span class="sbadge">Montana Enhanced</span>
+      <span class="sbadge">North Dakota Class 1</span>
+      <span class="sbadge">South Dakota Enhanced</span>
+      <span class="sbadge">Tennessee Enhanced</span>
+    </div>
+    <div class="edu-alert info">
+      <strong>📌 North Dakota Class 1 vs Class 2:</strong> ND Class 1 (with training) provides significantly more reciprocity than ND Class 2. If you're getting an ND permit, always get the Class 1. It's recognized by approximately 30+ states vs. fewer for Class 2.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ VEHICLE CARRY ══════════════════════════════════════════ -->
+<div class="edu-section" id="vehicle-carry">
+  <div class="edu-inner">
+    <div class="edu-hero">
+      <div class="edu-eyebrow">On the Road</div>
+      <h2 class="edu-title">Carrying in <span class="ga">Your Vehicle</span></h2>
+      <p class="edu-sub">Vehicle carry laws vary dramatically by state. Here's what you need to know before every road trip.</p>
+    </div>
+
+    <div class="edu-alert danger">
+      <strong>⛔ Most Dangerous Mistake:</strong> Assuming your home state vehicle carry rules apply everywhere you drive. They don't. Each state you enter has its own rules for where the firearm must be, whether it can be loaded, and what you must do if stopped by police.
+    </div>
+
+    <div class="edu-card-grid three" style="margin-bottom:2rem">
+      <div class="edu-card accent-border">
+        <div class="edu-card-icon">✅</div>
+        <div class="edu-card-title">Permit Holders</div>
+        <div class="edu-card-body">In states that honor your permit, you can generally carry your firearm <strong>loaded and accessible</strong> in your vehicle (on your person or in a holster). Follow their specific rules for where it can be stored.</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">📦</div>
+        <div class="edu-card-title">No-Permit States</div>
+        <div class="edu-card-body">In states that don't honor your permit, your firearm must be <strong>unloaded, in a locked case, and inaccessible</strong> (typically trunk or locked storage). Ammunition may need to be stored separately.</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">🚔</div>
+        <div class="edu-card-title">Police Stops</div>
+        <div class="edu-card-body">Many states have <strong>duty to inform</strong> requirements — you must tell the officer you have a permit and are carrying when stopped. Some states only require disclosure if asked. Know the rule before you drive in.</div>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:1rem">FOPA — Federal Safe Passage for Interstate Transport</h3>
+    <div class="edu-step-list">
+      <div class="edu-step">
+        <div class="edu-step-num">⚖️</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">What FOPA Provides</div>
+          <div class="edu-step-body">The <strong>Firearm Owners Protection Act (FOPA) of 1986</strong> provides a federal "safe passage" provision. If transporting a firearm through a state where carrying would otherwise be illegal, you may do so without violating federal law — under strict conditions.</div>
+        </div>
+      </div>
+      <div class="edu-step">
+        <div class="edu-step-num">📋</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">FOPA Requirements</div>
+          <div class="edu-step-body">To invoke FOPA protection: (1) <strong>Legal to possess</strong> the firearm at your origin AND destination. (2) Firearm must be <strong>unloaded</strong>. (3) Firearm must be in a <strong>locked container</strong> not accessible from the passenger compartment (not the glove box). (4) You must be <strong>passing through</strong> — not stopping for an extended period.</div>
+        </div>
+      </div>
+      <div class="edu-step">
+        <div class="edu-step-num">⚠️</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">FOPA Limitations</div>
+          <div class="edu-step-body">FOPA is a <strong>federal defense</strong>, not a guarantee against arrest. NJ, NY, and MD in particular have aggressively prosecuted travelers invoking FOPA. You may still be arrested and forced to prove the defense in court. Attorney involvement is expensive. <strong>Avoid non-honor states entirely when possible.</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:1rem">Vehicle Carry Quick Reference</h3>
+    <table class="permit-table">
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>What to Do</th>
+          <th>Risk Level</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Driving through a permit-honoring state</td>
+          <td style="color:var(--sub);font-size:12px">Carry per their rules. Check open carry / duty to inform status.</td>
+          <td><span class="tag tag-green">Low</span></td>
+        </tr>
+        <tr>
+          <td>Driving through CA, IL, NY, NJ, MD</td>
+          <td style="color:var(--sub);font-size:12px">Unloaded, locked case, in trunk. No stops except gas/food/sleep.</td>
+          <td><span class="tag tag-red">High</span></td>
+        </tr>
+        <tr>
+          <td>Stopping overnight in a no-honor state</td>
+          <td style="color:var(--sub);font-size:12px">FOPA doesn't clearly protect overnight stops. Research the specific state laws. Consider skipping or routing around.</td>
+          <td><span class="tag tag-yellow">Elevated</span></td>
+        </tr>
+        <tr>
+          <td>Police traffic stop</td>
+          <td style="color:var(--sub);font-size:12px">Stay calm, hands visible. Inform if duty-to-inform state. Keep permit accessible. Don't reach for firearm.</td>
+          <td><span class="tag tag-blue">Variable</span></td>
+        </tr>
+        <tr>
+          <td>Rental car or employer vehicle</td>
+          <td style="color:var(--sub);font-size:12px">Check rental/employer policy first. Some prohibit firearms regardless of legality. Know before you go.</td>
+          <td><span class="tag tag-yellow">Variable</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="two-col">
+      <div class="two-col-block">
+        <h4>Duty to Inform States</h4>
+        <ul>
+          <li><strong>Michigan:</strong> Must inform immediately upon contact</li>
+          <li><strong>Ohio:</strong> Must inform immediately upon contact</li>
+          <li><strong>North Carolina:</strong> Must inform upon request</li>
+          <li><strong>Texas:</strong> Must display permit if asked</li>
+          <li><strong>Illinois:</strong> Must inform — but carries nothing</li>
+          <li>Always be polite, calm, and keep hands visible regardless of state law</li>
+        </ul>
+      </div>
+      <div class="two-col-block">
+        <h4>States Where Vehicle Carry Gets Complex</h4>
+        <ul>
+          <li><strong>California:</strong> No loaded firearm in vehicle without CCW. Handguns must be locked container, unloaded.</li>
+          <li><strong>New York City:</strong> Extremely strict. Even FOPA transport risky.</li>
+          <li><strong>New Jersey:</strong> Very aggressive prosecution. Unloaded, locked, trunk.</li>
+          <li><strong>Maryland:</strong> Unloaded, locked, not accessible from passenger area.</li>
+          <li><strong>Illinois:</strong> Unloaded in enclosed case. Chicago especially aggressive.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ FLYING WITH FIREARMS ══════════════════════════════════════════ -->
+<div class="edu-section" id="flying-guide">
+  <div class="edu-inner">
+    <div class="edu-hero">
+      <div class="edu-eyebrow">Air Travel</div>
+      <h2 class="edu-title">Flying With <span class="ga">a Firearm</span></h2>
+      <p class="edu-sub">TSA rules, airline policies, and destination state laws — everything you need to fly armed legally and without hassle.</p>
+    </div>
+
+    <div class="edu-alert success">
+      <strong>✅ The Short Version:</strong> You CAN legally fly with a firearm — it must be in your checked baggage, unloaded, in a hard-sided locked case, and declared at check-in. It's a well-established process that millions of Americans use annually.
+    </div>
+
+    <h3 style="font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:1rem">Step-by-Step: Flying with a Firearm</h3>
+    <div class="edu-step-list">
+      <div class="edu-step">
+        <div class="edu-step-num">1</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">Use a Hard-Sided, Locked Case</div>
+          <div class="edu-step-body">The firearm must be in a <strong>hard-sided container</strong> (pelican case, hard-shell gun case) with a <strong>TSA-approved lock</strong> — but NOT a TSA master-key lock. Use YOUR lock. TSA cannot access it without your presence. The container can be inside a larger bag.</div>
+        </div>
+      </div>
+      <div class="edu-step">
+        <div class="edu-step-num">2</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">Unload the Firearm</div>
+          <div class="edu-step-body">The firearm must be <strong>completely unloaded</strong>. No magazine in the firearm, no round in the chamber. Ammunition can travel in the same locked container, but must be in its original box or purpose-built ammo container. Loose ammo in the case is generally not allowed.</div>
+        </div>
+      </div>
+      <div class="edu-step">
+        <div class="edu-step-num">3</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">Declare at Check-In</div>
+          <div class="edu-step-body">Inform the airline agent at check-in: <em>"I have an unloaded firearm to declare."</em> They'll give you a declaration card to sign and place inside the case. This is required. Do NOT wait to be asked — always declare proactively. Attempting to sneak a firearm through is a federal offense.</div>
+        </div>
+      </div>
+      <div class="edu-step">
+        <div class="edu-step-num">4</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">Follow the Airline's Specific Rules</div>
+          <div class="edu-step-body">Airlines have additional rules beyond TSA. <strong>Delta</strong> requires the case to be checked directly (not inside another bag in some instances). <strong>Southwest</strong> allows firearms in checked bags with specific procedures. <strong>Some airlines ban certain firearm types.</strong> Always check your airline's current firearms policy before travel.</div>
+        </div>
+      </div>
+      <div class="edu-step">
+        <div class="edu-step-num">5</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">Know the Laws at Your Destination</div>
+          <div class="edu-step-body">Federal rules get your firearm to the destination — but <strong>state laws govern what you can do once you land</strong>. Flying into California, New York, New Jersey, or Illinois? Your CCW permit means nothing there. You must transport the firearm to your final destination per that state's laws (unloaded, locked, etc.).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="two-col-block">
+        <h4>TSA Rules Summary</h4>
+        <ul>
+          <li>Checked baggage only — <strong>never carry-on</strong></li>
+          <li>Hard-sided, locked container</li>
+          <li>Unloaded firearm</li>
+          <li>Declare at airline check-in counter</li>
+          <li>Ammunition: original packaging or ammo case, same container OK</li>
+          <li>Magazines: can be in the case; must be unloaded</li>
+          <li>Fines up to $13,910 for undeclared firearms</li>
+        </ul>
+      </div>
+      <div class="two-col-block">
+        <h4>Pro Tips for Flying Armed</h4>
+        <ul>
+          <li>Arrive <strong>30 minutes earlier</strong> than usual — declaration adds time</li>
+          <li>Use a <strong>Pelican 1510 or similar</strong> — airline agents recognize them</li>
+          <li><strong>Don't advertise:</strong> use a discreet outer bag around the gun case</li>
+          <li>Keep airline's <strong>firearm policy screenshot</strong> on your phone</li>
+          <li>International travel: each country has own rules — research extensively before flying internationally with firearms</li>
+          <li>Cruises: similar to flying; check cruise line policy</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="edu-alert warn">
+      <strong>⚠ Airport Layovers:</strong> If your layover is in a state like NJ (Newark EWR) or NY (JFK/LGA), your checked firearm is still in that state's jurisdiction if you leave the airport or your connection is cancelled. There have been prosecutions of travelers with layover connections. Be aware of your routing when flying through strict states.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ NATIONAL PARKS ══════════════════════════════════════════ -->
+<div class="edu-section" id="national-parks">
+  <div class="edu-inner">
+    <div class="edu-hero">
+      <div class="edu-eyebrow">Outdoors & Federal Lands</div>
+      <h2 class="edu-title">National Parks &amp; <span class="ga">Federal Lands</span></h2>
+      <p class="edu-sub">The 2010 law changed everything. Here's the current legal framework for carrying in national parks, forests, BLM land, and other federal property.</p>
+    </div>
+
+    <div class="edu-card-grid" style="margin-bottom:2rem">
+      <div class="edu-card accent-border">
+        <div class="edu-card-icon">🏕️</div>
+        <div class="edu-card-title">National Parks (Post-2010)</div>
+        <div class="edu-card-body">Since February 22, 2010, carrying a firearm in a national park is governed by <strong>the law of the state in which the park is located</strong>. If the state allows concealed carry and your permit is honored, you can carry in the park. Same rules as carrying anywhere else in that state.</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">🌲</div>
+        <div class="edu-card-title">National Forests & BLM Land</div>
+        <div class="edu-card-body">National forests and Bureau of Land Management (BLM) lands generally follow state law. Hunting regulations also apply. These are typically the most firearm-friendly federal lands — <strong>carry per state law where the land is located.</strong></div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">🏛️</div>
+        <div class="edu-card-title">Federal Buildings Inside Parks</div>
+        <div class="edu-card-body">Even in carry-friendly parks, <strong>federal facilities are prohibited</strong>. This includes visitor centers, ranger stations, permit offices, and any federal building. Firearms must be stored in your vehicle when entering these buildings.</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">⛔</div>
+        <div class="edu-card-title">Always Prohibited Federal Areas</div>
+        <div class="edu-card-body">Regardless of state law or permits, these are always off-limits: federal courthouses, post offices, VA hospitals, military bases, TSA security checkpoints, and any building owned/leased by the federal government for official use.</div>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:1rem">Special Cases</h3>
+    <div class="edu-step-list">
+      <div class="edu-step">
+        <div class="edu-step-num">🏞️</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">National Recreation Areas & Monuments</div>
+          <div class="edu-step-body">Same rule as national parks — follow the state's laws. However, some NRAs and monuments straddle state lines. Know which state section you're in. Yellowstone (WY/MT/ID), for example, — carry laws follow whichever state section you're in at the time.</div>
+        </div>
+      </div>
+      <div class="edu-step">
+        <div class="edu-step-num">🦌</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">Hunting in Federal Lands</div>
+          <div class="edu-step-body">Hunting with firearms in national forests and BLM land is generally allowed per state hunting regulations. National parks have <strong>strict no-hunting rules</strong> (separate from carry rules). You can carry in most parks for self-defense, but you cannot hunt wildlife.</div>
+        </div>
+      </div>
+      <div class="edu-step">
+        <div class="edu-step-num">🏔️</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">National Parks in No-Honor States</div>
+          <div class="edu-step-body">Parks in California, New York, and other no-honor states follow those restrictive state laws. Even though the park is federal property, <strong>the state's firearms laws govern carry within the park</strong>. If you can't carry in CA, you can't carry in Yosemite.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="two-col-block">
+        <h4>Good-to-Know: Always Check</h4>
+        <ul>
+          <li>Each park may have <strong>additional local regulations</strong> posted</li>
+          <li>Some tribal lands within park boundaries have separate rules</li>
+          <li>Wilderness areas within national forests: generally follow state law</li>
+          <li>Park concession facilities (lodges, restaurants): check if they're on federal property</li>
+          <li>Campground camp stores: usually federal — leave firearm secured in vehicle</li>
+        </ul>
+      </div>
+      <div class="two-col-block">
+        <h4>Best Practices for Park Carry</h4>
+        <ul>
+          <li>Check which state(s) the park is in before arrival</li>
+          <li>Verify your permit is honored in that state</li>
+          <li>Keep firearm secured when visiting any facility building</li>
+          <li>Carry your permit card at all times</li>
+          <li>Wildlife encounters: know when/if brandishing is legally justified</li>
+          <li>Bears vs. firearms: bear spray is statistically more effective but carry both if legal</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ LEGAL RESOURCES ══════════════════════════════════════════ -->
+<div class="edu-section">
+  <div class="edu-inner">
+    <div class="edu-hero">
+      <div class="edu-eyebrow">Stay Protected</div>
+      <h2 class="edu-title">Legal <span class="ga">Resources</span></h2>
+      <p class="edu-sub">Being legally armed requires staying legally informed. These resources help you stay current and protected.</p>
+    </div>
+
+    <div class="edu-card-grid three">
+      <div class="edu-card accent-border">
+        <div class="edu-card-icon">⚖️</div>
+        <div class="edu-card-title">Get Legal Coverage</div>
+        <div class="edu-card-body">Consider a concealed carry legal protection plan. <strong>USCCA, US LawShield, CCW Safe</strong>, and similar services provide attorney access and coverage if you're involved in a self-defense incident. The right attorney on Day 1 is invaluable.</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">📱</div>
+        <div class="edu-card-title">Digital Resources</div>
+        <div class="edu-card-body">
+          <strong>Carry apps:</strong> USCCA app, Legal Heat app, Concealed Carry app — all provide state-by-state law summaries. Use as quick reference but <strong>always verify with official sources</strong> before relying on any app.
+        </div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">🔄</div>
+        <div class="edu-card-title">Laws Change Frequently</div>
+        <div class="edu-card-body">Reciprocity agreements change multiple times per year. <strong>Verify current status before every trip</strong> with each destination state's official Attorney General or State Police website. This map is updated regularly but is not a substitute for official verification.</div>
+      </div>
+    </div>
+
+    <div class="g-cta">
+      <div class="g-cta-title">Ready to Know Your Coverage?</div>
+      <p class="g-cta-desc">Scroll up, add your permits, and instantly see where your CCW is recognized across all 50 states.</p>
+      <a class="g-cta-btn" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Back to Map</a>
+    </div>
+
+    <div class="g-disclaimer">
+      <strong>⚠ Legal Disclaimer:</strong> All content on this page is for informational and educational purposes only and does not constitute legal advice. Concealed carry laws, reciprocity agreements, and regulations change frequently. Always verify current laws with official state and federal sources before traveling with a firearm. HexCore Mounts accepts no legal liability for the accuracy or completeness of information presented here. Consult a licensed attorney for legal advice specific to your situation.
+    </div>
+  </div>
+</div>
+
+<div class="g-footer">© 2026 HexCore Mounts — All rights reserved. | <a href="https://hexcoremounts.com" target="_blank" style="color:var(--accent);text-decoration:none">hexcoremounts.com</a></div>
+
+<!-- ══════════════════════════════════════════ JAVASCRIPT ══════════════════════════════════════════ -->
 <script>
 const S={
-"Alabama":{a:"AL",f:"01",pt:"Shall-Issue",cc:!0,cy:2023,age:21,tr:!1,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2023. Still issues permits for reciprocity.",l:"https://www.alabamaag.gov/",cd:!0,syg:!0,pv:"5 years",ia:"County sheriff",nrp:!1,ep:!1,oth:!1,sh:38,hon:36},
-"Alaska":{a:"AK",f:"02",pt:"Shall-Issue",cc:!0,cy:2003,age:21,tr:!1,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"One of the earliest constitutional carry states. Permits available for reciprocity travel.",l:"https://dps.alaska.gov/",cd:!0,syg:!0,pv:"5 years",ia:"State police",nrp:!1,ep:!1,oth:!0,sh:40,hon:36},
-"Arizona":{a:"AZ",f:"04",pt:"Shall-Issue",cc:!0,cy:2010,age:21,tr:!0,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Honors all valid permits. Excellent non-resident permit widely recognized in 35+ states.",l:"https://www.azdps.gov/services/public/cwp",cd:!0,syg:!0,pv:"5 years",ia:"Dept. of Public Safety",nrp:!0,ep:!1,oth:!0,sh:37,hon:35},
-"Arkansas":{a:"AR",f:"05",pt:"Shall-Issue",cc:!0,cy:2023,age:18,tr:!0,oc:!0,dti:!1,h:"sel",nh:["CA","CT","HI","IL","MD","MA","NJ","NY","OR","RI"],r:["MN","NV","NM","WA"],ur:!1,n:"Honors permits from states with similar requirements. Enhanced license available.",l:"https://www.asp.arkansas.gov/",cd:!0,syg:!0,pv:"5 years",ia:"State police",nrp:!1,ep:!0,oth:!1,sh:35,hon:36},
-"California":{a:"CA",f:"06",pt:"May-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!1,dti:!1,h:"none",nh:[],r:[],ur:!1,n:"Does not honor any out-of-state permits. Strict enforcement. Open carry prohibited.",l:"https://oag.ca.gov/firearms",cd:!0,syg:!1,pv:"2 years",ia:"County sheriff / police chief",nrp:!1,ep:!1,oth:!1,sh:0,hon:7},
-"Colorado":{a:"CO",f:"08",pt:"Shall-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!0,dti:!1,h:"sel",nh:["CA","CT","DC","HI","IL","ME","MD","MA","MN","NV","NJ","NY","OR","RI","SC","VT","WA"],r:[],ur:!1,n:"Honors resident permits from specific states. Some municipalities restrict open carry (Denver).",l:"https://cbi.state.co.us/",cd:!0,syg:!1,pv:"5 years",ia:"County sheriff",nrp:!1,ep:!1,oth:!1,sh:33,hon:34},
-"Connecticut":{a:"CT",f:"09",pt:"May-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!0,dti:!1,h:"none",nh:[],r:[],ur:!1,n:"Does not honor any out-of-state permits. Issues non-resident permits.",l:"https://portal.ct.gov/DESPP",cd:!0,syg:!1,pv:"5 years",ia:"State police / local PD",nrp:!0,ep:!1,oth:!1,sh:0,hon:6},
-"Delaware":{a:"DE",f:"10",pt:"May-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!0,dti:!1,h:"sel",nh:["CA","CT","HI","IL","MD","MA","NJ","NY","OR","RI","WA"],r:["CO","MN","NV","NM","PA"],ur:!1,n:"Honors permits from states with similar requirements.",l:"https://courts.delaware.gov/",cd:!0,syg:!1,pv:"3 years",ia:"Court of Common Pleas",nrp:!1,ep:!1,oth:!1,sh:24,hon:30},
-"District of Columbia":{a:"DC",f:"11",pt:"May-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!1,dti:!1,h:"none",nh:[],r:[],ur:!1,n:"Does not recognize permits from any other state. Open carry prohibited.",l:"https://mpdc.dc.gov/",cd:!0,syg:!1,pv:"2 years",ia:"Metro Police Dept.",nrp:!0,ep:!1,oth:!1,sh:0,hon:0},
-"Florida":{a:"FL",f:"12",pt:"Shall-Issue",cc:!0,cy:2023,age:21,tr:!0,oc:!1,dti:!1,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI","VT","WA"],r:["MN","NV"],ur:!1,n:"Constitutional carry since 2023. FL non-resident permits honored in 37 states — most of any state. Open carry still prohibited.",l:"https://www.fdacs.gov/Consumer-Resources/Concealed-Weapon-License",cd:!0,syg:!0,pv:"7 years",ia:"Dept. of Agriculture",nrp:!0,ep:!1,oth:!0,sh:36,hon:37},
-"Georgia":{a:"GA",f:"13",pt:"Shall-Issue",cc:!0,cy:2022,age:21,tr:!1,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2022. Universal recognition of all valid permits.",l:"https://gbi.georgia.gov/",cd:!0,syg:!0,pv:"5 years",ia:"Probate court",nrp:!1,ep:!1,oth:!1,sh:36,hon:34},
-"Hawaii":{a:"HI",f:"15",pt:"May-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!1,dti:!1,h:"none",nh:[],r:[],ur:!1,n:"Most restrictive state. Virtually no permits issued to non-residents.",l:"https://ag.hawaii.gov/",cd:!0,syg:!1,pv:"1 year",ia:"County police chief",nrp:!1,ep:!1,oth:!1,sh:0,hon:5},
-"Idaho":{a:"ID",f:"16",pt:"Shall-Issue",cc:!0,cy:2016,age:18,tr:!0,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2016. Universal recognition.",l:"https://isp.idaho.gov/concealed-weapons/",cd:!0,syg:!0,pv:"5 years",ia:"County sheriff",nrp:!1,ep:!0,oth:!0,sh:38,hon:36},
-"Illinois":{a:"IL",f:"17",pt:"Shall-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!1,dti:!1,h:"none",nh:[],r:[],ur:!1,n:"Does not honor any out-of-state permits. Open carry prohibited.",l:"https://isp.illinois.gov/",cd:!0,syg:!1,pv:"5 years",ia:"State police",nrp:!1,ep:!1,oth:!1,sh:0,hon:6},
-"Indiana":{a:"IN",f:"18",pt:"Shall-Issue",cc:!0,cy:2022,age:18,tr:!1,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2022. Universal recognition.",l:"https://www.in.gov/isp/firearms/handgun-license/",cd:!0,syg:!0,pv:"Lifetime",ia:"State police",nrp:!1,ep:!1,oth:!1,sh:38,hon:34},
-"Iowa":{a:"IA",f:"19",pt:"Shall-Issue",cc:!0,cy:2021,age:21,tr:!0,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2021. Universal recognition.",l:"https://dps.iowa.gov/",cd:!0,syg:!0,pv:"5 years",ia:"County sheriff",nrp:!1,ep:!1,oth:!1,sh:36,hon:35},
-"Kansas":{a:"KS",f:"20",pt:"Shall-Issue",cc:!0,cy:2015,age:21,tr:!0,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2015. Universal recognition.",l:"https://ag.ks.gov/licensing/concealed-carry",cd:!0,syg:!0,pv:"4 years",ia:"County sheriff / Attorney General",nrp:!1,ep:!1,oth:!1,sh:38,hon:36},
-"Kentucky":{a:"KY",f:"21",pt:"Shall-Issue",cc:!0,cy:2019,age:21,tr:!0,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2019. Universal recognition.",l:"https://kentuckystatepolice.gov/ccdw/",cd:!0,syg:!0,pv:"5 years",ia:"State police",nrp:!1,ep:!1,oth:!1,sh:38,hon:36},
-"Louisiana":{a:"LA",f:"22",pt:"Shall-Issue",cc:!0,cy:2024,age:18,tr:!0,oc:!0,dti:!0,h:"sel",nh:["CA","CT","HI","IL","MD","MA","NJ","NY","OR","RI"],r:["MN","NV","WA"],ur:!1,n:"Constitutional carry since 2024. Honors most state permits through mutual recognition.",l:"https://www.lsp.org/",cd:!0,syg:!0,pv:"5 years",ia:"State police",nrp:!1,ep:!1,oth:!1,sh:37,hon:35},
-"Maine":{a:"ME",f:"23",pt:"Shall-Issue",cc:!0,cy:2015,age:21,tr:!1,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2015. Universal recognition.",l:"https://www.maine.gov/dps/msp/",cd:!0,syg:!1,pv:"4 years",ia:"State police / local PD",nrp:!0,ep:!1,oth:!1,sh:30,hon:34},
-"Maryland":{a:"MD",f:"24",pt:"May-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!1,dti:!1,h:"none",nh:[],r:[],ur:!1,n:"Does not honor any out-of-state permits. Strict enforcement.",l:"https://mdsp.maryland.gov/",cd:!0,syg:!1,pv:"3 years",ia:"State police",nrp:!1,ep:!1,oth:!1,sh:0,hon:6},
-"Massachusetts":{a:"MA",f:"25",pt:"May-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!1,dti:!1,h:"none",nh:[],r:[],ur:!1,n:"Does not honor any out-of-state permits. Very strict laws.",l:"https://www.mass.gov/firearms-registration-bureau",cd:!0,syg:!1,pv:"6 years",ia:"Local police chief",nrp:!0,ep:!1,oth:!1,sh:0,hon:6},
-"Michigan":{a:"MI",f:"26",pt:"Shall-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!0,dti:!0,h:"all",nh:[],r:[],ur:!0,n:"Universal recognition — honors all valid permits. Must be 21+.",l:"https://www.michigan.gov/msp/",cd:!0,syg:!0,pv:"5 years",ia:"County clerk",nrp:!1,ep:!1,oth:!1,sh:38,hon:34},
-"Minnesota":{a:"MN",f:"27",pt:"Shall-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!0,dti:!0,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI"],r:["DE","NV","NM","PA","WA"],ur:!1,n:"Honors permits from states with similar requirements.",l:"https://dps.mn.gov/",cd:!0,syg:!1,pv:"5 years",ia:"County sheriff",nrp:!0,ep:!1,oth:!1,sh:24,hon:30},
-"Mississippi":{a:"MS",f:"28",pt:"Shall-Issue",cc:!0,cy:2016,age:18,tr:!0,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2016. Enhanced permit available for more carry locations.",l:"https://www.dps.ms.gov/",cd:!0,syg:!0,pv:"5 years",ia:"Dept. of Public Safety",nrp:!1,ep:!0,oth:!1,sh:35,hon:34},
-"Missouri":{a:"MO",f:"29",pt:"Shall-Issue",cc:!0,cy:2017,age:19,tr:!0,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2017. Universal recognition.",l:"https://www.mshp.dps.missouri.gov/",cd:!0,syg:!0,pv:"5 years",ia:"County sheriff",nrp:!1,ep:!1,oth:!1,sh:38,hon:35},
-"Montana":{a:"MT",f:"30",pt:"Shall-Issue",cc:!0,cy:2021,age:18,tr:!1,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2021. Universal recognition.",l:"https://dojmt.gov/enforcement/concealed-weapons/",cd:!0,syg:!0,pv:"5 years",ia:"County sheriff",nrp:!1,ep:!1,oth:!0,sh:36,hon:34},
-"Nebraska":{a:"NE",f:"31",pt:"Shall-Issue",cc:!0,cy:2023,age:21,tr:!0,oc:!0,dti:!0,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2023. Universal recognition.",l:"https://statepatrol.nebraska.gov/",cd:!0,syg:!1,pv:"5 years",ia:"State patrol",nrp:!1,ep:!1,oth:!1,sh:36,hon:34},
-"Nevada":{a:"NV",f:"32",pt:"Shall-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!0,dti:!1,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI","VT","WA"],r:["MN","NM","PA"],ur:!1,n:"Honors permits from specific states. Reduced list in recent years.",l:"https://www.lvmpd.com/",cd:!0,syg:!0,pv:"5 years",ia:"County sheriff",nrp:!1,ep:!1,oth:!1,sh:22,hon:30},
-"New Hampshire":{a:"NH",f:"33",pt:"Shall-Issue",cc:!0,cy:2017,age:18,tr:!1,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2017. No training required for non-resident permit.",l:"https://www.nh.gov/safety/divisions/nhsp/",cd:!0,syg:!0,pv:"5 years",ia:"Local selectmen / police chief",nrp:!0,ep:!1,oth:!0,sh:28,hon:34},
-"New Jersey":{a:"NJ",f:"34",pt:"May-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!1,dti:!1,h:"none",nh:[],r:[],ur:!1,n:"Does not honor any out-of-state permits. Mandatory minimum sentences. Aggressive enforcement.",l:"https://www.njsp.org/",cd:!0,syg:!1,pv:"2 years",ia:"Local police chief / State police",nrp:!1,ep:!1,oth:!1,sh:0,hon:5},
-"New Mexico":{a:"NM",f:"35",pt:"Shall-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!0,dti:!1,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI","VT","WA"],r:["MN","NV","PA"],ur:!1,n:"Honors permits from states with similar standards.",l:"https://www.dps.nm.gov/",cd:!0,syg:!1,pv:"4 years",ia:"Dept. of Public Safety",nrp:!1,ep:!1,oth:!1,sh:24,hon:30},
-"New York":{a:"NY",f:"36",pt:"May-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!1,dti:!1,h:"none",nh:[],r:[],ur:!1,n:"Does not honor any out-of-state permits. Extremely strict enforcement. NY permits NOT valid in NYC.",l:"https://www.ny.gov/",cd:!0,syg:!1,pv:"5 years",ia:"County judge / licensing officer",nrp:!1,ep:!1,oth:!1,sh:0,hon:6},
-"North Carolina":{a:"NC",f:"37",pt:"Shall-Issue",cc:!0,cy:2023,age:18,tr:!0,oc:!0,dti:!0,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2023. Universal recognition.",l:"https://ncdoj.gov/",cd:!0,syg:!0,pv:"5 years",ia:"County sheriff",nrp:!1,ep:!1,oth:!1,sh:38,hon:36},
-"North Dakota":{a:"ND",f:"38",pt:"Shall-Issue",cc:!0,cy:2017,age:18,tr:!0,oc:!0,dti:!0,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI"],r:["MN","NV","WA"],ur:!1,n:"Constitutional carry since 2017. Class 1 license recommended for full reciprocity.",l:"https://attorneygeneral.nd.gov/",cd:!0,syg:!1,pv:"5 years",ia:"Bureau of Criminal Investigation",nrp:!1,ep:!0,oth:!1,sh:30,hon:32},
-"Ohio":{a:"OH",f:"39",pt:"Shall-Issue",cc:!0,cy:2022,age:21,tr:!0,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2022. Universal recognition.",l:"https://ohioattorneygeneral.gov/ConcealedCarry",cd:!0,syg:!0,pv:"5 years",ia:"County sheriff",nrp:!1,ep:!1,oth:!1,sh:38,hon:36},
-"Oklahoma":{a:"OK",f:"40",pt:"Shall-Issue",cc:!0,cy:2019,age:21,tr:!0,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2019. Universal recognition.",l:"https://www.ok.gov/osbi/",cd:!0,syg:!0,pv:"10 years",ia:"OSBI",nrp:!1,ep:!1,oth:!1,sh:38,hon:36},
-"Oregon":{a:"OR",f:"41",pt:"Shall-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!0,dti:!1,h:"vl",nh:[],r:["ID"],ur:!1,n:"Very limited reciprocity — only honors Idaho permits (residents only). Magazine capacity restrictions.",l:"https://www.oregon.gov/osp/",cd:!0,syg:!1,pv:"4 years",ia:"County sheriff",nrp:!1,ep:!1,oth:!1,sh:1,hon:6},
-"Pennsylvania":{a:"PA",f:"42",pt:"Shall-Issue",cc:!1,cy:null,age:21,tr:!1,oc:!0,dti:!1,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","MN","NJ","NY","OR","RI","VT","WA"],r:["NV","NM"],ur:!1,n:"Honors permits from specific states. Check current list carefully.",l:"https://www.psp.pa.gov/",cd:!0,syg:!0,pv:"5 years",ia:"County sheriff",nrp:!1,ep:!1,oth:!1,sh:28,hon:32},
-"Rhode Island":{a:"RI",f:"44",pt:"May-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!1,dti:!1,h:"vl",nh:[],r:[],ur:!1,n:"Very limited reciprocity. Verify before carrying.",l:"https://riag.ri.gov/",cd:!0,syg:!1,pv:"4 years",ia:"Attorney General / local PD",nrp:!1,ep:!1,oth:!1,sh:2,hon:6},
-"South Carolina":{a:"SC",f:"45",pt:"Shall-Issue",cc:!0,cy:2024,age:18,tr:!0,oc:!0,dti:!0,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI"],r:["MN","NV","WA"],ur:!1,n:"Constitutional carry since 2024. Honors most state permits.",l:"https://sled.sc.gov/",cd:!0,syg:!0,pv:"5 years",ia:"SLED",nrp:!1,ep:!1,oth:!1,sh:34,hon:34},
-"South Dakota":{a:"SD",f:"46",pt:"Shall-Issue",cc:!0,cy:2019,age:18,tr:!1,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2019. Universal recognition.",l:"https://dps.sd.gov/",cd:!0,syg:!0,pv:"5 years",ia:"County sheriff",nrp:!1,ep:!0,oth:!1,sh:37,hon:34},
-"Tennessee":{a:"TN",f:"47",pt:"Shall-Issue",cc:!0,cy:2021,age:21,tr:!0,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2021. Universal recognition.",l:"https://www.tn.gov/safety/",cd:!0,syg:!0,pv:"8 years",ia:"Dept. of Safety",nrp:!1,ep:!0,oth:!1,sh:38,hon:36},
-"Texas":{a:"TX",f:"48",pt:"Shall-Issue",cc:!0,cy:2021,age:21,tr:!0,oc:!0,dti:!0,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2021. LTC still available for reciprocity. 30.06/30.07 signage carries force of law.",l:"https://www.dps.texas.gov/section/handgun-licensing",cd:!0,syg:!0,pv:"5 years",ia:"Dept. of Public Safety",nrp:!0,ep:!1,oth:!1,sh:37,hon:35},
-"Utah":{a:"UT",f:"49",pt:"Shall-Issue",cc:!0,cy:2021,age:21,tr:!0,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2021. UT non-resident permit honored in 36 states — second most recognized.",l:"https://bci.utah.gov/concealed-firearm/cfp-permit-information/",cd:!0,syg:!0,pv:"5 years",ia:"Bureau of Criminal ID",nrp:!0,ep:!1,oth:!1,sh:36,hon:36},
-"Vermont":{a:"VT",f:"50",pt:"Unrestricted",cc:!0,cy:1791,age:18,tr:!1,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Original constitutional carry state. No permit system exists — anyone legally permitted to own a firearm can carry.",l:"https://vsp.vermont.gov/",cd:!0,syg:!1,pv:"N/A",ia:"N/A (no permits issued)",nrp:!1,ep:!1,oth:!0,sh:0,hon:30},
-"Virginia":{a:"VA",f:"51",pt:"Shall-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!0,dti:!1,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI","VT","WA"],r:["MN","NV","NM"],ur:!1,n:"Honors permits from specific states. Good non-resident permit option.",l:"https://www.vsp.virginia.gov/",cd:!0,syg:!1,pv:"5 years",ia:"State police / circuit court",nrp:!0,ep:!1,oth:!1,sh:30,hon:32},
-"Washington":{a:"WA",f:"53",pt:"Shall-Issue",cc:!1,cy:null,age:21,tr:!1,oc:!0,dti:!1,h:"vl",nh:[],r:[],ur:!1,n:"Very limited reciprocity — honors permits from only ~10 states. Magazine capacity restrictions.",l:"https://www.dol.wa.gov/",cd:!0,syg:!1,pv:"5 years",ia:"Local police / sheriff",nrp:!1,ep:!1,oth:!1,sh:10,hon:8},
-"West Virginia":{a:"WV",f:"54",pt:"Shall-Issue",cc:!0,cy:2016,age:21,tr:!0,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2016. Universal recognition.",l:"https://www.wvsp.gov/",cd:!0,syg:!0,pv:"5 years",ia:"County sheriff",nrp:!1,ep:!1,oth:!1,sh:38,hon:36},
-"Wisconsin":{a:"WI",f:"55",pt:"Shall-Issue",cc:!1,cy:null,age:21,tr:!0,oc:!0,dti:!1,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI","VT","WA"],r:["MN","NV","NM"],ur:!1,n:"Honors permits from states meeting specific standards.",l:"https://www.doj.state.wi.us/",cd:!0,syg:!1,pv:"5 years",ia:"Dept. of Justice",nrp:!1,ep:!1,oth:!1,sh:30,hon:32},
-"Wyoming":{a:"WY",f:"56",pt:"Shall-Issue",cc:!0,cy:2011,age:21,tr:!1,oc:!0,dti:!1,h:"all",nh:[],r:[],ur:!0,n:"Constitutional carry since 2011. Universal recognition.",l:"https://ag.wyo.gov/",cd:!0,syg:!0,pv:"5 years",ia:"Attorney General",nrp:!1,ep:!1,oth:!1,sh:38,hon:36}
+"Alabama":{a:"AL",f:"01",pt:"Shall-Issue",cc:true,cy:2023,age:21,tr:false,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2023. Still issues permits for reciprocity. Strong castle doctrine and stand your ground laws. Open carry widely practiced.",l:"https://www.alabamaag.gov/",cd:true,syg:true,pv:"5 years",ia:"County sheriff",nrp:false,ep:false,oth:false,sh:38,hon:36},
+"Alaska":{a:"AK",f:"02",pt:"Shall-Issue",cc:true,cy:2003,age:21,tr:false,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"One of the earliest constitutional carry states (2003). Permits still available for out-of-state reciprocity travel. Very firearm-friendly culture and legal climate.",l:"https://dps.alaska.gov/",cd:true,syg:true,pv:"5 years",ia:"State police",nrp:false,ep:false,oth:true,sh:40,hon:36},
+"Arizona":{a:"AZ",f:"04",pt:"Shall-Issue",cc:true,cy:2010,age:21,tr:true,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2010. Honors all valid permits. Excellent non-resident permit widely recognized in 35+ states — no training required for non-residents. No firearms registry.",l:"https://www.azdps.gov/services/public/cwp",cd:true,syg:true,pv:"5 years",ia:"Dept. of Public Safety",nrp:true,ep:false,oth:true,sh:37,hon:35},
+"Arkansas":{a:"AR",f:"05",pt:"Shall-Issue",cc:true,cy:2023,age:18,tr:true,oc:true,dti:false,h:"sel",nh:["CA","CT","HI","IL","MD","MA","NJ","NY","OR","RI"],r:["MN","NV","NM","WA"],ur:false,n:"Constitutional carry since 2023. Enhanced license (CHCL-E) allows carry in additional locations including restaurants serving alcohol and certain other locations. Enhanced permit holders may carry in more places within the state.",l:"https://www.asp.arkansas.gov/",cd:true,syg:true,pv:"5 years",ia:"State police",nrp:false,ep:true,oth:false,sh:35,hon:36},
+"California":{a:"CA",f:"06",pt:"May-Issue",cc:false,cy:null,age:21,tr:true,oc:false,dti:false,h:"none",nh:[],r:[],ur:false,n:"Does not honor any out-of-state permits. Post-Bruen SCOTUS ruling changed May-Issue to effectively shall-issue in many counties, but enforcement is inconsistent. Strict magazine capacity laws (10-round max). Open carry prohibited. Red flag laws in effect.",l:"https://oag.ca.gov/firearms",cd:true,syg:false,pv:"2 years",ia:"County sheriff / police chief",nrp:false,ep:false,oth:false,sh:0,hon:7},
+"Colorado":{a:"CO",f:"08",pt:"Shall-Issue",cc:false,cy:null,age:21,tr:true,oc:true,dti:false,h:"sel",nh:["CA","CT","DC","HI","IL","ME","MD","MA","MN","NV","NJ","NY","OR","RI","SC","VT","WA"],r:[],ur:false,n:"Honors resident permits from specific states. Denver and some municipalities restrict open carry. Magazine capacity limit: 15 rounds (state law). Expanded background check system.",l:"https://cbi.state.co.us/",cd:true,syg:false,pv:"5 years",ia:"County sheriff",nrp:false,ep:false,oth:false,sh:33,hon:34},
+"Connecticut":{a:"CT",f:"09",pt:"May-Issue",cc:false,cy:null,age:21,tr:true,oc:true,dti:false,h:"none",nh:[],r:[],ur:false,n:"Does not honor any out-of-state permits. Issues non-resident permits to applicants who hold a valid permit from their home state. Assault weapon ban in effect. 10-round magazine limit.",l:"https://portal.ct.gov/DESPP",cd:true,syg:false,pv:"5 years",ia:"State police / local PD",nrp:true,ep:false,oth:false,sh:0,hon:6},
+"Delaware":{a:"DE",f:"10",pt:"May-Issue",cc:false,cy:null,age:21,tr:true,oc:true,dti:false,h:"sel",nh:["CA","CT","HI","IL","MD","MA","NJ","NY","OR","RI","WA"],r:["CO","MN","NV","NM","PA"],ur:false,n:"Honors permits from states with similar requirements. Court of Common Pleas issues permits — unusual process. Training required. Fingerprinting required.",l:"https://courts.delaware.gov/",cd:true,syg:false,pv:"3 years",ia:"Court of Common Pleas",nrp:false,ep:false,oth:false,sh:24,hon:30},
+"District of Columbia":{a:"DC",f:"11",pt:"May-Issue",cc:false,cy:null,age:21,tr:true,oc:false,dti:false,h:"none",nh:[],r:[],ur:false,n:"Does not recognize permits from any other state. Virtually impossible for civilians to obtain. Open carry strictly prohibited. Bring a firearm here without a DC permit = felony. Extremely aggressive prosecution. Avoid entirely unless necessary.",l:"https://mpdc.dc.gov/",cd:true,syg:false,pv:"2 years",ia:"Metro Police Dept.",nrp:true,ep:false,oth:false,sh:0,hon:0},
+"Florida":{a:"FL",f:"12",pt:"Shall-Issue",cc:true,cy:2023,age:21,tr:true,oc:false,dti:false,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI","VT","WA"],r:["MN","NV"],ur:false,n:"Constitutional carry since July 2023 (SB 264). FL non-resident permit still honored in 37 states — most recognized non-resident permit in the US. Open carry still prohibited. Florida is an excellent non-resident permit to obtain for stackable coverage.",l:"https://www.fdacs.gov/Consumer-Resources/Concealed-Weapon-License",cd:true,syg:true,pv:"7 years",ia:"Dept. of Agriculture",nrp:true,ep:false,oth:true,sh:36,hon:37},
+"Georgia":{a:"GA",f:"13",pt:"Shall-Issue",cc:true,cy:2022,age:21,tr:false,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since April 2022 (HB 1211). Universal recognition — honors all valid permits. No training requirement. Weapons Carry License still issued for interstate travel reciprocity. Strong stand your ground and castle doctrine.",l:"https://gbi.georgia.gov/",cd:true,syg:true,pv:"5 years",ia:"Probate court",nrp:false,ep:false,oth:false,sh:36,hon:34},
+"Hawaii":{a:"HI",f:"15",pt:"May-Issue",cc:false,cy:null,age:21,tr:true,oc:false,dti:false,h:"none",nh:[],r:[],ur:false,n:"Most restrictive state despite post-Bruen changes. Virtually no permits issued to non-residents. Open carry prohibited. Magazine capacity restrictions. Firearm registration required. Expect near-impossible path to carry permit.",l:"https://ag.hawaii.gov/",cd:true,syg:false,pv:"1 year",ia:"County police chief",nrp:false,ep:false,oth:false,sh:0,hon:5},
+"Idaho":{a:"ID",f:"16",pt:"Shall-Issue",cc:true,cy:2016,age:18,tr:true,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2016. Universal recognition. Enhanced permit available with additional training — allows carry in more locations and broader reciprocity recognition. Non-resident permits available. Very firearm-friendly state.",l:"https://isp.idaho.gov/concealed-weapons/",cd:true,syg:true,pv:"5 years",ia:"County sheriff",nrp:false,ep:true,oth:true,sh:38,hon:36},
+"Illinois":{a:"IL",f:"17",pt:"Shall-Issue",cc:false,cy:null,age:21,tr:true,oc:false,dti:false,h:"none",nh:[],r:[],ur:false,n:"Does not honor any out-of-state permits. Open carry prohibited. FOID (Firearm Owner ID) card required for any firearms possession. Chicago has additional local ordinances. Illinois CCW holders may carry in adjacent states that honor IL. Non-resident permits not available.",l:"https://isp.illinois.gov/",cd:true,syg:false,pv:"5 years",ia:"State police",nrp:false,ep:false,oth:false,sh:0,hon:6},
+"Indiana":{a:"IN",f:"18",pt:"Shall-Issue",cc:true,cy:2022,age:18,tr:false,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since July 2022. Universal recognition — honors all valid permits. Lifetime handgun licenses available. No training requirement. Very permissive firearm laws statewide.",l:"https://www.in.gov/isp/firearms/handgun-license/",cd:true,syg:true,pv:"Lifetime",ia:"State police",nrp:false,ep:false,oth:false,sh:38,hon:34},
+"Iowa":{a:"IA",f:"19",pt:"Shall-Issue",cc:true,cy:2021,age:21,tr:true,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since July 2021. Universal recognition. Professional permit available for those with certain occupations requiring firearms carry. Iowa DCI issues permits. Permits still recommended for out-of-state travel.",l:"https://dps.iowa.gov/",cd:true,syg:true,pv:"5 years",ia:"County sheriff",nrp:false,ep:false,oth:false,sh:36,hon:35},
+"Kansas":{a:"KS",f:"20",pt:"Shall-Issue",cc:true,cy:2015,age:21,tr:true,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2015. Universal recognition. Kansas attorney general oversees CCH (Concealed Carry Handgun) license. Very permissive carry laws. Post offices, hospitals, and places of worship may post exclusions.",l:"https://ag.ks.gov/licensing/concealed-carry",cd:true,syg:true,pv:"4 years",ia:"County sheriff / Attorney General",nrp:false,ep:false,oth:false,sh:38,hon:36},
+"Kentucky":{a:"KY",f:"21",pt:"Shall-Issue",cc:true,cy:2019,age:21,tr:true,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2019. Universal recognition. CCDW license still issued for reciprocity. State preemption prevents local municipalities from restricting carry. Strong castle doctrine.",l:"https://kentuckystatepolice.gov/ccdw/",cd:true,syg:true,pv:"5 years",ia:"State police",nrp:false,ep:false,oth:false,sh:38,hon:36},
+"Louisiana":{a:"LA",f:"22",pt:"Shall-Issue",cc:true,cy:2024,age:18,tr:true,oc:true,dti:true,h:"sel",nh:["CA","CT","HI","IL","MD","MA","NJ","NY","OR","RI"],r:["MN","NV","WA"],ur:false,n:"Constitutional carry since July 2024. Duty to inform — must immediately inform officers you're carrying. Honors most state permits through mutual recognition agreements. Concealed Handgun Permit still issued for reciprocity. Open carry permitted.",l:"https://www.lsp.org/",cd:true,syg:true,pv:"5 years",ia:"State police",nrp:false,ep:false,oth:false,sh:37,hon:35},
+"Maine":{a:"ME",f:"23",pt:"Shall-Issue",cc:true,cy:2015,age:21,tr:false,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2015. Universal recognition. Non-resident permits available through Maine State Police (MSP). No training required for constitutional carry but training recommended. Maine Concealed Handgun Permit issued for out-of-state reciprocity.",l:"https://www.maine.gov/dps/msp/",cd:true,syg:false,pv:"4 years",ia:"State police / local PD",nrp:true,ep:false,oth:false,sh:30,hon:34},
+"Maryland":{a:"MD",f:"24",pt:"May-Issue",cc:false,cy:null,age:21,tr:true,oc:false,dti:false,h:"none",nh:[],r:[],ur:false,n:"Does not honor any out-of-state permits. Strict enforcement. Post-Bruen ruling challenged their 'good and substantial reason' requirement. Handgun Qualification License required to purchase. Red flag laws. Magazine limit 10 rounds. Assault weapon ban.",l:"https://mdsp.maryland.gov/",cd:true,syg:false,pv:"3 years",ia:"State police",nrp:false,ep:false,oth:false,sh:0,hon:6},
+"Massachusetts":{a:"MA",f:"25",pt:"May-Issue",cc:false,cy:null,age:21,tr:true,oc:false,dti:false,h:"none",nh:[],r:[],ur:false,n:"Does not honor any out-of-state permits. Extremely strict. LTC (License to Carry) required. Local police chief has significant discretion. Assault weapon ban. 10-round magazine limit. Non-resident permits available but difficult to obtain. Very aggressive prosecution of violations.",l:"https://www.mass.gov/firearms-registration-bureau",cd:true,syg:false,pv:"6 years",ia:"Local police chief",nrp:true,ep:false,oth:false,sh:0,hon:6},
+"Michigan":{a:"MI",f:"26",pt:"Shall-Issue",cc:false,cy:null,age:21,tr:true,oc:true,dti:true,h:"all",nh:[],r:[],ur:true,n:"Universal recognition — honors all valid permits. Duty to inform immediately upon police contact. Must be 21+. CPL (Concealed Pistol License) issued by county clerk. Safe Storage laws enacted. No assault weapon ban. Pistol registration required.",l:"https://www.michigan.gov/msp/",cd:true,syg:true,pv:"5 years",ia:"County clerk",nrp:false,ep:false,oth:false,sh:38,hon:34},
+"Minnesota":{a:"MN",f:"27",pt:"Shall-Issue",cc:false,cy:null,age:21,tr:true,oc:true,dti:true,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI"],r:["DE","NV","NM","PA","WA"],ur:false,n:"Honors permits from states with similar requirements. Note: only honors permits issued or renewed after specific dates for some states (check MN DPS for current list). Duty to inform upon request. Permit to Purchase required for handguns. No assault weapon ban.",l:"https://dps.mn.gov/",cd:true,syg:false,pv:"5 years",ia:"County sheriff",nrp:true,ep:false,oth:false,sh:24,hon:30},
+"Mississippi":{a:"MS",f:"28",pt:"Shall-Issue",cc:true,cy:2016,age:18,tr:true,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2016. Enhanced permit (LEOSA-equivalent) allows carry in additional locations including restaurants serving alcohol. Enhanced permit holders may carry in church, bars, and other typically restricted locations. Very permissive firearms laws.",l:"https://www.dps.ms.gov/",cd:true,syg:true,pv:"5 years",ia:"Dept. of Public Safety",nrp:false,ep:true,oth:false,sh:35,hon:34},
+"Missouri":{a:"MO",f:"29",pt:"Shall-Issue",cc:true,cy:2017,age:19,tr:true,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2017 (age 19+). Universal recognition. CCW permit still issued for travel. No gun registration. Permitless open carry. Strong preemption law. No magazine restrictions.",l:"https://www.mshp.dps.missouri.gov/",cd:true,syg:true,pv:"5 years",ia:"County sheriff",nrp:false,ep:false,oth:false,sh:38,hon:35},
+"Montana":{a:"MT",f:"30",pt:"Shall-Issue",cc:true,cy:2021,age:18,tr:false,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2021 (expanded to all areas). Universal recognition. Enhanced permit available for additional location carry privileges. Concealed Weapon Permit still available for reciprocity. Previously limited constitutional carry to cities under 10,000; 2021 law removed that restriction.",l:"https://dojmt.gov/enforcement/concealed-weapons/",cd:true,syg:true,pv:"5 years",ia:"County sheriff",nrp:false,ep:true,oth:true,sh:36,hon:34},
+"Nebraska":{a:"NE",f:"31",pt:"Shall-Issue",cc:true,cy:2023,age:21,tr:true,oc:true,dti:true,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since September 2023 (LB 77). Duty to inform — must notify officer you're carrying upon contact. Universal recognition. Concealed Handgun Permit still issued for reciprocity. No assault weapon ban. No magazine limits.",l:"https://statepatrol.nebraska.gov/",cd:true,syg:false,pv:"5 years",ia:"State patrol",nrp:false,ep:false,oth:false,sh:36,hon:34},
+"Nevada":{a:"NV",f:"32",pt:"Shall-Issue",cc:false,cy:null,age:21,tr:true,oc:true,dti:false,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI","VT","WA"],r:["MN","NM","PA"],ur:false,n:"Honors permits from specific states — list reduced in recent years. Universal background check law passed 2019. Open carry legal without permit. Las Vegas Strip has many private-property no-carry signs. No magazine limits currently.",l:"https://www.lvmpd.com/",cd:true,syg:true,pv:"5 years",ia:"County sheriff",nrp:false,ep:false,oth:false,sh:22,hon:30},
+"New Hampshire":{a:"NH",f:"33",pt:"Shall-Issue",cc:true,cy:2017,age:18,tr:false,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2017. Universal recognition. No training required for permit or constitutional carry. Non-resident permits available with no training requirement — an excellent supplemental permit. No fees (free permit). Very firearm-friendly state.",l:"https://www.nh.gov/safety/divisions/nhsp/",cd:true,syg:true,pv:"5 years",ia:"Local selectmen / police chief",nrp:true,ep:false,oth:true,sh:28,hon:34},
+"New Jersey":{a:"NJ",f:"34",pt:"May-Issue",cc:false,cy:null,age:21,tr:true,oc:false,dti:false,h:"none",nh:[],r:[],ur:false,n:"Does not honor any out-of-state permits. MANDATORY MINIMUM sentences for firearms violations — felony for having an unserialized firearm, 5+ years for carry without permit. Post-Bruen laws challenged. Magazine capacity limit 10 rounds. Strict assault weapon definitions. Most dangerous state in the US for armed travelers.",l:"https://www.njsp.org/",cd:true,syg:false,pv:"2 years",ia:"Local police chief / State police",nrp:false,ep:false,oth:false,sh:0,hon:5},
+"New Mexico":{a:"NM",f:"35",pt:"Shall-Issue",cc:false,cy:null,age:21,tr:true,oc:true,dti:false,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI","VT","WA"],r:["MN","NV","PA"],ur:false,n:"Honors permits from states with similar training and background check standards. New Mexico requires 15 hours of training. Open carry legal without permit. No magazine limits. CCW permit applicants must be NM resident or active duty military stationed in NM.",l:"https://www.dps.nm.gov/",cd:true,syg:false,pv:"4 years",ia:"Dept. of Public Safety",nrp:false,ep:false,oth:false,sh:24,hon:30},
+"New York":{a:"NY",f:"36",pt:"May-Issue",cc:false,cy:null,age:21,tr:true,oc:false,dti:false,h:"none",nh:[],r:[],ur:false,n:"Does not honor any out-of-state permits. NY State pistol permit NOT valid in New York City — NYC has its own separate licensing system. Post-Bruen law (CCIA 2022) created sweeping 'sensitive locations' restrictions challenged in courts. 10-round magazine limit. Assault weapon ban. Very aggressive prosecution.",l:"https://www.ny.gov/",cd:true,syg:false,pv:"5 years",ia:"County judge / licensing officer",nrp:false,ep:false,oth:false,sh:0,hon:6},
+"North Carolina":{a:"NC",f:"37",pt:"Shall-Issue",cc:true,cy:2023,age:18,tr:true,oc:true,dti:true,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since March 2023 (House Bill 189 repealed handgun purchase permit requirement). Duty to inform officers — must disclose upon first contact. Universal recognition. Pistol Purchase Permit abolished. No magazine limits. Strong preemption laws.",l:"https://ncdoj.gov/",cd:true,syg:true,pv:"5 years",ia:"County sheriff",nrp:false,ep:false,oth:false,sh:38,hon:36},
+"North Dakota":{a:"ND",f:"38",pt:"Shall-Issue",cc:true,cy:2017,age:18,tr:true,oc:true,dti:true,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI"],r:["MN","NV","WA"],ur:false,n:"Constitutional carry since 2017. Class 1 license (with training) recommended for maximum reciprocity — recognized in more states than Class 2. Duty to inform upon contact. Class 1 requires 8-hour class; Class 2 requires no training. Always get Class 1 for interstate travel.",l:"https://attorneygeneral.nd.gov/",cd:true,syg:false,pv:"5 years",ia:"Bureau of Criminal Investigation",nrp:false,ep:true,oth:false,sh:30,hon:32},
+"Ohio":{a:"OH",f:"39",pt:"Shall-Issue",cc:true,cy:2022,age:21,tr:true,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since June 2022 (SB 215). Universal recognition. CHL (Concealed Handgun License) still available and recommended for travel. Duty to inform removed with constitutional carry bill. No magazine restrictions. No assault weapon ban. Strong preemption law.",l:"https://ohioattorneygeneral.gov/ConcealedCarry",cd:true,syg:true,pv:"5 years",ia:"County sheriff",nrp:false,ep:false,oth:false,sh:38,hon:36},
+"Oklahoma":{a:"OK",f:"40",pt:"Shall-Issue",cc:true,cy:2019,age:21,tr:true,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2019. Universal recognition. Self-Defense Act (SDA) license still available for reciprocity — 10-year validity, longest duration of any state. OSBI administers licensing. Very permissive firearms laws.",l:"https://www.ok.gov/osbi/",cd:true,syg:true,pv:"10 years",ia:"OSBI",nrp:false,ep:false,oth:false,sh:38,hon:36},
+"Oregon":{a:"OR",f:"41",pt:"Shall-Issue",cc:false,cy:null,age:21,tr:true,oc:true,dti:false,h:"vl",nh:[],r:["ID"],ur:false,n:"Very limited reciprocity — only honors Idaho resident permits. Measure 114 (magazine limits, permit-to-purchase) partially in effect and being litigated. Open carry legal but may be restricted in certain localities. Magazine capacity battles ongoing in courts.",l:"https://www.oregon.gov/osp/",cd:true,syg:false,pv:"4 years",ia:"County sheriff",nrp:false,ep:false,oth:false,sh:1,hon:6},
+"Pennsylvania":{a:"PA",f:"42",pt:"Shall-Issue",cc:false,cy:null,age:21,tr:false,oc:true,dti:false,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","MN","NJ","NY","OR","RI","VT","WA"],r:["NV","NM"],ur:false,n:"Honors permits from specific states. Philadelphia restricts open carry without LTCF. No training required for LTCF. Non-resident permits not available. Good reciprocity with most Eastern states. Must check current list — PA has amended reciprocity agreements several times.",l:"https://www.psp.pa.gov/",cd:true,syg:true,pv:"5 years",ia:"County sheriff",nrp:false,ep:false,oth:false,sh:28,hon:32},
+"Rhode Island":{a:"RI",f:"44",pt:"May-Issue",cc:false,cy:null,age:21,tr:true,oc:false,dti:false,h:"vl",nh:[],r:[],ur:false,n:"Very limited reciprocity. Attorney General issues permits separate from local police chiefs. Historically very difficult to obtain. Attorney General permit provides more reciprocity options. Open carry technically legal but rare in practice.",l:"https://riag.ri.gov/",cd:true,syg:false,pv:"4 years",ia:"Attorney General / local PD",nrp:false,ep:false,oth:false,sh:2,hon:6},
+"South Carolina":{a:"SC",f:"45",pt:"Shall-Issue",cc:true,cy:2024,age:18,tr:true,oc:true,dti:true,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI"],r:["MN","NV","WA"],ur:false,n:"Constitutional carry since March 2024 (Open Carry with Training Act). Duty to inform — must notify officer you are carrying. Concealable Weapons Permit (CWP) still available and recommended for out-of-state travel. Honors most state permits through reciprocity agreements.",l:"https://sled.sc.gov/",cd:true,syg:true,pv:"5 years",ia:"SLED",nrp:false,ep:false,oth:false,sh:34,hon:34},
+"South Dakota":{a:"SD",f:"46",pt:"Shall-Issue",cc:true,cy:2019,age:18,tr:false,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2019. Universal recognition. Enhanced permit available — allows carry in more locations and provides slightly broader permit validity. Gold Card permit (enhanced) recommended for maximum coverage. No training required for standard permit.",l:"https://dps.sd.gov/",cd:true,syg:true,pv:"5 years",ia:"County sheriff",nrp:false,ep:true,oth:false,sh:37,hon:34},
+"Tennessee":{a:"TN",f:"47",pt:"Shall-Issue",cc:true,cy:2021,age:21,tr:true,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2021. Universal recognition. Enhanced carry permit allows carry in more locations including establishments selling alcohol (for consumption on premises), provided carrier is not drinking. Enhanced permit strongly recommended. 8-year validity for standard, same for enhanced.",l:"https://www.tn.gov/safety/",cd:true,syg:true,pv:"8 years",ia:"Dept. of Safety",nrp:false,ep:true,oth:false,sh:38,hon:36},
+"Texas":{a:"TX",f:"48",pt:"Shall-Issue",cc:true,cy:2021,age:21,tr:true,oc:true,dti:true,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since September 2021 (HB 1927). LTC (License to Carry) still available and strongly recommended for out-of-state reciprocity. 30.06 signs prohibit concealed carry; 30.07 signs prohibit open carry — both carry force of law. Duty to display license if asked. No magazine limits.",l:"https://www.dps.texas.gov/section/handgun-licensing",cd:true,syg:true,pv:"5 years",ia:"Dept. of Public Safety",nrp:true,ep:false,oth:false,sh:37,hon:35},
+"Utah":{a:"UT",f:"49",pt:"Shall-Issue",cc:true,cy:2021,age:21,tr:true,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2021. UT non-resident permit honored in 36 states — second most recognized after FL. Online training accepted. Utah BCI processes non-resident applications relatively quickly. Excellent permit for out-of-state travel stacking. No magazine limits.",l:"https://bci.utah.gov/concealed-firearm/cfp-permit-information/",cd:true,syg:true,pv:"5 years",ia:"Bureau of Criminal ID",nrp:true,ep:false,oth:false,sh:36,hon:36},
+"Vermont":{a:"VT",f:"50",pt:"Unrestricted",cc:true,cy:1791,age:18,tr:false,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"The original constitutional carry state — Vermont has allowed permitless carry since its founding in 1791. No permit system exists — VT does not issue permits. Vermont residents should obtain FL, UT, or AZ non-resident permits for out-of-state carry. 10-round magazine limit (2018). No assault weapon ban.",l:"https://vsp.vermont.gov/",cd:true,syg:false,pv:"N/A",ia:"N/A — no permits issued",nrp:false,ep:false,oth:true,sh:0,hon:30},
+"Virginia":{a:"VA",f:"51",pt:"Shall-Issue",cc:false,cy:null,age:21,tr:true,oc:true,dti:false,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI","VT","WA"],r:["MN","NV","NM"],ur:false,n:"Honors permits from specific states. Good non-resident permit option for Eastern coverage. Circuit court issues CHP. No training required to actually carry (open carry), but required for CHP. Virginia non-resident permits available — recognized in 30+ states.",l:"https://www.vsp.virginia.gov/",cd:true,syg:false,pv:"5 years",ia:"State police / circuit court",nrp:true,ep:false,oth:false,sh:30,hon:32},
+"Washington":{a:"WA",f:"53",pt:"Shall-Issue",cc:false,cy:null,age:21,tr:false,oc:true,dti:false,h:"vl",nh:[],r:[],ur:false,n:"Very limited reciprocity — honors permits from only ~10 states. No training required for CPL. Magazine capacity limit: 10+ round magazines banned (Initiative 1639, 2018). Assault rifle restrictions. Background check expansion. Seattle has additional local restrictions.",l:"https://www.dol.wa.gov/",cd:true,syg:false,pv:"5 years",ia:"Local police / sheriff",nrp:false,ep:false,oth:false,sh:10,hon:8},
+"West Virginia":{a:"WV",f:"54",pt:"Shall-Issue",cc:true,cy:2016,age:21,tr:true,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2016. Universal recognition. CCDL (Concealed Deadly Weapon License) still available for reciprocity. No training required for constitutional carry but training recommended. Strong preemption laws. No magazine restrictions.",l:"https://www.wvsp.gov/",cd:true,syg:true,pv:"5 years",ia:"County sheriff",nrp:false,ep:false,oth:false,sh:38,hon:36},
+"Wisconsin":{a:"WI",f:"55",pt:"Shall-Issue",cc:false,cy:null,age:21,tr:true,oc:true,dti:false,h:"sel",nh:["CA","CT","DC","HI","IL","MD","MA","NJ","NY","OR","RI","VT","WA"],r:["MN","NV","NM"],ur:false,n:"Honors permits from states meeting specific standards. Note: Wisconsin only honors permits issued after a specific date for some states — check WI DOJ for current date requirements per state. CCW (Concealed Carry Weapon) license issued by DOJ. No magazine limits. No assault weapon ban.",l:"https://www.doj.state.wi.us/",cd:true,syg:false,pv:"5 years",ia:"Dept. of Justice",nrp:false,ep:false,oth:false,sh:30,hon:32},
+"Wyoming":{a:"WY",f:"56",pt:"Shall-Issue",cc:true,cy:2011,age:21,tr:false,oc:true,dti:false,h:"all",nh:[],r:[],ur:true,n:"Constitutional carry since 2011. Universal recognition. Concealed Firearms Permit still issued for reciprocity travel. No training required. No magazine restrictions. No assault weapon ban. Very firearm-permissive state.",l:"https://ag.wyo.gov/",cd:true,syg:true,pv:"5 years",ia:"Attorney General",nrp:false,ep:false,oth:false,sh:38,hon:36}
 };
 
 const NH_STATES=["California","Connecticut","District of Columbia","Hawaii","Illinois","Maryland","Massachusetts","New Jersey","New York"];
@@ -383,37 +1092,60 @@ const F2S={};Object.entries(S).forEach(([n,d])=>{F2S[d.f]=n});
 let stateFeatures={};
 const C={def:'#16181c',you:'#20FDF0',hon:'#22c55e',cc:'#22d3ee',res:'#eab308',no:'#ef4444',stk:'#2a2d35',stkH:'#20FDF0',stkA:'#fff'};
 
-let proj=null,sel=null,els={};
+let proj=null, selStates=[], els={};
 
-function status(ps,ts){
-  if(ps===ts)return'you';const t=S[ts],p=S[ps];if(!t||!p)return'nd';
-  if(t.h==='none'||NH_STATES.includes(ts))return'no';
-  if(t.ur||t.h==='all')return t.cc?'cc':'hon';
-  if(t.h==='vl'){if(t.r.includes(p.a))return'res';return'no'}
-  if(t.h==='sel'){if(t.nh.includes(p.a))return'no';if(t.r.includes(p.a))return'res';return t.cc?'cc':'hon'}
-  return'nd';
+// ── STATUS (multi-permit aware) ──
+function singleStatus(ps, ts) {
+  if(ps===ts) return 'you';
+  const t=S[ts],p=S[ps];
+  if(!t||!p) return 'nd';
+  if(t.h==='none'||NH_STATES.includes(ts)) return 'no';
+  if(t.ur||t.h==='all') return t.cc?'cc':'hon';
+  if(t.h==='vl'){return t.r.includes(p.a)?'res':'no'}
+  if(t.h==='sel'){
+    if(t.nh.includes(p.a)) return 'no';
+    if(t.r.includes(p.a)) return 'res';
+    return t.cc?'cc':'hon';
+  }
+  return 'nd';
 }
+
+function status(ts) {
+  if(selStates.length===0) return 'nd';
+  if(selStates.includes(ts)) return 'you';
+  const priority={you:5,cc:4,hon:3,res:2,no:1,nd:0};
+  let best='no';
+  for(const ps of selStates){
+    const st=singleStatus(ps,ts);
+    if(priority[st]>priority[best]) best=st;
+  }
+  return best;
+}
+
 function sColor(s){return{you:C.you,hon:C.hon,cc:C.cc,res:C.res,no:C.no,nd:'#3a3d47'}[s]||'#3a3d47'}
 function sLabel(s){return{you:'Your Permit State',hon:'Honors Your Permit',cc:'Constitutional Carry (No Permit Needed)',res:'Restricted / Partial',no:'Does Not Honor',nd:'No Data'}[s]||'Unknown'}
 function cap(s){return s?s.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()):''}
 
+// ── MAP DRAW ──
 function drawStates(){
   fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(r=>r.json()).then(us=>{
     proj=d3.geoAlbersUsa().scale(1280).translate([480,300]);
     const path=d3.geoPath().projection(proj);
     const feats=topojson.feature(us,us.objects.states);
-    // Store features for centroid calculation
     feats.features.forEach(f=>{const fips=String(f.id).padStart(2,'0');const n=F2S[fips];if(n)stateFeatures[n]=f});
     d3.select('#states-g').selectAll('path').data(feats.features).enter().append('path')
       .attr('d',path).attr('fill',C.def).attr('stroke',C.stk).attr('stroke-width','0.8').attr('cursor','pointer')
       .each(function(d){const f=String(d.id).padStart(2,'0'),n=F2S[f];if(n)els[n]=this})
       .on('mouseenter',function(e,d){const n=F2S[String(d.id).padStart(2,'0')];if(!n)return;d3.select(this).attr('stroke',C.stkH).attr('stroke-width','2').raise();d3.select('#labels-g').raise();showTT(e,n)})
       .on('mousemove',function(e){moveTT(e)})
-      .on('mouseleave',function(){const isS=sel&&this===els[sel];d3.select(this).attr('stroke',isS?C.stkA:C.stk).attr('stroke-width',isS?'2':'0.8');hideTT()})
+      .on('mouseleave',function(){const isS=selStates.includes(this.__n);d3.select(this).attr('stroke',isS?C.stkA:C.stk).attr('stroke-width',isS?'2':'0.8');hideTT()})
       .on('click',function(e,d){const n=F2S[String(d.id).padStart(2,'0')];if(n)handleClick(n)});
+    // store name on element
+    d3.select('#states-g').selectAll('path').each(function(d){this.__n=F2S[String(d.id).padStart(2,'0')]});
     addLabels(path);
   });
 }
+
 function addLabels(path){
   const g=d3.select('#labels-g');g.selectAll('*').remove();
   Object.entries(S).forEach(([n,d])=>{
@@ -427,112 +1159,230 @@ function addLabels(path){
 }
 
 function handleClick(n){
-  if(!sel){selectPermitState(n);return}
-  if(n===sel){resetMap();return}
+  if(selStates.length===0){addPermit(n);return}
+  if(selStates.includes(n)){removePermit(n);return}
   showDetail(n);
 }
 
 function colorMap(){
-  if(!sel){
+  if(selStates.length===0){
     Object.entries(els).forEach(([n,el])=>{d3.select(el).transition().duration(300).attr('fill',C.def).attr('fill-opacity',1);d3.select(el).attr('stroke',C.stk).attr('stroke-width','0.8')});
     d3.selectAll('#labels-g text').attr('fill','rgba(255,255,255,0.35)');
     document.getElementById('map-legend').style.display='none';
-    document.getElementById('map-tagline').textContent='Click a State to Begin';
+    document.getElementById('map-tagline').textContent='Click a State or Add a Permit to Begin';
     document.getElementById('map-instruction').innerHTML='<span style="color:var(--accent)">⬆</span> Click any state to view reciprocity';
     return;
   }
   document.getElementById('map-legend').style.display='block';
-  document.getElementById('map-tagline').textContent=`${sel} Permit — Reciprocity`;
+  const stateLabel = selStates.length===1 ? `${selStates[0]} Permit — Reciprocity` : `${selStates.length} Permits — Combined Coverage`;
+  document.getElementById('map-tagline').textContent=stateLabel;
   document.getElementById('map-instruction').innerHTML='<span style="color:var(--accent)">🔍</span> Click another state for details';
   Object.entries(els).forEach(([n,el])=>{
-    const st=status(sel,n),co=sColor(st),isY=st==='you';
+    const st=status(n),co=sColor(st),isY=st==='you';
     d3.select(el).transition().duration(400).attr('fill',co).attr('fill-opacity',isY?.7:st==='no'?.45:.55);
-    if(isY)d3.select(el).attr('stroke',C.stkA).attr('stroke-width','2');
-    const ab=S[n]?.a;if(ab)d3.select(`.l-${ab}`).attr('fill',isY?'#fff':st==='no'?'rgba(255,255,255,0.15)':'rgba(255,255,255,0.55)');
+    if(isY) d3.select(el).attr('stroke',C.stkA).attr('stroke-width','2');
+    const ab=S[n]?.a;if(ab) d3.select(`.l-${ab}`).attr('fill',isY?'#fff':st==='no'?'rgba(255,255,255,0.15)':'rgba(255,255,255,0.55)');
   });
 }
 
-function selectPermitState(n){sel=n||null;document.getElementById('permit-select').value=n||'';closeDetail();colorMap();renderSidebar()}
-function resetMap(){sel=null;document.getElementById('permit-select').value='';closeDetail();colorMap();renderSidebar()}
+// ── MULTI-PERMIT MANAGEMENT ──
+function addPermit(n){
+  if(!n||selStates.includes(n)) return;
+  selStates.push(n);
+  closeDetail();
+  colorMap();
+  renderSidebar();
+  renderPermitChips();
+  updateDropdownItems();
+}
 
+function removePermit(n){
+  selStates=selStates.filter(s=>s!==n);
+  colorMap();
+  renderSidebar();
+  renderPermitChips();
+  updateDropdownItems();
+  if(selStates.length===0) closeDetail();
+}
+
+function resetMap(){
+  selStates=[];
+  closeDetail();
+  colorMap();
+  renderSidebar();
+  renderPermitChips();
+  updateDropdownItems();
+}
+
+function renderPermitChips(){
+  const area=document.getElementById('permit-chips-area');
+  const hint=document.getElementById('no-permits-hint');
+  // Remove existing chips
+  area.querySelectorAll('.permit-chip').forEach(c=>c.remove());
+  if(selStates.length===0){
+    if(hint) hint.style.display='';
+  } else {
+    if(hint) hint.style.display='none';
+    selStates.forEach(n=>{
+      const d=S[n];
+      const chip=document.createElement('div');
+      chip.className='permit-chip';
+      chip.innerHTML=`${d.a}<button class="chip-x" onclick="removePermit('${n.replace(/'/g,"\\'")}')">✕</button>`;
+      area.insertBefore(chip, area.querySelector('.add-permit-wrap') || null);
+    });
+  }
+}
+
+function togglePermitDropdown(){
+  const dd=document.getElementById('permit-dropdown');
+  dd.classList.toggle('open');
+  if(dd.classList.contains('open')) populateDropdown();
+}
+
+function populateDropdown(){
+  const dd=document.getElementById('permit-dropdown');
+  dd.innerHTML='';
+  const grp1=document.createElement('div');grp1.className='pd-group';grp1.textContent='Select State';
+  dd.appendChild(grp1);
+  Object.entries(S).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([n,d])=>{
+    const item=document.createElement('div');
+    item.className='pd-item'+(selStates.includes(n)?' selected':'');
+    item.innerHTML=`<span style="color:${selStates.includes(n)?'var(--accent)':'var(--sub)'};font-family:var(--font-head);font-size:11px;font-weight:700;min-width:24px">${d.a}</span>${n}`;
+    item.onclick=()=>{addPermit(n);dd.classList.remove('open')};
+    dd.appendChild(item);
+  });
+}
+
+function updateDropdownItems(){
+  // No-op: dropdown is repopulated fresh each time
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', e=>{
+  const dd=document.getElementById('permit-dropdown');
+  const btn=document.getElementById('add-permit-btn');
+  if(!dd.contains(e.target)&&!btn.contains(e.target)) dd.classList.remove('open');
+});
+
+// ── SIDEBAR ──
 function renderSidebar(){
   const c=document.getElementById('sidebar-content');
-  if(!sel){
-    c.innerHTML=`<div class="empty-state"><div class="empty-icon">🗺️</div><div class="empty-title">Click a State on the Map</div><div class="empty-desc">Click the state where your concealed carry permit was issued to see which states honor it across the country.</div></div>
-    <div class="legend-section" style="margin-top:1.5rem"><div class="sec-lbl">Quick Stats — 2026</div><div class="stats-grid"><div class="stat-card"><div class="stat-num accent">29</div><div class="stat-lbl">Const. Carry States</div></div><div class="stat-card"><div class="stat-num">8</div><div class="stat-lbl">No Recognition</div></div><div class="stat-card"><div class="stat-num green">37</div><div class="stat-lbl">States Honor FL</div></div><div class="stat-card"><div class="stat-num">36</div><div class="stat-lbl">States Honor UT</div></div></div></div>
-    <div class="legend-section"><div class="sec-lbl">Map Colors</div><div class="leg-item"><div class="leg-swatch" style="background:var(--accent)"></div>Your Permit State</div><div class="leg-item"><div class="leg-swatch" style="background:var(--green)"></div>Honors Your Permit</div><div class="leg-item"><div class="leg-swatch" style="background:var(--cyan)"></div>Constitutional Carry</div><div class="leg-item"><div class="leg-swatch" style="background:var(--yellow)"></div>Restricted / Partial</div><div class="leg-item"><div class="leg-swatch" style="background:var(--red)"></div>Does Not Honor</div></div>
-    <div class="disclaimer"><strong>⚠ Disclaimer:</strong> This map is for informational purposes only and is not legal advice. Laws change frequently. Always verify current reciprocity with official state sources before traveling with a firearm.</div>`;
+  if(selStates.length===0){
+    c.innerHTML=`<div class="empty-state"><div class="empty-icon">🗺️</div><div class="empty-title">Add a Permit to Begin</div><div class="empty-desc">Click a state on the map or use the <strong style="color:var(--accent)">+ Add Permit</strong> button to see which states honor your concealed carry permit.</div></div>
+    <div class="legend-section" style="margin-top:1.5rem"><div class="sec-lbl">Quick Stats — 2026</div><div class="stats-grid"><div class="stat-card"><div class="stat-num accent">29</div><div class="stat-lbl">Const. Carry States</div></div><div class="stat-card"><div class="stat-num">9</div><div class="stat-lbl">No Recognition</div></div><div class="stat-card"><div class="stat-num green">37</div><div class="stat-lbl">States Honor FL</div></div><div class="stat-card"><div class="stat-num">36</div><div class="stat-lbl">States Honor UT</div></div></div></div>
+    <div class="legend-section"><div class="sec-lbl">Map Colors</div><div class="leg-item"><div class="leg-swatch" style="background:var(--accent)"></div>Your Permit State(s)</div><div class="leg-item"><div class="leg-swatch" style="background:var(--green)"></div>Honors Your Permit</div><div class="leg-item"><div class="leg-swatch" style="background:var(--cyan)"></div>Constitutional Carry</div><div class="leg-item"><div class="leg-swatch" style="background:var(--yellow)"></div>Restricted / Partial</div><div class="leg-item"><div class="leg-swatch" style="background:var(--red)"></div>Does Not Honor</div></div>
+    <div class="disclaimer"><strong>⚠ Disclaimer:</strong> For informational purposes only — not legal advice. Laws change frequently. Always verify with official state sources before traveling with a firearm.</div>`;
     return;
   }
-  const p=S[sel],cn={hon:0,cc:0,res:0,no:0},sb={hon:[],cc:[],res:[],no:[]};
-  Object.keys(S).forEach(n=>{if(n===sel)return;const st=status(sel,n);if(cn[st]!==undefined){cn[st]++;sb[st].push(n)}});
+
+  // Compute combined stats
+  const cn={hon:0,cc:0,res:0,no:0};
+  const sb={hon:[],cc:[],res:[],no:[]};
+  Object.keys(S).forEach(n=>{
+    if(selStates.includes(n)) return;
+    const st=status(n);
+    if(cn[st]!==undefined){cn[st]++;sb[st].push(n)}
+  });
   const th=cn.hon+cn.cc;
-  c.innerHTML=`<button class="back-btn visible" onclick="resetMap()">← Back to Overview</button>
-    <div class="mode-pill permit"><div class="mode-dot" style="background:var(--accent)"></div>Permit State</div>
-    <div class="si-title">${sel}</div>
-    <div class="si-subtitle">${p.a} Permit — Click another state on the map for details</div>
-    <div class="stats-grid"><div class="stat-card"><div class="stat-num green">${th}</div><div class="stat-lbl">States Honor</div></div><div class="stat-card"><div class="stat-num red">${cn.no}</div><div class="stat-lbl">Don't Honor</div></div><div class="stat-card"><div class="stat-num accent">${cn.cc}</div><div class="stat-lbl">Const. Carry</div></div><div class="stat-card"><div class="stat-num yellow">${cn.res}</div><div class="stat-lbl">Restricted</div></div></div>
-    <div style="margin-bottom:.75rem">
-      <div class="info-row"><span class="ir-label">Issue Type</span><span class="ir-value"><span class="tag tag-blue">${p.pt}</span></span></div>
-      <div class="info-row"><span class="ir-label">Const. Carry</span><span class="ir-value">${p.cc?`<span class="tag tag-green">Yes (${p.cy})</span>`:'<span class="tag tag-red">No</span>'}</span></div>
-      <div class="info-row"><span class="ir-label">Open Carry</span><span class="ir-value">${p.oc?'<span class="tag tag-green">Yes</span>':'<span class="tag tag-red">No</span>'}</span></div>
-      <div class="info-row"><span class="ir-label">Legal Age</span><span class="ir-value">${p.age}+</span></div>
-      <div class="info-row"><span class="ir-label">Permit Valid</span><span class="ir-value">${p.pv}</span></div>
-      <div class="info-row"><span class="ir-label">Training</span><span class="ir-value">${p.tr?'Required':'Not Required'}</span></div>
-      <div class="info-row"><span class="ir-label">Nonresident Permits</span><span class="ir-value">${p.nrp?'<span class="tag tag-green">Yes</span>':'<span class="tag tag-red">No</span>'}</span></div>
-      <div class="info-row"><span class="ir-label">Enhanced Permits</span><span class="ir-value">${p.ep?'<span class="tag tag-green">Yes</span>':'No'}</span></div>
-      <div class="info-row"><span class="ir-label">Weapons Other Than Handguns</span><span class="ir-value">${p.oth?'<span class="tag tag-green">Yes</span>':'<span class="tag tag-red">No</span>'}</span></div>
-      <div class="info-row"><span class="ir-label">Duty to Inform</span><span class="ir-value">${p.dti?'<span class="tag tag-yellow">Yes</span>':'No'}</span></div>
-      <div class="info-row"><span class="ir-label">Castle Doctrine</span><span class="ir-value">${p.cd?'<span class="tag tag-green">Yes</span>':'<span class="tag tag-red">No</span>'}</span></div>
-      <div class="info-row"><span class="ir-label">Stand Your Ground</span><span class="ir-value">${p.syg?'<span class="tag tag-green">Yes</span>':'<span class="tag tag-red">No</span>'}</span></div>
-      <div class="info-row"><span class="ir-label">States Honored In</span><span class="ir-value" style="color:var(--accent);font-family:var(--font-head);font-weight:700">${p.hon}</span></div>
-      <div class="info-row"><span class="ir-label">Reciprocating States</span><span class="ir-value" style="color:var(--accent);font-family:var(--font-head);font-weight:700">${p.sh}</span></div>
-      <div class="info-row"><span class="ir-label">Issuing Agency</span><span class="ir-value">${p.ia}</span></div>
+  const pct=Math.round((th/(Object.keys(S).length-selStates.length))*100);
+
+  let permitCards='';
+  if(selStates.length===1){
+    const p=S[selStates[0]];
+    permitCards=`<div class="mode-pill permit"><div class="mode-dot" style="background:var(--accent)"></div>Permit State</div>
+    <div class="si-title">${selStates[0]}</div>
+    <div class="si-subtitle">${p.a} — Click another state for details</div>`;
+  } else {
+    permitCards=`<div class="mode-pill permit"><div class="mode-dot" style="background:var(--accent)"></div>Multi-Permit Mode</div>
+    <div class="si-title">${selStates.length} Permits Stacked</div>
+    <div class="si-subtitle">${selStates.map(n=>S[n].a).join(' + ')} — Combined coverage</div>`;
+  }
+
+  c.innerHTML=`<button class="back-btn visible" onclick="resetMap()">← Reset All Permits</button>
+    ${permitCards}
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num green">${th}</div><div class="stat-lbl">States Covered</div></div>
+      <div class="stat-card"><div class="stat-num red">${cn.no}</div><div class="stat-lbl">Don't Honor</div></div>
+      <div class="stat-card"><div class="stat-num accent">${cn.cc}</div><div class="stat-lbl">Const. Carry</div></div>
+      <div class="stat-card"><div class="stat-num yellow">${cn.res}</div><div class="stat-lbl">Restricted</div></div>
     </div>
-    ${p.n?`<div style="font-size:12px;color:var(--sub);line-height:1.5;margin-bottom:.75rem;padding:8px 10px;background:var(--card);border:1px solid var(--border);border-radius:5px">${p.n}</div>`:''}
-    <a class="do-link" href="${p.l}" target="_blank" rel="noopener">🔗 ${sel} — Official Resources</a>
-    ${sList('Does Not Honor Your Permit',sb.no,C.no)}
+    <div class="multi-coverage-bar">
+      <div class="mcb-label">Coverage: ${pct}% of States</div>
+      <div class="mcb-track"><div class="mcb-fill" style="width:${pct}%"></div></div>
+    </div>
+    ${selStates.length===1?renderSinglePermitInfo(selStates[0]):''}
+    ${sList('Does Not Honor',sb.no,C.no)}
     ${sList('Restricted / Partial',sb.res,C.res)}
     ${sList('Honors Your Permit',sb.hon,C.hon)}
     ${sList('Constitutional Carry',sb.cc,C.cc)}
-    <div class="disclaimer"><strong>⚠ Disclaimer:</strong> Not legal advice. Laws change frequently. Always verify with official state sources.</div>`;
+    <div class="disclaimer"><strong>⚠</strong> Not legal advice. Always verify with official state sources.</div>`;
+}
+
+function renderSinglePermitInfo(stateName){
+  const p=S[stateName];
+  return `<div style="margin-bottom:.75rem">
+    <div class="info-row"><span class="ir-label">Issue Type</span><span class="ir-value"><span class="tag tag-blue">${p.pt}</span></span></div>
+    <div class="info-row"><span class="ir-label">Const. Carry</span><span class="ir-value">${p.cc?`<span class="tag tag-green">Yes (${p.cy})</span>`:'<span class="tag tag-red">No</span>'}</span></div>
+    <div class="info-row"><span class="ir-label">Open Carry</span><span class="ir-value">${p.oc?'<span class="tag tag-green">Yes</span>':'<span class="tag tag-red">No</span>'}</span></div>
+    <div class="info-row"><span class="ir-label">Legal Age</span><span class="ir-value">${p.age}+</span></div>
+    <div class="info-row"><span class="ir-label">Permit Valid</span><span class="ir-value">${p.pv}</span></div>
+    <div class="info-row"><span class="ir-label">Training</span><span class="ir-value">${p.tr?'Required':'Not Required'}</span></div>
+    <div class="info-row"><span class="ir-label">Nonresident</span><span class="ir-value">${p.nrp?'<span class="tag tag-green">Yes</span>':'<span class="tag tag-red">No</span>'}</span></div>
+    <div class="info-row"><span class="ir-label">Enhanced Permit</span><span class="ir-value">${p.ep?'<span class="tag tag-green">Yes</span>':'No'}</span></div>
+    <div class="info-row"><span class="ir-label">Duty to Inform</span><span class="ir-value">${p.dti?'<span class="tag tag-yellow">Yes</span>':'No'}</span></div>
+    <div class="info-row"><span class="ir-label">Castle Doctrine</span><span class="ir-value">${p.cd?'<span class="tag tag-green">Yes</span>':'<span class="tag tag-red">No</span>'}</span></div>
+    <div class="info-row"><span class="ir-label">Stand Your Ground</span><span class="ir-value">${p.syg?'<span class="tag tag-green">Yes</span>':'<span class="tag tag-red">No</span>'}</span></div>
+    <div class="info-row"><span class="ir-label">Honored In</span><span class="ir-value" style="color:var(--accent);font-family:var(--font-head);font-weight:700">${p.hon} states</span></div>
+    <div class="info-row"><span class="ir-label">Issuing Agency</span><span class="ir-value">${p.ia}</span></div>
+  </div>
+  ${p.n?`<div style="font-size:12px;color:var(--sub);line-height:1.5;margin-bottom:.75rem;padding:8px 10px;background:var(--card);border:1px solid var(--border);border-radius:5px">${p.n}</div>`:''}
+  <a class="do-link" href="${p.l}" target="_blank" rel="noopener">🔗 ${stateName} — Official Resources</a>`;
 }
 
 function sList(t,arr,dc){
-  if(!arr.length)return'';
-  return`<div class="state-list-wrap"><div class="sec-lbl">${t} (${arr.length})</div>${arr.sort().map(n=>{const d=S[n];return`<div class="sl-item" onclick="showDetail('${n.replace(/'/g,"\\'")}')"><div class="sl-dot" style="background:${dc}"></div><span class="sl-name">${n}</span><span class="sl-tag">${d.a}</span></div>`}).join('')}</div>`;
+  if(!arr.length) return '';
+  return `<div class="state-list-wrap"><div class="sec-lbl">${t} (${arr.length})</div>${arr.sort().map(n=>{const d=S[n];return`<div class="sl-item" onclick="showDetail('${n.replace(/'/g,"\\'")}')"><div class="sl-dot" style="background:${dc}"></div><span class="sl-name">${n}</span><span class="sl-tag">${d.a}</span></div>`}).join('')}</div>`;
 }
 
+// ── DETAIL OVERLAY ──
 function showDetail(n){
-  const d=S[n];if(!d)return;
+  const d=S[n];if(!d) return;
   const ov=document.getElementById('detail-overlay');
   document.getElementById('do-title').textContent=n;
-  let st=sel?status(sel,n):null,h='';
-  if(st){const sc=sColor(st),sl=sLabel(st);h+=`<div class="do-section"><div style="display:inline-block;padding:5px 12px;border-radius:4px;font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:${sc};background:${sc}18;border:1px solid ${sc}40">${sl}</div></div>`}
+  let st=selStates.length>0?status(n):null,h='';
+  if(st&&st!=='you'){const sc=sColor(st),sl=sLabel(st);h+=`<div class="do-section"><div style="display:inline-block;padding:5px 12px;border-radius:4px;font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:${sc};background:${sc}18;border:1px solid ${sc}40">${sl}</div></div>`}
   h+=`<div class="do-section"><div class="do-section-title">Overview</div><div class="do-grid">
     <div class="do-stat"><div class="do-stat-val" style="color:var(--text)">${d.pt}</div><div class="do-stat-lbl">Issue Type</div></div>
     <div class="do-stat"><div class="do-stat-val" style="color:${d.cc?'var(--green)':'var(--red)'}">${d.cc?'Yes':'No'}</div><div class="do-stat-lbl">Const. Carry</div></div>
     <div class="do-stat"><div class="do-stat-val" style="color:var(--accent)">${d.age}+</div><div class="do-stat-lbl">Legal Age</div></div>
     <div class="do-stat"><div class="do-stat-val" style="color:${d.oc?'var(--green)':'var(--red)'}">${d.oc?'Yes':'No'}</div><div class="do-stat-lbl">Open Carry</div></div>
   </div></div>`;
-  h+=`<div class="do-section"><div class="do-section-title">Details</div><div class="do-text">${d.n}</div></div>`;
-  h+=`<div class="do-section"><div class="do-section-title">Laws & Info</div><div style="font-size:12px;color:var(--text)">
+  h+=`<div class="do-section"><div class="do-section-title">State Notes</div><div class="do-text">${d.n}</div></div>`;
+  h+=`<div class="do-section"><div class="do-section-title">Full Law Details</div><div style="font-size:12px;color:var(--text)">
     <div class="info-row"><span class="ir-label">Permit Valid</span><span class="ir-value">${d.pv}</span></div>
     <div class="info-row"><span class="ir-label">Training</span><span class="ir-value">${d.tr?'Required':'Not Required'}</span></div>
-    <div class="info-row"><span class="ir-label">Nonresident Permits</span><span class="ir-value">${d.nrp?'<span class="tag tag-green">Yes</span>':'No'}</span></div>
-    <div class="info-row"><span class="ir-label">Enhanced Permits</span><span class="ir-value">${d.ep?'<span class="tag tag-green">Yes</span>':'No'}</span></div>
+    <div class="info-row"><span class="ir-label">Nonresident</span><span class="ir-value">${d.nrp?'<span class="tag tag-green">Yes</span>':'No'}</span></div>
+    <div class="info-row"><span class="ir-label">Enhanced Permit</span><span class="ir-value">${d.ep?'<span class="tag tag-green">Yes</span>':'No'}</span></div>
     <div class="info-row"><span class="ir-label">Other Weapons</span><span class="ir-value">${d.oth?'<span class="tag tag-green">Yes</span>':'No'}</span></div>
     <div class="info-row"><span class="ir-label">Duty to Inform</span><span class="ir-value">${d.dti?'<span class="tag tag-yellow">Yes</span>':'No'}</span></div>
     <div class="info-row"><span class="ir-label">Castle Doctrine</span><span class="ir-value">${d.cd?'<span class="tag tag-green">Yes</span>':'No'}</span></div>
     <div class="info-row"><span class="ir-label">Stand Your Ground</span><span class="ir-value">${d.syg?'<span class="tag tag-green">Yes</span>':'No'}</span></div>
-    <div class="info-row"><span class="ir-label">States Honored In</span><span class="ir-value">${d.hon}</span></div>
-    <div class="info-row"><span class="ir-label">Reciprocating</span><span class="ir-value">${d.sh}</span></div>
+    <div class="info-row"><span class="ir-label">Honored In</span><span class="ir-value">${d.hon} states</span></div>
+    <div class="info-row"><span class="ir-label">Reciprocating</span><span class="ir-value">${d.sh} states</span></div>
     <div class="info-row"><span class="ir-label">Issuing Agency</span><span class="ir-value">${d.ia}</span></div>
     ${d.cc&&d.cy?`<div class="info-row"><span class="ir-label">Permitless Since</span><span class="ir-value">${d.cy}</span></div>`:''}
-    <div class="info-row"><span class="ir-label">Recognition</span><span class="ir-value">${d.ur?'<span class="tag tag-green">All Permits</span>':`<span class="tag tag-blue">${cap(d.h)}</span>`}</span></div>
+    <div class="info-row"><span class="ir-label">Recognition Policy</span><span class="ir-value">${d.ur?'<span class="tag tag-green">All Permits</span>':`<span class="tag tag-blue">${cap(d.h)}</span>`}</span></div>
   </div></div>`;
   h+=`<div class="do-section"><div class="do-section-title">Official Resources</div><a class="do-link" href="${d.l}" target="_blank" rel="noopener">🔗 ${n} — Official Website</a></div>`;
-  if(n!==sel)h+=`<div class="do-section"><button class="set-permit-btn" onclick="selectPermitState('${n.replace(/'/g,"\\'")}')">Set ${d.a} as My Permit State</button></div>`;
+  if(!selStates.includes(n)){
+    h+=`<div class="do-section">
+      <button class="set-permit-btn" onclick="addPermit('${n.replace(/'/g,"\\'")}');closeDetail()">+ Add ${d.a} as My Permit State</button>
+    </div>`;
+  } else {
+    h+=`<div class="do-section">
+      <button class="set-permit-btn" style="background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:var(--red)" onclick="removePermit('${n.replace(/'/g,"\\'")}');closeDetail()">Remove ${d.a} from My Permits</button>
+    </div>`;
+  }
   h+=`<div class="disclaimer"><strong>⚠</strong> Not legal advice. Always verify with official state sources.</div>`;
   document.getElementById('do-body').innerHTML=h;
   ov.classList.add('visible');
@@ -540,20 +1390,27 @@ function showDetail(n){
 
 function closeDetail(){document.getElementById('detail-overlay').classList.remove('visible')}
 
+// ── TOOLTIP ──
 function showTT(e,n){
-  const tt=document.getElementById('map-tooltip'),d=S[n];if(!d)return;
+  const tt=document.getElementById('map-tooltip'),d=S[n];if(!d) return;
   let sh='',hh='';
-  if(sel){const st=status(sel,n);sh=`<div class="tt-status" style="color:${sColor(st)}">${sLabel(st)}</div>`;hh=n===sel?'<div class="tt-hint">Click to deselect</div>':'<div class="tt-hint">Click for full details</div>'}
-  else hh='<div class="tt-hint">Click to set as permit state</div>';
-  tt.innerHTML=`<div class="tt-name">${n}</div>${sh}<div class="tt-detail">${d.pt}${d.cc?' · Constitutional Carry':''}<br>Min Age: ${d.age}+ · ${d.oc?'Open Carry Legal':'No Open Carry'}</div>${hh}`;
+  if(selStates.length>0){
+    const st=status(n);
+    sh=`<div class="tt-status" style="color:${sColor(st)}">${sLabel(st)}</div>`;
+    hh=selStates.includes(n)?'<div class="tt-hint">Click to remove from permits</div>':'<div class="tt-hint">Click for full details</div>';
+  } else {
+    hh='<div class="tt-hint">Click to set as permit state</div>';
+  }
+  tt.innerHTML=`<div class="tt-name">${n}</div>${sh}<div class="tt-detail">${d.pt}${d.cc?' · Constitutional Carry':''}<br>Age: ${d.age}+ · ${d.oc?'Open Carry Legal':'No Open Carry'} · ${d.dti?'Duty to Inform':'No DTI'}</div>${hh}`;
   tt.style.display='block';moveTT(e);
 }
-function moveTT(e){const tt=document.getElementById('map-tooltip'),r=document.getElementById('map-area').getBoundingClientRect();let x=e.clientX-r.left+15,y=e.clientY-r.top-10;if(x+220>r.width)x=e.clientX-r.left-220;if(y+120>r.height)y=e.clientY-r.top-120;tt.style.left=Math.max(4,x)+'px';tt.style.top=Math.max(4,y)+'px'}
+function moveTT(e){const tt=document.getElementById('map-tooltip'),r=document.getElementById('map-area').getBoundingClientRect();let x=e.clientX-r.left+15,y=e.clientY-r.top-10;if(x+240>r.width)x=e.clientX-r.left-240;if(y+130>r.height)y=e.clientY-r.top-130;tt.style.left=Math.max(4,x)+'px';tt.style.top=Math.max(4,y)+'px'}
 function hideTT(){document.getElementById('map-tooltip').style.display='none'}
 
-function populateDD(){const s=document.getElementById('permit-select');Object.entries(S).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([n,d])=>{const o=document.createElement('option');o.value=n;o.textContent=`${n} (${d.a})`;s.appendChild(o)})}
-
-populateDD();renderSidebar();drawStates();
+// ── INIT ──
+renderSidebar();
+renderPermitChips();
+drawStates();
 </script>
 </body>
 </html>
