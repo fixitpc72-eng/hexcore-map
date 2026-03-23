@@ -99,7 +99,7 @@ tr:nth-child(even) td{background:#08111a50}
 <div class="topbar" id="topbar">
   <div class="eyebrow">HexCore Research Hub — Enhanced</div>
   <h1>Carry, Travel &amp; Law Finder</h1>
-  <p class="desc">Select a state, then explore carry laws, route planning, airline travel, storage, use-of-force, and more. Covers all 50 states + DC. Data sourced from TSA, USCCA, state agencies, and federal sources.</p>
+  <p class="desc">Select a state, then explore carry laws, route planning, airline travel, storage, use-of-force, and more. Covers all 50 states + DC. Data sourced from TSA,  state agencies, and federal sources.</p>
   <div class="tabs">
     <div class="tabgroup">
       <button class="tab active" onclick="switchTab('carry',this)">✛ Carry Lookup</button>
@@ -109,9 +109,7 @@ tr:nth-child(even) td{background:#08111a50}
       <button class="tab" onclick="switchTab('force',this)">⊙ Use-of-Force</button>
       <button class="tab" onclick="switchTab('links',this)">⊕ HexCore Links</button>
     </div>
-    <div class="dlbtns">
-      <button class="dlbtn" onclick="downloadSelf()">⬇ Save as HTML</button>
-    </div>
+    
   </div>
 </div>
 
@@ -150,7 +148,7 @@ tr:nth-child(even) td{background:#08111a50}
   <div id="tab-force" class="hidden"></div>
   <div id="tab-links" class="hidden"></div>
 
-  <div class="footer">This document is an educational reference tool. Laws change frequently. Always verify with official state sources before carrying or traveling with a firearm. <strong style="color:var(--fg)">Not legal advice.</strong> Data sourced from TSA, USCCA, state agencies, NRA-ILA, Handgunlaw.us. Last research update: 2025. © HexCore Mounts — <a href="https://hexcoremounts.com" target="_blank">hexcoremounts.com</a></div>
+  <div class="footer">This document is an educational reference tool. Laws change frequently. Always verify with official state sources before carrying or traveling with a firearm. <strong style="color:var(--fg)">Not legal advice.</strong> Data sourced from TSA,  state agencies, NRA-ILA, Handgunlaw.us. Last research update: 2025. © HexCore Mounts — <a href="https://hexcoremounts.com" target="_blank">hexcoremounts.com</a></div>
 </div>
 </div>
 </div>
@@ -301,31 +299,70 @@ function renderCarry(){
 
 // ---- TRANSPORT ----
 function renderTransport(){
-  const [origin, destination] = [currentState, currentState];
   let html='';
-  html+="<p style='color:var(--muted);font-size:13px;margin-bottom:16px'>Set origin and destination below. Each card shows vehicle carry rules, permit recognition, magazine limits, and transport notes for that state.</p>";
+  // Read current values or defaults
+  const originVal = document.getElementById('tp-origin')?.value || currentState;
+  const destVal = document.getElementById('tp-dest')?.value || currentState;
+  const transitVals = Array.from(document.querySelectorAll('.tp-transit-check:checked')).map(c=>c.value);
+
+  html+="<p style='color:var(--muted);font-size:13px;margin-bottom:16px'>Set your origin, any states you are passing through, and your destination. Each card shows vehicle carry rules, permit recognition, magazine limits, and transport notes for that state.</p>";
+
+  // Origin + Destination row
   html+="<div style='display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px'>";
-  html+="<div><div class='card-label'>Origin State</div><select id='tp-origin' onchange='renderTransport()' style='margin-top:6px'>"+(STATES.map(s=>"<option"+(s===currentState?" selected":"")+">"+s+"</option>").join(""))+"</select></div>";
-  html+="<div><div class='card-label'>Destination State</div><select id='tp-dest' onchange='renderTransport()' style='margin-top:6px'>"+(STATES.map(s=>"<option"+(s===currentState?" selected":"")+">"+s+"</option>").join(""))+"</select></div>";
+  html+="<div><div class='card-label'>Origin State</div><select id='tp-origin' onchange='renderTransport()' style='margin-top:6px'>"+(STATES.map(s=>"<option"+(s===originVal?" selected":"")+">"+s+"</option>").join(""))+"</select></div>";
+  html+="<div><div class='card-label'>Destination State</div><select id='tp-dest' onchange='renderTransport()' style='margin-top:6px'>"+(STATES.map(s=>"<option"+(s===destVal?" selected":"")+">"+s+"</option>").join(""))+"</select></div>";
   html+="</div>";
 
-  const getOrigin=()=>document.getElementById('tp-origin')?.value||currentState;
-  const getDest=()=>document.getElementById('tp-dest')?.value||currentState;
+  // Passing through
+  html+="<div class='card' style='margin-bottom:16px'><div class='card-label' style='margin-bottom:10px'>Passing Through (select all that apply)</div>";
+  html+="<div style='display:flex;flex-wrap:wrap;gap:8px'>";
+  STATES.forEach(s=>{
+    const checked = transitVals.includes(s) ? 'checked' : '';
+    html+="<label style='display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;font-size:12px;cursor:pointer'><input type='checkbox' class='tp-transit-check' value='"+s+"' "+checked+" onchange='renderTransport()' style='accent-color:var(--cyan);width:13px;height:13px'> "+s+"</label>";
+  });
+  html+="</div></div>";
 
-  const states=[getOrigin(), getDest()].filter((v,i,a)=>a.indexOf(v)===i);
+  // Build ordered route: origin → transit states (in order selected) → destination, deduplicated
+  const routeStates = [originVal, ...transitVals, destVal].filter((v,i,a)=>v && a.indexOf(v)===i);
 
-  html+=grid(3,states.map(sn=>{
-    const d=STATE_DATA[sn];
-    if(!d) return infocard(sn,"Not found");
-    return `<div class="card">
-      <div class="card-label">${sn===getOrigin()?"Origin":"Destination"}</div>
-      <h3 style="color:var(--cyan)">${sn}</h3>
-      <div style="margin-bottom:8px">${pill(d.permitType)}  ${yn(d.cc,"ConsCar","Permit")} ${yn(d.openCarry,"Open OK","No Open")} ${d.magLimit&&d.magLimit!=="None"?pill("Mag: "+d.magLimit,"caution"):""}</div>
-      <div class="ac-row"><span class="label">Vehicle Carry: </span>${d.vehicleCarry}</div>
-      <div class="ac-row" style="margin-top:6px"><span class="label">Note: </span>${d.note}</div>
-      ${d.officialUrl?"<div style='margin-top:8px'><a href='"+d.officialUrl+"' target='_blank'>Official Source ↗</a></div>":""}
-    </div>`;
-  }));
+  // Route summary header
+  html+="<div class='card' style='margin-bottom:16px;background:linear-gradient(90deg,#0b172290,var(--panel))'>"+
+    "<div class='eyebrow'>Route Summary</div>"+
+    "<div style='font-size:15px;font-weight:800;color:#fff;margin-top:4px'>"+routeStates.join(' → ')+"</div>"+
+    "<div style='font-size:12px;color:var(--muted);margin-top:4px'>"+routeStates.length+" state"+(routeStates.length!==1?'s':'')+" on this route</div>"+
+  "</div>";
+
+  // State cards for every state in route
+  html+="<div style='display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:16px'>";
+  routeStates.forEach(function(sn,idx){
+    var d=STATE_DATA[sn];
+    var roleLabel = idx===0 ? 'Origin' : idx===routeStates.length-1 ? 'Destination' : 'Transit';
+    var roleColor = idx===0 ? 'var(--cyan)' : idx===routeStates.length-1 ? 'var(--green)' : 'var(--yellow)';
+    if(!d){html+=infocard(sn,'No data found for this state.');return;}
+    html+="<div class='card'>"+
+      "<div style='font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:"+roleColor+";margin-bottom:4px'>"+roleLabel+"</div>"+
+      "<h3 style='color:#fff;font-size:16px;margin-bottom:8px'>"+sn+" ("+d.abbr+")</h3>"+
+      "<div style='margin-bottom:8px;display:flex;flex-wrap:wrap;gap:4px'>"+pill(d.permitType)+" "+yn(d.cc,'ConsCar','Permit Req')+" "+yn(d.openCarry,'Open OK','No Open')+" "+(d.magLimit&&d.magLimit!=='None'?pill('Mag: '+d.magLimit,'caution'):'')+" "+(d.honorType==='none'?pill('Honors No Permits','danger'):'')+"</div>"+
+      "<div class='ac-row'><span class='label'>Vehicle Carry: </span><span style='color:var(--muted);font-size:12px'>"+d.vehicleCarry+"</span></div>"+
+      "<div class='ac-row' style='margin-top:6px'><span class='label'>Duty To Inform: </span>"+pill(d.dutyToInform,d.dutyToInform==='Yes'?'danger':'info')+"</div>"+
+      "<div class='ac-row' style='margin-top:6px'><span class='label'>Waiting Period: </span><span style='color:var(--muted);font-size:12px'>"+(d.waitingPeriod||'None')+"</span></div>"+
+      "<div class='ac-row' style='margin-top:6px'><span class='label'>Transport: </span><span style='color:var(--muted);font-size:12px'>"+d.transportNotes+"</span></div>"+
+      (d.officialUrl?"<div style='margin-top:10px'><a href='"+d.officialUrl+"' target='_blank' style='font-size:12px;font-weight:700'>Official Source ↗</a></div>":'')+
+    "</div>";
+  });
+  html+='</div>';
+
+  // Mag limit warning for route
+  const magStates = routeStates.filter(s=>STATE_DATA[s]&&STATE_DATA[s].magLimit&&STATE_DATA[s].magLimit!=='None');
+  if(magStates.length){
+    html+="<div class='callout callout-warn' style='margin-bottom:16px'><strong>Magazine Limit States on Your Route:</strong><ul style='margin-top:8px;padding-left:16px'>"+magStates.map(function(s){return '<li><strong>'+s+':</strong> '+STATE_DATA[s].magLimit+'</li>';}).join('')+"</ul></div>";
+  }
+
+  // States on route that honor no permits
+  const restrictedStates = routeStates.filter(s=>STATE_DATA[s]&&STATE_DATA[s].honorType==='none');
+  if(restrictedStates.length){
+    html+="<div class='callout callout-danger' style='margin-bottom:16px'><strong>⛔ High-Risk States on Your Route (Honor No Out-of-State Permits):</strong> "+restrictedStates.join(', ')+". Your permit likely provides no carry rights here. Follow FOPA strictly — unloaded, locked container, inaccessible.</div>";
+  }
 
   html+=accordion('tp-fopa','Federal Baseline (FOPA)','18 U.S.C. § 926A',
     infocard("FOPA Safe Passage","Under 18 U.S.C. § 926A, you may transport a firearm from any place where you may lawfully possess it to any other such place, if: the firearm is <strong style='color:#fff'>unloaded</strong>, and neither the firearm nor ammunition is <strong style='color:#fff'>readily accessible</strong> from the passenger compartment (locked trunk or locked container). FOPA is a <strong style='color:var(--red)'>defense</strong>, not immunity from arrest.")+
@@ -463,7 +500,7 @@ function renderLinks(){
   ];
   const ext=[
     ["TSA — Firearms & Ammunition","https://www.tsa.gov/travel/transporting-firearms-and-ammunition"],
-    ["USCCA Reciprocity Map","https://www.usconcealedcarry.com/resources/ccw_reciprocity_map/"],
+    [" Reciprocity Map","https://www.usconcealedcarry.com/resources/ccw_reciprocity_map/"],
     ["NRA-ILA Firearm Transport","https://www.nraila.org/get-the-facts/firearm-transportation/"],
     ["Handgunlaw.us","https://www.handgunlaw.us/"],
     ["18 U.S.C. § 926A (FOPA)","https://www.law.cornell.edu/uscode/text/18/926A"],
