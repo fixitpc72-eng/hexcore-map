@@ -575,7 +575,7 @@ function getCoord(a){
 
 function renderPins(){
   const layer=document.getElementById('pins-g');layer.innerHTML='';
-  const tooltip=document.getElementById('map-tooltip');
+  const tooltip=document.getElementById('map-tooltip');tooltip.style.display='none';
   const wrap=document.getElementById('map-svg-wrap');
   const mobileTouch=isMobileTouch();
   const isFocused=!!selectedStateName;
@@ -631,20 +631,6 @@ function renderPins(){
     hex.setAttribute('opacity',isFocused?'0.96':'0.93');
     g.appendChild(hex);
 
-    if(isFocused && !mobileTouch){
-      g.addEventListener('mouseenter',()=>{
-        const svgRect=document.getElementById('usa-svg').getBoundingClientRect();
-        const wrapRect=wrap.getBoundingClientRect();
-        const px=cx*(svgRect.width/960)+(svgRect.left-wrapRect.left);
-        const py=cy*(svgRect.height/600)+(svgRect.top-wrapRect.top);
-        const tags=(a.courses||[]).slice(0,4).map(c=>`<span class="tt-tag">${esc(c)}</span>`).join('');
-        tooltip.innerHTML=`<div class="tt-name">${esc(a.first)} ${esc(a.last)}</div>${a.biz?`<div class="tt-biz">${esc(a.biz)}</div>`:''}<div class="tt-loc">${esc(a.city)}, ${esc(a.state)}</div>${tags?`<div class="tt-courses">${tags}</div>`:''}<div class="tt-hint">Click for details</div>`;
-        tooltip.style.display='block';
-        tooltip.style.left=Math.min(px+12,wrapRect.width-280)+'px';
-        tooltip.style.top=Math.max(py-140,8)+'px';
-      });
-      g.addEventListener('mouseleave',()=>{tooltip.style.display='none';});
-    }
 
     if(isFocused){
       g.addEventListener('click',e=>{e.stopPropagation();hideTooltip();showDetail(a.id);});
