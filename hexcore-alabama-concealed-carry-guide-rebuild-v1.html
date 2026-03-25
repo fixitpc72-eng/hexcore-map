@@ -1,477 +1,322 @@
-<body>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alabama Concealed Carry Laws | HexCore Mounts State Guide</title>
-<meta name="description" content="HexCore Mounts Alabama concealed carry guide covering permitless carry, carry permit availability, vehicle rules, restricted places, and official Alabama resources.">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- HEXCORE STATE GUIDE: Alabama -->
+<!-- capitol-image-url: https://upload.wikimedia.org/wikipedia/commons/9/9e/Alabama_state_capitol%2C_Montgomery.jpg -->
 <style>
+
   :root {
-    --black: #0a0a0a;
-    --dark: #111214;
-    --card: #16181c;
-    --border: #2a2d35;
-    --muted: #3a3d47;
-    --text: #e8e9ec;
-    --sub: #7a7f8e;
-    --accent: #20FDF0;
-    --green: #22c55e;
-    --yellow: #eab308;
-    --red: #ef4444;
-    --font-head: 'Barlow Condensed', sans-serif;
-    --font-body: 'Barlow', sans-serif;
+   --bg:#07111a;
+   --panel:#0c1824;
+   --panel2:#0a141e;
+   --line:#163247;
+   --cyan:#20e7e1;
+   --cyan-soft:rgba(32,231,225,.10);
+   --fg:#e8f2f8;
+   --muted:#9bb4c7;
+   --green:#22c55e;
+   --yellow:#eab308;
+   --red:#ef4444;
+   --white:#fff;
   }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--black) !important;
-    color: var(--text) !important;
-    font-family: var(--font-body) !important;
-    font-size: 17px;
-    line-height: 1.75;
-    -webkit-font-smoothing: antialiased;
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:Inter,Arial,sans-serif}
+  body{
+   background:
+    radial-gradient(circle at 15% 10%, rgba(32,231,225,.08), transparent 20%),
+    radial-gradient(circle at 85% 85%, rgba(32,231,225,.05), transparent 20%),
+    linear-gradient(180deg,#07111a 0%, #050b12 100%);
   }
-
-  /* Booster / Shopify compatibility fix */
-  .hexcore-state-wrap {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
-    background: var(--black);
-  }
-  .hexcore-state-wrap, .hexcore-state-wrap * { box-sizing: border-box; }
-
-  /* Force colors against theme overrides */
-  .hexcore-state-wrap,
-  .hexcore-state-wrap p,
-  .hexcore-state-wrap li,
-  .hexcore-state-wrap h1,
-  .hexcore-state-wrap h2,
-  .hexcore-state-wrap h3,
-  .hexcore-state-wrap a,
-  .hexcore-state-wrap strong,
-  .hexcore-state-wrap span,
-  .hexcore-state-wrap div {
-    -webkit-text-fill-color: unset;
-  }
-  .hexcore-state-wrap .logo,
-  .hexcore-state-wrap .pillar-title,
-  .hexcore-state-wrap .method-title,
-  .hexcore-state-wrap h1,
-  .hexcore-state-wrap h2,
-  .hexcore-state-wrap .cta-strip-title,
-  .hexcore-state-wrap .glance-title,
-  .hexcore-state-wrap .hero-capitol-title,
-  .hexcore-state-wrap .info-key,
-  .hexcore-state-wrap .contact-name {
-    color: var(--text) !important;
-    -webkit-text-fill-color: var(--text) !important;
-  }
-  .hexcore-state-wrap .logo span,
-  .hexcore-state-wrap .hero-label,
-  .hexcore-state-wrap .hero-label::before,
-  .hexcore-state-wrap .section-label::before,
-  .hexcore-state-wrap .pillar-num,
-  .hexcore-state-wrap .cta-strip-label,
-  .hexcore-state-wrap .cta-strip-title span,
-  .hexcore-state-wrap .method-num,
-  .hexcore-state-wrap .pulse-dot,
-  .hexcore-state-wrap .hero-capitol-kicker,
-  .hexcore-state-wrap .quick-chip.is-accent {
-    color: var(--accent) !important;
-    -webkit-text-fill-color: var(--accent) !important;
-  }
-  .hexcore-state-wrap .hero-intro,
-  .hexcore-state-wrap p,
-  .hexcore-state-wrap .pillar-body,
-  .hexcore-state-wrap .method-body,
-  .hexcore-state-wrap .glance-body,
-  .hexcore-state-wrap .hero-capitol-copy,
-  .hexcore-state-wrap .info-value,
-  .hexcore-state-wrap .contact-lines,
-  .hexcore-state-wrap footer,
-  .hexcore-state-wrap .header-nav a {
-    color: var(--sub) !important;
-    -webkit-text-fill-color: var(--sub) !important;
-  }
-  .hexcore-state-wrap .cta-btn {
-    color: var(--black) !important;
-    -webkit-text-fill-color: var(--black) !important;
-  }
-
-  header {
-    background: var(--dark);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 60px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .logo { font-family: var(--font-head); font-weight: 900; font-size: 22px; letter-spacing: .04em; text-transform: uppercase; color: var(--text); text-decoration: none; }
-  .logo span { color: var(--accent); }
-  .header-nav { display: flex; gap: 2rem; align-items: center; }
-  .header-nav a { font-family: var(--font-head); font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sub); text-decoration: none; transition: color 0.15s; }
-  .header-nav a:hover { color: var(--text) !important; -webkit-text-fill-color: var(--text) !important; }
-  .header-badge { background: var(--accent); color: var(--black); font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border-radius: 3px; text-decoration: none; }
-
-  .hero { max-width: 1100px; margin: 0 auto; padding: 5rem 2rem 3rem; border-bottom: 1px solid var(--border); }
-  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(300px, .9fr); gap: 24px; align-items: stretch; }
-  .hero-label { font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
-  .hero-label::before { content: ''; display: inline-block; width: 28px; height: 1px; background: var(--accent); }
-  h1 { font-family: var(--font-head); font-size: clamp(42px, 7vw, 78px); font-weight: 900; line-height: 0.93; letter-spacing: -0.01em; text-transform: uppercase; color: var(--text); margin-bottom: 2rem; }
-  h1 em { font-style: normal; color: var(--accent); }
-  .hero-intro { font-size: 18px; color: var(--sub); max-width: 640px; line-height: 1.75; }
-  .hero-intro strong { color: var(--text); font-weight: 600; }
-  .quick-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1.5rem; }
-  .quick-chip {
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid var(--border);
-    background: var(--card);
-    border-radius: 4px;
-    padding: 0.55rem 0.8rem;
-    font-family: var(--font-head);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text);
-  }
-  .quick-chip.is-green { color: var(--green) !important; -webkit-text-fill-color: var(--green) !important; border-color: rgba(34,197,94,.35); }
-  .quick-chip.is-yellow { color: var(--yellow) !important; -webkit-text-fill-color: var(--yellow) !important; border-color: rgba(234,179,8,.35); }
-
-  .hero-capitol {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-    min-width: 0;
-  }
-  .hero-capitol img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    min-height: 320px;
-    max-height: 420px;
-    object-fit: cover;
-  }
-  .hero-capitol-copy { padding: 1rem 1.1rem 1.2rem; }
-  .hero-capitol-kicker {
-    font-family: var(--font-head);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.35rem;
-  }
-  .hero-capitol-title {
-    font-family: var(--font-head);
-    font-size: 24px;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    color: var(--text);
-    line-height: 1.05;
-    margin-bottom: 0.45rem;
-  }
-
-  .page { max-width: 1100px; margin: 0 auto; padding: 0 2rem 5rem; }
-  .section-label { font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sub); margin-top: 4rem; margin-bottom: 1.25rem; padding-top: 2.75rem; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
-  .section-label::before { content: ''; display: inline-block; width: 16px; height: 1px; background: var(--accent); }
-  h2 { font-family: var(--font-head); font-size: clamp(26px, 4vw, 38px); font-weight: 900; text-transform: uppercase; letter-spacing: 0.02em; color: var(--text); line-height: 1.05; margin-bottom: 1rem; }
-  p { color: var(--sub); margin-bottom: 1rem; max-width: 760px; }
-  p strong { color: var(--text); font-weight: 600; }
-
-  .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 2rem 0; }
-  .pillar { background: var(--card); border: 1px solid var(--border); border-top: 3px solid var(--accent); border-radius: 0 0 6px 6px; padding: 1.5rem 1.25rem; transition: border-color 0.15s; }
-  .pillar:hover { border-color: var(--accent); }
-  .pillar-num { font-family: var(--font-head); font-size: 32px; font-weight: 900; color: var(--accent); line-height: 1; margin-bottom: 8px; }
-  .pillar-title { font-family: var(--font-head); font-size: 16px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text); margin-bottom: 6px; line-height: 1.2; }
-  .pillar-body { font-size: 14px; color: var(--sub); line-height: 1.65; }
-
-  .method-steps { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin: 1.75rem 0 2rem; }
-  .method-step { background: var(--card); display: grid; grid-template-columns: 64px 1fr; transition: background 0.15s; }
-  .method-step:hover { background: #1c1e24; }
-  .method-num { background: var(--muted); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-size: 28px; font-weight: 900; color: var(--accent); border-right: 1px solid var(--border); }
-  .method-content { padding: 1.25rem 1.4rem; }
-  .method-title { font-family: var(--font-head); font-size: 17px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text); margin-bottom: 4px; }
-  .method-body { font-size: 15px; color: var(--sub); line-height: 1.6; margin: 0; max-width: none; }
-
-  .glance-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; margin: 1.5rem 0 0; }
-  .glance-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1.1rem 1.1rem 1rem;
-  }
-  .glance-title {
-    font-family: var(--font-head);
-    font-size: 15px;
-    font-weight: 900;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--text);
-    margin-bottom: 0.35rem;
-  }
-  .glance-body { font-size: 14px; line-height: 1.65; color: var(--sub); }
-
-  .geo-list { list-style: none; margin: 1.25rem 0 2rem; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-  .geo-list li { display: flex; align-items: flex-start; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 0.9rem 1.1rem; font-size: 15px; color: var(--text); line-height: 1.55; transition: border-color 0.15s; }
-  .geo-list li:hover { border-color: var(--accent); }
-  .geo-list li::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 7px; }
-  .geo-list li span { color: var(--sub); }
-
-  .info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0,1fr));
-    gap: 10px;
-    margin: 1.5rem 0 0;
-  }
-  .info-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1rem 1.1rem;
-  }
-  .info-key {
-    font-family: var(--font-head);
-    font-size: 13px;
-    font-weight: 900;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text);
-    margin-bottom: 0.25rem;
-  }
-  .info-value { font-size: 14px; line-height: 1.65; color: var(--sub); }
-
-  .contact-card {
-    background: var(--dark);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1.5rem;
-    margin-top: 1.75rem;
-  }
-  .contact-name {
-    font-family: var(--font-head);
-    font-size: 18px;
-    font-weight: 900;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--text);
-    margin-bottom: 0.5rem;
-  }
-  .contact-lines { font-size: 14px; line-height: 1.7; color: var(--sub); }
-  .contact-lines a { color: var(--accent) !important; -webkit-text-fill-color: var(--accent) !important; text-decoration: none; }
-
-  .ip-block { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 0 6px 6px 0; padding: 1.75rem 2rem; margin: 2rem 0; }
-  .ip-block p { max-width: none; color: var(--sub); margin-bottom: 0.75rem; }
-  .ip-block p:last-child { margin-bottom: 0; }
-  .ip-block strong { color: var(--text); }
-
-  .cta-strip { background: var(--card); border: 1px solid var(--accent); border-radius: 6px; padding: 2.5rem 2rem; margin-top: 3.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
-  .cta-strip-label { font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; }
-  .cta-strip-title { font-family: var(--font-head); font-size: clamp(22px, 3.5vw, 34px); font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text); line-height: 1.05; }
-  .cta-strip-title span { color: var(--accent); }
-  .cta-btn { display: inline-block; background: var(--accent); color: var(--black); font-family: var(--font-head); font-size: 15px; font-weight: 900; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; padding: 0.8rem 2rem; border-radius: 4px; white-space: nowrap; transition: opacity 0.15s, transform 0.15s; flex-shrink: 0; }
-  .cta-btn:hover { opacity: 0.88; transform: translateY(-1px); }
-
-  footer { border-top: 1px solid var(--border); background: var(--dark); padding: 1.75rem 2rem; text-align: center; font-family: var(--font-head); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sub); }
-  .pulse-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-right: 4px; animation: pulse 2s infinite; vertical-align: middle; }
-  @keyframes pulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.5; transform:scale(1.3); } }
-
-  @media (max-width: 900px) {
-    .hero-grid,
-    .pillars,
-    .glance-grid,
-    .info-grid { grid-template-columns: 1fr; }
-    .hero-capitol img { min-height: 240px; }
+  .page{width:min(1240px,calc(100% - 40px));max-width:1240px;margin:0 auto;padding:28px 20px 60px;position:relative;overflow:hidden}
+  .hex{position:absolute;width:170px;height:190px;opacity:.16;pointer-events:none}
+  .hex:before,.hex:after{content:"";position:absolute;inset:0;clip-path:polygon(25% 6%,75% 6%,100% 25%,100% 75%,75% 94%,25% 94%,0 75%,0 25%);border:2px solid rgba(32,231,225,.16)}
+  .hex:after{inset:16px;border-color:rgba(32,231,225,.10)}
+  .h1{top:24px;left:-10px} .h2{top:70px;right:-10px} .h3{bottom:140px;left:0} .h4{bottom:90px;right:10px}
+  .topbar{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:8px 0 18px;border-bottom:1px solid var(--line);width:100%;min-width:0}
+  .brand{font-size:30px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+  .brand span{color:var(--cyan)}
+  .eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan)}
+  .hero{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:22px;padding:28px 0 24px;width:100%;min-width:0;align-items:stretch}
+  .hero-copy h1{font-size:68px;line-height:.92;margin:10px 0 14px;text-transform:uppercase;letter-spacing:-.02em}
+  .hero-copy h1 span{color:var(--cyan)}
+  .hero-copy,.hero-photo{min-width:0}
+  .hero-copy p{font-size:18px;line-height:1.7;color:var(--muted);max-width:760px;margin:0 0 12px}
+  .hero-photo{border:1px solid var(--line);background:linear-gradient(180deg,var(--panel),var(--panel2));padding:0;min-height:320px}
+  .hero-photo img{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.95) contrast(1.02)}
+  .hero-note{padding:10px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);background:#08131d}
+  .grid{position:relative;z-index:2;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;width:100%;min-width:0;align-items:start}
+  .grid > *{min-width:0}
+  .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);padding:18px 18px 16px;border-radius:0;box-shadow:inset 0 0 0 1px rgba(32,231,225,.02);min-width:0;overflow:hidden}
+  .span-12{grid-column:span 12} .span-8{grid-column:span 8} .span-6{grid-column:span 6} .span-4{grid-column:span 4} .span-3{grid-column:span 3}
+  .card h2{margin:0 0 12px;font-size:clamp(24px,2.2vw,28px);line-height:1.02;text-transform:uppercase;letter-spacing:.02em;overflow-wrap:anywhere}
+  .subhead{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em;margin-bottom:10px}
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;width:100%}
+  .stat{border:1px solid var(--line);padding:12px;background:rgba(255,255,255,.01);min-height:106px;min-width:0}
+  .stat .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px}
+  .stat .value{font-size:30px;line-height:1.05;font-weight:900;word-break:break-word}
+  .ok{color:var(--green)} .warnc{color:var(--yellow)} .badc{color:var(--red)} .cyan{color:var(--cyan)}
+  .list{display:grid;gap:0}
+  .item{display:grid;grid-template-columns:170px minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid rgba(255,255,255,.06);min-width:0}
+  .item:first-child{border-top:0;padding-top:0}
+  .item strong{font-size:12px;line-height:1.35;color:var(--white);text-transform:uppercase;letter-spacing:.08em;overflow-wrap:anywhere}
+  .item span{font-size:14px;line-height:1.7;color:var(--muted);overflow-wrap:anywhere}
+  .band{padding:12px 14px;border-left:3px solid var(--yellow);background:rgba(234,179,8,.08);color:var(--fg);font-size:14px;line-height:1.7}
+  .band.bad{border-left-color:var(--red);background:rgba(239,68,68,.08)}
+  .sources{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .sources a{display:block;padding:12px 14px;border:1px solid var(--line);text-decoration:none;color:var(--fg);font-size:14px;line-height:1.5;background:rgba(255,255,255,.02)}
+  .sources a:hover{border-color:rgba(32,231,225,.35)}
+  .footer{position:relative;z-index:2;margin-top:16px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;line-height:1.8;color:var(--muted)}
+  .footer a{color:var(--cyan)}
+  @media (max-width: 980px) {
+   .hero{grid-template-columns:1fr}
+   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+   .span-12,.span-8,.span-6,.span-4,.span-3{grid-column:span 12}
   }
   @media (max-width: 720px) {
-    .method-step { grid-template-columns: 54px 1fr; }
-    .cta-strip { flex-direction: column; align-items: flex-start; }
-    .hero { padding: 3rem 1.25rem 2.5rem; }
-    .page { padding: 0 1.25rem 3rem; }
-    header { padding: 0 1rem; }
-    .header-nav { display: none; }
-    .ip-block { padding: 1.35rem 1.15rem; }
+   .page{width:min(100%,calc(100% - 22px));padding:18px 10px 40px}
+   .topbar{flex-direction:column;align-items:flex-start}
+   .hero{gap:16px;padding:18px 0 18px}
+   .hero-copy h1{font-size:46px}
+   .hero-copy p{font-size:16px}
+   .item{grid-template-columns:1fr;gap:6px}
+   .sources{grid-template-columns:1fr}
+   .stat .value{font-size:24px}
   }
+
+  /* FORCE TEXT COLORS AGAINST THEME/BOOSTER OVERRIDES */
+  .topbar,
+  .topbar *,
+  .eyebrow,
+  .brand,
+  .brand span,
+  .hero-copy h1,
+  .hero-copy h1 .accent,
+  .hero-copy p,
+  .card h2,
+  .big,
+  .sub,
+  .item strong,
+  .item span,
+  .warn,
+  .warn strong,
+  .footer,
+  .footer *,
+  .sources a {
+   text-shadow:none !important;
+  }
+
+  .brand {
+   color:#e8f2f8 !important;
+   -webkit-text-fill-color:#e8f2f8 !important;
+  }
+
+  .brand span {
+   color:#20e7e1 !important;
+   -webkit-text-fill-color:#20e7e1 !important;
+  }
+
+  .eyebrow,
+  .card h2 {
+   color:#20e7e1 !important;
+   -webkit-text-fill-color:#20e7e1 !important;
+  }
+
+  .hero-copy h1 {
+   color:#e8f2f8 !important;
+   -webkit-text-fill-color:#e8f2f8 !important;
+  }
+
+  .hero-copy h1 .accent {
+   color:#20e7e1 !important;
+   -webkit-text-fill-color:#20e7e1 !important;
+  }
+
+  .hero-copy p,
+  .sub,
+  .item span,
+  .footer,
+  .footer a,
+  .hero-card .caption {
+   color:#9bb4c7 !important;
+   -webkit-text-fill-color:#9bb4c7 !important;
+  }
+
+  .big,
+  .item strong,
+  .sources a,
+  .warn,
+  .topbar .eyebrow:last-child {
+   color:#e8f2f8 !important;
+   -webkit-text-fill-color:#e8f2f8 !important;
+  }
+
+  .warn strong {
+   color:#eab308 !important;
+   -webkit-text-fill-color:#eab308 !important;
+  }
+
+  .pill.green {
+   color:#22c55e !important;
+   -webkit-text-fill-color:#22c55e !important;
+  }
+
+  .pill.yellow {
+   color:#eab308 !important;
+   -webkit-text-fill-color:#eab308 !important;
+  }
+
+  .pill.red {
+   color:#ef4444 !important;
+   -webkit-text-fill-color:#ef4444 !important;
+  }
+
+  a,
+  a:visited,
+  a:hover,
+  a:active {
+   color:inherit;
+   -webkit-text-fill-color:inherit;
+  }
+
+ 
 </style>
 
-<div class="hexcore-state-wrap">
-  <!-- capitol-image-url: https://commons.wikimedia.org/wiki/Special:FilePath/Alabama_State_Capitol%2C_Montgomery%2C_West_view_20160713_1.jpg -->
-  <header>
-    <a class="logo" href="https://hexcoremounts.com">Hex<span>Core</span> Mounts</a>
-    <nav class="header-nav">
-      <a href="https://hexcoremounts.com/collections/all">Products</a>
-      <a href="https://hexcoremounts.com/pages/ccw-reciprocity-map">Reciprocity</a>
-      <a href="https://hexcoremounts.com/pages/instructor-map">Training</a>
-      <a href="https://hexcoremounts.com/blogs/news">Intel</a>
-      <a class="header-badge" href="https://hexcoremounts.com/pages/contact">Contact</a>
-    </nav>
-  </header>
+<div class="page">
+  <div class="hex h1"></div><div class="hex h2"></div><div class="hex h3"></div><div class="hex h4"></div>
 
-  <div class="hero">
-    <div class="hero-grid">
-      <div>
-        <div class="hero-label">HexCore Mounts State Guide</div>
-        <h1>Alabama <br><em>Concealed Carry</em><br>Laws</h1>
-        <div class="hero-intro">
-          <p>Alabama is a <strong>permitless carry state</strong> for qualifying adults, but the state still keeps its county-issued concealed carry permit system in place for travelers who want permit documentation for reciprocity and trip planning.</p>
-          <p>This page is built as a clean Alabama overview for responsible gun owners who want the fast answer first, then the state-specific details that matter most before they carry.</p>
-        </div>
-        <div class="quick-chips">
-          <span class="quick-chip is-green">Permitless carry</span>
-          <span class="quick-chip is-accent">County permits still available</span>
-          <span class="quick-chip is-yellow">Property rules still matter</span>
-          <span class="quick-chip is-yellow">Check posted restricted buildings</span>
-        </div>
-      </div>
-
-      <div class="hero-capitol">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Alabama_State_Capitol%2C_Montgomery%2C_West_view_20160713_1.jpg" alt="Alabama State Capitol in Montgomery">
-        <div class="hero-capitol-copy">
-          <div class="hero-capitol-kicker">State Capitol</div>
-          <div class="hero-capitol-title">Montgomery, Alabama</div>
-          <div class="hero-capitol-copy">Alabama's carry rules sit on top of a permitless carry framework, but county sheriffs still issue concealed carry permits for residents who want that extra travel and reciprocity tool.</div>
-        </div>
-      </div>
-    </div>
+  <div class="topbar">
+   <div>
+    <div class="brand">HexCore <span>Mounts</span></div>
+   </div>
+   <div class="eyebrow">Alabama State Guide - Concealed Carry Reference</div>
   </div>
 
-  <div class="page">
-    <div class="section-label"><span class="pulse-dot"></span>Alabama At A Glance</div>
-    <div class="pillars">
-      <div class="pillar">
-        <div class="pillar-num">01</div>
-        <div class="pillar-title">Permitless Carry</div>
-        <div class="pillar-body">Qualifying adults generally do not need a permit to carry a pistol concealed or in a vehicle in Alabama. That change took effect on January 1, 2023.</div>
-      </div>
-      <div class="pillar">
-        <div class="pillar-num">02</div>
-        <div class="pillar-title">Permits Still Matter</div>
-        <div class="pillar-body">Alabama residents can still apply through their county sheriff for a concealed carry permit, which remains useful for reciprocity when traveling out of state.</div>
-      </div>
-      <div class="pillar">
-        <div class="pillar-num">03</div>
-        <div class="pillar-title">Restricted Places Still Apply</div>
-        <div class="pillar-body">Permitless carry does not erase building restrictions, posted limited-access facilities, or property-owner rights. Those details still matter before you walk in.</div>
-      </div>
-    </div>
+  <section class="hero">
+   <div class="hero-copy">
+    <div class="eyebrow">Original HexCore-Branded Reference</div>
+    <h1>Alabama Concealed <span>Carry Laws</span></h1>
+    <p>This Alabama page is built as a clean, more detailed HexCore reference sheet. It keeps the major carry, permit, transport, and location rules in one place while still pushing readers back to official Alabama sources for final verification.</p>
+    <p>Alabama is a permitless-carry state for qualifying adults, but county sheriffs still issue pistol permits that matter for reciprocity and certain restricted-place exceptions. Vehicle rules, private-property rules, and controlled-entry locations are the places users should read most carefully before relying on a summary.</p>
+   </div>
+   <div class="hero-photo">
+    <img alt="Alabama State Capitol" src="https://upload.wikimedia.org/wikipedia/commons/9/9e/Alabama_state_capitol%2C_Montgomery.jpg" />
+   </div>
+  </section>
 
-    <div class="section-label">Core Alabama Carry Rules</div>
-    <div class="method-steps">
-      <div class="method-step">
-        <div class="method-num">01</div>
-        <div class="method-content">
-          <div class="method-title">Concealed Carry</div>
-          <p class="method-body">Alabama no longer requires a permit for most lawful adults to carry a pistol concealed or in a vehicle, but prohibited-person rules and location restrictions still control who can carry and where.</p>
-        </div>
-      </div>
-      <div class="method-step">
-        <div class="method-num">02</div>
-        <div class="method-content">
-          <div class="method-title">Disclosure To Law Enforcement</div>
-          <p class="method-body">If an officer acting in the line of duty asks whether you are armed, Alabama law requires a truthful answer. That is the key disclosure rule most carriers should remember.</p>
-        </div>
-      </div>
-      <div class="method-step">
-        <div class="method-num">03</div>
-        <div class="method-content">
-          <div class="method-title">Private Property Still Counts</div>
-          <p class="method-body">Property owners can still restrict or prohibit firearms on their premises. Alabama's rules also continue to treat posted restrictions and notice from the property owner seriously.</p>
-        </div>
-      </div>
+  <section class="grid">
+   <div class="card span-12"><div class="subhead">Quick Status</div><h2>Alabama at a Glance</h2>
+    <div class="stats">
+     <div class="stat"><div class="label">Constitutional Carry</div><div class="value ok">Yes - Jan 1, 2023</div></div>
+     <div class="stat"><div class="label">Duty to Notify</div><div class="value warnc">Only When Asked</div></div>
+     <div class="stat"><div class="label">Duty to Retreat</div><div class="value ok">No</div></div>
+     <div class="stat"><div class="label">Permit Validity</div><div class="value cyan">1-5 Years</div></div>
     </div>
+   </div>
 
-    <div class="section-label">Practical Carry Notes</div>
-    <div class="glance-grid">
-      <div class="glance-card">
-        <div class="glance-title">Open Carry</div>
-        <div class="glance-body">Open carry is generally lawful in Alabama, but private-property consent and specific restricted-place rules can still change the answer depending on where you are standing.</div>
-      </div>
-      <div class="glance-card">
-        <div class="glance-title">Vehicle Carry</div>
-        <div class="glance-body">Permitless carry covers most lawful adult vehicle possession in Alabama. The old permit requirement for a pistol in a vehicle was repealed with the 2022 law change.</div>
-      </div>
-      <div class="glance-card">
-        <div class="glance-title">State Parks</div>
-        <div class="glance-body">Alabama State Parks allow handguns for lawful personal protection, provided they are not used for any unlawful purpose and any park-specific prohibited areas are respected.</div>
-      </div>
-      <div class="glance-card">
-        <div class="glance-title">Restaurants And Hotels</div>
-        <div class="glance-body">Alabama does not impose the same kind of broad restaurant or hotel carry ban some states use, but posted rules, private-property restrictions, and other state or federal limits can still control.</div>
-      </div>
-      <div class="glance-card">
-        <div class="glance-title">Training</div>
-        <div class="glance-body">Alabama does not require a training class to carry or to apply for a county permit, but that does not change the need to understand safe handling, storage, and use-of-force law.</div>
-      </div>
-      <div class="glance-card">
-        <div class="glance-title">Nonresident Permits</div>
-        <div class="glance-body">Alabama does not issue concealed carry permits to out-of-state residents. Residents apply through the sheriff in the county where they live.</div>
-      </div>
+   <div class="card span-8"><div class="subhead">Carry Basics</div><h2>Open Carry, Concealed Carry &amp; General Rules</h2>
+    <div class="list">
+     <div class="item"><strong>Open Carry</strong><span>Alabama is not a permit-first state for simple on-foot public carry. The tighter customer-facing takeaway is that Alabama broadly allows open carry, but private-property rules, demonstration restrictions, and specific prohibited places still matter.</span></div>
+     <div class="item"><strong>Permitless Carry</strong><span>Permitless carry took effect on January 1, 2023 for qualifying adults. That does not make the permit system irrelevant, because Alabama still issues pistol permits through county sheriffs.</span></div>
+     <div class="item"><strong>Alabama Permit Still Exists</strong><span>The sheriff-issued Alabama permit still matters for reciprocity travel and can also matter in parts of the restricted-places framework where state law references a permit exception.</span></div>
+     <div class="item"><strong>Firearm Law Uniformity</strong><span>Alabama generally treats firearm regulation as statewide, which keeps the main carry framework more uniform than in patchwork states. Always verify property-specific policies and controlled-access locations anyway.</span></div>
     </div>
+   </div>
 
-    <div class="section-label">Places To Double-Check Before You Carry</div>
-    <p>Alabama law still lists several places and building types where carry restrictions remain active. This is where people get sloppy if they only remember the words permitless carry and stop reading there.</p>
-    <ul class="geo-list">
-      <li><strong>Law enforcement and detention facilities</strong> <span>including police, sheriff, highway patrol, jail, prison, and similar secure custody locations.</span></li>
-      <li><strong>Courthouses and certain government meeting spaces</strong> <span>including courthouses, courthouse annexes, some district attorney buildings, and some active county commission or city council meetings.</span></li>
-      <li><strong>Psychiatric inpatient facilities</strong> <span>where Alabama law specifically restricts firearm possession inside the facility.</span></li>
-      <li><strong>Athletic event facilities</strong> <span>especially school-sponsored events and professional events not related to firearms, where the statute creates specific limits and permit-based exceptions in some settings.</span></li>
-      <li><strong>Posted limited-access buildings</strong> <span>where access is controlled by guards, screening, badge systems, turnstiles, or similar security features.</span></li>
-    </ul>
-
-    <div class="ip-block">
-      <p><strong>HexCore takeaway:</strong> Alabama is friendlier than many states on general carry, but it is still not a state where you should treat every building the same. Restricted facilities, posted limited-access buildings, and private-property notice rules are where responsible carriers need to slow down and verify the details.</p>
+   <div class="card span-4"><h2>High-Value Alabama Notes</h2>
+    <div class="list">
+     <div class="item"><strong>Permitless State</strong><span>Qualifying adults do not need a permit just to carry in Alabama.</span></div>
+     <div class="item"><strong>Sheriff Permits Continue</strong><span>Alabama still issues resident permits through local sheriffs.</span></div>
+     <div class="item"><strong>Vehicle Rules Are Broad</strong><span>Vehicle possession is friendlier than many states, but restricted-property rules can override the default.</span></div>
+     <div class="item"><strong>Private Property Matters</strong><span>Churches, hotels, campuses, and controlled-entry facilities should never be treated as one-size-fits-all.</span></div>
     </div>
+   </div>
 
-    <div class="section-label">Permit Snapshot</div>
-    <p>Even though Alabama allows permitless carry, the permit system still matters for residents who travel or want reciprocity documentation. County sheriffs issue permits to Alabama residents, and Alabama law still supports multi-year permit options and reciprocity recognition for qualifying permit holders.</p>
-    <div class="info-grid">
-      <div class="info-card">
-        <div class="info-key">Issuing Authority</div>
-        <div class="info-value">Your county sheriff.</div>
-      </div>
-      <div class="info-card">
-        <div class="info-key">Permit Availability</div>
-        <div class="info-value">Available to Alabama residents even after permitless carry took effect.</div>
-      </div>
-      <div class="info-card">
-        <div class="info-key">Training Requirement</div>
-        <div class="info-value">No general Alabama training requirement for permit issuance.</div>
-      </div>
-      <div class="info-card">
-        <div class="info-key">Term</div>
-        <div class="info-value">County permits are commonly issued in 1-year or 5-year terms, and Alabama law also allows lifetime permits in qualifying cases.</div>
-      </div>
+   <div class="card span-6"><div class="subhead">Vehicle &amp; Transport</div><h2>Vehicle Possession Rules</h2>
+    <div class="band warn">
+     Alabama is broad on handgun possession in a vehicle for qualifying adults, but controlled-entry locations, school-property rules, and employer-property rules still deserve a direct read.
     </div>
+    <div class="list" style="margin-top:12px">
+     <div class="item"><strong>Without a Recognized Permit</strong><span>Your supplied Alabama notes say a person 19 or older who can lawfully possess a firearm may carry without a permit in Alabama. For practical route planning, that is the main difference users notice right away.</span></div>
+     <div class="item"><strong>Controlled Parking Areas</strong><span>Even when Alabama is otherwise carry-friendly, some restricted premises allow only locked vehicle storage or impose controlled-access rules. Do not assume a parking-area exception solves every location problem.</span></div>
+     <div class="item"><strong>Best HexCore Practice</strong><span>For travel planning, re-check demonstrations, school-related property, correctional facilities, courthouses, and any building with guards and controlled entry before relying on a short summary.</span></div>
+    </div>
+   </div>
 
-    <div class="contact-card">
-      <div class="contact-name">Official Alabama Contact</div>
-      <div class="contact-lines">
-        Alabama Law Enforcement Agency<br>
-        Gun Laws / Reciprocity Information<br>
-        <a href="https://www.alea.gov/gun-laws">www.alea.gov/gun-laws</a>
-      </div>
+   <div class="card span-6"><div class="subhead">Places &amp; Property</div><h2>Location Rules People Ask About Most</h2>
+    <div class="list">
+     <div class="item"><strong>State Parks</strong><span>Alabama state-park materials preserve lawful handgun possession for personal protection by licensed persons, while separate park rules still govern unlawful use or discharge. Treat park carry and park conduct as two different questions.</span></div>
+     <div class="item"><strong>Restaurants Serving Alcohol</strong><span>Your Alabama notes do not flag a broad statewide restaurant ban. The bigger practical question is whether the specific place is otherwise prohibited or privately restricted.</span></div>
+     <div class="item"><strong>Colleges &amp; Universities</strong><span>Alabama lets each public two-year or four-year institution adopt its own weapons policy, but state law still protects vehicle possession in certain campus parking situations for lawful gun owners.</span></div>
+     <div class="item"><strong>Church Carry</strong><span>Places of worship should be treated like other private property unless the site has its own restrictions or controlled access rules.</span></div>
+     <div class="item"><strong>Hotels</strong><span>There is not a simple statewide hotel-only prohibition in Alabama carry law. Hotel policy and private-property control can still change the answer at a specific property.</span></div>
     </div>
+   </div>
 
-    <div class="cta-strip">
-      <div class="cta-strip-text">
-        <div class="cta-strip-label">Need A State Update?</div>
-        <div class="cta-strip-title">Questions on Alabama carry law <span>or travel planning?</span></div>
-      </div>
-      <a class="cta-btn" href="https://hexcoremounts.com/pages/contact">Contact HexCore</a>
+   <div class="card span-12"><div class="subhead">Restricted Places</div><h2>Places Off Limits or Requiring Extra Care</h2>
+    <div class="band bad">
+     Alabama is broad on carry rights, but this is still the section readers should slow down for. Police and sheriff stations, jails, psychiatric inpatient facilities, courthouses, certain athletic-event facilities, and controlled-entry buildings are not areas to trust to memory.
     </div>
+    <div class="list" style="margin-top:12px">
+     <div class="item"><strong>Examples Listed in Alabama Law</strong><span>State law identifies police, sheriff, and highway patrol stations; prisons and jails; certain mental-health inpatient facilities; courthouses and certain public-meeting buildings; and some school or athletic-event facilities as places requiring special care or prohibition analysis.</span></div>
+     <div class="item"><strong>Controlled-Access Buildings</strong><span>Alabama also separately restricts firearms inside buildings or facilities that limit entry through posted guards and security features like magnetometers, key cards, biometric screening, turnstiles, or other physical barriers unless permission is given.</span></div>
+     <div class="item"><strong>Public Demonstrations</strong><span>Your supplied notes correctly flag demonstrations as another area to re-check directly. This is not a state where users should assume that general carry freedom overrides every demonstration rule.</span></div>
+     <div class="item"><strong>School Property</strong><span>K-12 school rules are not something to oversimplify in Alabama. Vehicle, board-policy, and statutory exceptions should be checked directly before relying on a quick summary.</span></div>
+    </div>
+   </div>
+
+   <div class="card span-6"><div class="subhead">Permit Details</div><h2>Alabama Permit Details</h2>
+    <div class="list">
+     <div class="item"><strong>Issuing Authority</strong><span>Your local county sheriff.</span></div>
+     <div class="item"><strong>Validity Length</strong><span>Alabama resident permits are commonly issued for one to five years, depending on the option selected in the county process.</span></div>
+     <div class="item"><strong>Training</strong><span>Alabama does not require a general training course for permit issuance under the materials reviewed for this page.</span></div>
+     <div class="item"><strong>Application Process</strong><span>Apply through the sheriff in the county where you reside. County-level process details can vary, so always verify the local sheriff instructions before submitting.</span></div>
+     <div class="item"><strong>Non-Resident Permits</strong><span>Your supplied notes and current Alabama guidance both point the same direction: Alabama generally issues permits only to Alabama residents, with limited military-related exceptions sometimes discussed at the local level.</span></div>
+    </div>
+   </div>
+
+   <div class="card span-6"><div class="subhead">Non-Resident &amp; Travel</div><h2>Reciprocity, Non-Resident Rules &amp; Route Planning</h2>
+    <div class="list">
+     <div class="item"><strong>Reciprocity</strong><span>Alabama recognizes valid out-of-state permits, but Alabama permit holders still have to follow the destination state's carry law when traveling. Reciprocity is never a substitute for reading the receiving state's rules.</span></div>
+     <div class="item"><strong>Non-Resident Permits</strong><span>Current Alabama guidance says the state issues concealed handgun licenses only to Alabama residents. That is one of the main reasons Alabama residents may still keep a permit even after permitless carry took effect.</span></div>
+     <div class="item"><strong>HexCore Travel Note</strong><span>When a route touches schools, demonstrations, controlled-entry public buildings, parks, or college property, stop treating Alabama as a one-line "constitutional carry" state and verify each location type directly.</span></div>
+    </div>
+   </div>
+
+   <div class="card span-4"><div class="subhead">Equipment Rules</div><h2>Magazine &amp; Suppressor Notes</h2>
+    <div class="list">
+     <div class="item"><strong>Magazine Limits</strong><span>Your supplied Alabama notes list no statewide magazine-cap restriction.</span></div>
+     <div class="item"><strong>Suppressor Ownership</strong><span>Your supplied notes list suppressor ownership and hunting use as lawful. Always verify federal compliance and current Alabama game-law details before relying on a short summary.</span></div>
+     <div class="item"><strong>Secure Storage</strong><span>Your supplied notes do not identify a general statewide secure-storage requirement in the Alabama carry framework covered here.</span></div>
+    </div>
+   </div>
+
+   <div class="card span-4"><div class="subhead">Duty &amp; Enforcement</div><h2>Duty to Notify &amp; Retreat</h2>
+    <div class="list">
+     <div class="item"><strong>Duty to Notify</strong><span>Only when asked by law enforcement, based on the Alabama notes you supplied.</span></div>
+     <div class="item"><strong>Duty to Retreat</strong><span>Your supplied Alabama notes identify Alabama as a no-duty-to-retreat state for this customer-facing summary.</span></div>
+     <div class="item"><strong>Best Practice</strong><span>Even in a carry-friendly state, keep your hands visible, stay calm, and do not make fast movements during any stop.</span></div>
+    </div>
+   </div>
+
+   <div class="card span-4"><div class="subhead">State Contact</div><h2>Alabama Contact Information</h2>
+    <div class="list">
+     <div class="item"><strong>Agency</strong><span>Attorney General of Alabama; county sheriffs issue resident pistol permits.</span></div>
+     <div class="item"><strong>Address</strong><span>P.O. Box 300152, Montgomery, AL 36130</span></div>
+     <div class="item"><strong>Phone</strong><span>334-242-7300</span></div>
+     <div class="item"><strong>Website</strong><span>alabamaag.gov</span></div>
+    </div>
+   </div>
+
+   <div class="card span-12"><div class="subhead">Official Sources</div><h2>Alabama Sources Worth Checking Before You Rely on a Summary</h2>
+    <div class="sources">
+     <a href="https://www.alea.gov/gun-laws" rel="noopener" target="_blank">Alabama Law Enforcement Agency Gun Laws</a>
+     <a href="https://www.alabamaag.gov/firearms-law/" rel="noopener" target="_blank">Alabama Attorney General Firearms Law</a>
+     <a href="https://www.alabamasheriffs.com/pistol_permits" rel="noopener" target="_blank">Alabama Sheriffs Association Pistol Permits</a>
+     <a href="https://admincode.legislature.state.al.us/administrative-code/220-5-.08" rel="noopener" target="_blank">Alabama State Parks Rule 220-5-.08</a>
+     <a href="https://alisondb.legislature.state.al.us/ACMIS/ALISON/CodeOfAlabama/1975/coatoc.htm" rel="noopener" target="_blank">Code of Alabama 1975</a>
+     <a href="https://ahc.alabama.gov/alabama-state-capitol.aspx" rel="noopener" target="_blank">Alabama State Capitol</a>
+    </div>
+   </div>
+  </section>
+
+  <div class="footer">
+   This Alabama guide is part of HexCore's effort to make carry-law research easier to understand and easier to verify. If you spot an update, notice a detail that should be reviewed, or want to send us a correction for a future revision, please <a href="https://hexcoremounts.com/pages/contact" target="_blank" rel="noopener">contact HexCore Mounts here</a>.
   </div>
-
-  <footer>
-    <span class="pulse-dot"></span> Alabama law guide for educational reference only - verify current law before you carry
-  </footer>
-</div>
-</body>
+ </div>
