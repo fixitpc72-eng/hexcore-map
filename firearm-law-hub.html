@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HexCore — Firearm Law Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<style>
+:root{
+  --black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;
+  --text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;
+  --red:#ef4444;--cyan:#22d3ee;--orange:#f97316;--purple:#a855f7;
+  --font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif
+}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);display:flex;flex-direction:column;min-height:100vh}
+h1,h2,h3,h4{font-family:var(--font-head)}
+
+/* HEADER */
+header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;flex-shrink:0;gap:.75rem;position:sticky;top:0;z-index:100}
+.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);white-space:nowrap;flex-shrink:0}.logo span{color:var(--accent)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;white-space:nowrap;flex-shrink:0}
+.header-nav{display:flex;align-items:center;gap:14px}
+.hnav-link{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);text-decoration:none;white-space:nowrap;transition:color .15s}.hnav-link:hover{color:var(--accent)}
+.header-updated{font-size:11px;color:var(--sub);white-space:nowrap}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:300px 1fr;height:calc(100vh - 56px);min-height:500px}
+.sidebar{background:var(--dark);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-hdr{padding:.875rem 1.25rem .75rem;border-bottom:1px solid var(--border);flex-shrink:0}
+.sidebar-title{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
+.sidebar-body{flex:1;overflow-y:auto;padding:1rem 1.25rem;scrollbar-width:thin;scrollbar-color:var(--muted) transparent}
+.pulse-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:6px;animation:pulse 2s infinite;vertical-align:middle}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:1rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 12px}
+.stat-num{font-family:var(--font-head);font-size:26px;font-weight:900;line-height:1}
+.stat-num.green{color:var(--green)}.stat-num.yellow{color:var(--yellow)}.stat-num.red{color:var(--red)}.stat-num.accent{color:var(--accent)}.stat-num.orange{color:var(--orange)}.stat-num.cyan{color:var(--cyan)}.stat-num.purple{color:var(--purple)}
+.stat-lbl{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.sec-lbl{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.5rem}
+.leg-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:12px;color:var(--text);font-weight:500}
+.leg-swatch{width:13px;height:13px;border-radius:3px;flex-shrink:0}
+.info-row{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border)}.info-row:last-child{border-bottom:none}
+.ir-label{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;font-weight:600;min-width:80px;padding-top:1px}
+.ir-value{font-size:13px;color:var(--text);font-weight:500;text-align:right;max-width:185px;line-height:1.4}
+.tag{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.tag-green{background:rgba(34,197,94,.15);color:#4ade80}
+.tag-yellow{background:rgba(234,179,8,.15);color:#facc15}
+.tag-red{background:rgba(239,68,68,.15);color:#f87171}
+.tag-accent{background:rgba(32,253,240,.12);color:var(--accent)}
+.tag-orange{background:rgba(249,115,22,.15);color:#fb923c}
+.tag-blue{background:rgba(59,130,246,.15);color:#60a5fa}
+.tag-cyan{background:rgba(34,211,238,.15);color:var(--cyan)}
+.tag-purple{background:rgba(168,85,247,.15);color:#c084fc}
+
+/* MAP AREA */
+.map-area{background:var(--black);position:relative;overflow:hidden;display:flex;flex-direction:column}
+.layer-bar{display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--dark);border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap}
+.layer-label{font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-right:4px;flex-shrink:0}
+.layer-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:var(--card);border:1px solid var(--border);border-radius:4px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);cursor:pointer;transition:all .15s;white-space:nowrap}
+.layer-btn:hover{border-color:var(--accent);color:var(--accent)}
+.layer-btn.active{background:rgba(32,253,240,.1);border-color:var(--accent);color:var(--accent)}
+.layer-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+#map-svg-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:1rem;overflow:hidden}
+#usa-svg{width:100%;height:100%;max-height:calc(100vh - 120px)}
+.map-tooltip{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 14px;pointer-events:none;display:none;z-index:30;min-width:190px;max-width:310px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.tt-name{font-family:var(--font-head);font-weight:700;font-size:16px;color:var(--text);margin-bottom:2px;text-transform:uppercase;letter-spacing:.03em}
+.tt-status{font-size:12px;font-weight:600;margin-bottom:4px}
+.tt-detail{font-size:11px;color:var(--sub);line-height:1.5}
+.tt-hint{font-size:10px;color:var(--muted);margin-top:5px;font-style:italic}
+.map-legend{position:absolute;bottom:1rem;left:1rem;background:rgba(22,24,28,.92);border:1px solid var(--border);border-radius:6px;padding:10px 14px;backdrop-filter:blur(4px);z-index:10}
+.legend-title{font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:6px}
+.leg-row{display:flex;align-items:center;gap:7px;margin-bottom:4px;font-size:11px;color:var(--sub);font-weight:500}
+.leg-row .leg-sq{width:12px;height:12px;border-radius:2px;flex-shrink:0}
+.map-instruction{position:absolute;bottom:1rem;right:1rem;background:rgba(22,24,28,.9);border:1px solid var(--border);border-radius:6px;padding:8px 14px;backdrop-filter:blur(4px);font-size:11px;color:var(--sub);display:flex;align-items:center;gap:6px;z-index:5}
+
+/* DETAIL OVERLAY */
+.detail-overlay{position:absolute;top:48px;right:0;width:330px;max-height:calc(100% - 56px);background:rgba(17,18,20,.97);border-left:1px solid var(--border);border-bottom:1px solid var(--border);border-bottom-left-radius:8px;overflow-y:auto;display:none;z-index:20;scrollbar-width:thin;scrollbar-color:var(--muted) transparent;box-shadow:-8px 8px 32px rgba(0,0,0,.5)}
+.detail-overlay.visible{display:block;animation:slideIn .2s ease-out}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.do-header{padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--dark)}
+.do-title{font-family:var(--font-head);font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:var(--text)}
+.do-close{background:none;border:none;color:var(--sub);font-size:18px;cursor:pointer;padding:4px;transition:color .15s;line-height:1}.do-close:hover{color:var(--accent)}
+.do-body{padding:1rem 1.25rem}
+.do-section{margin-bottom:.875rem}
+.do-section-title{font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.4rem;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.do-4grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:.5rem}
+.do-stat{background:rgba(32,253,240,.04);border:1px solid var(--border);border-radius:5px;padding:7px 8px}
+.do-stat-val{font-family:var(--font-head);font-size:15px;font-weight:900;line-height:1.1}
+.do-stat-lbl{font-size:9px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.do-link{display:block;padding:7px 11px;background:var(--card);border:1px solid var(--border);border-radius:5px;color:var(--accent);font-size:12px;font-weight:600;text-decoration:none;margin-bottom:4px;transition:all .15s}.do-link:hover{border-color:var(--accent);background:rgba(32,253,240,.06)}
+.do-text{font-size:12px;color:var(--sub);line-height:1.6}
+.lit-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.3);border-radius:4px;padding:3px 8px;font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);margin-bottom:8px}
+.disclaimer{margin-top:.75rem;padding:8px 10px;background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.15);border-radius:5px;font-size:10px;color:var(--sub);line-height:1.5}.disclaimer strong{color:var(--yellow)}
+
+/* CONTENT SECTIONS */
+.content-section{position:relative;z-index:1;background:var(--black);border-top:1px solid var(--border)}
+.content-section::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(32,253,240,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(32,253,240,.012) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.section-inner{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:3rem 2rem 2.5rem}
+.section-hero{text-align:center;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+.section-eyebrow{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;gap:8px}
+.section-eyebrow::before,.section-eyebrow::after{content:'';width:24px;height:1px;background:var(--accent);opacity:.4}
+.section-title{font-family:var(--font-head);font-weight:900;font-size:40px;text-transform:uppercase;letter-spacing:.02em;line-height:1;color:#fff;margin-bottom:.75rem}
+.section-title .ga{color:var(--accent)}
+.section-sub{font-size:15px;color:var(--sub);line-height:1.6;max-width:620px;margin:0 auto}
+.section-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+.snav-pill{display:inline-flex;align-items:center;padding:6px 14px;background:var(--card);border:1px solid var(--border);border-radius:20px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:all .15s}.snav-pill:hover,.snav-pill:focus{border-color:var(--accent);color:var(--accent);background:rgba(32,253,240,.05)}
+.edu-alert{padding:13px 16px;border-radius:7px;font-size:13px;line-height:1.6;margin-bottom:1.5rem}
+.edu-alert.warn{background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.2);color:var(--sub)}.edu-alert.warn strong{color:var(--yellow)}
+.edu-alert.info{background:rgba(32,253,240,.06);border:1px solid rgba(32,253,240,.15);color:var(--sub)}.edu-alert.info strong{color:var(--accent)}
+.edu-alert.danger{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--sub)}.edu-alert.danger strong{color:var(--red)}
+.edu-alert.success{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:var(--sub)}.edu-alert.success strong{color:var(--green)}
+.edu-alert.orange{background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.2);color:var(--sub)}.edu-alert.orange strong{color:var(--orange)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.5rem}
+.block-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
+.block-card.accent-border{border-color:rgba(32,253,240,.25)}
+.block-card h4{font-family:var(--font-head);font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:.75rem}
+.block-card ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}
+.block-card li{font-size:13px;color:var(--sub);line-height:1.4;padding-left:14px;position:relative}
+.block-card li::before{content:'›';position:absolute;left:0;color:var(--accent)}
+.block-card li strong{color:var(--text)}
+.block-card p{font-size:13px;color:var(--sub);line-height:1.6}
+.block-card p strong{color:var(--text)}
+.block-icon{font-size:22px;margin-bottom:8px}
+.block-title{font-family:var(--font-head);font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:6px}
+.block-body{font-size:13px;color:var(--sub);line-height:1.5}
+.block-body strong{color:var(--text)}
+.state-badge-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.25rem}
+.sbadge{display:inline-block;padding:4px 10px;background:var(--card);border:1px solid var(--border);border-radius:4px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text)}
+.sbadge.red{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:#f87171}
+.sbadge.yellow{background:rgba(234,179,8,.08);border-color:rgba(234,179,8,.2);color:#facc15}
+.sbadge.orange{background:rgba(249,115,22,.08);border-color:rgba(249,115,22,.2);color:#fb923c}
+.sbadge.green{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.2);color:#4ade80}
+.sbadge.cyan{background:rgba(34,211,238,.08);border-color:rgba(34,211,238,.2);color:var(--cyan)}
+.section-divider{display:flex;align-items:center;gap:1rem;margin:2rem 0 1.5rem}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-divider span{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.data-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:1.5rem}
+.data-table th{background:var(--dark);border:1px solid var(--border);padding:8px 12px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);text-align:left}
+.data-table td{border:1px solid var(--border);padding:8px 12px;color:var(--text);vertical-align:top;line-height:1.4}
+.data-table tr:hover td{background:rgba(32,253,240,.02)}
+.data-table td:first-child{font-family:var(--font-head);font-weight:700;font-size:14px;color:#fff}
+.data-table td.note{font-size:11px;color:var(--sub)}
+.g-steps{display:flex;flex-direction:column;gap:2rem;margin-bottom:2.5rem}
+.g-step{display:grid;grid-template-columns:56px 1fr;gap:1.25rem;align-items:start}
+.gs-num-wrap{display:flex;flex-direction:column;align-items:center}
+.gs-num{width:48px;height:48px;background:var(--card);border:2px solid var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:24px;font-weight:900;color:var(--accent)}
+.gs-line{width:2px;flex:1;background:linear-gradient(to bottom,var(--accent),transparent);margin-top:6px;min-height:24px;opacity:.2}
+.g-step:last-child .gs-line{display:none}
+.gs-title{font-family:var(--font-head);font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:5px}
+.gs-desc{font-size:14px;color:var(--sub);line-height:1.6;margin-bottom:8px}
+.gs-visual{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-top:6px}
+.gs-note{font-size:11px;color:var(--muted);margin-top:6px}
+.g-tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:2rem}
+.gt-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.15rem;display:flex;gap:12px;align-items:flex-start}
+.gt-icon{font-size:18px;flex-shrink:0;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:rgba(32,253,240,.06);border:1px solid rgba(32,253,240,.12);border-radius:6px}
+.gt-text{font-size:13px;color:var(--sub);line-height:1.5}.gt-text strong{color:var(--text);font-weight:600}
+.aor-block{background:var(--dark);border:1px solid var(--border);border-radius:10px;padding:2rem;display:grid;grid-template-columns:1fr 130px;gap:1.5rem;align-items:start;margin-bottom:1.5rem}
+.aor-eyebrow{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem}
+.aor-title{font-family:var(--font-head);font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;line-height:1.1;margin-bottom:.5rem}
+.aor-sub{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:1rem}
+.aor-code{display:inline-flex;align-items:center;gap:10px;background:rgba(32,253,240,.06);border:1px solid rgba(32,253,240,.2);border-radius:6px;padding:7px 12px;margin-bottom:1rem}
+.aor-code-label{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;font-family:var(--font-head);font-weight:700}
+.aor-code-val{font-family:var(--font-head);font-size:18px;font-weight:900;color:var(--accent);letter-spacing:.08em}
+.aor-btn{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:10px 20px;border-radius:6px;text-decoration:none;transition:opacity .2s}.aor-btn:hover{opacity:.85}
+.aor-discount{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center}
+.aor-pct{font-family:var(--font-head);font-size:40px;font-weight:900;color:var(--accent);line-height:1}
+.aor-off{font-family:var(--font-head);font-size:13px;font-weight:700;text-transform:uppercase;color:var(--sub);letter-spacing:.06em}
+.resources-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
+.resource-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1rem;text-decoration:none;transition:all .15s;display:block}.resource-card:hover{border-color:var(--accent);background:rgba(32,253,240,.04)}
+.rc-label{font-family:var(--font-head);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--accent);margin-bottom:3px}
+.rc-url{font-size:11px;color:var(--muted);margin-bottom:5px}
+.rc-desc{font-size:12px;color:var(--sub);line-height:1.4}
+.site-footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;font-size:12px;color:var(--muted)}
+.cta-link{display:inline-flex;align-items:center;gap:6px;background:rgba(32,253,240,.1);border:1px solid rgba(32,253,240,.3);border-radius:5px;padding:8px 14px;color:var(--accent);font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;transition:all .15s;margin-top:.5rem}.cta-link:hover{background:rgba(32,253,240,.18)}
+
+@media(max-width:960px){
+  .layout{grid-template-columns:1fr;height:auto}
+  .map-area{height:55vw;min-height:280px;max-height:420px;order:1}
+  .sidebar{order:2;height:auto;overflow:visible}
+  .sidebar-body{overflow:visible}
+  .stats-grid{grid-template-columns:repeat(4,1fr)}
+  .map-instruction,.map-legend{display:none}
+  header{padding:0 .75rem;height:50px}
+  .logo{font-size:16px}.header-badge,.header-nav{display:none}
+  .detail-overlay{width:100%;right:0;top:auto;bottom:0;max-height:60%;border-radius:12px 12px 0 0;border-left:none;border-right:none;border-top:1px solid var(--border)}
+  .section-inner{padding:2rem 1.25rem}
+  .section-title{font-size:28px}
+  .two-col,.three-col,.resources-grid,.g-tips-grid,.aor-block{grid-template-columns:1fr}
+  .g-step{grid-template-columns:44px 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Hex<span>Core</span></div>
+  <nav class="header-nav">
+    <a class="hnav-link" href="#mag-section">Mag Laws</a>
+    <a class="hnav-link" href="#awb-section">AWB</a>
+    <a class="hnav-link" href="#nfa-section">Suppressors</a>
+    <a class="hnav-link" href="#carry-section">Carry</a>
+    <a class="hnav-link" href="#travel-section">Travel</a>
+    <a class="hnav-link" href="#resources-section">Resources</a>
+  </nav>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="header-updated">March 2026</div>
+    <div class="header-badge">Firearm Law Hub</div>
+  </div>
+</header>
+
+<!-- MAP + SIDEBAR -->
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-hdr">
+      <div class="sidebar-title"><span class="pulse-dot"></span>State Law Reference</div>
+    </div>
+    <div class="sidebar-body"><div id="sidebar-content"></div></div>
+  </div>
+
+  <div class="map-area" id="map-area">
+    <!-- LAYER TOGGLE BAR -->
+    <div class="layer-bar">
+      <span class="layer-label">View by:</span>
+      <button class="layer-btn active" id="btn-mag" onclick="setLayer('mag')">
+        <span class="layer-dot" style="background:var(--yellow)"></span>Mag Capacity
+      </button>
+      <button class="layer-btn" id="btn-suppressor" onclick="setLayer('suppressor')">
+        <span class="layer-dot" style="background:var(--green)"></span>Suppressors
+      </button>
+      <button class="layer-btn" id="btn-awb" onclick="setLayer('awb')">
+        <span class="layer-dot" style="background:var(--red)"></span>Assault Weapon Bans
+      </button>
+      <button class="layer-btn" id="btn-carry" onclick="setLayer('carry')">
+        <span class="layer-dot" style="background:var(--cyan)"></span>Carry Type
+      </button>
+    </div>
+
+    <div id="map-svg-wrap">
+      <svg id="usa-svg" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg">
+        <rect width="960" height="600" fill="var(--black)"/>
+        <g id="states-g"></g><g id="labels-g"></g>
+      </svg>
+    </div>
+
+    <div class="map-legend" id="map-legend"></div>
+    <div class="map-instruction">&#9678; Click any state for full law details</div>
+    <div class="map-tooltip" id="map-tooltip"></div>
+
+    <div class="detail-overlay" id="detail-overlay">
+      <div class="do-header">
+        <div class="do-title" id="do-title"></div>
+        <button class="do-close" onclick="closeDetail()">&#10005;</button>
+      </div>
+      <div class="do-body" id="do-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAG CAPACITY SECTION -->
+<div class="content-section" id="mag-section">
+  <div class="section-inner">
+    <div class="section-hero">
+      <div class="section-eyebrow">Know Before You Buy</div>
+      <h2 class="section-title">Magazine <span class="ga">Capacity Laws</span></h2>
+      <p class="section-sub">14 states plus D.C. restrict magazine capacity. 36 states have no limit. Oregon, Washington, and DC are all under active litigation as of early 2026.</p>
+    </div>
+    <nav class="section-nav">
+      <a class="snav-pill" href="#awb-section">Assault Weapon Bans &#8595;</a>
+      <a class="snav-pill" href="#nfa-section">Suppressor Laws &#8595;</a>
+      <a class="snav-pill" href="#carry-section">Concealed Carry &#8595;</a>
+      <a class="snav-pill" href="#travel-section">Travel Rules &#8595;</a>
+      <a class="snav-pill" href="#resources-section">Official Resources &#8595;</a>
+    </nav>
+    <div class="edu-alert warn"><strong>&#9888; Directly Affects HexCore Products:</strong> Magazine basepads and extensions increase round count. In any state with a capacity limit, adding a basepad that pushes your magazine over the legal limit is illegal. Always verify your magazine's total capacity before purchasing any extension. HexCore Mounts is not responsible for purchases made in violation of applicable law.</div>
+    <div class="edu-alert orange"><strong>&#9878; Active Litigation (2026):</strong> Oregon's Measure 114 is enjoined and not fully in effect. Washington's ban is under active court challenge. DC's ban was ruled unconstitutional in <em>Benson v. United States</em> (March 2026) — status in flux. Colorado's SB25-003 adds semi-auto restrictions effective August 2026. Verify current status before purchasing or traveling to these states.</div>
+    <table class="data-table">
+      <thead><tr><th>State</th><th>Limit</th><th>Applies To</th><th>Grandfathered?</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>California</td><td><span class="tag tag-red">10 rounds</span></td><td>Handgun &amp; Rifle</td><td>Freedom Week 2019 only</td><td class="note">Strict enforcement. Only those who acquired mags during the brief "Freedom Week" window in 2019 may lawfully possess them.</td></tr>
+        <tr><td>Colorado</td><td><span class="tag tag-yellow">15 rounds</span></td><td>Handgun &amp; Rifle</td><td>Pre-July 1, 2013 w/ continuous possession</td><td class="note">SB25-003 (2025) adds broader semi-auto restrictions effective August 2026. Monitor closely.</td></tr>
+        <tr><td>Connecticut</td><td><span class="tag tag-red">10 rounds</span></td><td>Handgun &amp; Rifle</td><td>Pre-April 4, 2013 w/ registration</td><td class="note">Pre-ban mags must have been registered. Suppressors legal but hunting use prohibited.</td></tr>
+        <tr><td>Delaware</td><td><span class="tag tag-yellow">17 rounds</span></td><td>Handgun &amp; Rifle</td><td>No</td><td class="note">One of the more permissive restricted states.</td></tr>
+        <tr><td>Hawaii</td><td><span class="tag tag-red">10 rounds</span></td><td>Handgun only</td><td>No</td><td class="note">Rifle magazines not specifically restricted, but "assault pistol" feature rules apply.</td></tr>
+        <tr><td>Maryland</td><td><span class="tag tag-red">10 rounds</span></td><td>Handgun &amp; Rifle</td><td>Pre-2013 (possess only)</td><td class="note">Can possess grandfathered mags but cannot buy, sell, or transfer inside the state.</td></tr>
+        <tr><td>Massachusetts</td><td><span class="tag tag-red">10 rounds</span></td><td>Handgun &amp; Rifle</td><td>Pre-Sept 13, 1994</td><td class="note">Pre-ban mags may be possessed but not transferred to others.</td></tr>
+        <tr><td>New Jersey</td><td><span class="tag tag-red">10 rounds</span></td><td>Handgun &amp; Rifle</td><td>No</td><td class="note">Reduced from 15 to 10 in 2018. No grandfathering — existing 15-round mags required modification or surrender.</td></tr>
+        <tr><td>New York</td><td><span class="tag tag-red">10 rounds</span></td><td>Handgun &amp; Rifle</td><td>No (post-Jan 15, 2013 mags prohibited)</td><td class="note">May not load more than 10 rounds even if mag holds more. Mags manufactured before Jan 15, 2013 prohibited.</td></tr>
+        <tr><td>Rhode Island</td><td><span class="tag tag-red">10 rounds</span></td><td>Handgun &amp; Rifle</td><td>No</td><td class="note">Ban enacted 2022. No grandfathering. AWB also takes effect July 1, 2026.</td></tr>
+        <tr><td>Vermont</td><td><span class="tag tag-yellow">10 rds rifle / 15 rds handgun</span></td><td>Both</td><td>No</td><td class="note">Unique split limit — rifles and handguns have different caps. Enacted 2018.</td></tr>
+        <tr><td>Washington</td><td><span class="tag tag-orange">10 rounds (litigated)</span></td><td>Handgun &amp; Rifle</td><td>No</td><td class="note">Manufacture, import, and sale prohibited. Under active litigation as of 2025–2026. Monitor carefully.</td></tr>
+        <tr><td>DC</td><td><span class="tag tag-orange">10 rounds (ruling in flux)</span></td><td>Handgun &amp; Rifle</td><td>No</td><td class="note"><em>Benson v. United States</em> (March 2026) ruled the ban unconstitutional. Status actively evolving — verify before possession.</td></tr>
+        <tr><td>Oregon</td><td><span class="tag tag-orange">10 rounds (enjoined)</span></td><td>Handgun &amp; Rifle</td><td>TBD</td><td class="note">Measure 114 passed 2022, currently enjoined and not fully in effect. Court proceedings ongoing in 2026.</td></tr>
+        <tr><td>All other states (36)</td><td><span class="tag tag-green">No limit</span></td><td>&#8212;</td><td>N/A</td><td class="note">36 states impose no magazine capacity restrictions at the state level. Local ordinances may still apply in some cities.</td></tr>
+      </tbody>
+    </table>
+    <div class="section-divider"><span>Basepads &amp; Extensions</span></div>
+    <div class="two-col">
+      <div class="block-card">
+        <h4>What to Check Before Buying</h4>
+        <ul>
+          <li><strong>Know your magazine's base capacity</strong> — round count with the stock baseplate installed</li>
+          <li><strong>Know your state's limit</strong> — verify against current state statutes, not just this table</li>
+          <li><strong>Check local ordinances</strong> — some cities are stricter than their state (Boulder, CO: 10-round limit)</li>
+          <li><strong>Grandfathered magazines</strong> — adding capacity may void grandfathered status in some states</li>
+          <li><strong>When in doubt, consult an attorney</strong> — magazine law is complex and heavily litigated</li>
+        </ul>
+      </div>
+      <div class="block-card accent-border">
+        <h4>Restricted States — HexCore Products</h4>
+        <p style="margin-bottom:.75rem">Verify before purchasing any basepad or extension if you are in:</p>
+        <div class="state-badge-list" style="margin-bottom:0">
+          <span class="sbadge red">CA</span><span class="sbadge red">CT</span><span class="sbadge red">HI</span><span class="sbadge red">MD</span><span class="sbadge red">MA</span><span class="sbadge red">NJ</span><span class="sbadge red">NY</span><span class="sbadge red">RI</span><span class="sbadge yellow">CO</span><span class="sbadge yellow">DE</span><span class="sbadge yellow">VT</span><span class="sbadge orange">WA</span><span class="sbadge orange">OR</span><span class="sbadge orange">DC</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AWB SECTION -->
+<div class="content-section" id="awb-section">
+  <div class="section-inner">
+    <div class="section-hero">
+      <div class="section-eyebrow">Semi-Auto Restrictions</div>
+      <h2 class="section-title">Assault Weapon <span class="ga">Bans</span></h2>
+      <p class="section-sub">10 states and D.C. have active or pending assault weapon bans. Definitions vary significantly by state. Multiple bans are being challenged in federal courts right now.</p>
+    </div>
+    <div class="edu-alert orange"><strong>&#9878; Rapidly Changing in 2025–2026:</strong> Colorado's SB25-003 bans manufacture, distribution, and sale of certain semi-automatic firearms effective <strong>August 1, 2026</strong>. Rhode Island's AWB takes effect <strong>July 1, 2026</strong>. New Jersey's AR-15 ban was ruled unconstitutional at the district court level (Oct. 2025) — under 3rd Circuit appeal. DC's DOJ filed suit in December 2025 challenging DC's semi-auto ban. Verify before every purchase.</div>
+    <table class="data-table">
+      <thead><tr><th>State</th><th>Status</th><th>First Enacted</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>California</td><td><span class="tag tag-red">Active</span></td><td>1989</td><td class="note">One of the strictest. Specific model list + feature-based restrictions. Ongoing federal challenges.</td></tr>
+        <tr><td>Connecticut</td><td><span class="tag tag-red">Active</span></td><td>1993</td><td class="note">Feature-based ban. Pre-ban firearms may be registered and retained.</td></tr>
+        <tr><td>Colorado</td><td><span class="tag tag-orange">Effective Aug 1, 2026</span></td><td>SB25-003 (2025)</td><td class="note">Bans manufacture, distribution, transfer, and sale of specified semi-automatic rifles, shotguns, and gas-operated handguns with detachable magazines.</td></tr>
+        <tr><td>Delaware</td><td><span class="tag tag-red">Active</span></td><td>2022</td><td class="note">Bans manufacture, sale, and possession of defined assault weapons.</td></tr>
+        <tr><td>Hawaii</td><td><span class="tag tag-red">Active</span></td><td>Pre-1994</td><td class="note">"Assault pistols" — semi-auto with detachable mag + 2 or more prohibited features — banned.</td></tr>
+        <tr><td>Maryland</td><td><span class="tag tag-red">Active</span></td><td>Pre-1994</td><td class="note">Specific model list + feature-based. AR-15 variants covered under 2013 Firearms Safety Act.</td></tr>
+        <tr><td>Massachusetts</td><td><span class="tag tag-red">Active</span></td><td>Pre-1994</td><td class="note">Mirrors 1994 federal definitions. AG enforcement notices expanded scope in practice.</td></tr>
+        <tr><td>New Jersey</td><td><span class="tag tag-orange">Active (challenged)</span></td><td>1990</td><td class="note">District court ruled AR-15 ban unconstitutional Oct. 2025. Under 3rd Circuit appeal — still technically in effect pending ruling.</td></tr>
+        <tr><td>New York</td><td><span class="tag tag-red">Active</span></td><td>Pre-1994</td><td class="note">SAFE Act (2013) expanded restrictions. One-feature test for semi-auto rifles with detachable mag.</td></tr>
+        <tr><td>Rhode Island</td><td><span class="tag tag-orange">Effective Jul 1, 2026</span></td><td>S 359 (2025)</td><td class="note">Grandfathers existing ownership but subsequent transfer is restricted after effective date.</td></tr>
+        <tr><td>Washington</td><td><span class="tag tag-red">Active</span></td><td>Expanded 2023</td><td class="note">Sale and manufacture prohibited. Import and transfer also restricted.</td></tr>
+        <tr><td>DC</td><td><span class="tag tag-orange">Active (challenged)</span></td><td>Long-standing</td><td class="note">DOJ filed suit Dec. 2025 challenging DC's semi-auto rifle ban. Status evolving — verify before any possession.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- NFA / SUPPRESSOR SECTION -->
+<div class="content-section" id="nfa-section">
+  <div class="section-inner">
+    <div class="section-hero">
+      <div class="section-eyebrow">National Firearms Act</div>
+      <h2 class="section-title">Suppressor <span class="ga">Laws by State</span></h2>
+      <p class="section-sub">42 states allow civilian suppressor ownership with NFA compliance. 8 states plus D.C. ban ownership entirely. The $200 tax stamp was eliminated January 1, 2026.</p>
+    </div>
+    <div class="edu-alert success"><strong>&#10003; 2026 Update — $0 Tax Stamp:</strong> The $200 NFA transfer tax on suppressors was eliminated effective January 1, 2026. The ATF Form 4 approval process and background check remain fully in place. You still need ATF approval before taking possession. State-level bans are completely unaffected by this federal change.</div>
+    <div class="three-col">
+      <div class="block-card">
+        <div class="block-icon">&#10006;</div>
+        <div class="block-title">Banned — 9 Jurisdictions</div>
+        <div class="block-body">California, Hawaii, Illinois, Maryland, Massachusetts, New Jersey, New York, Rhode Island, and D.C. prohibit civilian suppressor ownership. Federal NFA compliance does not override these bans. Felony charges apply in most cases.</div>
+      </div>
+      <div class="block-card accent-border">
+        <div class="block-icon">&#10003;</div>
+        <div class="block-title">Legal — 42 States</div>
+        <div class="block-body">Civilian ownership allowed with NFA compliance. File ATF eForm 4, pass background check, register with ATF. $200 tax stamp eliminated as of January 2026. eForm 4 approvals now averaging days for most individual and trust filers.</div>
+      </div>
+      <div class="block-card">
+        <div class="block-icon">&#9888;</div>
+        <div class="block-title">Restricted — 3 States</div>
+        <div class="block-body"><strong>Connecticut &amp; Pennsylvania</strong> — ownership legal, hunting use prohibited. <strong>Minnesota</strong> — ownership legal but requires a local law enforcement transfer permit AND bans hunting use. Always verify state hunting regs separately from ownership rules.</div>
+      </div>
+    </div>
+    <div class="section-divider"><span>Federal NFA Process</span></div>
+    <div class="g-steps">
+      <div class="g-step">
+        <div class="gs-num-wrap"><div class="gs-num">1</div><div class="gs-line"></div></div>
+        <div>
+          <div class="gs-title">Purchase From a Licensed NFA Dealer</div>
+          <p class="gs-desc">Find a dealer who handles NFA transfers. The suppressor stays at the dealer until your Form 4 is approved — you cannot take possession beforehand.</p>
+        </div>
+      </div>
+      <div class="g-step">
+        <div class="gs-num-wrap"><div class="gs-num">2</div><div class="gs-line"></div></div>
+        <div>
+          <div class="gs-title">Submit ATF eForm 4</div>
+          <p class="gs-desc">File electronically at eForms.atf.gov. Choose individual or trust. Trust allows multiple designated trustees to legally use the suppressor and simplifies estate transfer — no second Form 4 when passing to beneficiaries.</p>
+          <div class="gs-visual">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;color:var(--sub)">
+              <div style="background:var(--dark);border:1px solid var(--border);border-radius:5px;padding:8px 10px"><strong style="color:var(--text);display:block;margin-bottom:3px">Individual Filing</strong>Fastest approvals. Near real-time in some cases. No sharing the suppressor with others legally.</div>
+              <div style="background:var(--dark);border:1px solid rgba(32,253,240,.2);border-radius:5px;padding:8px 10px"><strong style="color:var(--accent);display:block;margin-bottom:3px">Trust Filing</strong>Multiple trustees can legally use it. Simplifies estate planning. ~3 days average approval currently.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="g-step">
+        <div class="gs-num-wrap"><div class="gs-num">3</div><div class="gs-line"></div></div>
+        <div>
+          <div class="gs-title">ATF Background Check &amp; Approval</div>
+          <p class="gs-desc">ATF conducts a background check and reviews the application. Once approved, they return your Form 4 with a stamp. As of early 2026 eForm 4 wait times are dramatically reduced — days, not the months or years of previous years.</p>
+          <p class="gs-note">Tax stamp fee: $0 as of January 1, 2026 (previously $200)</p>
+        </div>
+      </div>
+      <div class="g-step">
+        <div class="gs-num-wrap"><div class="gs-num">4</div></div>
+        <div>
+          <div class="gs-title">Take Possession — Keep Your Form 4</div>
+          <p class="gs-desc">Pick up your suppressor from the dealer with your approved Form 4. Keep the documentation with the suppressor at all times. When traveling interstate: suppressors and AOWs do not require ATF Form 5320.20. SBRs, SBSs, and machine guns do.</p>
+        </div>
+      </div>
+    </div>
+    <div class="edu-alert danger"><strong>&#9940; Travel Warning:</strong> Driving through a ban state with a suppressor is illegal even with a valid Form 4. New Jersey and New York have arrested travelers despite apparent FOPA compliance. Never transit through ban states with a suppressor. When flying: declare as a firearm at check-in.</div>
+  </div>
+</div>
+
+<!-- CARRY SECTION -->
+<div class="content-section" id="carry-section">
+  <div class="section-hero" style="padding:2.5rem 2rem 0;text-align:center;max-width:980px;margin:0 auto">
+    <div class="section-eyebrow">Concealed &amp; Open Carry</div>
+    <h2 class="section-title">Carry Laws <span class="ga">&amp; Reciprocity</span></h2>
+    <p class="section-sub">29 states allow permitless constitutional carry. Reciprocity is not universal — at least 10 jurisdictions honor no out-of-state permits. Use the full interactive CCW map for permit-specific reciprocity.</p>
+  </div>
+  <div class="section-inner" style="padding-top:1.5rem">
+    <div class="two-col">
+      <div class="block-card accent-border">
+        <h4>Constitutional Carry — 29 States</h4>
+        <p style="margin-bottom:.75rem">No permit required for eligible residents as of 2026:</p>
+        <div class="state-badge-list">
+          <span class="sbadge cyan">AL</span><span class="sbadge cyan">AK</span><span class="sbadge cyan">AZ</span><span class="sbadge cyan">AR</span><span class="sbadge cyan">FL</span><span class="sbadge cyan">GA</span><span class="sbadge cyan">ID</span><span class="sbadge cyan">IN</span><span class="sbadge cyan">IA</span><span class="sbadge cyan">KS</span><span class="sbadge cyan">KY</span><span class="sbadge cyan">LA</span><span class="sbadge cyan">ME</span><span class="sbadge cyan">MS</span><span class="sbadge cyan">MO</span><span class="sbadge cyan">MT</span><span class="sbadge cyan">NE</span><span class="sbadge cyan">NH</span><span class="sbadge cyan">NC</span><span class="sbadge cyan">ND</span><span class="sbadge cyan">OH</span><span class="sbadge cyan">OK</span><span class="sbadge cyan">SC</span><span class="sbadge cyan">SD</span><span class="sbadge cyan">TN</span><span class="sbadge cyan">TX</span><span class="sbadge cyan">UT</span><span class="sbadge cyan">VT</span><span class="sbadge cyan">WV</span><span class="sbadge cyan">WY</span>
+        </div>
+        <p style="font-size:12px;color:var(--sub)">Constitutional carry does not mean you can carry everywhere. Prohibited locations, duty-to-inform requirements, and federal restrictions still apply. Getting a permit is still recommended for interstate travel reciprocity.</p>
+      </div>
+      <div class="block-card">
+        <h4>No Reciprocity Jurisdictions</h4>
+        <p style="margin-bottom:.75rem">These states honor <strong style="color:var(--text)">no out-of-state permits</strong>:</p>
+        <div class="state-badge-list" style="margin-bottom:.75rem">
+          <span class="sbadge red">California</span><span class="sbadge red">Illinois</span><span class="sbadge red">New York</span><span class="sbadge red">Oregon</span><span class="sbadge red">DC</span>
+        </div>
+        <p style="margin-bottom:.75rem;font-size:13px;color:var(--sub)"><strong style="color:var(--text)">H.R. 38</strong> — the Constitutional Concealed Carry Reciprocity Act of 2025 — was introduced in the 119th Congress. As of March 2026, it has not passed into law.</p>
+        <p style="font-size:13px;color:var(--sub)">The law that applies to you is the law of the state you are physically in — not the state that issued your permit.</p>
+      </div>
+    </div>
+    <a class="cta-link" href="https://hexcoremounts.com/pages/ccw-reciprocity-map">View Full CCW Reciprocity Map &#8594;</a>
+    <p style="font-size:12px;color:var(--sub);margin-top:.5rem">Select your permit state to see which states honor your license, with carry laws and detailed data for all 50 states.</p>
+  </div>
+</div>
+
+<!-- TRAVEL SECTION -->
+<div class="content-section" id="travel-section">
+  <div class="section-inner">
+    <div class="section-hero">
+      <div class="section-eyebrow">Interstate Transport</div>
+      <h2 class="section-title">Traveling With <span class="ga">Firearms</span></h2>
+      <p class="section-sub">FOPA provides some interstate travel protections — but they don't cover accessories, magazines, or extended stops. Know the laws of every state on your route before you leave.</p>
+    </div>
+    <div class="two-col">
+      <div class="block-card accent-border">
+        <h4>FOPA Safe Passage — What It Covers</h4>
+        <ul>
+          <li><strong>Unloaded firearm</strong> — must be unloaded during transport at all times</li>
+          <li><strong>Locked hard-sided container</strong> — not in glove box or center console</li>
+          <li><strong>Direct travel</strong> — from a state where legal to a state where legal</li>
+          <li><strong>Not extended stays</strong> — stopping for an extended period may void protection</li>
+        </ul>
+      </div>
+      <div class="block-card">
+        <h4>What FOPA Does NOT Cover</h4>
+        <ul>
+          <li>Magazine capacity violations — <strong>a 15-round magazine through NJ is still illegal</strong></li>
+          <li>Suppressor transport through ban states — never transit ban states with a suppressor</li>
+          <li>NJ and NY have arrested FOPA-compliant travelers — avoid entirely when possible</li>
+          <li>Airport layovers in restrictive states — your checked firearm is still in that jurisdiction</li>
+          <li>Accessories with state-specific restrictions (suppressors, SBRs)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="section-divider"><span>Air Travel</span></div>
+    <div class="three-col">
+      <div class="block-card"><div class="block-icon">&#9992;</div><div class="block-title">TSA Rules</div><div class="block-body">Unloaded, in a <strong>locked hard-sided container</strong>, declared at check-in. Never in a carry-on. Penalties are federal and severe.</div></div>
+      <div class="block-card"><div class="block-icon">&#128181;</div><div class="block-title">Ammunition</div><div class="block-body">Must be in <strong>original factory packaging</strong> or a container designed for that caliber. Loose rounds are not compliant. Check airline-specific limits.</div></div>
+      <div class="block-card"><div class="block-icon">&#9888;</div><div class="block-title">Destination Laws</div><div class="block-body">Flying into a restricted state means your mags must comply upon arrival. Flying into NJ with 15-round mags is illegal regardless of origin.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- AOR AFFILIATE -->
+<div class="content-section">
+  <div class="section-inner" style="padding-top:2rem;padding-bottom:2rem">
+    <div class="aor-block">
+      <div>
+        <div class="aor-eyebrow">HexCore Affiliate — Legal Protection</div>
+        <div class="aor-title">Know Your Laws.<br>Have an Attorney<br>When It Matters.</div>
+        <div class="aor-sub">Firearm laws are complex, frequently changing, and vary by state, county, and city. <strong>Attorneys on Retainer</strong> provides on-demand access to self-defense attorneys so you're never facing a legal situation alone. As a HexCore Mounts partner, we're proud to offer our community an exclusive discount.</div>
+        <div class="aor-code"><span class="aor-code-label">Use code</span><span class="aor-code-val">HEXCORE25</span></div><br>
+        <a class="aor-btn" href="https://attorneysonretainer.us/membership/" target="_blank" rel="noopener">Get Protected &#8594;</a>
+        <div style="font-size:10px;color:var(--muted);line-height:1.5;margin-top:.875rem">I am an affiliate of AOR engaged in marketing and receive compensation when someone joins AOR using my promo code. AOR is backed by Attorneys For Freedom, an independent AZ law firm exclusively representing clients in self-defense cases, offering pro hac vice representation in all 50 states and D.C. in collaboration with local co-counsel.</div>
+      </div>
+      <div class="aor-discount">
+        <div class="aor-pct">25%</div>
+        <div class="aor-off">Off First Month</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:8px;line-height:1.5">Code: <strong style="color:var(--accent);font-family:var(--font-head);letter-spacing:.06em">HEXCORE25</strong></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESOURCES -->
+<div class="content-section" id="resources-section">
+  <div class="section-inner">
+    <div class="section-hero">
+      <div class="section-eyebrow">Authoritative Sources</div>
+      <h2 class="section-title">Official <span class="ga">Resources</span></h2>
+      <p class="section-sub">Laws change frequently. Always verify with these official sources before purchasing, carrying, or traveling with any firearm or accessory.</p>
+    </div>
+    <div class="resources-grid">
+      <a class="resource-card" href="https://www.atf.gov/firearms/state-laws-and-published-ordinances-firearms" target="_blank" rel="noopener"><div class="rc-label">ATF — Federal Law</div><div class="rc-url">atf.gov</div><div class="rc-desc">Bureau of Alcohol, Tobacco, Firearms and Explosives. State laws and published ordinances — the primary federal firearms source.</div></a>
+      <a class="resource-card" href="https://hexcoremounts.com/pages/ccw-reciprocity-map" target="_blank" rel="noopener"><div class="rc-label">HexCore CCW Reciprocity Map</div><div class="rc-url">hexcoremounts.com</div><div class="rc-desc">Our interactive permit reciprocity tool. Select your permit state to see which states honor your license with full carry law details for all 50 states.</div></a>
+      <a class="resource-card" href="https://www.nraila.org/gun-laws/" target="_blank" rel="noopener"><div class="rc-label">NRA-ILA Legislative Updates</div><div class="rc-url">nraila.org</div><div class="rc-desc">State firearms laws and ongoing legislative tracking from the NRA Institute for Legislative Action.</div></a>
+      <a class="resource-card" href="https://gunowners.org" target="_blank" rel="noopener"><div class="rc-label">GOA — HexCore Partner</div><div class="rc-url">gunowners.org</div><div class="rc-desc">HexCore Mounts is proud to partner with Gun Owners of America. 2A legislative alerts, legal updates, and state law resources.</div></a>
+      <a class="resource-card" href="https://www.usconcealedcarry.com/resources/ccw_reciprocity_map/" target="_blank" rel="noopener"><div class="rc-label">USCCA Reciprocity Map</div><div class="rc-url">usconcealedcarry.com</div><div class="rc-desc">Comprehensive concealed carry reciprocity and state gun law reference from the US Concealed Carry Association.</div></a>
+      <a class="resource-card" href="https://attorneysonretainer.us/membership/" target="_blank" rel="noopener"><div class="rc-label">Attorneys on Retainer</div><div class="rc-url">attorneysonretainer.us</div><div class="rc-desc">HexCore affiliate. On-demand self-defense attorney access. Use code HEXCORE25 for 25% off first month.</div></a>
+    </div>
+    <div class="edu-alert warn"><strong>&#9888; Legal Disclaimer:</strong> The information on this page is provided for general informational purposes only and does not constitute legal advice. Firearm laws change frequently and vary by state, county, and city. HexCore Mounts makes no warranty as to the accuracy or completeness of this information. Consult a licensed attorney or your state's official statutes before making any purchasing decisions. HexCore Mounts is not liable for purchases made in violation of applicable local, state, or federal law.</div>
+  </div>
+</div>
+
+<div class="site-footer">HexCore Mounts &nbsp;&#183;&nbsp; Purpose-Built for the Modern Armory &nbsp;&#183;&nbsp; hexcoremounts.com &nbsp;&#183;&nbsp; Data last reviewed March 2026 &nbsp;&#183;&nbsp; This page is for informational purposes only and does not constitute legal advice.</div>
+
+<script>
+// ════════════════════════════════════
+// STATE DATA
+// ════════════════════════════════════
+const S={
+"Alabama":{a:"AL",f:"01",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry. Shall-Issue permit available for reciprocity.",l:"https://www.alea.gov/"},
+"Alaska":{a:"AK",f:"02",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2003. Shall-Issue permit available.",l:"https://dps.alaska.gov/"},
+"Arizona":{a:"AZ",f:"04",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2010. Excellent non-resident permit for reciprocity stacking.",l:"https://www.azdps.gov/"},
+"Arkansas":{a:"AR",f:"05",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2023. Enhanced CHCL-E permit available for additional carry locations.",l:"https://www.asp.arkansas.gov/"},
+"California":{a:"CA",f:"06",mag:10,magNote:"10-round limit. Grandfathered: Freedom Week 2019 only.",lit:false,awb:true,suppressor:"banned",suppNote:"Banned under Penal Code 33410. Felony. No civilian exceptions.",carry:"may",carryNote:"May-Issue — post-Bruen shifting toward shall-issue in many counties. Does not honor any out-of-state permits.",l:"https://oag.ca.gov/firearms"},
+"Colorado":{a:"CO",f:"08",mag:15,magNote:"15-round limit. Pre-July 1, 2013 grandfathered with continuous possession. AWB effective Aug 2026.",lit:true,awb:true,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"shall",carryNote:"Shall-Issue. Honors resident permits from select states. Denver restricts open carry.",l:"https://cbi.state.co.us/"},
+"Connecticut":{a:"CT",f:"09",mag:10,magNote:"10-round limit. Pre-April 4, 2013 grandfathered with registration.",lit:false,awb:true,suppressor:"restricted",suppNote:"Legal with state registration + federal Form 4. Hunting use prohibited.",carry:"shall",carryNote:"Shall-Issue (effectively). Does not honor any out-of-state permits.",l:"https://portal.ct.gov/DESPP"},
+"Delaware":{a:"DE",f:"10",mag:17,magNote:"17-round limit. No grandfathering.",lit:false,awb:true,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"shall",carryNote:"Shall-Issue via Court of Common Pleas. Honors select state permits.",l:"https://dsp.delaware.gov/"},
+"District of Columbia":{a:"DC",f:"11",mag:10,magNote:"Benson v. United States (March 2026) ruled ban unconstitutional — status in flux.",lit:true,awb:true,suppressor:"banned",suppNote:"All NFA items banned. Federal NFA compliance does not apply.",carry:"may",carryNote:"May-Issue. Honors no out-of-state permits. Extremely restricted.",l:"https://mpdc.dc.gov/"},
+"Florida":{a:"FL",f:"12",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since July 2023. FL non-resident permit still honored in 37 states — most recognized non-resident permit in the US.",l:"https://www.fdle.state.fl.us/"},
+"Georgia":{a:"GA",f:"13",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since April 2022. Universal recognition — honors all valid permits.",l:"https://gbi.georgia.gov/"},
+"Hawaii":{a:"HI",f:"15",mag:10,magNote:"10-round limit for handguns. Rifle mags not specifically restricted.",lit:false,awb:true,suppressor:"banned",suppNote:"Banned statewide. Civilian ownership prohibited.",carry:"may",carryNote:"May-Issue. Post-Bruen changes ongoing but still very restrictive. Honors no out-of-state permits.",l:"https://ag.hawaii.gov/"},
+"Idaho":{a:"ID",f:"16",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2016. Universal recognition. Enhanced permit available.",l:"https://isp.idaho.gov/"},
+"Illinois":{a:"IL",f:"17",mag:null,magNote:"No state magazine restriction",lit:false,awb:false,suppressor:"banned",suppNote:"Banned statewide. FOID card required for all firearms possession.",carry:"shall",carryNote:"Shall-Issue. Does not honor any out-of-state permits. Open carry prohibited. FOID card required.",l:"https://isp.illinois.gov/"},
+"Indiana":{a:"IN",f:"18",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since July 2022. Universal recognition. Lifetime handgun licenses available.",l:"https://www.in.gov/isp/"},
+"Iowa":{a:"IA",f:"19",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since July 2021. Universal recognition.",l:"https://dps.iowa.gov/"},
+"Kansas":{a:"KS",f:"20",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2015. Universal recognition.",l:"https://ag.ks.gov/"},
+"Kentucky":{a:"KY",f:"21",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2019. Universal recognition.",l:"https://kentuckystatepolice.gov/"},
+"Louisiana":{a:"LA",f:"22",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since July 2024. Duty to inform. Honors most state permits.",l:"https://www.lsp.org/"},
+"Maine":{a:"ME",f:"23",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2015. Universal recognition. Non-resident permits available.",l:"https://www.maine.gov/dps/msp/"},
+"Maryland":{a:"MD",f:"24",mag:10,magNote:"10-round limit. Pre-2013 mags can be possessed but not transferred.",lit:false,awb:true,suppressor:"banned",suppNote:"Banned statewide.",carry:"may",carryNote:"May-Issue (post-Bruen shifting). Honors select state permits.",l:"https://mdsp.maryland.gov/"},
+"Massachusetts":{a:"MA",f:"25",mag:10,magNote:"10-round limit. Pre-Sept 13, 1994 mags can be possessed but not transferred.",lit:false,awb:true,suppressor:"banned",suppNote:"Banned statewide.",carry:"may",carryNote:"May-Issue. Honors no out-of-state permits.",l:"https://www.mass.gov/orgs/massachusetts-state-police"},
+"Michigan":{a:"MI",f:"26",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"shall",carryNote:"Shall-Issue. Honors permits from select states.",l:"https://www.michigan.gov/msp/"},
+"Minnesota":{a:"MN",f:"27",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"restricted",suppNote:"Ownership legal but requires local LE transfer permit + federal Form 4. Hunting use prohibited.",carry:"shall",carryNote:"Shall-Issue. Honors select state permits.",l:"https://dps.mn.gov/"},
+"Mississippi":{a:"MS",f:"28",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2016. Universal recognition.",l:"https://www.dps.ms.gov/"},
+"Missouri":{a:"MO",f:"29",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2017. Universal recognition.",l:"https://www.mshp.dps.mo.gov/"},
+"Montana":{a:"MT",f:"30",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2021. Universal recognition.",l:"https://dojmt.gov/"},
+"Nebraska":{a:"NE",f:"31",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2023. Universal recognition.",l:"https://statepatrol.nebraska.gov/"},
+"Nevada":{a:"NV",f:"32",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"shall",carryNote:"Shall-Issue. Honors select state permits.",l:"https://dpsnv.gov/"},
+"New Hampshire":{a:"NH",f:"33",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2017. Universal recognition. Non-resident permit with no training required.",l:"https://www.nh.gov/safety/divisions/nhsp/"},
+"New Jersey":{a:"NJ",f:"34",mag:10,magNote:"10-round limit. No grandfathering. Reduced from 15 rounds in 2018.",lit:true,awb:true,suppressor:"banned",suppNote:"Banned statewide. Felony possession.",carry:"shall",carryNote:"Post-Bruen shifted to shall-issue. Honors no out-of-state permits. Extremely restricted in practice.",l:"https://www.njsp.org/"},
+"New Mexico":{a:"NM",f:"35",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"shall",carryNote:"Shall-Issue. Honors select state permits.",l:"https://www.dps.nm.gov/"},
+"New York":{a:"NY",f:"36",mag:10,magNote:"10-round limit. Mags manufactured before Jan 15, 2013 prohibited. Cannot load more than 10 rounds.",lit:false,awb:true,suppressor:"banned",suppNote:"Banned statewide. Felony possession.",carry:"shall",carryNote:"Post-Bruen shifted to shall-issue. Honors no out-of-state permits. NY State permit not valid in NYC.",l:"https://troopers.ny.gov/"},
+"North Carolina":{a:"NC",f:"37",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2023. Universal recognition.",l:"https://www.ncdoj.gov/"},
+"North Dakota":{a:"ND",f:"38",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry. Class 1 permit (with training) provides significantly more reciprocity than Class 2.",l:"https://www.ndhp.nd.gov/"},
+"Ohio":{a:"OH",f:"39",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2022. Universal recognition.",l:"https://www.ohioattorneygeneral.gov/"},
+"Oklahoma":{a:"OK",f:"40",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2019. Universal recognition.",l:"https://www.dps.state.ok.us/"},
+"Oregon":{a:"OR",f:"41",mag:10,magNote:"Measure 114 passed 2022, currently enjoined — not fully in effect as of early 2026.",lit:true,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"shall",carryNote:"Shall-Issue. Very limited reciprocity — honors only Idaho resident permits.",l:"https://www.oregon.gov/osp/"},
+"Pennsylvania":{a:"PA",f:"42",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"restricted",suppNote:"Legal — no extra state permit required. Hunting use prohibited under Game and Wildlife Code.",carry:"shall",carryNote:"Shall-Issue. Honors permits from select states. Philadelphia restricts open carry without LTCF.",l:"https://www.psp.pa.gov/"},
+"Rhode Island":{a:"RI",f:"44",mag:10,magNote:"10-round limit. No grandfathering. AWB takes effect July 1, 2026.",lit:false,awb:true,suppressor:"banned",suppNote:"Banned statewide.",carry:"may",carryNote:"May-Issue. Very limited reciprocity.",l:"https://riag.ri.gov/"},
+"South Carolina":{a:"SC",f:"45",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since March 2024. Duty to inform. CWP available for reciprocity.",l:"https://sled.sc.gov/"},
+"South Dakota":{a:"SD",f:"46",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2019. Universal recognition. Enhanced Gold Card permit available.",l:"https://dps.sd.gov/"},
+"Tennessee":{a:"TN",f:"47",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2021. Universal recognition. Enhanced permit allows carry in more locations.",l:"https://www.tn.gov/safety/"},
+"Texas":{a:"TX",f:"48",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted. HB 957 in legal limbo — still follow federal NFA process.",carry:"cc",carryNote:"Constitutional carry since Sept 2021. Universal recognition. LTC strongly recommended for reciprocity. Duty to display if asked.",l:"https://www.dps.texas.gov/"},
+"Utah":{a:"UT",f:"49",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2021. Universal recognition. UT non-resident permit honored in 36 states — excellent for reciprocity stacking.",l:"https://bci.utah.gov/"},
+"Vermont":{a:"VT",f:"50",mag:"split",magNote:"10 rounds for rifles, 15 rounds for handguns. Enacted 2018.",lit:false,awb:false,suppressor:"legal",suppNote:"Legal — no extra reqs. Hunting permitted (updated 2019). Note: 10-round mag limit for rifles.",carry:"cc",carryNote:"Constitutional carry since 1791 — never required a permit. Vermont does not issue permits. Obtain FL/UT/AZ non-resident for reciprocity.",l:"https://vsp.vermont.gov/"},
+"Virginia":{a:"VA",f:"51",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"shall",carryNote:"Shall-Issue. Good non-resident permit for Eastern US coverage. Recognized in 30+ states.",l:"https://www.vsp.virginia.gov/"},
+"Washington":{a:"WA",f:"53",mag:10,magNote:"10-round limit. Manufacture, import, and sale prohibited. Active litigation 2025–2026.",lit:true,awb:true,suppressor:"legal",suppNote:"Legal — no extra reqs. Hunting permitted. Note: separate 10-round mag restriction.",carry:"shall",carryNote:"Shall-Issue. Very limited reciprocity — honors ~10 states. Magazine ban and AWB under litigation.",l:"https://www.dol.wa.gov/"},
+"West Virginia":{a:"WV",f:"54",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2016. Universal recognition.",l:"https://www.wvsp.gov/"},
+"Wisconsin":{a:"WI",f:"55",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"shall",carryNote:"Shall-Issue. Honors permits from select states meeting specific standards.",l:"https://www.doj.state.wi.us/"},
+"Wyoming":{a:"WY",f:"56",mag:null,magNote:"No restriction",lit:false,awb:false,suppressor:"legal",suppNote:"No state reqs beyond federal Form 4. Hunting permitted.",carry:"cc",carryNote:"Constitutional carry since 2011. Universal recognition.",l:"https://ag.wyo.gov/"}
+};
+
+const F2S={};Object.entries(S).forEach(([n,d])=>{F2S[d.f]=n});
+let stateFeatures={},els={},currentLayer='mag';
+
+// ── COLOR CONFIGS PER LAYER ──
+const LAYERS={
+  mag:{
+    getColor(d){
+      if(d.tier==='none') return '#166534';
+      if(d.tier==='15plus') return '#155e75';
+      if(d.tier==='10') return '#92400e';
+      if(d.tier==='banned_or_pending') return '#7f1d1d';
+      return '#16181c';
+    },
+    legend:[
+      {color:'#166534',label:'No restriction (36 states)'},
+      {color:'#155e75',label:'15–17 round limit'},
+      {color:'#92400e',label:'10 round limit'},
+      {color:'#7f1d1d',label:'Banned / Pending / Litigated'},
+      {color:'#f97316',label:'Dashed border = active litigation',dashed:true}
+    ],
+    getStatus(d){
+      const m={none:'No Restriction','15plus':'15–17 Round Limit','10':'10 Round Limit',banned_or_pending:'Banned / Under Litigation'};
+      return m[d.tier]||'Unknown';
+    },
+    statusColor(d){
+      const m={none:'#22c55e','15plus':'#22d3ee','10':'#eab308',banned_or_pending:'#ef4444'};
+      return m[d.tier]||'#7a7f8e';
+    }
+  },
+  suppressor:{
+    getColor(d){
+      if(d.suppressor==='legal') return '#14532d';
+      if(d.suppressor==='restricted') return '#713f12';
+      if(d.suppressor==='banned') return '#7f1d1d';
+      return '#16181c';
+    },
+    legend:[
+      {color:'#14532d',label:'Legal — NFA Form 4 only'},
+      {color:'#713f12',label:'Restricted — extra state reqs'},
+      {color:'#7f1d1d',label:'Banned — state law prohibits'}
+    ],
+    getStatus(d){return{legal:'Legal',restricted:'Restricted',banned:'Banned'}[d.suppressor]},
+    statusColor(d){return{legal:'#22c55e',restricted:'#eab308',banned:'#ef4444'}[d.suppressor]||'#7a7f8e'}
+  },
+  awb:{
+    getColor(d){
+      if(d.awb&&d.lit) return '#7c2d12';
+      if(d.awb) return '#7f1d1d';
+      return '#14532d';
+    },
+    legend:[
+      {color:'#14532d',label:'No assault weapon ban'},
+      {color:'#7f1d1d',label:'AWB active'},
+      {color:'#7c2d12',label:'AWB active + litigated'}
+    ],
+    getStatus(d){
+      if(!d.awb) return 'No AWB';
+      return d.lit?'AWB Active (Litigated)':'AWB Active';
+    },
+    statusColor(d){return d.awb?'#ef4444':'#22c55e'}
+  },
+  carry:{
+    getColor(d){
+      if(d.carry==='cc') return '#065f46';
+      if(d.carry==='shall') return '#1e3a5f';
+      if(d.carry==='may') return '#7f1d1d';
+      return '#16181c';
+    },
+    legend:[
+      {color:'#065f46',label:'Constitutional carry (29 states)'},
+      {color:'#1e3a5f',label:'Shall-Issue'},
+      {color:'#7f1d1d',label:'May-Issue / Restricted'}
+    ],
+    getStatus(d){return{cc:'Constitutional Carry',shall:'Shall-Issue',may:'May-Issue / Restricted'}[d.carry]||'Unknown'},
+    statusColor(d){return{cc:'#22c55e',shall:'#22d3ee',may:'#ef4444'}[d.carry]||'#7a7f8e'}
+  }
+};
+
+// Derive mag tier for color lookup
+function deriveTier(d){
+  if(d.mag===null) return 'none';
+  if(d.mag==='split') return '15plus';
+  if(d.mag>=15) return '15plus';
+  if(d.mag===10) return '10';
+  return 'banned_or_pending';
+}
+Object.values(S).forEach(d=>{d.tier=deriveTier(d)});
+
+const STK='#2a2d35',STKH='#20FDF0',STKS='#ffffff',STKL='#f97316';
+
+function setLayer(layer){
+  currentLayer=layer;
+  document.querySelectorAll('.layer-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('btn-'+layer).classList.add('active');
+  colorMap();
+  renderLegend();
+  renderSidebar();
+}
+
+function drawStates(){
+  fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(r=>r.json()).then(us=>{
+    const proj=d3.geoAlbersUsa().scale(1280).translate([480,300]);
+    const path=d3.geoPath().projection(proj);
+    const feats=topojson.feature(us,us.objects.states);
+    feats.features.forEach(f=>{const fips=String(f.id).padStart(2,'0');const n=F2S[fips];if(n)stateFeatures[n]=f});
+    d3.select('#states-g').selectAll('path').data(feats.features).enter().append('path')
+      .attr('d',path).attr('fill','#16181c').attr('fill-opacity',.65)
+      .attr('stroke',STK).attr('stroke-width','0.8').attr('cursor','pointer')
+      .each(function(d){const n=F2S[String(d.id).padStart(2,'0')];if(n)els[n]=this;this.__n=n})
+      .on('mouseenter',function(e,d){
+        const n=F2S[String(d.id).padStart(2,'0')];if(!n)return;
+        d3.select(this).attr('stroke',STKH).attr('stroke-width','2').attr('stroke-dasharray','none').raise();
+        d3.select('#labels-g').raise();showTT(e,n);
+      })
+      .on('mousemove',moveTT)
+      .on('mouseleave',function(){
+        const n=this.__n;
+        const sel=document.getElementById('do-title').textContent===n&&document.getElementById('detail-overlay').classList.contains('visible');
+        applyStroke(n,sel);hideTT();
+      })
+      .on('click',function(e,d){const n=F2S[String(d.id).padStart(2,'0')];if(n)showDetail(n)});
+    addLabels(path);
+    colorMap();
+    renderLegend();
+  });
+}
+
+function colorMap(){
+  const layer=LAYERS[currentLayer];
+  Object.entries(els).forEach(([n,el])=>{
+    const d=S[n];if(!d)return;
+    d3.select(el).transition().duration(350).attr('fill',layer.getColor(d)).attr('fill-opacity',.65);
+    const isLit=d.lit&&currentLayer==='mag';
+    applyStroke(n,false,isLit);
+  });
+}
+
+function applyStroke(n,selected,lit){
+  const el=els[n];if(!el)return;
+  const d=S[n];
+  const isLit=lit!==undefined?lit:(d&&d.lit&&currentLayer==='mag');
+  const sel=selected!==undefined?selected:(document.getElementById('do-title').textContent===n&&document.getElementById('detail-overlay').classList.contains('visible'));
+  d3.select(el)
+    .attr('stroke',sel?STKS:isLit?STKL:STK)
+    .attr('stroke-width',sel?'2':isLit?'1.5':'0.8')
+    .attr('stroke-dasharray',sel||!isLit?'none':'4 2');
+}
+
+function addLabels(path){
+  const g=d3.select('#labels-g');g.selectAll('*').remove();
+  Object.entries(S).forEach(([n,d])=>{
+    const feat=stateFeatures[n];if(!feat)return;
+    const c=path.centroid(feat);if(!c||isNaN(c[0]))return;
+    g.append('text').attr('x',c[0]).attr('y',c[1])
+      .attr('text-anchor','middle').attr('dominant-baseline','central')
+      .attr('fill','rgba(255,255,255,0.38)').attr('font-family','Barlow Condensed,sans-serif')
+      .attr('font-size','10').attr('font-weight','700').attr('letter-spacing','0.04em')
+      .attr('pointer-events','none').text(d.a);
+  });
+}
+
+function renderLegend(){
+  const layer=LAYERS[currentLayer];
+  const leg=document.getElementById('map-legend');
+  const layerTitles={mag:'Mag Capacity',suppressor:'Suppressor Status',awb:'AWB Status',carry:'Carry Type'};
+  leg.innerHTML=`<div class="legend-title">${layerTitles[currentLayer]}</div>`+
+    layer.legend.map(l=>
+      l.dashed
+        ?`<div class="leg-row"><div style="width:12px;height:4px;border-top:2px dashed ${l.color};flex-shrink:0;margin-top:5px"></div><span>${l.label}</span></div>`
+        :`<div class="leg-row"><div class="leg-sq" style="background:${l.color};opacity:.75"></div>${l.label}</div>`
+    ).join('');
+}
+
+function showTT(e,n){
+  const tt=document.getElementById('map-tooltip'),d=S[n];if(!d)return;
+  const layer=LAYERS[currentLayer];
+  const status=layer.getStatus(d);
+  const sc=layer.statusColor(d);
+  const magDisp=d.mag===null?'No limit':d.mag==='split'?'10 rifle / 15 handgun':d.mag+' rds';
+  tt.innerHTML=`<div class="tt-name">${n} <span style="font-size:11px;color:var(--sub);font-weight:400;font-family:var(--font-body)">${d.a}</span></div>
+    ${d.lit?`<span style="display:inline-block;background:rgba(249,115,22,.15);border:1px solid rgba(249,115,22,.3);border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--orange);margin-bottom:4px">Under Litigation</span>`:''}
+    <div class="tt-status" style="color:${sc}">${status}</div>
+    <div class="tt-detail">
+      Mags: ${magDisp} &nbsp;|&nbsp; AWB: ${d.awb?'<span style="color:var(--red)">Yes</span>':'No'}<br>
+      Suppressor: <span style="color:${{legal:'var(--green)',restricted:'var(--yellow)',banned:'var(--red)'}[d.suppressor]}">${{legal:'Legal',restricted:'Restricted',banned:'Banned'}[d.suppressor]}</span> &nbsp;|&nbsp; Carry: <span style="color:${{cc:'var(--cyan)',shall:'#60a5fa',may:'var(--red)'}[d.carry]}">${{cc:'Constitutional',shall:'Shall-Issue',may:'May-Issue'}[d.carry]}</span>
+    </div>
+    <div class="tt-hint">Click for full details</div>`;
+  tt.style.display='block';moveTT(e);
+}
+function moveTT(e){
+  const tt=document.getElementById('map-tooltip'),r=document.getElementById('map-area').getBoundingClientRect();
+  let x=e.clientX-r.left+15,y=e.clientY-r.top-10;
+  if(x+250>r.width)x=e.clientX-r.left-250;if(y+150>r.height)y=e.clientY-r.top-150;
+  tt.style.left=Math.max(4,x)+'px';tt.style.top=Math.max(4,y)+'px';
+}
+function hideTT(){document.getElementById('map-tooltip').style.display='none'}
+
+function showDetail(n){
+  const d=S[n];if(!d)return;
+  document.getElementById('do-title').textContent=n;
+  const magDisp=d.mag===null?'No limit':d.mag==='split'?'10 / 15':d.mag+' rds';
+  const suppColor={legal:'var(--green)',restricted:'var(--yellow)',banned:'var(--red)'}[d.suppressor];
+  const suppLbl={legal:'Legal',restricted:'Restricted',banned:'Banned'}[d.suppressor];
+  const carryColor={cc:'var(--cyan)',shall:'#60a5fa',may:'var(--red)'}[d.carry];
+  const carryLbl={cc:'Const. Carry',shall:'Shall-Issue',may:'May-Issue'}[d.carry];
+  const magColor=d.mag===null?'var(--green)':d.tier==='15plus'?'var(--cyan)':'var(--red)';
+
+  let h='';
+  if(d.lit) h+=`<div class="lit-badge">&#9878; Under Active Litigation</div>`;
+
+  h+=`<div class="do-section">
+    <div class="do-4grid">
+      <div class="do-stat"><div class="do-stat-val" style="color:${magColor}">${magDisp}</div><div class="do-stat-lbl">Mag Limit</div></div>
+      <div class="do-stat"><div class="do-stat-val" style="color:${d.awb?'var(--red)':'var(--green)'}">${d.awb?'Yes':'No'}</div><div class="do-stat-lbl">AWB</div></div>
+      <div class="do-stat"><div class="do-stat-val" style="color:${suppColor}">${suppLbl}</div><div class="do-stat-lbl">Suppressor</div></div>
+      <div class="do-stat"><div class="do-stat-val" style="color:${carryColor}">${carryLbl}</div><div class="do-stat-lbl">Carry</div></div>
+    </div>
+  </div>`;
+
+  h+=`<div class="do-section"><div class="do-section-title">Magazine Details</div>
+    <div style="font-size:12px;color:var(--sub)">
+      <div class="info-row"><span class="ir-label">Limit</span><span class="ir-value">${d.mag===null?'No state restriction':d.mag==='split'?'10 rds rifle / 15 rds handgun':d.mag+' rounds'}</span></div>
+      <div class="info-row"><span class="ir-label">Notes</span><span class="ir-value" style="max-width:185px;text-align:right;line-height:1.4">${d.magNote}</span></div>
+      ${d.lit?`<div class="info-row"><span class="ir-label">Litigation</span><span class="ir-value"><span class="tag tag-orange">Active — verify current status</span></span></div>`:''}
+    </div>
+  </div>`;
+
+  h+=`<div class="do-section"><div class="do-section-title">Suppressor Law</div>
+    <div style="font-size:12px;color:var(--sub)">
+      <div class="info-row"><span class="ir-label">Status</span><span class="ir-value" style="color:${suppColor};font-weight:700">${suppLbl}</span></div>
+      <div class="info-row"><span class="ir-label">Notes</span><span class="ir-value" style="max-width:185px;text-align:right;line-height:1.4">${d.suppNote}</span></div>
+    </div>
+  </div>`;
+
+  h+=`<div class="do-section"><div class="do-section-title">Carry Law</div>
+    <div style="font-size:12px;color:var(--sub)">
+      <div class="info-row"><span class="ir-label">Type</span><span class="ir-value" style="color:${carryColor};font-weight:700">${{cc:'Constitutional Carry',shall:'Shall-Issue',may:'May-Issue / Restricted'}[d.carry]}</span></div>
+      <div class="info-row"><span class="ir-label">Notes</span><span class="ir-value" style="max-width:185px;text-align:right;line-height:1.4">${d.carryNote}</span></div>
+    </div>
+  </div>`;
+
+  h+=`<div class="do-section"><div class="do-section-title">AWB Status</div>
+    <div style="font-size:12px;color:var(--sub)">
+      <div class="info-row"><span class="ir-label">AWB</span><span class="ir-value">${d.awb?`<span class="tag tag-red">Active${d.lit?' / Litigated':''}</span>`:'<span class="tag tag-green">None</span>'}</span></div>
+    </div>
+  </div>`;
+
+  h+=`<div class="do-section"><div class="do-section-title">Official Resources</div>
+    <a class="do-link" href="${d.l}" target="_blank" rel="noopener">&#128279; ${n} — Official Agency</a>
+    <a class="do-link" href="https://hexcoremounts.com/pages/ccw-reciprocity-map" target="_blank" rel="noopener">&#128279; Full CCW Reciprocity Map</a>
+  </div>`;
+
+  h+=`<div class="disclaimer"><strong>&#9888;</strong> Not legal advice. Laws change — especially in litigated states. Verify with official sources before purchasing.</div>`;
+
+  document.getElementById('do-body').innerHTML=h;
+  document.getElementById('detail-overlay').classList.add('visible');
+  Object.keys(els).forEach(sn=>applyStroke(sn,sn===n));
+}
+
+function closeDetail(){
+  document.getElementById('detail-overlay').classList.remove('visible');
+  document.getElementById('do-title').textContent='';
+  Object.keys(els).forEach(sn=>applyStroke(sn,false));
+}
+
+function renderSidebar(){
+  const none=Object.values(S).filter(d=>d.tier==='none').length;
+  const p10=Object.values(S).filter(d=>d.tier==='10').length;
+  const pend=Object.values(S).filter(d=>d.tier==='banned_or_pending').length;
+  const lit=Object.values(S).filter(d=>d.lit).length;
+  const awb=Object.values(S).filter(d=>d.awb).length;
+  const suppBanned=Object.values(S).filter(d=>d.suppressor==='banned').length;
+  const cc=Object.values(S).filter(d=>d.carry==='cc').length;
+
+  const layerStats={
+    mag:`<div class="stats-grid">
+      <div class="stat-card"><div class="stat-num green">${none}</div><div class="stat-lbl">No Limit</div></div>
+      <div class="stat-card"><div class="stat-num red">${p10}</div><div class="stat-lbl">10-Rd Limit</div></div>
+      <div class="stat-card"><div class="stat-num orange">${lit}</div><div class="stat-lbl">Litigated</div></div>
+      <div class="stat-card"><div class="stat-num red">${awb}</div><div class="stat-lbl">AWB States</div></div>
+    </div>`,
+    suppressor:`<div class="stats-grid">
+      <div class="stat-card"><div class="stat-num green">${Object.values(S).filter(d=>d.suppressor==='legal').length}</div><div class="stat-lbl">Legal</div></div>
+      <div class="stat-card"><div class="stat-num red">${suppBanned}</div><div class="stat-lbl">Banned</div></div>
+      <div class="stat-card"><div class="stat-num yellow">${Object.values(S).filter(d=>d.suppressor==='restricted').length}</div><div class="stat-lbl">Restricted</div></div>
+      <div class="stat-card"><div class="stat-num accent">$0</div><div class="stat-lbl">Tax Stamp</div></div>
+    </div>`,
+    awb:`<div class="stats-grid">
+      <div class="stat-card"><div class="stat-num green">${Object.values(S).length-awb}</div><div class="stat-lbl">No AWB</div></div>
+      <div class="stat-card"><div class="stat-num red">${awb}</div><div class="stat-lbl">AWB States</div></div>
+      <div class="stat-card"><div class="stat-num orange">${lit}</div><div class="stat-lbl">Litigated</div></div>
+      <div class="stat-card"><div class="stat-num yellow">2026</div><div class="stat-lbl">CO &amp; RI Add AWB</div></div>
+    </div>`,
+    carry:`<div class="stats-grid">
+      <div class="stat-card"><div class="stat-num cyan">${cc}</div><div class="stat-lbl">Const. Carry</div></div>
+      <div class="stat-card"><div class="stat-num accent">${Object.values(S).filter(d=>d.carry==='shall').length}</div><div class="stat-lbl">Shall-Issue</div></div>
+      <div class="stat-card"><div class="stat-num red">${Object.values(S).filter(d=>d.carry==='may').length}</div><div class="stat-lbl">May-Issue</div></div>
+      <div class="stat-card"><div class="stat-num yellow">0</div><div class="stat-lbl">No Carry</div></div>
+    </div>`
+  };
+
+  const layerLegends={
+    mag:`<div class="leg-item"><div class="leg-swatch" style="background:var(--green);opacity:.8"></div>No restriction</div>
+      <div class="leg-item"><div class="leg-swatch" style="background:var(--cyan);opacity:.8"></div>15–17 round limit</div>
+      <div class="leg-item"><div class="leg-swatch" style="background:var(--yellow);opacity:.8"></div>10 round limit</div>
+      <div class="leg-item"><div class="leg-swatch" style="background:var(--red);opacity:.8"></div>Banned / Pending</div>
+      <div class="leg-item" style="gap:8px"><div style="width:13px;height:4px;border-top:2px dashed var(--orange);flex-shrink:0;margin-top:5px"></div><span style="font-size:12px;color:var(--text)">Dashed = Litigation</span></div>`,
+    suppressor:`<div class="leg-item"><div class="leg-swatch" style="background:var(--green);opacity:.8"></div>Legal — NFA Form 4 only</div>
+      <div class="leg-item"><div class="leg-swatch" style="background:var(--yellow);opacity:.8"></div>Restricted — extra state reqs</div>
+      <div class="leg-item"><div class="leg-swatch" style="background:var(--red);opacity:.8"></div>Banned statewide</div>`,
+    awb:`<div class="leg-item"><div class="leg-swatch" style="background:var(--green);opacity:.8"></div>No assault weapon ban</div>
+      <div class="leg-item"><div class="leg-swatch" style="background:var(--red);opacity:.8"></div>AWB active</div>
+      <div class="leg-item"><div class="leg-swatch" style="background:var(--orange);opacity:.8"></div>AWB active + litigated</div>`,
+    carry:`<div class="leg-item"><div class="leg-swatch" style="background:var(--cyan);opacity:.8"></div>Constitutional carry</div>
+      <div class="leg-item"><div class="leg-swatch" style="background:#60a5fa;opacity:.8"></div>Shall-Issue</div>
+      <div class="leg-item"><div class="leg-swatch" style="background:var(--red);opacity:.8"></div>May-Issue / Restricted</div>`
+  };
+
+  document.getElementById('sidebar-content').innerHTML=`
+    <div style="margin-bottom:.875rem">
+      <div style="font-family:var(--font-head);font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;line-height:1.1;margin-bottom:3px">Firearm Law Hub</div>
+      <div style="font-size:12px;color:var(--sub)">Click any state for full details across all four law categories</div>
+    </div>
+    ${layerStats[currentLayer]}
+    <div style="margin-bottom:1rem"><div class="sec-lbl">Current Layer</div>${layerLegends[currentLayer]}</div>
+    <div style="margin-bottom:1rem"><div class="sec-lbl">Quick Facts — 2026</div>
+      <div style="font-size:12px;color:var(--sub);line-height:2">
+        <div>&#8226; $200 NFA tax stamp eliminated Jan 1, 2026</div>
+        <div>&#8226; CO AWB effective Aug 1, 2026</div>
+        <div>&#8226; RI AWB effective Jul 1, 2026</div>
+        <div>&#8226; OR mag ban enjoined — monitor litigation</div>
+        <div>&#8226; DC mag ban ruled unconstitutional Mar 2026</div>
+      </div>
+    </div>
+    <div style="margin-bottom:1rem">
+      <div class="sec-lbl">HexCore Carry Tools</div>
+      <a href="https://hexcoremounts.com/pages/ccw-reciprocity-map" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--card);border:1px solid var(--border);border-radius:5px;color:var(--accent);font-size:12px;font-weight:600;text-decoration:none;transition:all .15s;margin-bottom:6px" onmouseover="this.style.borderColor='var(--accent)';this.style.background='rgba(32,253,240,.06)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--card)'">
+        <span style="font-size:14px;flex-shrink:0">&#127760;</span>
+        <div>
+          <div style="font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase">CCW Reciprocity Map</div>
+          <div style="font-size:10px;color:var(--sub);margin-top:1px">See where your permit is honored</div>
+        </div>
+        <span style="margin-left:auto;font-size:11px;opacity:.5">&#8594;</span>
+      </a>
+      <a href="https://hexcoremounts.com/pages/where-can-i-carry-law-tool" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--card);border:1px solid var(--border);border-radius:5px;color:var(--accent);font-size:12px;font-weight:600;text-decoration:none;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.background='rgba(32,253,240,.06)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--card)'">
+        <span style="font-size:14px;flex-shrink:0">&#9876;</span>
+        <div>
+          <div style="font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase">Carry Law Lookup</div>
+          <div style="font-size:10px;color:var(--sub);margin-top:1px">Where can I carry?</div>
+        </div>
+        <span style="margin-left:auto;font-size:11px;opacity:.5">&#8594;</span>
+      </a>
+    </div>
+    <div class="disclaimer"><strong>&#9888;</strong> Informational only — not legal advice. Laws change. Verify with official sources before purchasing.</div>`;
+}
+
+renderSidebar();
+drawStates();
+</script>
+</body>
+</html>
