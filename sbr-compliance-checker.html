@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SBR & Pistol Compliance Checker | HexCore Mounts</title>
+<meta name="description" content="Determine your firearm's legal classification — SBR, pistol, or Title I rifle — under federal law. Interactive compliance tool updated for 2026 NFA rules.">
+<link rel="canonical" href="https://hexcoremounts.com/pages/sbr-compliance-checker">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;
+  --text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;
+  --red:#ef4444;--orange:#f97316;--blue:#3b82f6;
+  --font-head:'Barlow Condensed',sans-serif;
+  --font-body:'Barlow',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(32,253,240,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(32,253,240,.018) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+
+/* HEADER */
+header{width:100%;background:rgba(17,18,20,.95);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);text-decoration:none;flex-shrink:0}.logo span{color:var(--accent)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;flex-shrink:0}
+.header-links{display:flex;gap:1.5rem}
+.header-links a{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}.header-links a:hover{color:var(--accent)}
+
+/* MAIN WRAP */
+.main{width:100%;max-width:860px;padding:2.5rem 1.5rem 4rem;position:relative;z-index:1}
+
+/* HERO */
+.hero{text-align:center;margin-bottom:2.5rem}
+.hero-eyebrow{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;gap:10px}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:28px;height:1px;background:var(--accent);opacity:.4}
+.hero-title{font-family:var(--font-head);font-weight:900;font-size:clamp(34px,6vw,56px);text-transform:uppercase;letter-spacing:.02em;line-height:1;color:#fff;margin-bottom:.75rem}
+.hero-title span{color:var(--accent)}
+.hero-sub{font-size:14px;color:var(--sub);line-height:1.7;max-width:520px;margin:0 auto}
+
+/* CHECKER CARD */
+.checker{background:var(--dark);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:2rem}
+.checker-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.checker-title{font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}
+
+/* STEPS */
+.steps-wrap{padding:1.5rem}
+.step-block{margin-bottom:1.75rem}
+.step-block:last-child{margin-bottom:0}
+.step-label{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.625rem;display:flex;align-items:center;gap:8px}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--muted);font-size:10px;font-weight:900;color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--font-head)}
+.step-num.active{background:var(--accent);color:var(--black)}
+
+/* OPTION PILLS */
+.option-grid{display:grid;gap:8px}
+.option-grid.cols-2{grid-template-columns:1fr 1fr}
+.option-grid.cols-3{grid-template-columns:1fr 1fr 1fr}
+.option-grid.cols-4{grid-template-columns:1fr 1fr 1fr 1fr}
+.opt-btn{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:10px 14px;font-family:var(--font-body);font-size:13px;font-weight:500;color:var(--sub);cursor:pointer;transition:all .15s;text-align:left;line-height:1.4;position:relative}
+.opt-btn:hover{border-color:var(--muted);color:var(--text);background:rgba(32,253,240,.03)}
+.opt-btn.selected{background:rgba(32,253,240,.08);border-color:rgba(32,253,240,.4);color:var(--accent)}
+.opt-btn .opt-title{font-family:var(--font-head);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;display:block;margin-bottom:2px}
+.opt-btn .opt-sub{font-size:11px;color:var(--muted);line-height:1.4}
+.opt-btn.selected .opt-sub{color:rgba(32,253,240,.6)}
+.opt-btn .opt-check{position:absolute;top:8px;right:10px;width:16px;height:16px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s}
+.opt-btn.selected .opt-check{background:var(--accent);border-color:var(--accent);color:var(--black)}
+
+/* MEASUREMENT INPUT */
+.measure-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.measure-field{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:12px 14px;display:flex;align-items:center;gap:10px;transition:border-color .15s}
+.measure-field:focus-within{border-color:rgba(32,253,240,.4)}
+.measure-field.valid{border-color:rgba(34,197,94,.3)}
+.measure-field.warn{border-color:rgba(239,68,68,.3)}
+.mf-label{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;font-family:var(--font-head);font-weight:700;white-space:nowrap;min-width:60px}
+.mf-input{flex:1;background:none;border:none;color:var(--text);font-family:var(--font-body);font-size:18px;font-weight:600;outline:none;width:100%;text-align:right}
+.mf-input::placeholder{color:var(--muted)}
+.mf-unit{font-family:var(--font-head);font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+.mf-hint{font-size:11px;color:var(--sub);margin-top:.375rem;line-height:1.5;padding:0 2px}
+
+/* MEASURING DIAGRAM */
+.measure-diagram{background:rgba(32,253,240,.03);border:1px solid rgba(32,253,240,.1);border-radius:8px;padding:1rem 1.25rem;margin-top:.875rem}
+.md-title{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.625rem}
+.md-rule{display:flex;align-items:flex-start;gap:8px;margin-bottom:.5rem;font-size:12px;color:var(--sub);line-height:1.5}
+.md-rule:last-child{margin-bottom:0}
+.md-rule strong{color:var(--text);font-weight:600}
+.md-icon{width:18px;height:18px;border-radius:3px;background:rgba(32,253,240,.1);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px}
+
+/* RESULT PANEL */
+.result{border-radius:10px;overflow:hidden;margin-top:1.75rem;display:none}
+.result.visible{display:block;animation:fadeUp .3s ease-out}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.result-header{padding:1.25rem 1.5rem;display:flex;align-items:center;gap:14px}
+.result-header.green{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-bottom:none;border-radius:10px 10px 0 0}
+.result-header.red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-bottom:none;border-radius:10px 10px 0 0}
+.result-header.yellow{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.25);border-bottom:none;border-radius:10px 10px 0 0}
+.result-header.orange{background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.25);border-bottom:none;border-radius:10px 10px 0 0}
+.result-header.blue{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);border-bottom:none;border-radius:10px 10px 0 0}
+
+.result-icon{font-size:28px;flex-shrink:0;line-height:1}
+.result-classification{flex:1}
+.rc-label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-family:var(--font-head);font-weight:700;margin-bottom:3px;opacity:.7}
+.rc-title{font-family:var(--font-head);font-size:26px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;line-height:1}
+.rc-title.green{color:#4ade80}
+.rc-title.red{color:#f87171}
+.rc-title.yellow{color:#facc15}
+.rc-title.orange{color:#fb923c}
+.rc-title.blue{color:#60a5fa}
+
+.result-body{padding:1.25rem 1.5rem;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px}
+.rb-section{margin-bottom:1.125rem}
+.rb-section:last-child{margin-bottom:0}
+.rb-section-title{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.5rem;padding-bottom:.375rem;border-bottom:1px solid var(--border)}
+.rb-text{font-size:13px;color:var(--sub);line-height:1.7}
+.rb-text strong{color:var(--text);font-weight:600}
+.rb-steps{display:flex;flex-direction:column;gap:8px}
+.rb-step{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--sub);line-height:1.5}
+.rb-step-num{width:22px;height:22px;border-radius:50%;background:var(--muted);font-family:var(--font-head);font-size:11px;font-weight:900;color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.rb-step-num.accent{background:rgba(32,253,240,.15);color:var(--accent)}
+.rb-step strong{color:var(--text);font-weight:600}
+.rb-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:.5rem}
+.rb-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:4px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.rb-badge.green{background:rgba(34,197,94,.1);color:#4ade80;border:1px solid rgba(34,197,94,.2)}
+.rb-badge.red{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.rb-badge.yellow{background:rgba(234,179,8,.1);color:#facc15;border:1px solid rgba(234,179,8,.2)}
+.rb-badge.orange{background:rgba(249,115,22,.1);color:#fb923c;border:1px solid rgba(249,115,22,.2)}
+.rb-badge.blue{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
+.rb-badge.muted{background:var(--dark);color:var(--sub);border:1px solid var(--border)}
+
+/* MEASUREMENT SUMMARY BAR */
+.measure-bar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.mb-item{background:var(--dark);border:1px solid var(--border);border-radius:5px;padding:6px 12px;display:flex;align-items:center;gap:8px}
+.mb-label{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;font-family:var(--font-head);font-weight:700}
+.mb-val{font-family:var(--font-head);font-size:16px;font-weight:900;color:var(--text)}
+.mb-val.pass{color:var(--green)}
+.mb-val.fail{color:var(--red)}
+.mb-divider{width:1px;height:16px;background:var(--border)}
+
+/* RESET */
+.reset-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:9px 20px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);cursor:pointer;transition:all .15s;margin-top:1.25rem}
+.reset-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* REFERENCE SECTION */
+.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:2rem}
+.ref-card{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:1.125rem}
+.ref-title{font-family:var(--font-head);font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:.5rem}
+.ref-body{font-size:12px;color:var(--sub);line-height:1.6}
+.ref-body strong{color:var(--text);font-weight:600}
+.ref-body ul{list-style:none;padding:0;margin-top:.375rem}
+.ref-body li{padding-left:12px;position:relative;margin-bottom:3px}
+.ref-body li::before{content:'›';position:absolute;left:0;color:var(--accent)}
+
+/* ALERTS */
+.alert-box{padding:12px 14px;border-radius:7px;font-size:13px;line-height:1.6;margin-bottom:1.25rem}
+.alert-box.warn{background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.2);color:var(--sub)}.alert-box.warn strong{color:var(--yellow)}
+.alert-box.info{background:rgba(32,253,240,.05);border:1px solid rgba(32,253,240,.15);color:var(--sub)}.alert-box.info strong{color:var(--accent)}
+.alert-box.success{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);color:var(--sub)}.alert-box.success strong{color:var(--green)}
+.alert-box.danger{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:var(--sub)}.alert-box.danger strong{color:var(--red)}
+
+/* SECTION TITLE */
+.section-title{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin-bottom:1rem;display:flex;align-items:center;gap:10px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* QUICK LINKS */
+.quick-links{background:rgba(9,16,24,.9);border:1px solid rgba(32,253,240,.12);border-radius:10px;padding:1rem;margin-bottom:2rem}
+.ql-title{font-family:var(--font-head);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text);margin-bottom:.75rem;display:flex;align-items:center;gap:8px}
+.ql-title::before{content:'⬡';color:var(--accent)}
+.ql-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ql-card{background:rgba(4,9,14,.8);border:1px solid rgba(32,253,240,.12);border-radius:8px;padding:.625rem .75rem;text-decoration:none;text-align:center;transition:all .15s}
+.ql-card:hover{border-color:rgba(32,253,240,.3);background:rgba(32,253,240,.04)}
+.ql-card.current{background:rgba(32,253,240,.04);border-color:rgba(32,253,240,.25)}
+.ql-label{font-family:var(--font-head);font-size:12px;font-weight:800;color:var(--accent);line-height:1.2}
+
+/* FOOTER */
+.disclaimer{font-size:11px;color:var(--muted);line-height:1.7;text-align:center;margin-bottom:1.5rem;padding:0 1rem}
+footer{border-top:1px solid var(--border);background:var(--dark);padding:1.25rem 2rem;text-align:center;font-family:var(--font-head);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);width:100%}
+
+@media(max-width:640px){
+  header{padding:0 1rem}
+  .header-links{display:none}
+  .main{padding:1.75rem 1.25rem 3rem}
+  .option-grid.cols-3,.option-grid.cols-4{grid-template-columns:1fr 1fr}
+  .measure-grid,.ref-grid{grid-template-columns:1fr}
+  .ql-grid{grid-template-columns:1fr 1fr}
+  .hero-title{font-size:34px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="https://hexcoremounts.com">Hex<span>Core</span></a>
+  <nav class="header-links">
+    <a href="https://hexcoremounts.com/pages/ccw-reciprocity-map">CCW Map</a>
+    <a href="https://hexcoremounts.com/pages/firearm-law-hub">Law Hub</a>
+    <a href="https://hexcoremounts.com/pages/2a-alert-feed">2A Alerts</a>
+  </nav>
+  <div class="header-badge">2026 Updated</div>
+</header>
+
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">NFA Compliance Tool</div>
+    <h1 class="hero-title">SBR & Pistol <span>Checker</span></h1>
+    <p class="hero-sub">Answer four questions to determine your firearm's federal classification — Title I rifle, pistol, SBR, or AOW — and exactly what NFA process applies.</p>
+  </div>
+
+  <div class="alert-box success"><strong>&#10003; 2026 Update:</strong> The $200 NFA tax stamp was eliminated January 1, 2026. ATF Form 1 and Form 4 are still required — registration and prior approval before possession remain mandatory. The pistol brace rule (2021R-08F) was vacated nationwide July 17, 2025 and is not enforced. Braced pistols revert to statutory NFA definition.</div>
+
+  <!-- CHECKER -->
+  <div class="checker">
+    <div class="checker-header">
+      <div class="pulse"></div>
+      <div class="checker-title">Federal Classification Checker</div>
+    </div>
+    <div class="steps-wrap">
+
+      <!-- STEP 1: STARTING POINT -->
+      <div class="step-block" id="step1">
+        <div class="step-label">
+          <div class="step-num active" id="sn1">1</div>
+          What are you starting with?
+        </div>
+        <div class="option-grid cols-2">
+          <button type="button" class="opt-btn" onclick="select('start','rifle',this)">
+            <div class="opt-check">✓</div>
+            <span class="opt-title">Rifle / Rifle Receiver</span>
+            <span class="opt-sub">Firearm originally manufactured as a rifle with a shoulder stock — AR-15, AK, bolt-action, etc.</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="select('start','pistol',this)">
+            <div class="opt-check">✓</div>
+            <span class="opt-title">Pistol / Pistol Receiver</span>
+            <span class="opt-sub">Firearm originally manufactured and serialized as a pistol — AR pistol, AK pistol, handgun, etc.</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2: REAR ATTACHMENT -->
+      <div class="step-block" id="step2" style="display:none">
+        <div class="step-label">
+          <div class="step-num" id="sn2">2</div>
+          What is attached to the rear?
+        </div>
+        <div class="option-grid cols-3" id="rear-options"></div>
+      </div>
+
+      <!-- STEP 3: MEASUREMENTS -->
+      <div class="step-block" id="step3" style="display:none">
+        <div class="step-label">
+          <div class="step-num" id="sn3">3</div>
+          Enter your measurements
+        </div>
+        <div class="measure-grid">
+          <div>
+            <div class="measure-field" id="mf-barrel">
+              <div class="mf-label">Barrel</div>
+              <input class="mf-input" id="barrel-input" type="number" step="0.1" min="0" max="36" placeholder="0.0" oninput="onMeasureInput()">
+              <div class="mf-unit">inches</div>
+            </div>
+            <div class="mf-hint" id="barrel-hint">Closed bolt face to muzzle end. Permanently pinned/welded muzzle devices count — removable ones do not.</div>
+          </div>
+          <div>
+            <div class="measure-field" id="mf-oal">
+              <div class="mf-label">Overall</div>
+              <input class="mf-input" id="oal-input" type="number" step="0.1" min="0" max="60" placeholder="0.0" oninput="onMeasureInput()">
+              <div class="mf-unit">inches</div>
+            </div>
+            <div class="mf-hint" id="oal-hint">Stock or brace fully extended. Folding stocks measured unfolded.</div>
+          </div>
+        </div>
+        <div class="measure-diagram">
+          <div class="md-title">How to Measure Correctly</div>
+          <div class="md-rule"><div class="md-icon">📏</div><div><strong>Barrel length:</strong> Insert a cleaning rod into the barrel with the action closed. Mark where it exits the muzzle. Measure from bolt face to mark. Pinned/welded flash hiders and compensators count toward length.</div></div>
+          <div class="md-rule"><div class="md-icon">↔️</div><div><strong>Overall length:</strong> Measure end-to-end with the stock or brace in its fully extended position. Folding stocks are measured unfolded/extended, not collapsed.</div></div>
+          <div class="md-rule"><div class="md-icon">⚠️</div><div><strong>Removable muzzle devices</strong> (thread-on suppressors, muzzle brakes, flash hiders) do NOT count toward barrel length unless permanently attached.</div></div>
+        </div>
+      </div>
+
+      <!-- STEP 4: STATE -->
+      <div class="step-block" id="step4" style="display:none">
+        <div class="step-label">
+          <div class="step-num" id="sn4">4</div>
+          Your state
+        </div>
+        <div style="max-width:280px">
+          <div class="measure-field">
+            <div class="mf-label">State</div>
+            <select id="state-select" onchange="onStateSelect()" style="flex:1;background:none;border:none;color:var(--text);font-family:var(--font-body);font-size:14px;font-weight:500;outline:none;cursor:pointer">
+              <option value="">Select state...</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULT -->
+      <div class="result" id="result">
+        <div class="result-header" id="result-header">
+          <div class="result-icon" id="result-icon"></div>
+          <div class="result-classification">
+            <div class="rc-label">Federal Classification</div>
+            <div class="rc-title" id="result-title"></div>
+          </div>
+        </div>
+        <div class="result-body">
+          <div class="measure-bar" id="measure-bar"></div>
+          <div class="rb-section" id="result-verdict-section">
+            <div class="rb-section-title">What This Means</div>
+            <div class="rb-text" id="result-verdict"></div>
+          </div>
+          <div class="rb-section" id="result-nfa-section" style="display:none">
+            <div class="rb-section-title">NFA Process Required</div>
+            <div class="rb-steps" id="result-nfa-steps"></div>
+          </div>
+          <div class="rb-section" id="result-state-section">
+            <div class="rb-section-title">State Law — <span id="result-state-name"></span></div>
+            <div class="rb-text" id="result-state-text"></div>
+          </div>
+          <div class="rb-section" id="result-options-section" style="display:none">
+            <div class="rb-section-title">Legal Alternatives — No NFA Required</div>
+            <div class="rb-text" id="result-options"></div>
+          </div>
+          <div class="rb-section">
+            <div class="rb-section-title">Status Badges</div>
+            <div class="rb-badges" id="result-badges"></div>
+          </div>
+        </div>
+        <button type="button" class="reset-btn" onclick="resetChecker()">&#8635; Start Over</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- REFERENCE CARDS -->
+  <div class="section-title">Quick Reference</div>
+  <div class="ref-grid" style="margin-bottom:2rem">
+    <div class="ref-card">
+      <div class="ref-title">Federal Definitions</div>
+      <div class="ref-body">
+        <ul>
+          <li><strong>Title I Rifle:</strong> Barrel ≥16" AND overall ≥26" with stock — no NFA</li>
+          <li><strong>Pistol:</strong> Designed for one-hand use, no shoulder stock — no NFA</li>
+          <li><strong>SBR:</strong> Rifle barrel &lt;16" OR overall &lt;26" with stock — NFA required</li>
+          <li><strong>AOW:</strong> Pistol with vertical foregrip added — NFA required (Form 1)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-title">Foregrip Rules</div>
+      <div class="ref-body">
+        <ul>
+          <li><strong>Angled foregrip on pistol</strong> → Legal pistol, no NFA</li>
+          <li><strong>Vertical foregrip on pistol</strong> → AOW, requires ATF Form 1</li>
+          <li><strong>Any foregrip on rifle</strong> → Fine, no NFA change</li>
+          <li><strong>Adding stock to pistol</strong> → SBR if barrel &lt;16", requires ATF approval first</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-title">14.5" + Pinned Muzzle Device</div>
+      <div class="ref-body">
+        The most common legal workaround for a short rifle. A 14.5" barrel with a muzzle device permanently pinned and welded to bring total length to ≥16" counts as a 16"+ barrel — <strong>no NFA required</strong>. The weld must be professionally done and inspected. Most gunsmiths charge $50–100 for the service.
+      </div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-title">Pistol Brace — 2026 Status</div>
+      <div class="ref-body">
+        The ATF 2023 brace rule (2021R-08F) is <strong>dead</strong>. DOJ dismissed its appeal July 17, 2025 in <em>Mock v. Bondi</em>. Braced pistols revert to the statutory NFA definition — a firearm is only an SBR if it has a barrel &lt;16" or OAL &lt;26" AND is designed to be fired from the shoulder. A brace ≠ a stock under current enforcement.
+      </div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-title">NFA Process — 2026</div>
+      <div class="ref-body">
+        <ul>
+          <li><strong>Tax stamp fee:</strong> $0 (eliminated Jan 1, 2026)</li>
+          <li><strong>Form 1</strong> — making your own SBR (converting pistol or building)</li>
+          <li><strong>Form 4</strong> — purchasing an already-registered SBR</li>
+          <li>ATF approval required before possession in either case</li>
+          <li>eForm 4 approvals averaging days in 2026</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-title">State SBR Bans</div>
+      <div class="ref-body">
+        These states prohibit civilian SBR ownership regardless of federal NFA compliance:
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:2px 6px;font-family:var(--font-head);font-size:10px;font-weight:700;color:#f87171">CA</span>
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:2px 6px;font-family:var(--font-head);font-size:10px;font-weight:700;color:#f87171">NY</span>
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:2px 6px;font-family:var(--font-head);font-size:10px;font-weight:700;color:#f87171">NJ</span>
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:2px 6px;font-family:var(--font-head);font-size:10px;font-weight:700;color:#f87171">MA</span>
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:2px 6px;font-family:var(--font-head);font-size:10px;font-weight:700;color:#f87171">HI</span>
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:2px 6px;font-family:var(--font-head);font-size:10px;font-weight:700;color:#f87171">IL</span>
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:2px 6px;font-family:var(--font-head);font-size:10px;font-weight:700;color:#f87171">RI</span>
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:2px 6px;font-family:var(--font-head);font-size:10px;font-weight:700;color:#f87171">DC</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:5px">MD also effectively bans via AWB feature rules. Always verify current state statute.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK LINKS -->
+  <div class="quick-links">
+    <div class="ql-title">HexCore Tools</div>
+    <div class="ql-grid">
+      <a class="ql-card" href="https://hexcoremounts.com/pages/ccw-reciprocity-map"><div class="ql-label">CCW Reciprocity Map</div></a>
+      <a class="ql-card" href="https://hexcoremounts.com/pages/firearm-law-hub"><div class="ql-label">Firearm Law Hub</div></a>
+      <a class="ql-card" href="https://hexcoremounts.com/pages/where-can-i-carry-law-tool"><div class="ql-label">Where Can I Carry?</div></a>
+      <a class="ql-card current" href="https://hexcoremounts.com/pages/sbr-compliance-checker"><div class="ql-label">SBR Checker</div></a>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    This tool is for general informational purposes only and does not constitute legal advice. Firearm laws change frequently and vary by state, county, and city. Classifications are based on federal law as of March 2026. Always verify with the ATF, your state's official statutes, and a licensed firearms attorney before making any modification or purchase decisions. HexCore Mounts is not liable for any decisions made based on this tool.
+  </div>
+
+</div>
+
+<footer>&copy; 2026 HexCore Mounts &nbsp;·&nbsp; Designed and Manufactured in the USA &nbsp;·&nbsp; Atlanta, Georgia &nbsp;·&nbsp; Data reviewed March 2026</footer>
+
+<script>
+// ════════════════════════════════════
+// STATE DATA
+// ════════════════════════════════════
+const SBR_BANNED = ['California','New York','New Jersey','Massachusetts','Hawaii','Illinois','Rhode Island','District of Columbia'];
+const SBR_RESTRICTED = ['Maryland']; // AWB effectively bans most SBR configs
+const STATES = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
+
+// Populate state select
+const sel = document.getElementById('state-select');
+STATES.forEach(s=>{
+  const o = document.createElement('option');
+  o.value = s; o.textContent = s;
+  sel.appendChild(o);
+});
+
+// ════════════════════════════════════
+// STATE
+// ════════════════════════════════════
+let S = { start: null, rear: null, grip: null, barrel: null, oal: null, state: null };
+
+// ════════════════════════════════════
+// STEP 1 — Starting point
+// ════════════════════════════════════
+function select(field, value, btn) {
+  S[field] = value;
+  btn.closest('.option-grid').querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  if(field==='start') afterStart();
+}
+
+function afterStart() {
+  // Show step 2
+  document.getElementById('step2').style.display = 'block';
+  document.getElementById('sn2').classList.add('active');
+  const container = document.getElementById('rear-options');
+  container.innerHTML = '';
+  container.className = 'option-grid cols-3';
+
+  if(S.start === 'rifle') {
+    container.innerHTML = `
+      <button type="button" class="opt-btn" onclick="selectRear('stock-fixed',this)">
+        <div class="opt-check">✓</div>
+        <span class="opt-title">Fixed Stock</span>
+        <span class="opt-sub">Non-adjustable shoulder stock permanently attached</span>
+      </button>
+      <button type="button" class="opt-btn" onclick="selectRear('stock-folding',this)">
+        <div class="opt-check">✓</div>
+        <span class="opt-title">Folding / Collapsible Stock</span>
+        <span class="opt-sub">Stock that folds or telescopes — measure fully extended</span>
+      </button>
+      <button type="button" class="opt-btn" onclick="selectRear('no-stock',this)">
+        <div class="opt-check">✓</div>
+        <span class="opt-title">No Stock / Pistol Config</span>
+        <span class="opt-sub">Rifle receiver configured without any stock or brace</span>
+      </button>`;
+  } else {
+    container.innerHTML = `
+      <button type="button" class="opt-btn" onclick="selectRear('brace',this)">
+        <div class="opt-check">✓</div>
+        <span class="opt-title">Pistol Brace</span>
+        <span class="opt-sub">Stabilizing brace — NOT a shoulder stock. Brace rule vacated 2025.</span>
+      </button>
+      <button type="button" class="opt-btn" onclick="selectRear('stock-added',this)">
+        <div class="opt-check">✓</div>
+        <span class="opt-title">Shoulder Stock Added</span>
+        <span class="opt-sub">A traditional buttstock has been installed on a pistol receiver</span>
+      </button>
+      <button type="button" class="opt-btn" onclick="selectRear('no-stock',this)">
+        <div class="opt-check">✓</div>
+        <span class="opt-title">No Stock / No Brace</span>
+        <span class="opt-sub">Bare buffer tube, end cap, or nothing at the rear</span>
+      </button>`;
+  }
+  hideResult();
+}
+
+function selectRear(val, btn) {
+  S.rear = val;
+  btn.closest('.option-grid').querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('step3').style.display = 'block';
+  document.getElementById('sn3').classList.add('active');
+  document.getElementById('step4').style.display = 'block';
+  document.getElementById('sn4').classList.add('active');
+  // Update OAL hint based on rear selection
+  const oalHint = document.getElementById('oal-hint');
+  if(val==='stock-folding') oalHint.textContent = 'Measure with stock fully unfolded/extended — not collapsed.';
+  else if(val==='brace') oalHint.textContent = 'Measure end-to-end with brace fully extended.';
+  else oalHint.textContent = 'End of barrel/muzzle to end of stock or rear of receiver.';
+  tryCompute();
+}
+
+function onMeasureInput() {
+  const b = parseFloat(document.getElementById('barrel-input').value);
+  const o = parseFloat(document.getElementById('oal-input').value);
+  S.barrel = isNaN(b) ? null : b;
+  S.oal = isNaN(o) ? null : o;
+  // Visual feedback
+  const mfb = document.getElementById('mf-barrel');
+  const mfo = document.getElementById('mf-oal');
+  if(S.barrel !== null) mfb.classList.toggle('valid', S.barrel >= 16);
+  if(S.barrel !== null) mfb.classList.toggle('warn', S.barrel < 16);
+  if(S.oal !== null) mfo.classList.toggle('valid', S.oal >= 26);
+  if(S.oal !== null) mfo.classList.toggle('warn', S.oal < 26);
+  tryCompute();
+}
+
+function onStateSelect() {
+  S.state = document.getElementById('state-select').value || null;
+  tryCompute();
+}
+
+// ════════════════════════════════════
+// COMPUTE RESULT
+// ════════════════════════════════════
+function tryCompute() {
+  if(!S.start || !S.rear || S.barrel === null || S.oal === null || !S.state) return;
+  if(S.barrel <= 0 || S.oal <= 0) return;
+  computeResult();
+}
+
+function computeResult() {
+  const barrelOk = S.barrel >= 16;
+  const oalOk = S.oal >= 26;
+  const stateBanned = SBR_BANNED.includes(S.state);
+  const stateRestricted = SBR_RESTRICTED.includes(S.state);
+  let classification, color, icon, verdict, nfaSteps, stateText, options, badges;
+  nfaSteps = null; options = null;
+
+  // ── RIFLE starting point ──
+  if(S.start === 'rifle') {
+    if(S.rear === 'no-stock') {
+      // Rifle receiver, no stock = "pistol" configuration technically, but legally gray
+      classification = 'Pistol Configuration';
+      color = 'blue';
+      icon = '🔵';
+      verdict = `A rifle receiver configured without a shoulder stock occupies a gray area. It cannot be a "pistol" legally (it was manufactured as a rifle), but without a stock it also doesn't fully meet the "designed to be fired from the shoulder" test that would make it an SBR. In practice, adding a brace does <em>not</em> make it an SBR under current ATF enforcement. <strong>Do not add a vertical foregrip</strong> — that would create an AOW. Avoid adding a stock without prior ATF Form 1 approval if the barrel is under 16 inches.`;
+      stateText = stateBanned ? `<strong>⚠️ ${S.state} restricts NFA items</strong> — even though this specific configuration may not require NFA registration, verify current state law before any modifications.` : `${S.state} allows NFA-compliant firearms. This configuration, if it doesn't trigger NFA classification, is generally permissible.`;
+      badges = [{label:'Rifle Receiver',c:'blue'},{label:'No Stock',c:'muted'},{label:'Verify ATF',c:'yellow'}];
+    } else if(barrelOk && oalOk) {
+      // Clean Title I rifle
+      classification = 'Title I Rifle';
+      color = 'green';
+      icon = '✅';
+      verdict = `Your firearm meets all federal requirements for a standard Title I rifle. <strong>Barrel ≥16" and overall length ≥26" with a shoulder stock</strong> — no NFA registration required. This is the most legally simple configuration. You can buy, own, transfer, and transport it like any standard rifle.`;
+      stateText = stateBanned
+        ? `<strong>Note:</strong> ${S.state} has an assault weapon ban that may restrict this firearm based on features (pistol grip, adjustable stock, detachable magazine, etc.) — even though it's not an NFA item. Check ${S.state}'s AWB statute for feature restrictions.`
+        : `${S.state} has no SBR-specific ban. This Title I rifle is generally legal with standard background check purchase process.`;
+      badges = [{label:'Title I Rifle',c:'green'},{label:'No NFA Required',c:'green'},{label:`Barrel: ${S.barrel}"`,c:'green'},{label:`OAL: ${S.oal}"`,c:'green'}];
+    } else if(!barrelOk || !oalOk) {
+      // SBR
+      if(stateBanned) {
+        classification = 'SBR — Banned in Your State';
+        color = 'red';
+        icon = '🚫';
+        verdict = `This firearm meets the federal definition of a <strong>Short Barrel Rifle (SBR)</strong> — ${!barrelOk ? `barrel length ${S.barrel}" is under the 16" minimum` : ''}${(!barrelOk && !oalOk) ? ' and ' : ''}${!oalOk ? `overall length ${S.oal}" is under the 26" minimum` : ''}. Additionally, <strong>${S.state} prohibits civilian SBR ownership</strong> even with federal NFA compliance. The ATF will not approve a Form 1 or Form 4 application for a state that bans SBRs.`;
+        options = getOptions(S.barrel, 'rifle');
+        stateText = `<strong class="red">⛔ ${S.state} bans SBR ownership.</strong> Federal NFA registration does not override this state ban. Possession is a state crime in addition to the federal requirement. Your legal options are to modify the firearm to Title I configuration or relocate to a state that allows NFA items.`;
+        badges = [{label:'SBR',c:'red'},{label:'State Banned',c:'red'},{label:`Barrel: ${S.barrel}"`,c:'red'},{label:`OAL: ${S.oal}"`,c:oalOk?'green':'red'}];
+      } else {
+        classification = 'SBR — NFA Required';
+        color = 'yellow';
+        icon = '⚠️';
+        verdict = `This firearm meets the federal definition of a <strong>Short Barrel Rifle (SBR)</strong> — ${!barrelOk ? `barrel length ${S.barrel}" is under the 16" minimum` : ''}${(!barrelOk && !oalOk) ? ' and ' : ''}${!oalOk ? `overall length ${S.oal}" is under the 26" minimum` : ''}. SBRs are legal to own in ${S.state} but require ATF registration. <strong>Do not possess this configuration until your Form 1 or Form 4 is approved.</strong>`;
+        nfaSteps = [{n:1,t:'File ATF eForm 1 or Form 4',d:'Form 1 to make your own SBR. Form 4 to purchase/transfer an already-registered SBR. File at eForms.atf.gov.'},{n:2,t:'Background check & approval',d:'ATF reviews your application. eForm approvals in 2026 averaging days to weeks. Do NOT take possession before approval arrives.'},{n:3,t:'Tax stamp fee: $0',d:'The $200 fee was eliminated January 1, 2026. You still receive an approved form — it just shows $0 tax paid.'},{n:4,t:'Keep paperwork with the firearm',d:'Your approved Form 1 or Form 4 should be accessible whenever you transport or use the SBR.'}];
+        options = getOptions(S.barrel, 'rifle');
+        stateText = `${S.state} allows NFA-compliant SBR ownership. Once your ATF Form is approved, you may legally possess this firearm in ${S.state}. Note: ATF requires you to notify them if you transport the SBR across state lines.`;
+        badges = [{label:'SBR',c:'yellow'},{label:'NFA Required',c:'yellow'},{label:'$0 Tax Stamp',c:'green'},{label:`Barrel: ${S.barrel}"`,c:barrelOk?'green':'red'},{label:`OAL: ${S.oal}"`,c:oalOk?'green':'red'}];
+      }
+    }
+
+  // ── PISTOL starting point ──
+  } else {
+    if(S.rear === 'no-stock') {
+      // Standard pistol, no brace, no stock
+      classification = 'Title I Pistol';
+      color = 'green';
+      icon = '✅';
+      verdict = `Standard pistol configuration — no shoulder stock, no brace. <strong>No NFA registration required.</strong> You may add an angled foregrip without NFA implications. <strong>Do not add a vertical foregrip</strong> (that creates an AOW) and do not add a shoulder stock without prior ATF Form 1 approval.`;
+      stateText = stateBanned ? `${S.state} may have assault pistol restrictions based on features. Verify state AWB laws for specifics on your configuration.` : `${S.state} has no specific restrictions on standard pistol configurations beyond the standard purchase process.`;
+      badges = [{label:'Title I Pistol',c:'green'},{label:'No NFA Required',c:'green'},{label:'Angled Grip OK',c:'green'},{label:'No Vertical Grip',c:'yellow'}];
+
+    } else if(S.rear === 'brace') {
+      // Pistol with brace — currently legal as pistol
+      if(barrelOk && oalOk) {
+        classification = 'Pistol with Brace';
+        color = 'green';
+        icon = '✅';
+        verdict = `Pistol with stabilizing brace — both barrel and overall length exceed the NFA minimums. <strong>No NFA registration required under current 2026 enforcement.</strong> The ATF 2023 brace rule was vacated July 17, 2025 (<em>Mock v. Bondi</em>). Braced pistols revert to the statutory definition — yours clears both measurements regardless. Legal as a standard pistol.`;
+        stateText = stateBanned ? `${S.state} restrictions apply to AWB features, not specifically to pistol braces. Check state feature-based restrictions.` : `${S.state} has no specific restriction on braced pistols. Legal with standard purchase process.`;
+        badges = [{label:'Braced Pistol',c:'green'},{label:'No NFA Required',c:'green'},{label:'Brace Rule Dead',c:'green'},{label:`Barrel: ${S.barrel}"`,c:'green'}];
+      } else {
+        // Braced pistol but under length thresholds — technically still pistol, not SBR
+        classification = 'Braced Pistol — Verify';
+        color = 'orange';
+        icon = '🔍';
+        verdict = `Pistol with stabilizing brace, but measurements are under NFA thresholds (barrel &lt;16" or OAL &lt;26"). Under current 2026 enforcement, braced pistols are <strong>not automatically SBRs</strong> — the 2023 brace rule was vacated. Classification reverts to the statutory definition, which requires the firearm to be <em>"designed to be fired from the shoulder"</em>. A brace is not a stock. <strong>However, this is a close-call configuration</strong> — the ATF still has authority to examine individual firearms. If in doubt, consult a firearms attorney or consider filing a Form 1 for clean legal status.`;
+        options = getOptions(S.barrel, 'pistol');
+        stateText = stateBanned ? `<strong>⚠️ ${S.state} restricts NFA items.</strong> If this configuration were ever classified as an SBR, possession would be illegal. Consider converting to a clearly legal configuration.` : `${S.state} allows NFA items if registration were required. For clarity, consider either keeping measurements above thresholds or filing ATF Form 1 for clean SBR status.`;
+        badges = [{label:'Braced Pistol',c:'orange'},{label:'Verify Status',c:'orange'},{label:`Barrel: ${S.barrel}"`,c:barrelOk?'green':'orange'},{label:'Consult Attorney',c:'yellow'}];
+      }
+
+    } else if(S.rear === 'stock-added') {
+      // Pistol with stock added — this is an SBR if barrel <16"
+      if(barrelOk && oalOk) {
+        // Stock added but barrel ≥16" and OAL ≥26" — now legally a rifle
+        classification = 'Rifle Configuration';
+        color = 'green';
+        icon = '✅';
+        verdict = `A pistol with a shoulder stock added and measurements that clear both NFA thresholds. <strong>Adding a stock to a pistol creates a "rifle"</strong> — specifically, it is now configured as a rifle and may legally be treated as one (barrel ≥16", OAL ≥26"). No NFA registration required for this configuration. Note: this receiver is now a <em>rifle</em> — it cannot be converted back to a pistol legally.`;
+        stateText = stateBanned ? `${S.state} has AWB feature restrictions that may apply to this rifle configuration. Check state law for feature-based restrictions.` : `${S.state} has no specific NFA restrictions for this configuration.`;
+        badges = [{label:'Rifle Configuration',c:'green'},{label:'No NFA Required',c:'green'},{label:`Barrel: ${S.barrel}"`,c:'green'},{label:`OAL: ${S.oal}"`,c:'green'}];
+      } else {
+        // Stock added to pistol with barrel <16" — clear SBR
+        if(stateBanned) {
+          classification = 'SBR — Banned in Your State';
+          color = 'red';
+          icon = '🚫';
+          verdict = `Adding a shoulder stock to a pistol with a barrel under 16" creates a <strong>Short Barrel Rifle (SBR)</strong>. This is one of the clearest SBR configurations under federal law. <strong>Additionally, ${S.state} bans SBR ownership entirely</strong> — federal NFA compliance does not override this. <strong>This configuration is illegal in your state.</strong> Remove the stock immediately if this is your current configuration.`;
+          options = getOptions(S.barrel, 'pistol');
+          stateText = `<strong class="red">⛔ ${S.state} prohibits SBR ownership.</strong> Immediate action required if you are in this configuration. Legal options: remove the stock (returns to pistol), add a 16"+ barrel, or relocate to a state that permits NFA items.`;
+          badges = [{label:'SBR',c:'red'},{label:'State Banned',c:'red'},{label:'Immediate Action',c:'red'}];
+        } else {
+          classification = 'SBR — NFA Required';
+          color = 'yellow';
+          icon = '⚠️';
+          verdict = `Adding a shoulder stock to a pistol with a barrel under 16" creates a <strong>Short Barrel Rifle (SBR)</strong> — one of the most common SBR configurations. <strong>You must have ATF Form 1 approval BEFORE installing the stock.</strong> If you have already installed the stock without approval, this is an unregistered NFA item — a federal felony. File Form 1 immediately and consult a firearms attorney.`;
+          nfaSteps = [{n:1,t:'File ATF eForm 1 BEFORE installing stock',d:'This is critical — you must receive approval before the stock goes on. Form 1 for making an SBR filed at eForms.atf.gov.'},{n:2,t:'Wait for ATF approval',d:'eForm 1 approvals averaging days to weeks in 2026. Do not touch the stock until you have your approved form.'},{n:3,t:'$0 tax stamp',d:'The $200 fee is eliminated as of January 1, 2026.'},{n:4,t:'Install stock after approval',d:'Once your approved Form 1 is in hand, the stock may be installed. Keep the form with the firearm.'}];
+          options = getOptions(S.barrel, 'pistol');
+          stateText = `${S.state} allows NFA-compliant SBR ownership. Ensure Form 1 approval is obtained before this configuration exists. ATF cross-state transport notification required.`;
+          badges = [{label:'SBR',c:'yellow'},{label:'NFA Required',c:'yellow'},{label:'Form 1 FIRST',c:'red'},{label:'$0 Tax Stamp',c:'green'}];
+        }
+      }
+    }
+  }
+
+  showResult(classification, color, icon, verdict, nfaSteps, stateText, options, badges);
+}
+
+function getOptions(barrel, type) {
+  const opts = [];
+  if(type === 'rifle') {
+    if(barrel < 16 && barrel >= 14.5) {
+      opts.push(`<strong>14.5" + Pinned/Welded Muzzle Device:</strong> A permanently pinned and welded muzzle device that brings total barrel length to ≥16" counts as a 16"+ barrel — no NFA required. Most common legal workaround. Cost: $50–100 at a gunsmith.`);
+    }
+    opts.push(`<strong>Install a 16"+ barrel:</strong> The simplest solution. A 16" or longer barrel with stock fully extended ≥26" = standard Title I rifle, no NFA.`);
+    opts.push(`<strong>Remove the stock:</strong> Without a stock, the rifle receiver is no longer "designed to be fired from the shoulder" — removes SBR classification in most configurations.`);
+  } else {
+    opts.push(`<strong>Keep it as a pistol:</strong> No stock = no SBR. You can add a pistol brace (legal under current 2026 enforcement) or keep bare.`);
+    opts.push(`<strong>Install a 16"+ barrel + stock:</strong> Transforms the firearm into a standard Title I rifle configuration. Note: once configured as a rifle, it legally cannot be converted back to a pistol.`);
+    opts.push(`<strong>Angled foregrip:</strong> Legal on a pistol with no NFA implications. Vertical foregrip requires AOW registration — avoid unless you file Form 1.`);
+  }
+  return opts.map(o=>`<div class="rb-step"><div class="rb-step-num accent">›</div><div>${o}</div></div>`).join('');
+}
+
+function showResult(classification, color, icon, verdict, nfaSteps, stateText, options, badges) {
+  const rEl = document.getElementById('result');
+  const rh = document.getElementById('result-header');
+  rh.className = `result-header ${color}`;
+  document.getElementById('result-icon').textContent = icon;
+  const rt = document.getElementById('result-title');
+  rt.className = `rc-title ${color}`;
+  rt.textContent = classification;
+
+  // Measure bar
+  const mb = document.getElementById('measure-bar');
+  mb.innerHTML = `
+    <div class="mb-item"><div class="mb-label">Barrel</div><div class="mb-divider"></div><div class="mb-val ${S.barrel >= 16 ? 'pass' : 'fail'}">${S.barrel}"</div></div>
+    <div class="mb-item"><div class="mb-label">OAL</div><div class="mb-divider"></div><div class="mb-val ${S.oal >= 26 ? 'pass' : 'fail'}">${S.oal}"</div></div>
+    <div class="mb-item"><div class="mb-label">State</div><div class="mb-divider"></div><div class="mb-val" style="font-size:13px">${S.state}</div></div>`;
+
+  document.getElementById('result-verdict').innerHTML = verdict;
+  document.getElementById('result-state-name').textContent = S.state;
+  document.getElementById('result-state-text').innerHTML = stateText;
+
+  // NFA steps
+  const nfaSection = document.getElementById('result-nfa-section');
+  if(nfaSteps) {
+    nfaSection.style.display = 'block';
+    document.getElementById('result-nfa-steps').innerHTML = nfaSteps.map(s=>`
+      <div class="rb-step">
+        <div class="rb-step-num accent">${s.n}</div>
+        <div><strong>${s.t}</strong> — ${s.d}</div>
+      </div>`).join('');
+  } else {
+    nfaSection.style.display = 'none';
+  }
+
+  // Options
+  const optSection = document.getElementById('result-options-section');
+  if(options) {
+    optSection.style.display = 'block';
+    document.getElementById('result-options').innerHTML = `<div class="rb-steps">${options}</div>`;
+  } else {
+    optSection.style.display = 'none';
+  }
+
+  // Badges
+  document.getElementById('result-badges').innerHTML = badges.map(b=>`<span class="rb-badge ${b.c}">${b.label}</span>`).join('');
+
+  rEl.classList.add('visible');
+  rEl.style.display = 'block';
+  setTimeout(()=>rEl.scrollIntoView({behavior:'smooth',block:'nearest'}), 100);
+}
+
+function hideResult() {
+  const r = document.getElementById('result');
+  r.style.display = 'none';
+  r.classList.remove('visible');
+}
+
+function resetChecker() {
+  S = { start: null, rear: null, grip: null, barrel: null, oal: null, state: null };
+  document.getElementById('step2').style.display = 'none';
+  document.getElementById('step3').style.display = 'none';
+  document.getElementById('step4').style.display = 'none';
+  document.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('.step-num').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sn1').classList.add('active');
+  document.getElementById('barrel-input').value = '';
+  document.getElementById('oal-input').value = '';
+  document.getElementById('state-select').value = '';
+  ['mf-barrel','mf-oal'].forEach(id=>{ const el=document.getElementById(id); el.classList.remove('valid','warn'); });
+  hideResult();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>
