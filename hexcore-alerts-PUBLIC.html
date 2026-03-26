@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2A Law Alert Feed — Stay Informed | HexCore Mounts</title>
+<meta name="description" content="Stay current on Second Amendment legislation, court rulings, and law changes. HexCore Mounts curates the latest 2A alerts directly from GOA, SAF, and NRA-ILA.">
+<link rel="canonical" href="https://hexcoremounts.com/pages/2a-alert-feed">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;--text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--orange:#f97316;--font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+
+/* HEADER */
+header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;width:100%}
+.logo{font-family:var(--font-head);font-weight:900;font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}
+.header-nav{display:flex;gap:2rem;align-items:center}
+.header-nav a{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}.header-nav a:hover{color:var(--text)}.header-nav a.active{color:var(--accent)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;text-decoration:none}
+
+/* HERO */
+.hero{width:100%;max-width:960px;padding:2.5rem 1.5rem 1.5rem;text-align:center}
+.hero-eyebrow{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;gap:8px}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:24px;height:1px;background:var(--accent);opacity:.4}
+.hero-title{font-family:var(--font-head);font-weight:900;font-size:clamp(32px,5vw,52px);text-transform:uppercase;letter-spacing:.02em;line-height:1;color:#fff;margin-bottom:.75rem}
+.hero-title span{color:var(--accent)}
+.hero-sub{font-size:15px;color:var(--sub);line-height:1.65;max-width:560px;margin:0 auto 1.5rem}
+.hero-disclaimer{font-size:11px;color:var(--muted);max-width:500px;margin:0 auto;line-height:1.6}
+
+/* FILTER BAR */
+.filter-bar{width:100%;max-width:960px;padding:.875rem 1.5rem;background:var(--dark);border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.filter-bar select,.filter-bar input{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:7px 12px;color:var(--text);font-family:var(--font-body);font-size:13px;outline:none;transition:border-color .15s}
+.filter-bar select:focus,.filter-bar input:focus{border-color:var(--accent)}
+.filter-bar select option{background:var(--card)}
+.filter-bar input{flex:1;min-width:180px}
+.filter-label{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);white-space:nowrap}
+.filter-count{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.06em;margin-left:auto;white-space:nowrap}
+
+/* FEED */
+.feed-wrap{width:100%;max-width:960px;padding:1.5rem}
+.feed-section-label{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.875rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+
+/* ALERT CARDS */
+.alert-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:12px;transition:border-color .2s,background .2s}
+.alert-card:hover{border-color:var(--muted);background:rgba(22,24,28,.8)}
+.alert-card.featured{border-left:3px solid var(--accent);background:rgba(32,253,240,.02)}
+.alert-card.featured:hover{border-color:var(--accent)}
+.ac-featured-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:rgba(32,253,240,.08);border:1px solid rgba(32,253,240,.2);border-radius:3px;padding:2px 8px;margin-bottom:.625rem}
+.ac-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.375rem}
+.ac-headline{font-family:var(--font-head);font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:var(--text);line-height:1.15;flex:1}
+.ac-date{font-size:11px;color:var(--sub);white-space:nowrap;padding-top:3px;flex-shrink:0}
+.ac-meta{display:flex;align-items:center;gap:8px;margin-bottom:.625rem;flex-wrap:wrap}
+.ac-source{font-size:12px;color:var(--accent);font-weight:600}
+.cat-badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.cat-legislative{background:rgba(59,130,246,.15);color:#60a5fa}
+.cat-court{background:rgba(168,85,247,.15);color:#c084fc}
+.cat-law-change{background:rgba(239,68,68,.15);color:#f87171}
+.cat-nfa{background:rgba(34,197,94,.15);color:#4ade80}
+.cat-carry{background:rgba(32,253,240,.12);color:var(--accent)}
+.cat-general{background:rgba(234,179,8,.12);color:#facc15}
+.ac-summary{font-size:14px;color:var(--sub);line-height:1.65;margin-bottom:.875rem}
+.ac-footer{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.ac-states{display:flex;flex-wrap:wrap;gap:5px}
+.ac-state-tag{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:rgba(32,253,240,.04);color:var(--sub);border:1px solid var(--border)}
+.ac-link{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);text-decoration:none;white-space:nowrap;padding:6px 12px;background:rgba(32,253,240,.06);border:1px solid rgba(32,253,240,.2);border-radius:4px;transition:all .15s}
+.ac-link:hover{background:rgba(32,253,240,.14);border-color:rgba(32,253,240,.4)}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--muted)}
+.empty-title{font-family:var(--font-head);font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--sub);margin-bottom:.5rem}
+
+/* QUICK LINKS */
+.quick-links{width:100%;max-width:960px;padding:0 1.5rem 1.5rem}
+.quick-links-shell{background:rgba(9,16,24,.95);border:1px solid rgba(32,253,240,.14);border-radius:12px;padding:1rem}
+.quick-links-title{font-family:var(--font-head);font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text);margin-bottom:.875rem;display:flex;align-items:center;gap:8px}
+.quick-links-title::before{content:'⬡';color:var(--accent);font-size:14px}
+.quick-links-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.quick-link-card{display:flex;align-items:center;justify-content:center;background:rgba(4,9,14,.78);border:1px solid rgba(32,253,240,.14);border-radius:10px;padding:.625rem .75rem;text-decoration:none;text-align:center;transition:all .16s}
+.quick-link-card:hover{border-color:rgba(32,253,240,.34);background:rgba(32,253,240,.04)}
+.quick-link-card.current{background:rgba(32,253,240,.04);border-color:rgba(32,253,240,.26)}
+.quick-link-title{font-family:var(--font-head);font-size:13px;font-weight:800;color:var(--accent);line-height:1.1}
+
+/* FOOTER */
+.disclaimer-bar{width:100%;max-width:960px;padding:1rem 1.5rem;font-size:11px;color:var(--muted);line-height:1.6;text-align:center}
+footer{border-top:1px solid var(--border);background:var(--dark);padding:1.5rem 2rem;text-align:center;font-family:var(--font-head);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);width:100%}
+
+@media(max-width:768px){
+  .header-nav{display:none}
+  header{padding:0 1rem}
+  .hero{padding:1.75rem 1.25rem 1.25rem}
+  .filter-bar{padding:.75rem 1.25rem}
+  .feed-wrap,.quick-links{padding-left:1.25rem;padding-right:1.25rem}
+  .quick-links-grid{grid-template-columns:1fr 1fr}
+  .ac-headline{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="https://hexcoremounts.com">Hex<span>Core</span> Mounts</a>
+  <nav class="header-nav">
+    <a href="https://hexcoremounts.com/collections/all">Products</a>
+    <a href="https://hexcoremounts.com/pages/why-hexcore">Why HexCore</a>
+    <a href="https://hexcoremounts.com/pages/about-us">About</a>
+    <a href="https://hexcoremounts.com/blogs/news">Intel</a>
+    <a href="https://hexcoremounts.com/pages/2a-alert-feed" class="active">2A Alerts</a>
+    <a class="header-badge" href="https://hexcoremounts.com/collections/all">Shop Now</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">Stay Informed</div>
+  <h1 class="hero-title">2A Law <span>Alert Feed</span></h1>
+  <p class="hero-sub">Curated Second Amendment alerts from GOA, SAF, and NRA-ILA — legislation, court rulings, and law changes that matter to gun owners. No noise. Just signal.</p>
+  <p class="hero-disclaimer">HexCore Mounts curates and summarizes alerts from trusted 2A advocacy organizations. All alerts link to original sources. This is not legal advice.</p>
+</div>
+
+<div class="filter-bar">
+  <span class="filter-label">Filter:</span>
+  <input type="text" id="flt-search" placeholder="Search alerts..." oninput="applyFilters()">
+  <select id="flt-category" onchange="applyFilters()">
+    <option value="">All Categories</option>
+    <option value="legislative">Legislative</option>
+    <option value="court">Court Ruling</option>
+    <option value="law-change">Law Change</option>
+    <option value="nfa">NFA / Suppressor</option>
+    <option value="carry">Carry Law</option>
+    <option value="general">General 2A</option>
+  </select>
+  <select id="flt-state" onchange="applyFilters()">
+    <option value="">All States</option>
+  </select>
+  <span class="filter-count" id="flt-count"></span>
+</div>
+
+<div class="feed-wrap">
+  <div id="featured-section"></div>
+  <div id="feed-section"></div>
+</div>
+
+<section class="quick-links" aria-label="Related HexCore tools">
+  <div class="quick-links-shell">
+    <div class="quick-links-title">HexCore Tools</div>
+    <div class="quick-links-grid">
+      <a class="quick-link-card" href="https://hexcoremounts.com/pages/ccw-reciprocity-map">
+        <div class="quick-link-title">CCW Reciprocity Map</div>
+      </a>
+      <a class="quick-link-card" href="https://hexcoremounts.com/pages/where-can-i-carry-law-tool">
+        <div class="quick-link-title">Where Can I Carry?</div>
+      </a>
+      <a class="quick-link-card" href="https://hexcoremounts.com/pages/firearm-law-hub">
+        <div class="quick-link-title">Firearm Law Hub</div>
+      </a>
+      <a class="quick-link-card current" href="https://hexcoremounts.com/pages/2a-alert-feed">
+        <div class="quick-link-title">2A Alert Feed</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="disclaimer-bar">
+  HexCore Mounts curates summaries of publicly available 2A alerts from advocacy organizations. All content links to original sources. This feed is for informational purposes only and does not constitute legal advice. Laws change — always verify with official state sources before making decisions about firearm ownership, carry, or accessories.
+</div>
+
+<footer>&copy; 2026 HexCore Mounts &nbsp;&middot;&nbsp; Designed and Manufactured in the USA &nbsp;&middot;&nbsp; Atlanta, Georgia</footer>
+
+<script>
+/* START EXPORTED ALERT DATA */
+const _ad = "";
+function _ax(s){try{return decodeURIComponent(escape(atob(String(s||''))));}catch(e){return String(s||'');}}
+function _adecode(raw){try{return JSON.parse(_ax(raw)).map(r=>({id:r.g,headline:_ax(r.a),summary:_ax(r.b),source:_ax(r.c),url:_ax(r.d),category:_ax(r.e),date:_ax(r.f),states:_ax(r.h).split('|').filter(Boolean),featured:r.i===1}));}catch(e){return[];}}
+const ALERTS = _adecode(_ad);
+/* END EXPORTED ALERT DATA */
+
+const CAT_LABELS = {
+  'legislative':'Legislative','court':'Court Ruling','law-change':'Law Change',
+  'nfa':'NFA / Suppressor','carry':'Carry Law','general':'General 2A'
+};
+
+let filtered = [];
+
+function esc(v){ return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+function formatDate(d){
+  if(!d) return '';
+  try{
+    const dt = new Date(d+'T12:00:00');
+    return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  } catch(e){ return d; }
+}
+
+function populateStateFilter(){
+  const allStates = new Set();
+  ALERTS.forEach(a=>(a.states||[]).forEach(s=>allStates.add(s)));
+  const sel = document.getElementById('flt-state');
+  [...allStates].sort().forEach(s=>{
+    const o = document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o);
+  });
+}
+
+function applyFilters(){
+  const q = (document.getElementById('flt-search').value||'').toLowerCase();
+  const cat = document.getElementById('flt-category').value;
+  const state = document.getElementById('flt-state').value;
+
+  filtered = ALERTS.filter(a=>{
+    if(cat && a.category!==cat) return false;
+    if(state && !(a.states||[]).includes(state)) return false;
+    if(q){
+      const haystack = (a.headline+' '+a.summary+' '+a.source+' '+(a.states||[]).join(' ')).toLowerCase();
+      if(!haystack.includes(q)) return false;
+    }
+    return true;
+  });
+
+  renderFeed();
+  document.getElementById('flt-count').textContent = filtered.length + ' alert' + (filtered.length!==1?'s':'');
+}
+
+function renderAlertCard(a){
+  const statesHtml = a.states&&a.states.length
+    ? a.states.map(s=>`<span class="ac-state-tag">${esc(s)}</span>`).join('')
+    : '<span class="ac-state-tag">National</span>';
+  return `<div class="alert-card${a.featured?' featured':''}">
+    ${a.featured?`<div class="ac-featured-badge"><span>&#9733;</span> Featured Alert</div>`:''}
+    <div class="ac-top">
+      <div class="ac-headline">${esc(a.headline)}</div>
+      <div class="ac-date">${formatDate(a.date)}</div>
+    </div>
+    <div class="ac-meta">
+      <span class="ac-source">${esc(a.source)}</span>
+      <span class="cat-badge cat-${esc(a.category)}">${CAT_LABELS[a.category]||esc(a.category)}</span>
+    </div>
+    <div class="ac-summary">${esc(a.summary)}</div>
+    <div class="ac-footer">
+      <div class="ac-states">${statesHtml}</div>
+      ${a.url?`<a class="ac-link" href="${esc(a.url)}" target="_blank" rel="noopener">Read Original Source &#8594;</a>`:''}
+    </div>
+  </div>`;
+}
+
+function renderFeed(){
+  const featuredEl = document.getElementById('featured-section');
+  const feedEl = document.getElementById('feed-section');
+
+  if(!filtered.length){
+    featuredEl.innerHTML='';
+    feedEl.innerHTML=`<div class="empty-state"><div class="empty-title">No Alerts Found</div><p style="font-size:13px;color:var(--muted)">Try adjusting your filters or check back soon.</p></div>`;
+    return;
+  }
+
+  const featured = filtered.filter(a=>a.featured);
+  const regular = filtered.filter(a=>!a.featured);
+
+  featuredEl.innerHTML = featured.length
+    ? `<div class="feed-section-label">Featured</div>${featured.map(renderAlertCard).join('')}${regular.length?'<div class="feed-section-label" style="margin-top:1.5rem">Latest Alerts</div>':''}`
+    : `<div class="feed-section-label">Latest Alerts</div>`;
+
+  feedEl.innerHTML = regular.length ? regular.map(renderAlertCard).join('') : '';
+}
+
+function init(){
+  if(!ALERTS||!ALERTS.length){
+    document.getElementById('featured-section').innerHTML='';
+    document.getElementById('feed-section').innerHTML=`<div class="empty-state"><div class="empty-title">No Alerts Yet</div><p style="font-size:13px;color:var(--muted)">Check back soon — we curate 2A law alerts from GOA, SAF, and NRA-ILA as they post.</p></div>`;
+    document.getElementById('flt-count').textContent = '0 alerts';
+    return;
+  }
+  populateStateFilter();
+  filtered = [...ALERTS];
+  renderFeed();
+  document.getElementById('flt-count').textContent = filtered.length + ' alert' + (filtered.length!==1?'s':'');
+}
+
+init();
+</script>
+</body>
+</html>
