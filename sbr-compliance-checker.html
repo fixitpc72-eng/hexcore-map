@@ -39,14 +39,14 @@ header{width:100%;background:rgba(17,18,20,.95);border-bottom:1px solid var(--bo
 .hero-sub{font-size:14px;color:var(--sub);line-height:1.7;max-width:520px;margin:0 auto}
 
 /* CHECKER CARD */
-.checker{background:var(--dark);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:2rem}
-.checker-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.checker{background:var(--dark);border:1px solid var(--border);border-radius:12px;overflow:visible;margin-bottom:2rem}
+.checker-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;border-radius:12px 12px 0 0}
 .checker-title{font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
 .pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;flex-shrink:0}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}
 
 /* STEPS */
-.steps-wrap{padding:1.5rem}
+.steps-wrap{padding:1.5rem;overflow:visible}
 .step-block{margin-bottom:1.75rem}
 .step-block:last-child{margin-bottom:0}
 .step-label{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.625rem;display:flex;align-items:center;gap:8px}
@@ -292,7 +292,7 @@ footer{border-top:1px solid var(--border);background:var(--dark);padding:1.25rem
             <div id="state-display" style="flex:1;font-size:14px;font-weight:500;color:#7a7f8e;padding-left:4px">Select state...</div>
             <div id="state-arrow" style="color:#7a7f8e;font-size:11px;transition:transform .2s">▼</div>
           </div>
-          <div id="state-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#16181c;border:1px solid #2a2d35;border-radius:6px;max-height:220px;overflow-y:auto;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.7);scrollbar-width:thin;scrollbar-color:#3a3d47 transparent;margin-top:3px"></div>
+          <div id="state-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#16181c;border:1px solid #2a2d35;border-radius:6px;max-height:220px;overflow-y:auto;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.9);scrollbar-width:thin;scrollbar-color:#3a3d47 transparent;margin-top:3px"></div>
         </div>
       </div>
 
