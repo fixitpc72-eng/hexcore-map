@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2A Tool Hub &mdash; HexCore Mounts</title>
+<meta name="description" content="Every HexCore 2A tool in one place &mdash; free, no sign-up. CCW maps, law lookup, NFA guides, build legality scanner, and more. All 50 states.">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@300;400;500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#050607;--dark:#0d0f11;--card:#111316;--border:#1e2128;
+  --muted:#2a2e38;--text:#e8e9ec;--sub:#5a6070;--dim:#3a3f4d;
+  --accent:#20FDF0;--green:#22c55e;
+  --font-head:'Barlow Condensed',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --font-body:'Barlow',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--black);color:var(--text);font-family:var(--font-body);
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  padding:0 0 5rem
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(32,253,240,.011) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(32,253,240,.011) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0
+}
+
+.wrap{width:100%;max-width:680px;padding:2.75rem 1.25rem 0;position:relative;z-index:1}
+
+/* ── HEADER ── */
+.site-header{text-align:center;margin-bottom:2.75rem;padding-bottom:1.75rem;border-bottom:1px solid var(--border)}
+.logo-eyebrow{font-family:var(--font-mono);font-size:11px;color:var(--sub);letter-spacing:.12em;margin-bottom:.875rem}
+.logo-eyebrow span{color:var(--accent)}
+.hub-title{
+  font-family:var(--font-head);font-weight:900;
+  font-size:clamp(42px,10vw,72px);text-transform:uppercase;
+  letter-spacing:.03em;line-height:.88;color:#fff;margin-bottom:1rem
+}
+.hub-title span{color:var(--accent)}
+.hub-sub{font-size:13px;color:var(--sub);line-height:1.7;max-width:400px;margin:0 auto 1.125rem}
+.meta-strip{display:flex;align-items:center;justify-content:center;gap:.625rem;flex-wrap:wrap}
+.meta-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--font-mono);font-size:10px;color:var(--sub);
+  background:var(--card);border:1px solid var(--border);
+  border-radius:3px;padding:3px 10px
+}
+.pill-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+
+/* ── TOOL LIST ── */
+.tool-list{display:flex;flex-direction:column;gap:1.5rem}
+
+.section-block{display:flex;flex-direction:column}
+.section-header{
+  display:flex;align-items:center;gap:7px;
+  padding:.5rem 0 .625rem
+}
+.bracket{font-family:var(--font-mono);font-size:12px;color:var(--accent);opacity:.45}
+.section-name{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.section-line{flex:1;height:1px;background:linear-gradient(to right,rgba(32,253,240,.18),transparent)}
+
+/* tool rows grouped, share borders */
+.tool-row{
+  display:grid;grid-template-columns:18px 1fr 20px;
+  align-items:start;gap:.75rem;
+  padding:.75rem 1rem;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-bottom:none;
+  text-decoration:none;
+  transition:background .1s,border-color .1s;
+  position:relative;overflow:hidden;
+}
+.tool-row.first{border-radius:8px 8px 0 0}
+.tool-row.last{border-radius:0 0 8px 8px;border-bottom:1px solid var(--border)}
+.tool-row.first.last{border-radius:8px;border-bottom:1px solid var(--border)}
+
+/* cyan left accent bar */
+.tool-row::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:2px;background:var(--accent);opacity:0;transition:opacity .1s
+}
+.tool-row:hover{background:#131619;border-color:rgba(32,253,240,.18)}
+.tool-row:hover::before{opacity:1}
+.tool-row:hover .tool-name{color:var(--accent)}
+.tool-row:hover .tool-arrow{opacity:1;transform:translateX(3px)}
+.tool-row:hover + .tool-row{border-top-color:rgba(32,253,240,.18)}
+
+.prompt{
+  font-family:var(--font-mono);font-size:12px;
+  color:var(--accent);opacity:.35;
+  padding-top:2px;flex-shrink:0
+}
+.tool-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.tool-name{
+  font-family:var(--font-head);font-size:15px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;
+  color:var(--text);line-height:1;transition:color .1s
+}
+.tool-desc{font-size:12px;color:var(--sub);line-height:1.4}
+.tool-arrow{
+  font-size:14px;color:var(--accent);opacity:.18;
+  transition:all .15s;text-align:right;padding-top:2px;flex-shrink:0
+}
+
+/* ── SHOP SECTION SPECIAL ── */
+.section-block.shop-block .tool-row{background:rgba(32,253,240,.025)}
+.section-block.shop-block .tool-name{color:var(--accent)}
+.section-block.shop-block .tool-row:hover{background:rgba(32,253,240,.05)}
+
+/* ── FOOTER ── */
+.hub-footer{
+  text-align:center;margin-top:2.5rem;padding-top:1.25rem;
+  border-top:1px solid var(--border)
+}
+.footer-logo{
+  font-family:var(--font-head);font-size:20px;font-weight:900;
+  letter-spacing:.04em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:.25rem
+}
+.footer-logo span{color:var(--accent)}
+.footer-tagline{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:.08em}
+
+/* ── MOBILE ── */
+@media(max-width:480px){
+  .wrap{padding:2rem 1rem 0}
+  .hub-title{font-size:clamp(38px,12vw,56px)}
+  .tool-row{gap:.625rem;padding:.7rem .875rem}
+  .tool-name{font-size:14px}
+  .tool-desc{font-size:11px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="site-header">
+    <div class="logo-eyebrow">Hex<span>Core</span> Mounts &mdash; Atlanta, GA</div>
+    <div class="hub-title">2A <span>Tool</span><br>Hub</div>
+    <div class="hub-sub">Free 2A law, compliance, and training tools. No sign-up. No ads. Built by HexCore.</div>
+    <div class="meta-strip">
+      <div class="meta-pill"><div class="pill-dot"></div>20 tools</div>
+      <div class="meta-pill"><div class="pill-dot"></div>All 50 states</div>
+      <div class="meta-pill"><div class="pill-dot"></div>Updated 2026</div>
+    </div>
+  </div>
+
+  <div class="tool-list">
+  <div class="section-block">
+    <div class="section-header">
+      <span class="bracket">[</span>
+      <span class="section-name">CARRY & LAW</span>
+      <span class="bracket">]</span>
+      <div class="section-line"></div>
+    </div>
+    <a class="tool-row first" href="https://hexcoremounts.com/pages/where-can-i-carry-law-tool" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">Carry Law Lookup</span>
+        <span class="tool-desc">What can you carry, where, right now</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row" href="https://hexcoremounts.com/pages/ccw-reciprocity-map" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">CCW Reciprocity Map</span>
+        <span class="tool-desc">Interactive — which states honor your permit</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row" href="https://hexcoremounts.com/pages/ccw-guide-per-state" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">CCW Guide Per State</span>
+        <span class="tool-desc">Full carry law breakdown, all 50 states</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row" href="https://hexcoremounts.com/pages/permitless-carry-state-by-state" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">Permitless Carry</span>
+        <span class="tool-desc">States that allow carry without a permit</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row" href="https://hexcoremounts.com/pages/2a-alert-feed" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">2A Law Alert</span>
+        <span class="tool-desc">Federal and state legislative updates</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row" href="https://hexcoremounts.com/pages/firearm-law-hub" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">Firearm Law Hub</span>
+        <span class="tool-desc">4-layer interactive law map by state</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row last" href="https://hexcoremounts.com/pages/2a-intel-dashboard" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">2A Intel Dashboard</span>
+        <span class="tool-desc">GOA &middot; SAF &middot; FPC &middot; Giffords &middot; Brady &mdash; all in one</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+  </div>
+
+  <div class="section-block">
+    <div class="section-header">
+      <span class="bracket">[</span>
+      <span class="section-name">BUYING & COMPLIANCE</span>
+      <span class="bracket">]</span>
+      <div class="section-line"></div>
+    </div>
+    <a class="tool-row first" href="https://hexcoremounts.com/pages/first-time-firearm-buyer-guide" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">First-Time Buyer's Guide</span>
+        <span class="tool-desc">Complete first purchase walkthrough &mdash; all 50 states</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row" href="https://hexcoremounts.com/pages/firearm-purchase-navigator" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">Purchase Navigator</span>
+        <span class="tool-desc">FFL finder &middot; NICS delays &middot; wrongful denial appeals</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row" href="https://hexcoremounts.com/pages/sbr-pistol-compliance-checker" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">SBR + Pistol Compliance</span>
+        <span class="tool-desc">Fast SBR vs pistol federal classification checker</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row" href="https://hexcoremounts.com/pages/build-legality-scanner" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">Build Legality Scanner</span>
+        <span class="tool-desc">Full config scan &mdash; AWB &middot; mag limits &middot; suppressor by state</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row" href="https://hexcoremounts.com/pages/suppressor-buyers-guide" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">Suppressor Buyer's Guide</span>
+        <span class="tool-desc">Form 4 &middot; Form 1 &middot; trust vs individual &middot; caliber guide</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row" href="https://hexcoremounts.com/pages/nfa-process-hub" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">NFA Process Hub</span>
+        <span class="tool-desc">Every NFA form, ATF wait times, and submission checklist</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row last" href="https://hexcoremounts.com/pages/2a-sanctuary-map" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">2A Sanctuary Map</span>
+        <span class="tool-desc">Gold and Silver standard sanctuary states &mdash; all 50</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+  </div>
+
+  <div class="section-block">
+    <div class="section-header">
+      <span class="bracket">[</span>
+      <span class="section-name">TRAINING HUB</span>
+      <span class="bracket">]</span>
+      <div class="section-line"></div>
+    </div>
+    <a class="tool-row first" href="https://hexcoremounts.com/pages/first-time-firearm-buyer-guide" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">First-Time Buyer's Guide</span>
+        <span class="tool-desc">Complete first purchase walkthrough &mdash; all 50 states</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row" href="https://hexcoremounts.com/pages/instructor-map" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">Instructor Map</span>
+        <span class="tool-desc">Find certified instructors near you &mdash; interactive map</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row" href="https://hexcoremounts.com/pages/responsible-ownership-plan" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">Responsible Ownership Plan</span>
+        <span class="tool-desc">Trusted contact plan &middot; temp storage &middot; crisis resources</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row" href="https://hexcoremounts.com/pages/dry-fire-routine-generator" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">Dry Fire Generator</span>
+        <span class="tool-desc">Build a custom dry fire routine for your skill level</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row" href="https://hexcoremounts.com/pages/gun-club-range-map" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">Gun Club & Range Map</span>
+        <span class="tool-desc">Find ranges and clubs near you &mdash; searchable map</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row last" href="https://hexcoremounts.com/pages/home-defense-planner" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">Home Defense Planner</span>
+        <span class="tool-desc">Room-by-room placement &middot; storage &middot; personalized checklist</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+  </div>
+
+  <div class="section-block" style="border-color:rgba(32,253,240,.2)">
+    <div class="section-header">
+      <span class="bracket">[</span>
+      <span class="section-name">SHOP HEXCORE</span>
+      <span class="bracket">]</span>
+      <div class="section-line"></div>
+    </div>
+    <a class="tool-row first" href="https://hexcoremounts.com/collections/all" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">Magwell Retention Mounts</span>
+        <span class="tool-desc">Purpose-built mounts for AR-15 and AR-10 platforms</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+    <a class="tool-row last" href="https://hexcoremounts.com" target="_top" rel="noopener">
+      <span class="prompt">&gt;</span>
+      <span class="tool-body">
+        <span class="tool-name">HexCore Store</span>
+        <span class="tool-desc">Browse the full product lineup</span>
+      </span>
+      <span class="tool-arrow">&#8594;</span>
+    </a>
+  </div>
+  </div>
+
+  <div class="hub-footer">
+    <div class="footer-logo">Hex<span>Core</span> Mounts</div>
+    <div class="footer-tagline">Purpose-Built Mounts for the Modern Armory</div>
+  </div>
+
+</div>
+</body>
+</html>
