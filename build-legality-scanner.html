@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build Legality Scanner — SBR, AWB, Magazine & Suppressor | HexCore Mounts</title>
+<meta name="description" content="Enter your firearm's configuration — barrel length, stock type, magazine size, features, suppressor — and get a red/yellow/green legality output for your state. Updated 2026.">
+<link rel="canonical" href="https://hexcoremounts.com/pages/build-legality-scanner">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;--text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--orange:#f97316;--blue:#3b82f6;--font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(32,253,240,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(32,253,240,.018) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+header{width:100%;background:rgba(17,18,20,.96);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}
+.header-links{display:flex;gap:1.5rem}.header-links a{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}.header-links a:hover{color:var(--accent)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px}
+.main{width:100%;max-width:860px;padding:2.5rem 1.5rem 4rem;position:relative;z-index:1}
+.hero{text-align:center;margin-bottom:2rem}
+.hero-eyebrow{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;gap:10px}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:28px;height:1px;background:var(--accent);opacity:.4}
+.hero-title{font-family:var(--font-head);font-weight:900;font-size:clamp(32px,6vw,52px);text-transform:uppercase;letter-spacing:.02em;line-height:1;color:#fff;margin-bottom:.75rem}.hero-title span{color:var(--accent)}
+.hero-sub{font-size:14px;color:var(--sub);line-height:1.7;max-width:560px;margin:0 auto}
+.legend{display:flex;align-items:center;justify-content:center;gap:1.5rem;margin-bottom:1.75rem;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:6px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.leg-dot.g{background:var(--green)}.leg-dot.y{background:var(--yellow)}.leg-dot.r{background:var(--red)}
+.leg-item.g{color:var(--green)}.leg-item.y{color:var(--yellow)}.leg-item.r{color:var(--red)}
+.alert-box{padding:10px 14px;border-radius:7px;font-size:13px;line-height:1.6;margin-bottom:1.25rem}
+.alert-box.success{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);color:var(--sub)}.alert-box.success strong{color:var(--green)}
+.scanner{background:var(--dark);border:1px solid var(--border);border-radius:12px;overflow:visible;margin-bottom:2rem}
+.scanner-header{padding:1.125rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.scanner-title{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
+.scanner-body{padding:1.5rem;overflow:visible}
+.form-row{display:grid;gap:.875rem;margin-bottom:1.25rem}.form-row.cols-2{grid-template-columns:1fr 1fr}.form-row.cols-3{grid-template-columns:1fr 1fr 1fr}
+.field{display:flex;flex-direction:column;gap:.375rem}
+.field label{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub)}
+.field-note{font-size:11px;color:var(--muted);line-height:1.4;margin-top:2px}
+.custom-select{position:relative}
+.cs-trigger{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:9px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:border-color .15s}.cs-trigger:hover{border-color:var(--muted)}
+.cs-val{flex:1;font-size:13px;color:var(--sub);font-family:var(--font-body)}.cs-val.set{color:var(--text)}
+.cs-arrow{font-size:10px;color:var(--sub);transition:transform .2s;flex-shrink:0}
+.cs-dropdown{display:none;position:absolute;top:100%;left:0;right:0;background:#16181c;border:1px solid #2a2d35;border-radius:6px;max-height:220px;overflow-y:auto;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.9);scrollbar-width:thin;scrollbar-color:#3a3d47 transparent;margin-top:3px}
+.cs-opt{padding:9px 12px;font-size:13px;color:var(--text);cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04);font-family:var(--font-body)}.cs-opt:hover{background:rgba(32,253,240,.08);color:var(--accent)}.cs-opt:last-child{border-bottom:none}
+.num-input{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:14px;color:var(--text);font-family:var(--font-body);outline:none;width:100%;transition:border-color .15s}.num-input:focus{border-color:rgba(32,253,240,.4)}
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.chk-item{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px 12px;display:flex;align-items:center;gap:9px;cursor:pointer;transition:all .15s;user-select:none}.chk-item:hover{border-color:var(--muted)}.chk-item.active{background:rgba(32,253,240,.06);border-color:rgba(32,253,240,.3)}
+.chk-box{width:16px;height:16px;border-radius:4px;border:1px solid var(--muted);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;transition:all .15s}.chk-item.active .chk-box{background:var(--accent);border-color:var(--accent);color:var(--black)}
+.chk-label{font-size:12px;color:var(--sub);line-height:1.3;flex:1}.chk-item.active .chk-label{color:var(--text)}
+.scan-btn{width:100%;padding:13px;background:var(--accent);border:none;border-radius:7px;font-family:var(--font-head);font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--black);cursor:pointer;transition:opacity .15s;margin-top:1.25rem}.scan-btn:hover{opacity:.85}
+.results{display:none;margin-top:1.5rem}.results.visible{display:block;animation:fadeUp .3s ease-out}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.results-hdr{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.875rem;padding-top:1.25rem;border-top:1px solid var(--border)}
+.dim-checks{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.25rem}
+.dc-item{background:var(--card);border-radius:7px;padding:.75rem;text-align:center;border:2px solid transparent}
+.dc-item.green{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.05)}.dc-item.yellow{border-color:rgba(234,179,8,.3);background:rgba(234,179,8,.04)}.dc-item.red{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.05)}
+.dc-dot{width:12px;height:12px;border-radius:50%;margin:0 auto .4rem}.dc-dot.green{background:var(--green)}.dc-dot.yellow{background:var(--yellow)}.dc-dot.red{background:var(--red)}
+.dc-label{font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);margin-bottom:.25rem}
+.dc-status{font-family:var(--font-head);font-size:12px;font-weight:900;text-transform:uppercase}.dc-status.green{color:var(--green)}.dc-status.yellow{color:var(--yellow)}.dc-status.red{color:var(--red)}
+.result-row{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1rem 1.125rem;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px}
+.result-row.green{border-left:3px solid var(--green)}.result-row.yellow{border-left:3px solid var(--yellow)}.result-row.red{border-left:3px solid var(--red)}
+.rr-icon{font-size:18px;flex-shrink:0;margin-top:1px;width:28px;text-align:center}
+.rr-title{font-family:var(--font-head);font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;margin-bottom:.25rem}
+.rr-title.green{color:var(--green)}.rr-title.yellow{color:var(--yellow)}.rr-title.red{color:var(--red)}
+.rr-text{font-size:12px;color:var(--sub);line-height:1.6}.rr-text strong{color:var(--text)}
+.nfa-box{background:rgba(32,253,240,.04);border:1px solid rgba(32,253,240,.2);border-radius:8px;padding:1rem 1.125rem;margin-top:1rem}
+.nfa-box-title{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.625rem}
+.nfa-steps{display:flex;flex-direction:column;gap:5px}
+.nfa-step{font-size:12px;color:var(--sub);line-height:1.5;padding-left:16px;position:relative}.nfa-step::before{content:'›';position:absolute;left:0;color:var(--accent)}.nfa-step strong{color:var(--text)}
+.reset-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:9px 18px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);cursor:pointer;transition:all .15s;margin-top:1rem}.reset-btn:hover{border-color:var(--muted);color:var(--text)}
+.section-lbl{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin-bottom:1rem;display:flex;align-items:center;gap:10px}.section-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
+.ref-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:2rem}
+.ref-card{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:1rem}
+.ref-title{font-family:var(--font-head);font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:var(--accent);margin-bottom:.625rem}
+.ref-body{font-size:12px;color:var(--sub);line-height:1.7}.ref-body strong{color:var(--text)}.ref-body ul{padding-left:14px}.ref-body li{margin-bottom:3px}
+.quick-links{background:rgba(9,16,24,.9);border:1px solid rgba(32,253,240,.12);border-radius:10px;padding:1rem;margin-bottom:2rem}
+.ql-title{font-family:var(--font-head);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text);margin-bottom:.75rem;display:flex;align-items:center;gap:8px}.ql-title::before{content:'⬡';color:var(--accent)}
+.ql-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ql-card{background:rgba(4,9,14,.8);border:1px solid rgba(32,253,240,.12);border-radius:8px;padding:.625rem .75rem;text-decoration:none;text-align:center;transition:all .15s}.ql-card:hover{border-color:rgba(32,253,240,.3);background:rgba(32,253,240,.04)}.ql-card.current{background:rgba(32,253,240,.04);border-color:rgba(32,253,240,.25)}
+.ql-label{font-family:var(--font-head);font-size:12px;font-weight:800;color:var(--accent);line-height:1.2}
+.disclaimer{font-size:11px;color:var(--muted);line-height:1.7;text-align:center;margin-bottom:1.5rem}
+footer{border-top:1px solid var(--border);background:var(--dark);padding:1.25rem 2rem;text-align:center;font-family:var(--font-head);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);width:100%}
+@media(max-width:640px){header{padding:0 1rem}.header-links{display:none}.main{padding:1.75rem 1.25rem 3rem}.form-row.cols-2,.form-row.cols-3,.check-grid,.ref-grid{grid-template-columns:1fr}.dim-checks{grid-template-columns:1fr 1fr}.ql-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" target="_top" href="https://hexcoremounts.com">Hex<span>Core</span></a>
+  <nav class="header-links">
+    <a target="_top" href="https://hexcoremounts.com/pages/sbr-pistol-compliance-checker">SBR Checker</a>
+    <a target="_top" href="https://hexcoremounts.com/pages/nfa-process-hub">NFA Hub</a>
+    <a target="_top" href="https://hexcoremounts.com/pages/firearm-law-hub">Law Hub</a>
+  </nav>
+  <div class="header-badge">2026 Updated</div>
+</header>
+
+<div class="main">
+  <div class="hero">
+    <div class="hero-eyebrow">Configuration Compliance</div>
+    <h1 class="hero-title">Build <span>Legality Scanner</span></h1>
+    <p class="hero-sub">Enter your firearm's full configuration — barrel, stock, features, magazine capacity, suppressor — and get a state-specific red/yellow/green output across every relevant legal dimension.</p>
+  </div>
+
+  <div class="legend">
+    <div class="leg-item g"><div class="leg-dot g"></div>Legal — No Issues</div>
+    <div class="leg-item y"><div class="leg-dot y"></div>Restricted — Verify</div>
+    <div class="leg-item r"><div class="leg-dot r"></div>Likely Illegal — Action Required</div>
+  </div>
+
+  <div class="alert-box success"><strong>&#10003; 2026:</strong> $0 NFA tax stamp effective Jan 1, 2026. Pistol brace rule (2021R-08F) vacated July 17, 2025 — braced pistols are not automatically SBRs. Form 1/Form 4 still required before possession of any NFA item.</div>
+
+  <div class="scanner">
+    <div class="scanner-header"><div class="pulse"></div><div class="scanner-title">Build Configuration Scanner — All 50 States + DC</div></div>
+    <div class="scanner-body">
+
+      <div class="form-row cols-2">
+        <div class="field">
+          <label>Your State</label>
+          <div class="custom-select">
+            <div class="cs-trigger" onclick="toggleDrop('state-dd',this)">
+              <div class="cs-val" id="state-val">Select state...</div>
+              <div class="cs-arrow" id="state-arr">▼</div>
+            </div>
+            <div class="cs-dropdown" id="state-dd"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Firearm Type</label>
+          <div class="custom-select">
+            <div class="cs-trigger" onclick="toggleDrop('type-dd',this)">
+              <div class="cs-val" id="type-val">Select type...</div>
+              <div class="cs-arrow" id="type-arr">▼</div>
+            </div>
+            <div class="cs-dropdown" id="type-dd">
+              <div class="cs-opt" onclick="setDropVal('type','rifle','Rifle / Rifle Receiver','type-val','type-dd','type-arr')">Rifle / Rifle Receiver</div>
+              <div class="cs-opt" onclick="setDropVal('type','pistol','Pistol / Pistol Receiver','type-val','type-dd','type-arr')">Pistol / Pistol Receiver</div>
+              <div class="cs-opt" onclick="setDropVal('type','shotgun','Shotgun','type-val','type-dd','type-arr')">Shotgun</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row cols-2">
+        <div class="field">
+          <label>Barrel Length (inches)</label>
+          <input class="num-input" type="number" id="barrel" step="0.1" min="1" max="36" placeholder="e.g. 16.0">
+          <div class="field-note">Bolt face to muzzle. Pinned/welded muzzle devices count. Removable ones don't.</div>
+        </div>
+        <div class="field">
+          <label>Overall Length (inches)</label>
+          <input class="num-input" type="number" id="oal" step="0.1" min="1" max="60" placeholder="e.g. 32.0">
+          <div class="field-note">Stock or brace fully extended. Folding stocks measured unfolded.</div>
+        </div>
+      </div>
+
+      <div class="form-row cols-2">
+        <div class="field">
+          <label>Rear Configuration</label>
+          <div class="custom-select">
+            <div class="cs-trigger" onclick="toggleDrop('rear-dd',this)">
+              <div class="cs-val" id="rear-val">Select rear...</div>
+              <div class="cs-arrow" id="rear-arr">▼</div>
+            </div>
+            <div class="cs-dropdown" id="rear-dd">
+              <div class="cs-opt" onclick="setDropVal('rear','stock-fixed','Fixed shoulder stock','rear-val','rear-dd','rear-arr')">Fixed shoulder stock</div>
+              <div class="cs-opt" onclick="setDropVal('rear','stock-adj','Adjustable / folding stock','rear-val','rear-dd','rear-arr')">Adjustable / folding stock</div>
+              <div class="cs-opt" onclick="setDropVal('rear','brace','Pistol stabilizing brace','rear-val','rear-dd','rear-arr')">Pistol stabilizing brace</div>
+              <div class="cs-opt" onclick="setDropVal('rear','none','No stock or brace','rear-val','rear-dd','rear-arr')">No stock or brace</div>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Magazine Capacity (rounds)</label>
+          <input class="num-input" type="number" id="mag" step="1" min="1" max="200" placeholder="e.g. 30">
+          <div class="field-note">Highest-capacity magazine you intend to use with this firearm.</div>
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom:1.25rem">
+        <label>Features Present <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;color:var(--muted)">(select all that apply)</span></label>
+        <div class="check-grid">
+          <div class="chk-item" onclick="toggleChk(this,'fp')" id="fp"><div class="chk-box"></div><div class="chk-label">Pistol grip / thumbhole stock</div></div>
+          <div class="chk-item" onclick="toggleChk(this,'ff')" id="ff"><div class="chk-box"></div><div class="chk-label">Flash hider / suppressor-ready muzzle</div></div>
+          <div class="chk-item" onclick="toggleChk(this,'fv')" id="fv"><div class="chk-box"></div><div class="chk-label">Vertical foregrip (pistol)</div></div>
+          <div class="chk-item" onclick="toggleChk(this,'fg')" id="fg"><div class="chk-box"></div><div class="chk-label">Grenade / flare launcher mount</div></div>
+          <div class="chk-item" onclick="toggleChk(this,'fb')" id="fb"><div class="chk-box"></div><div class="chk-label">Bayonet lug</div></div>
+          <div class="chk-item" onclick="toggleChk(this,'fd')" id="fd"><div class="chk-box"></div><div class="chk-label">Detachable magazine (semi-auto rifle)</div></div>
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom:.25rem">
+        <label>Suppressor</label>
+        <div class="check-grid" style="grid-template-columns:1fr 1fr">
+          <div class="chk-item" onclick="setSuppressor(this,'sy','sn',true)" id="sy"><div class="chk-box"></div><div class="chk-label">Yes — I have or plan to use a suppressor</div></div>
+          <div class="chk-item" onclick="setSuppressor(this,'sn','sy',false)" id="sn"><div class="chk-box active"></div><div class="chk-label">No suppressor</div></div>
+        </div>
+      </div>
+
+      <button type="button" class="scan-btn" onclick="runScan()">&#9654; Scan This Build</button>
+
+      <div class="results" id="results">
+        <div class="results-hdr">Scan Results — <span id="res-state"></span></div>
+        <div class="dim-checks" id="dim-checks"></div>
+        <div id="result-rows"></div>
+        <div id="nfa-box-wrap"></div>
+        <button type="button" class="reset-btn" onclick="resetScan()">&#8635; Scan Another Build</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section-lbl">Quick Reference</div>
+  <div class="ref-grid">
+    <div class="ref-card"><div class="ref-title">Federal NFA Thresholds</div><div class="ref-body"><ul><li><strong>Title I Rifle:</strong> Barrel ≥16" AND OAL ≥26" with stock — no NFA</li><li><strong>SBR:</strong> Rifle barrel &lt;16" OR OAL &lt;26" with stock</li><li><strong>SBS:</strong> Shotgun barrel &lt;18" OR OAL &lt;26" with stock</li><li><strong>Pistol:</strong> No stock, designed for one-hand use</li><li><strong>AOW:</strong> Pistol + vertical foregrip added</li></ul></div></div>
+    <div class="ref-card"><div class="ref-title">AWB Feature Bans</div><div class="ref-body">States restricting semi-auto rifles by features: <strong>CA, NY, NJ, MD, MA, CT, HI, IL, CO, WA, RI, DE, DC</strong>. Each state's banned feature list differs. Common banned features: pistol grip, adjustable stock, flash hider, detachable magazine on certain platforms. Verify your state's exact statute.</div></div>
+    <div class="ref-card"><div class="ref-title">Magazine Limits</div><div class="ref-body"><ul><li><strong>10 rounds:</strong> CA, CO, CT, HI, MD, MA, NJ, NY, RI, DC</li><li><strong>15 rounds:</strong> IL, VT, WA</li><li><strong>17 rounds:</strong> DE</li><li>All other states: No federal or state limit</li></ul></div></div>
+    <div class="ref-card"><div class="ref-title">Suppressor Bans</div><div class="ref-body">Banned: <strong>CA, HI, IL, MD, MA, NJ, NY, RI, DC</strong>.<br>Restricted (additional state steps): CT, MN, PA.<br>Legal with federal Form 4 in all other states.<br>$0 tax stamp effective Jan 1, 2026. Form 4 still required.</div></div>
+    <div class="ref-card"><div class="ref-title">Brace Rule — 2026</div><div class="ref-body">ATF brace rule (2021R-08F) vacated July 17, 2025 in <em>Mock v. Bondi</em>. Braced pistols revert to statutory definition — a firearm is only an SBR if barrel &lt;16" OR OAL &lt;26" AND designed to fire from the shoulder. A brace is not a stock under current enforcement.</div></div>
+    <div class="ref-card"><div class="ref-title">14.5" Pinned Muzzle Device</div><div class="ref-body">A 14.5" barrel with a <strong>permanently pinned/welded</strong> muzzle device bringing total barrel length to ≥16" counts as a legal 16"+ barrel — no NFA required. The weld must be professional and inspected — device cannot be removable. Common legal workaround. Cost: ~$50–100 at most gunsmiths.</div></div>
+  </div>
+
+  <div class="quick-links">
+    <div class="ql-title">HexCore Tools</div>
+    <div class="ql-grid">
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/sbr-pistol-compliance-checker"><div class="ql-label">SBR Checker</div></a>
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/nfa-process-hub"><div class="ql-label">NFA Process Hub</div></a>
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/firearm-law-hub"><div class="ql-label">Firearm Law Hub</div></a>
+      <a class="ql-card current" target="_top" href="https://hexcoremounts.com/pages/build-legality-scanner"><div class="ql-label">Build Scanner</div></a>
+    </div>
+  </div>
+
+  <div class="disclaimer">For general informational purposes only — not legal advice. Firearm laws change frequently. Always verify with ATF, your state's official statutes, and a licensed firearms attorney before modifications or purchases. Data reviewed March 2026. &copy; HexCore Mounts</div>
+</div>
+<footer>&copy; 2026 HexCore Mounts &nbsp;·&nbsp; Designed and Manufactured in the USA &nbsp;·&nbsp; Atlanta, Georgia</footer>
+
+<script>
+const STATES=['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
+const SBR_BANNED=['California','New York','New Jersey','Massachusetts','Hawaii','Illinois','Rhode Island','District of Columbia'];
+const SUPP_BANNED=['California','Hawaii','Illinois','Maryland','Massachusetts','New Jersey','New York','Rhode Island','District of Columbia'];
+const SUPP_RESTRICTED=['Connecticut','Minnesota','Pennsylvania'];
+const AWB={
+  'California':{name:'Assault Weapons Control Act',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','thumbhole stock','detachable mag with any feature']},
+  'New York':{name:'NY SAFE Act',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','bayonet lug','thumbhole stock']},
+  'New Jersey':{name:'NJ Assault Firearms Law',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','bayonet lug']},
+  'Maryland':{name:'Maryland Assault Weapons Ban',magLimit:10,features:['pistol grip','adjustable/folding stock','flash hider','grenade launcher','bayonet lug','thumbhole stock']},
+  'Massachusetts':{name:'MA Assault Weapons Ban',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','bayonet lug','thumbhole stock']},
+  'Connecticut':{name:'CT Assault Weapons Ban',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','bayonet lug','thumbhole stock']},
+  'Hawaii':{name:'Hawaii Assault Pistols Ban',magLimit:10,features:['pistol grip on pistol']},
+  'Illinois':{name:'Protect Illinois Communities Act (PICA)',magLimit:15,features:['pistol grip','adjustable stock','flash hider','grenade launcher','bayonet lug','thumbhole stock','detachable mag']},
+  'Colorado':{name:'Colorado Magazine Limit (HB21-1298)',magLimit:15,features:[]},
+  'Washington':{name:'WA Assault Weapons Ban (SB 5215)',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','thumbhole stock']},
+  'Rhode Island':{name:'RI Assault Weapons Ban (2025)',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','thumbhole stock']},
+  'Delaware':{name:'Delaware Assault Weapons Ban (2022)',magLimit:17,features:['pistol grip','adjustable stock','flash hider','grenade launcher','thumbhole stock']},
+  'Vermont':{name:'Vermont Magazine Limit',magLimit:15,features:[]},
+  'District of Columbia':{name:'DC Assault Weapons & Magazine Ban',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','bayonet lug']},
+  'Minnesota':{name:'MN Magazine Restriction (enacted 2023)',magLimit:15,features:[]},
+};
+
+let sel={state:'',type:'',rear:'',suppressor:false};
+let feats={fp:false,ff:false,fv:false,fg:false,fb:false,fd:false};
+
+// Build state dropdown
+const stateDd=document.getElementById('state-dd');
+STATES.forEach(s=>{
+  const o=document.createElement('div');o.className='cs-opt';o.textContent=s;
+  o.onclick=()=>setDropVal('state',s,s,'state-val','state-dd','state-arr');
+  stateDd.appendChild(o);
+});
+
+function toggleDrop(ddId,trigger){
+  document.querySelectorAll('.cs-dropdown').forEach(d=>{if(d.id!==ddId)d.style.display='none';});
+  document.querySelectorAll('.cs-arrow').forEach(a=>a.style.transform='');
+  const dd=document.getElementById(ddId);
+  const arr=trigger.querySelector('.cs-arrow');
+  const open=dd.style.display==='block';
+  dd.style.display=open?'none':'block';
+  if(arr)arr.style.transform=open?'':'rotate(180deg)';
+}
+function setDropVal(field,value,label,valId,ddId,arrId){
+  sel[field]=value;
+  const el=document.getElementById(valId);el.textContent=label;el.classList.add('set');
+  document.getElementById(ddId).style.display='none';
+  const arr=document.getElementById(arrId);if(arr)arr.style.transform='';
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.custom-select')){
+    document.querySelectorAll('.cs-dropdown').forEach(d=>d.style.display='none');
+    document.querySelectorAll('.cs-arrow').forEach(a=>a.style.transform='');
+  }
+});
+function toggleChk(el,id){
+  el.classList.toggle('active');
+  el.querySelector('.chk-box').textContent=el.classList.contains('active')?'✓':'';
+  feats[id]=el.classList.contains('active');
+}
+function setSuppressor(el,onId,offId,val){
+  const other=document.getElementById(offId);
+  other.classList.remove('active');other.querySelector('.chk-box').textContent='';
+  el.classList.add('active');el.querySelector('.chk-box').textContent='✓';
+  sel.suppressor=val;
+}
+
+function runScan(){
+  const barrel=parseFloat(document.getElementById('barrel').value)||0;
+  const oal=parseFloat(document.getElementById('oal').value)||0;
+  const mag=parseInt(document.getElementById('mag').value)||0;
+  if(!sel.state){alert('Please select your state.');return;}
+  if(!sel.type){alert('Please select a firearm type.');return;}
+  if(!sel.rear){alert('Please select a rear configuration.');return;}
+  if(!barrel){alert('Please enter a barrel length.');return;}
+  if(!oal){alert('Please enter overall length.');return;}
+
+  const state=sel.state;
+  const awb=AWB[state]||null;
+  const sbrBanned=SBR_BANNED.includes(state);
+  const suppBanned=SUPP_BANNED.includes(state);
+  const suppRestricted=SUPP_RESTRICTED.includes(state);
+  const magLimit=awb?awb.magLimit:999;
+  const isRifle=sel.type==='rifle';
+  const isPistol=sel.type==='pistol';
+  const isShotgun=sel.type==='shotgun';
+  const hasShoulder=sel.rear==='stock-fixed'||sel.rear==='stock-adj';
+  const hasBrace=sel.rear==='brace';
+  const barrelMinRifle=16,barrelMinShotgun=18,oalMin=26;
+  const barrelOk=isShotgun?barrel>=barrelMinShotgun:barrel>=barrelMinRifle;
+  const oalOk=oal>=oalMin;
+  const hasVFG=feats['fv'];
+
+  // Classification
+  let fedClass='',nfaRequired=false,classColor='green';
+  if(isRifle){
+    if(hasShoulder&&barrelOk&&oalOk)fedClass='Title I Rifle';
+    else if(hasShoulder&&(!barrelOk||!oalOk)){fedClass='Short Barrel Rifle (SBR)';nfaRequired=true;classColor='red';}
+    else if(hasBrace){fedClass=barrelOk&&oalOk?'Rifle w/ Brace (Legal)':'SBR Risk — Verify';classColor=barrelOk&&oalOk?'green':'yellow';}
+    else{fedClass='Rifle — No Stock';classColor='yellow';}
+  } else if(isPistol){
+    if(hasShoulder){if(barrelOk&&oalOk)fedClass='Rifle (pistol+stock)';else{fedClass='Short Barrel Rifle (SBR)';nfaRequired=true;classColor='red';}}
+    else if(hasVFG){fedClass='AOW (Any Other Weapon)';nfaRequired=true;classColor='red';}
+    else fedClass=hasBrace?'Pistol w/ Brace':'Pistol';
+  } else if(isShotgun){
+    if(hasShoulder&&barrelOk&&oalOk)fedClass='Title I Shotgun';
+    else if(hasShoulder&&(!barrelOk||!oalOk)){fedClass='Short Barrel Shotgun (SBS)';nfaRequired=true;classColor='red';}
+    else fedClass='Pistol-Grip Shotgun';
+  }
+
+  // Dim check cards
+  const magColor=mag<=0?'green':mag<=magLimit?'green':mag<=magLimit+5?'yellow':'red';
+  const magText=mag<=0?'N/A':`${mag} rds${mag>magLimit?' — OVER LIMIT':''}`;
+  const nfaColor=nfaRequired?(sbrBanned?'red':'yellow'):'green';
+  document.getElementById('dim-checks').innerHTML=[
+    {l:'Barrel',c:barrelOk?'green':'red',t:`${barrel}"${!barrelOk?' UNDER MIN':''}`},
+    {l:'OAL',c:oalOk?'green':'red',t:`${oal}"${!oalOk?' UNDER MIN':''}`},
+    {l:'Magazine',c:magColor,t:magText},
+    {l:'NFA',c:nfaColor,t:nfaRequired?'Required':'Not Required'},
+  ].map(d=>`<div class="dc-item ${d.c}"><div class="dc-dot ${d.c}"></div><div class="dc-label">${d.l}</div><div class="dc-status ${d.c}">${d.t}</div></div>`).join('');
+
+  // Build result rows
+  let rows=[];
+
+  // Federal classification
+  rows.push({c:classColor,i:classColor==='green'?'✓':classColor==='yellow'?'⚠':'⛔',t:`Federal: ${fedClass}`,b:getFedText(fedClass,nfaRequired,barrel,oal,state,sbrBanned,hasBrace)});
+
+  // State NFA ban
+  if(nfaRequired){
+    if(sbrBanned)rows.push({c:'red',i:'⛔',t:`${state} — NFA Item Banned`,b:`${state} prohibits civilian ownership of ${fedClass.includes('Shotgun')?'SBS':'SBR'}s regardless of federal NFA compliance. Possession is a state crime. Legal options: modify to Title I configuration or relocate.`});
+    else rows.push({c:'yellow',i:'⚠',t:`${state} — NFA Registration Required`,b:`${state} allows NFA-compliant ownership. <strong>ATF Form ${isRifle||isPistol?'1 (build) or 4 (purchase)':'1 or 4'} must be approved before this configuration exists or is possessed.</strong> $0 tax stamp as of Jan 1, 2026.`});
+  }
+
+  // AWB features
+  if(awb){
+    const activeFeats=[];
+    if(feats['fp'])activeFeats.push('pistol grip / thumbhole stock');
+    if(feats['ff'])activeFeats.push('flash hider');
+    if(feats['fv'])activeFeats.push('vertical foregrip');
+    if(feats['fg'])activeFeats.push('grenade launcher mount');
+    if(feats['fb'])activeFeats.push('bayonet lug');
+    if(feats['fd'])activeFeats.push('detachable magazine');
+    if(activeFeats.length>0){
+      rows.push({c:'red',i:'⛔',t:`${state} — Assault Weapon Features Detected`,b:`Under the <strong>${awb.name}</strong>, this firearm may be classified as a banned assault weapon based on: <strong>${activeFeats.join(', ')}</strong>. Possession, sale, and transfer of newly configured assault weapons is prohibited. Consult a firearms attorney before this configuration is assembled or possessed in ${state}.`});
+    } else if(isRifle){
+      rows.push({c:'yellow',i:'⚠',t:`${state} — AWB Active, No Banned Features Selected`,b:`${state} has an assault weapons ban (${awb.name}) but none of your selected features are on the banned list. If your rifle has additional features not captured here, verify against the statute. Always confirm current law.`});
+    }
+  }
+
+  // Magazine
+  if(mag>0){
+    if(mag>magLimit&&magLimit<999)rows.push({c:'red',i:'⛔',t:`${state} — Magazine Limit Exceeded (${magLimit}-rd limit)`,b:`${state} limits magazine capacity to <strong>${magLimit} rounds</strong>. Your magazine (${mag} rounds) exceeds this limit. Possession of oversized magazines is prohibited in ${state} — this applies to both purchase and importing existing magazines from other states.`});
+    else if(magLimit<999)rows.push({c:'green',i:'✓',t:`Magazine — Within ${state}'s ${magLimit}-Round Limit`,b:`Your magazine (${mag} rounds) is within ${state}'s ${magLimit}-round limit. Federal law has no magazine capacity restriction.`});
+    else rows.push({c:'green',i:'✓',t:'Magazine — No State Restriction',b:`${state} has no magazine capacity restriction. Your ${mag}-round magazine is legal. Federal law has no magazine capacity limit.`});
+  }
+
+  // Suppressor
+  if(sel.suppressor){
+    if(suppBanned)rows.push({c:'red',i:'⛔',t:`${state} — Suppressor Banned`,b:`${state} prohibits civilian suppressor ownership. Federal NFA Form 4 compliance does not override this state ban.`});
+    else if(suppRestricted)rows.push({c:'yellow',i:'⚠',t:`${state} — Suppressor: Additional State Steps Required`,b:`Suppressors are legal in ${state} with federal NFA Form 4 approval, but ${state} has additional state-level requirements beyond the federal process. Verify with a licensed NFA dealer before purchasing.`});
+    else rows.push({c:'green',i:'✓',t:`Suppressor — Legal in ${state} with NFA Form 4`,b:`${state} allows civilian suppressor ownership with federal Form 4 approval. File ATF eForm 4 through a licensed Class III dealer. $0 tax stamp as of Jan 1, 2026. Do not possess until your approved Form 4 is in hand.`});
+  }
+
+  // AOW note
+  if(hasVFG&&isPistol)rows.push({c:'red',i:'⛔',t:'AOW — Vertical Foregrip on Pistol',b:'A vertical foregrip on a pistol creates an Any Other Weapon (AOW) requiring ATF Form 1 before possession. An <strong>angled</strong> foregrip does NOT create an AOW — it is legal on a pistol without NFA registration.'});
+
+  document.getElementById('result-rows').innerHTML=rows.map(r=>`<div class="result-row ${r.c}"><div class="rr-icon">${r.i}</div><div><div class="rr-title ${r.c}">${r.t}</div><div class="rr-text">${r.b}</div></div></div>`).join('');
+
+  // NFA process box
+  document.getElementById('nfa-box-wrap').innerHTML=nfaRequired&&!sbrBanned?`<div class="nfa-box"><div class="nfa-box-title">&#9654; NFA Process — Next Steps</div><div class="nfa-steps"><div class="nfa-step"><strong>$0 Tax Stamp:</strong> Eliminated Jan 1, 2026. You still file — the fee is just $0.</div><div class="nfa-step">Use <strong>Form 1</strong> to make/convert an NFA item, or <strong>Form 4</strong> to purchase a manufactured NFA item. Submit via ATF eForms at eForms.atf.gov.</div><div class="nfa-step"><strong>Do not assemble or possess this configuration until ATF approval arrives.</strong> Possession before approval is a federal felony regardless of wait time.</div><div class="nfa-step">eForm approvals running days to a few weeks in early 2026 for most applications.</div><div class="nfa-step">Full process walkthrough: <a target="_top" href="https://hexcoremounts.com/pages/nfa-process-hub" style="color:var(--accent)">HexCore NFA Process Hub &#8594;</a></div></div></div>`:'';
+
+  document.getElementById('res-state').textContent=state;
+  const el=document.getElementById('results');el.classList.add('visible');
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function getFedText(cls,nfa,barrel,oal,state,banned,brace){
+  if(cls==='Title I Rifle')return`Barrel ≥16" and OAL ≥26" with a shoulder stock — standard Title I rifle. No NFA registration required.`;
+  if(cls==='Short Barrel Rifle (SBR)')return`Barrel ${barrel<16?barrel+'" is under the 16" minimum':''}${barrel<16&&oal<26?' and ':''}${oal<26?oal+'" OAL is under the 26" minimum':''}.${banned?' Additionally, '+state+' prohibits SBR ownership — ATF approval cannot be obtained for residents of this state.':' ATF Form 1 (build) or Form 4 (purchase) required before this configuration is assembled or possessed.'}`;
+  if(cls==='Short Barrel Shotgun (SBS)')return`Barrel under 18" or OAL under 26" with a stock creates a Short Barrel Shotgun. NFA Form 1 or Form 4 required before possession.`;
+  if(cls==='AOW (Any Other Weapon)')return`A vertical foregrip on a pistol creates an AOW under 26 USC § 5845(e). ATF Form 1 required before possession.`;
+  if(cls==='Pistol w/ Brace')return`Pistol with a stabilizing brace. Under current 2026 enforcement (brace rule vacated July 17, 2025), this is a legal pistol — not an SBR. No NFA registration required.`;
+  if(cls==='Pistol')return`Standard pistol. No NFA registration required. Do not add a vertical foregrip (AOW) or shoulder stock without prior ATF Form 1 approval.`;
+  if(cls==='Title I Shotgun')return`Standard Title I shotgun — barrel ≥18" and OAL ≥26". No NFA registration required.`;
+  if(cls==='Pistol-Grip Shotgun')return`Shotgun with pistol grip, no shoulder stock. No NFA required as long as it was never configured with a stock. Do not add a stock without verifying measurements.`;
+  if(cls==='Rifle w/ Brace (Legal)')return`Rifle-platform firearm with a stabilizing brace, clearing both NFA measurement thresholds. Legal under 2026 enforcement — brace rule vacated. Not an SBR.`;
+  if(cls==='SBR Risk — Verify')return`Brace-equipped firearm with measurements under NFA thresholds. Under current enforcement a brace alone is not a stock. However, this is a close-call configuration — consider filing ATF Form 1 for clean legal status, or modify barrel/OAL to clear both thresholds.`;
+  if(cls==='Rifle (pistol+stock)')return`Pistol receiver with a shoulder stock added, measuring above NFA thresholds. Now legally configured as a rifle — no NFA required at these dimensions. Note: this receiver cannot be legally converted back to a pistol.`;
+  return'Verify with ATF and a licensed firearms attorney for this configuration.';
+}
+
+function resetScan(){
+  document.getElementById('results').classList.remove('visible');
+  sel={state:'',type:'',rear:'',suppressor:false};
+  feats={fp:false,ff:false,fv:false,fg:false,fb:false,fd:false};
+  document.getElementById('barrel').value='';
+  document.getElementById('oal').value='';
+  document.getElementById('mag').value='';
+  ['state-val','type-val','rear-val'].forEach(id=>{const el=document.getElementById(id);el.textContent=id==='state-val'?'Select state...':id==='type-val'?'Select type...':'Select rear...';el.classList.remove('set');});
+  document.querySelectorAll('.chk-item').forEach(el=>{el.classList.remove('active');el.querySelector('.chk-box').textContent='';});
+  // Re-set "No suppressor" as default
+  const sn=document.getElementById('sn');sn.classList.add('active');sn.querySelector('.chk-box').textContent='✓';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
