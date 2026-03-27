@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dry Fire Routine Generator | HexCore Mounts</title>
+<meta name="description" content="Build a simple dry fire routine based on experience level, goals, time available, and firearm type. Customer-facing, self-contained HexCore HTML tool.">
+<link rel="canonical" href="https://hexcoremounts.com/pages/dry-fire-routine-generator">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;
+  --text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;
+  --red:#ef4444;--orange:#f97316;--blue:#3b82f6;
+  --font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(32,253,240,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(32,253,240,.018) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+a{color:inherit}
+header{width:100%;background:rgba(17,18,20,.95);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);text-decoration:none;flex-shrink:0}.logo span{color:var(--accent)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;flex-shrink:0}
+.header-links{display:flex;gap:1.5rem}.header-links a{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}.header-links a:hover{color:var(--accent)}
+.main{width:100%;max-width:1180px;padding:2rem 1.25rem 4rem;position:relative;z-index:1}
+.hero{padding:2rem 0 1.5rem;text-align:center}
+.eyebrow{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:.85rem}
+.hero h1{font-family:var(--font-head);font-size:clamp(38px,7vw,72px);line-height:.95;font-weight:900;letter-spacing:.02em;text-transform:uppercase;margin-bottom:1rem}
+.hero p{max-width:860px;margin:0 auto;color:#c8ccd4;font-size:16px;line-height:1.7}
+.shell{display:grid;grid-template-columns:420px minmax(0,1fr);gap:1.25rem;align-items:start;margin-top:1.25rem}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px solid var(--border);border-radius:12px;box-shadow:0 18px 44px rgba(0,0,0,.28)}
+.panel{padding:1.25rem}
+.panel-title{font-family:var(--font-head);font-size:26px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;margin-bottom:.25rem}
+.panel-sub{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:1.1rem}
+.section{padding-top:1rem;border-top:1px solid rgba(255,255,255,.06);margin-top:1rem}
+.section:first-of-type{padding-top:0;border-top:none;margin-top:0}
+.label{display:block;font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;font-weight:700}
+.input,.select{width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 13px;color:var(--text);font-family:var(--font-body);font-size:14px;outline:none}
+.input:focus,.select:focus{border-color:var(--accent)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt-btn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 12px;border-radius:8px;cursor:pointer;font-family:var(--font-body);font-size:14px;text-align:left;transition:.15s}
+.opt-btn strong{display:block;font-family:var(--font-head);font-size:16px;letter-spacing:.03em;text-transform:uppercase;margin-bottom:3px}
+.opt-btn small{display:block;color:var(--sub);line-height:1.45}
+.opt-btn:hover{border-color:var(--accent)}
+.opt-btn.selected{border-color:var(--accent);box-shadow:inset 0 0 0 1px rgba(32,253,240,.45);background:rgba(32,253,240,.06)}
+.btn-row{display:flex;gap:10px;margin-top:1.15rem}
+.btn{flex:1;padding:13px 14px;border:none;border-radius:8px;cursor:pointer;font-family:var(--font-head);font-size:16px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.btn-primary{background:var(--accent);color:var(--black)}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
+.result{padding:1.25rem;display:none}
+.result.visible{display:block}
+.result-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:1rem 1rem;border:1px solid rgba(32,253,240,.24);background:rgba(32,253,240,.07);border-radius:10px;margin-bottom:1rem}
+.result-title{font-family:var(--font-head);font-size:34px;font-weight:900;line-height:.95;text-transform:uppercase}
+.result-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:.75rem}
+.badge{padding:7px 10px;border-radius:999px;border:1px solid transparent;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.badge.accent{background:rgba(32,253,240,.1);border-color:rgba(32,253,240,.28);color:var(--accent)}
+.badge.green{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.28);color:#81f0a7}
+.badge.yellow{background:rgba(234,179,8,.1);border-color:rgba(234,179,8,.28);color:#f6d765}
+.badge.blue{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.28);color:#8ec2ff}
+.result-copy{font-size:15px;line-height:1.8;color:#d7dde5;margin-bottom:1rem}
+.block{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:1rem;margin-top:1rem}
+.block h3{font-family:var(--font-head);font-size:22px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;margin-bottom:.55rem}
+.steps{display:grid;gap:10px;margin-top:.8rem}
+.step{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;padding:11px 0;border-top:1px solid rgba(255,255,255,.06)}
+.step:first-child{border-top:none;padding-top:0}
+.step-num{width:34px;height:34px;border-radius:8px;background:rgba(32,253,240,.12);border:1px solid rgba(32,253,240,.24);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:18px;font-weight:900;color:var(--accent)}
+.step-title{font-weight:700;color:var(--text);margin-bottom:2px}
+.step-copy{font-size:14px;color:#c6ccd5;line-height:1.65}
+.tip-list{display:grid;gap:10px;margin-top:.65rem}.tip{padding:.8rem .9rem;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);font-size:14px;line-height:1.65;color:#d4dae3}
+.quick-links{width:100%;max-width:1180px;padding:0 1.25rem 2.75rem;position:relative;z-index:1}
+.quick-links-shell{background:var(--dark);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.1rem}
+.quick-links-title{font-family:var(--font-head);font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:.9rem}
+.quick-links-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.quick-link-card{display:block;text-decoration:none;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 12px;transition:.15s}.quick-link-card:hover{border-color:var(--accent)}.quick-link-title{font-family:var(--font-head);font-size:18px;font-weight:800;text-transform:uppercase;line-height:1.05}.quick-link-sub{font-size:12px;color:var(--sub);margin-top:6px;line-height:1.45}
+.disclaimer{width:100%;max-width:1180px;margin:0 1.25rem 2.2rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 16px;font-size:13px;color:#c3cad4;line-height:1.7;position:relative;z-index:1}
+footer{width:100%;border-top:1px solid var(--border);padding:18px 20px 24px;color:var(--sub);font-size:12px;text-align:center;position:relative;z-index:1}
+.hidden{display:none}
+@media (max-width: 980px){.shell{grid-template-columns:1fr}.quick-links-grid{grid-template-columns:1fr 1fr}.header-links{display:none}}
+@media (max-width: 640px){header{padding:0 1rem}.main{padding:1.2rem .9rem 3rem}.hero p{font-size:15px}.opt-grid,.grid-2,.quick-links-grid{grid-template-columns:1fr}.btn-row{flex-direction:column}.result-title{font-size:28px}.result-header{align-items:flex-start;flex-direction:column}.panel,.result{padding:1rem}.disclaimer{margin:0 .9rem 1.5rem}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="https://hexcoremounts.com"><span>HexCore</span> Mounts</a>
+  <div class="header-links">
+    <a href="https://hexcoremounts.com/pages/firearm-law-hub">Law Hub</a>
+    <a href="https://hexcoremounts.com/pages/hexcore-mounts-resource-directory">2A Law Alert</a>
+    <a href="https://hexcoremounts.com/pages/instructor-map">Instructor Map</a>
+  </div>
+  <div class="header-badge">Training Tool</div>
+</header>
+
+<main class="main">
+  <section class="hero">
+    <div class="eyebrow">HexCore Training Resource</div>
+    <h1>Dry Fire Routine Generator</h1>
+    <p>Build a simple dry fire session based on your experience level, firearm type, training goal, and the amount of time you have available. This tool gives you a practical routine you can follow at home with structure, focus, and clear reps.</p>
+  </section>
+
+  <section class="shell">
+    <div class="card panel">
+      <div class="panel-title">Build Your Routine</div>
+      <div class="panel-sub">Choose your setup, goal, and available time. The routine will adjust to match a short tune-up session or a more complete practice block.</div>
+
+      <div class="section">
+        <label class="label">Experience Level</label>
+        <div class="opt-grid" id="exp-grid">
+          <button type="button" class="opt-btn" data-group="experience" data-value="new"><strong>New Shooter</strong><small>Focus on safety, setup, and clean fundamentals.</small></button>
+          <button type="button" class="opt-btn" data-group="experience" data-value="intermediate"><strong>Intermediate</strong><small>Build consistency, transitions, and cleaner reps.</small></button>
+          <button type="button" class="opt-btn" data-group="experience" data-value="advanced"><strong>Advanced</strong><small>Emphasize speed control and performance under structure.</small></button>
+        </div>
+      </div>
+
+      <div class="section">
+        <label class="label">Firearm Type</label>
+        <div class="opt-grid">
+          <button type="button" class="opt-btn" data-group="platform" data-value="handgun"><strong>Handgun</strong><small>Concealed carry, bedside, or range-focused pistol work.</small></button>
+          <button type="button" class="opt-btn" data-group="platform" data-value="rifle"><strong>Rifle</strong><small>Ready positions, presentation, and target transitions.</small></button>
+        </div>
+      </div>
+
+      <div class="section">
+        <label class="label">Primary Goal</label>
+        <div class="opt-grid">
+          <button type="button" class="opt-btn" data-group="goal" data-value="fundamentals"><strong>Fundamentals</strong><small>Grip, sights, trigger press, and follow-through.</small></button>
+          <button type="button" class="opt-btn" data-group="goal" data-value="draw"><strong>Draw & Presentation</strong><small>Efficient first-rep presentation from ready or holster.</small></button>
+          <button type="button" class="opt-btn" data-group="goal" data-value="reloads"><strong>Reloads</strong><small>Work economy of motion and repeatable reload mechanics.</small></button>
+          <button type="button" class="opt-btn" data-group="goal" data-value="transitions"><strong>Transitions</strong><small>Move your eyes first and drive the gun cleanly.</small></button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="grid-2">
+          <div>
+            <label class="label" for="time-select">Session Length</label>
+            <select class="select" id="time-select">
+              <option value="5">5 Minutes</option>
+              <option value="10" selected>10 Minutes</option>
+              <option value="15">15 Minutes</option>
+              <option value="20">20 Minutes</option>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="freq-select">Weekly Frequency</label>
+            <select class="select" id="freq-select">
+              <option value="1-2">1–2 Sessions</option>
+              <option value="3-4" selected>3–4 Sessions</option>
+              <option value="5+">5+ Sessions</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <label class="label" for="notes">Optional Focus Notes</label>
+        <input class="input" id="notes" placeholder="Example: support-hand grip, low-ready work, sight patience">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" type="button" onclick="generateRoutine()">Generate</button>
+        <button class="btn btn-secondary" type="button" onclick="resetTool()">Reset</button>
+      </div>
+    </div>
+
+    <div class="card result" id="result">
+      <div class="result-header">
+        <div>
+          <div class="eyebrow" style="text-align:left;margin-bottom:.45rem">Your Routine</div>
+          <div class="result-title" id="result-title">Dry Fire Session</div>
+          <div class="result-badges" id="result-badges"></div>
+        </div>
+        <div style="font-size:44px;line-height:1" id="result-icon">🎯</div>
+      </div>
+
+      <div class="result-copy" id="result-copy"></div>
+
+      <div class="block">
+        <h3>Before You Begin</h3>
+        <div class="tip-list" id="safety-list"></div>
+      </div>
+
+      <div class="block">
+        <h3>Session Plan</h3>
+        <div class="steps" id="session-steps"></div>
+      </div>
+
+      <div class="block">
+        <h3>What To Focus On</h3>
+        <div class="tip-list" id="focus-points"></div>
+      </div>
+
+      <div class="block hidden" id="weekly-block">
+        <h3>Weekly Structure</h3>
+        <div class="tip-list" id="weekly-points"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section class="quick-links" aria-label="Related HexCore tools">
+  <div class="quick-links-shell">
+    <div class="quick-links-title">More HexCore Tools</div>
+    <div class="quick-links-grid">
+      <a class="quick-link-card" href="https://hexcoremounts.com/pages/firearm-law-hub">
+        <div class="quick-link-title">Firearm Law Hub</div>
+        <div class="quick-link-sub">Track suppressor laws, magazine restrictions, and assault weapon bans by state.</div>
+      </a>
+      <a class="quick-link-card" href="https://hexcoremounts.com/pages/hexcore-mounts-resource-directory">
+        <div class="quick-link-title">2A Law Alert</div>
+        <div class="quick-link-sub">See recent updates from GOA, SAF, and NRA-ILA in one place.</div>
+      </a>
+      <a class="quick-link-card" href="https://hexcoremounts.com/pages/first-time-firearm-buyer-guide">
+        <div class="quick-link-title">Buyer Guide</div>
+        <div class="quick-link-sub">Walk through your first firearm purchase with a clear, practical checklist.</div>
+      </a>
+      <a class="quick-link-card" href="https://hexcoremounts.com/pages/instructor-map">
+        <div class="quick-link-title">Instructor Map</div>
+        <div class="quick-link-sub">Find instructors and training resources near you.</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="disclaimer">Dry fire should only be done with a completely unloaded firearm in a safe environment with live ammunition removed from the area. Follow the safety rules every time, verify condition visually and physically, and stop immediately if you lose focus. This resource is for educational purposes only.</div>
+
+<footer>&copy; 2026 HexCore Mounts &nbsp;&middot;&nbsp; Designed and Manufactured in the USA &nbsp;&middot;&nbsp; Atlanta, Georgia</footer>
+
+<script>
+const state = { experience:null, platform:null, goal:null };
+
+const routineData = {
+  safety:[
+    'Unload the firearm completely and verify it visually and physically before every session.',
+    'Remove all live ammunition from the room before starting.',
+    'Use a safe direction and a dedicated aiming point that will not be mistaken for anything else.',
+    'Work slowly enough to stay locked in. The session ends the moment attention drops.'
+  ],
+  intros:{
+    new:'This routine keeps the session simple and repeatable so you can build good habits without rushing reps.',
+    intermediate:'This routine balances clean mechanics with enough repetition to sharpen consistency and confidence.',
+    advanced:'This routine is built to keep your reps disciplined so speed never outruns control.'
+  },
+  goals:{
+    fundamentals:{
+      icon:'🎯',
+      title:'Fundamentals Session',
+      focus:['Build the same grip every rep before the firearm starts moving.','See the sights settle instead of guessing when the press should happen.','Finish every trigger press without disturbing the gun.'],
+      handgun:[
+        ['Prep & verify', 'Confirm your dry setup, establish your aiming point, and take five deliberate setup reps.'],
+        ['Wall drill press-outs', 'Press out to the wall or target with smooth trigger work and complete follow-through.'],
+        ['Sight confirmation reps', 'Pause just long enough to confirm the sights are stable before each press.'],
+        ['Reset and repeat', 'Break position, rebuild the grip, and repeat cleanly rather than chasing speed.']
+      ],
+      rifle:[
+        ['Setup from ready', 'Start from low ready and mount the rifle the same way each rep.'],
+        ['Sight picture and press', 'Work smooth mount-to-sight confirmation with a clean trigger press.'],
+        ['Hold and follow-through', 'Keep the sights settled through the end of each rep.'],
+        ['Reset with purpose', 'Come off the gun, reset, and rebuild the position cleanly.']
+      ]
+    },
+    draw:{
+      icon:'⚡',
+      title:'Presentation Session',
+      focus:['Make the first movement efficient instead of hurried.','Drive to the same presentation point every time.','Let visual confirmation finish the rep, not force it.'],
+      handgun:[
+        ['Access and grip', 'Work your garment clear if applicable and establish a full firing grip before the pistol moves.'],
+        ['Presentation path', 'Bring the pistol straight to the line of sight with minimal wasted movement.'],
+        ['Sighted finish', 'End each rep with a calm visual confirmation and clean trigger press.'],
+        ['Return with control', 'Reholster or reset carefully and repeat under control.']
+      ],
+      rifle:[
+        ['Ready position starts', 'Start from your chosen ready position and drive the rifle up on demand.'],
+        ['Mount and settle', 'Build the stock weld and sight picture the same way each rep.'],
+        ['First-shot prep', 'Refine the trigger press at the end of the presentation.'],
+        ['Reset and rebuild', 'Come back to ready and rebuild the sequence without rushing.']
+      ]
+    },
+    reloads:{
+      icon:'🔁',
+      title:'Reload Session',
+      focus:['Keep the eyes where they belong instead of staring at the gun too long.','Minimize wasted hand motion during the reload.','Finish every reload with a stable firing grip before moving on.'],
+      handgun:[
+        ['Emergency reload setup', 'Start from slide-lock or your chosen reload setup and build the sequence.'],
+        ['Mag access reps', 'Practice getting to the spare magazine cleanly and consistently.'],
+        ['Insert and reestablish', 'Seat the mag, complete the reload, and rebuild the grip before the next rep.'],
+        ['Add presentation finish', 'Finish the reload by returning the pistol to the target cleanly.']
+      ],
+      rifle:[
+        ['Mag change sequence', 'Practice bringing the rifle into the workspace and accessing the fresh magazine efficiently.'],
+        ['Seat and action', 'Seat the magazine positively and complete the bolt or charging sequence smoothly.'],
+        ['Return to target', 'Drive the rifle back out with eyes already on the aiming point.'],
+        ['Repeat without hurry', 'Keep the motion efficient, not frantic, so the sequence stays clean.']
+      ]
+    },
+    transitions:{
+      icon:'↔️',
+      title:'Transitions Session',
+      focus:['Move the eyes first, then let the firearm follow.','Do not over-swing past the target line.','Stop the gun cleanly and confirm before the press.'],
+      handgun:[
+        ['Two-point setup', 'Use two dry targets or aiming points with enough separation to force visual movement.'],
+        ['Eyes first reps', 'Snap the eyes to the next point before the pistol moves.'],
+        ['Controlled stop', 'Stop the gun on target and confirm the sight picture before pressing.'],
+        ['Return and alternate', 'Work back and forth while keeping the same rhythm and discipline.']
+      ],
+      rifle:[
+        ['Spacing and stance', 'Set two or more aiming points and build a stable position from ready.'],
+        ['Visual lead', 'Shift the eyes first, then drive the muzzle to where the eyes already landed.'],
+        ['Target-to-target control', 'Stop cleanly on each point instead of whipping through it.'],
+        ['Finish with discipline', 'Maintain posture and follow-through on every stop.']
+      ]
+    }
+  }
+};
+
+function choose(group, value, btn){
+  state[group] = value;
+  document.querySelectorAll(`[data-group="${group}"]`).forEach(el => el.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+document.querySelectorAll('.opt-btn').forEach(btn => {
+  btn.addEventListener('click', () => choose(btn.dataset.group, btn.dataset.value, btn));
+});
+
+function resetTool(){
+  state.experience = null; state.platform = null; state.goal = null;
+  document.querySelectorAll('.opt-btn').forEach(el => el.classList.remove('selected'));
+  document.getElementById('time-select').value = '10';
+  document.getElementById('freq-select').value = '3-4';
+  document.getElementById('notes').value = '';
+  document.getElementById('result').classList.remove('visible');
+  document.getElementById('result').style.display = 'none';
+}
+
+function scaleReps(minutes, base){
+  const factor = Number(minutes) / 10;
+  return Math.max(3, Math.round(base * factor));
+}
+
+function weeklyAdvice(freq, goal){
+  const map = {
+    '1-2':['Keep sessions simple and focused. Pick one goal and stay with it until the movement feels cleaner.','Spend a few minutes reviewing your setup before starting so the limited reps count.'],
+    '3-4':['Rotate between your main goal and one supporting skill across the week.','Keep one session shorter and slower so quality stays high instead of turning every day into a speed day.'],
+    '5+':['Alternate intensity across the week so every session is not pushing speed at the same time.','Revisit fundamentals regularly even if your main focus is draw speed, reloads, or transitions.']
+  };
+  const specific = {
+    fundamentals:'Give yourself one session each week where every rep is deliberate and unrushed.',
+    draw:'Track whether your first movement stays efficient as sessions stack up through the week.',
+    reloads:'Work one day on access and another on finishing back on target cleanly.',
+    transitions:'Keep target spacing realistic so the practice remains controlled and useful.'
+  };
+  return [...map[freq], specific[goal]];
+}
+
+function generateRoutine(){
+  if(!state.experience || !state.platform || !state.goal){
+    alert('Select your experience level, firearm type, and primary goal to generate your routine.');
+    return;
+  }
+
+  const minutes = document.getElementById('time-select').value;
+  const freq = document.getElementById('freq-select').value;
+  const notes = document.getElementById('notes').value.trim();
+  const goalPack = routineData.goals[state.goal];
+  const plan = goalPack[state.platform];
+  const reps = [scaleReps(minutes, 5), scaleReps(minutes, 10), scaleReps(minutes, 8), scaleReps(minutes, 6)];
+
+  document.getElementById('result-title').textContent = goalPack.title;
+  document.getElementById('result-icon').textContent = goalPack.icon;
+  document.getElementById('result-badges').innerHTML = `
+    <span class="badge accent">${state.platform === 'handgun' ? 'Handgun' : 'Rifle'}</span>
+    <span class="badge green">${minutes} Minute Session</span>
+    <span class="badge yellow">${state.experience === 'new' ? 'New Shooter' : state.experience === 'intermediate' ? 'Intermediate' : 'Advanced'}</span>
+    <span class="badge blue">${state.goal === 'draw' ? 'Draw & Presentation' : state.goal.charAt(0).toUpperCase() + state.goal.slice(1)}</span>`;
+
+  let intro = `${routineData.intros[state.experience]} This ${minutes}-minute ${state.platform} routine is centered on ${goalPack.title.toLowerCase()} so you can leave the session with a clear purpose instead of random reps.`;
+  if(notes) intro += ` Extra focus for this session: ${notes}.`;
+  document.getElementById('result-copy').textContent = intro;
+
+  document.getElementById('safety-list').innerHTML = routineData.safety.map(item => `<div class="tip">${item}</div>`).join('');
+  document.getElementById('session-steps').innerHTML = plan.map((step, i) => `
+    <div class="step">
+      <div class="step-num">${i+1}</div>
+      <div>
+        <div class="step-title">${step[0]} — ${reps[i]} quality reps</div>
+        <div class="step-copy">${step[1]}</div>
+      </div>
+    </div>`).join('');
+
+  const focusItems = [...goalPack.focus];
+  if(state.experience === 'new') focusItems.unshift('Go slow enough that every rep would look the same if you filmed it.');
+  if(state.experience === 'advanced') focusItems.push('Push only as fast as you can keep the sights and final position honest.');
+  if(notes) focusItems.push(`Session note to keep in mind: ${notes}.`);
+  document.getElementById('focus-points').innerHTML = focusItems.map(item => `<div class="tip">${item}</div>`).join('');
+
+  const weekly = weeklyAdvice(freq, state.goal);
+  document.getElementById('weekly-points').innerHTML = weekly.map(item => `<div class="tip">${item}</div>`).join('');
+  document.getElementById('weekly-block').classList.remove('hidden');
+
+  const result = document.getElementById('result');
+  result.style.display = 'block';
+  result.classList.add('visible');
+  setTimeout(() => result.scrollIntoView({behavior:'smooth', block:'start'}), 80);
+}
+</script>
+</body>
+</html>
