@@ -19,9 +19,9 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2r
 .header-nav a{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}.header-nav a:hover{color:var(--text)}.header-nav a.active{color:var(--accent)}
 .header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;text-decoration:none}
 .map-wrap{width:100%;max-width:1200px;position:relative;border-bottom:1px solid var(--border)}
-.map-area{width:100%;height:580px;background:var(--black);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
-#map-svg-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1rem}
-#usa-svg{width:100%;height:100%}
+.map-area{width:100%;height:580px;background:var(--black);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;touch-action:none}
+#map-svg-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1rem;touch-action:none}
+#usa-svg{width:100%;height:100%;touch-action:none;user-select:none}
 .map-tooltip{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px 16px;pointer-events:none;display:none;z-index:20;min-width:220px;max-width:300px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
 .tt-name{font-family:var(--font-head);font-weight:900;font-size:16px;color:var(--text);text-transform:uppercase;letter-spacing:.03em;margin-bottom:1px}
 .tt-biz{font-size:12px;color:var(--accent);margin-bottom:4px}
@@ -684,21 +684,34 @@ function drawStates(){
 }
 function initZoom(){
   if(selectedStateName) return;
-  const svg=d3.select('#usa-svg');
+  const svgEl=document.getElementById('usa-svg');
+  const svg=d3.select(svgEl);
   const g=d3.select('#map-root');
+
   const zoom=d3.zoom()
     .scaleExtent([1,8])
-    .translateExtent([[0,0],[960,600]])
+    .filter(function(event){
+      if(event.type==='wheel') return true;
+      if(event.type==='touchstart'||event.type==='touchmove') return event.touches.length>=1;
+      return !event.button;
+    })
     .on('zoom',(event)=>{
       if(selectedStateName) return;
-      g.attr('transform',event.transform);
+      g.attr('transform', event.transform.toString());
     });
-  svg.call(zoom);
-  svg.on('dblclick.zoom',null);
+
+  svg.call(zoom)
+     .on('dblclick.zoom', null);
+
+  // D3 v6+ registers wheel as passive — override with non-passive so
+  // preventDefault works and the browser doesn't swallow the scroll event
+  svgEl.addEventListener('wheel', (e)=>{ e.preventDefault(); }, {passive:false});
+
   window._mapZoom=zoom;
   window._mapSvg=svg;
-  // show cursor and hint
-  document.getElementById('map-svg-wrap').classList.add('zoom-active');
+
+  const wrap=document.getElementById('map-svg-wrap');
+  wrap.classList.add('zoom-active');
   const hint=document.getElementById('zoom-hint');
   hint.classList.add('vis');
   setTimeout(()=>hint.classList.remove('vis'),3500);
