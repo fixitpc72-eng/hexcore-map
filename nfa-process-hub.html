@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFA Process Hub - Form 1, Form 3, Form 4, Trust vs Individual | HexCore Mounts</title>
+<meta name="description" content="The complete NFA process guide for 2026. Form 1 vs Form 3 vs Form 4, trust vs individual, ATF processing times, suppressor legality by state, and full submission checklist.">
+<link rel="canonical" href="https://hexcoremounts.com/pages/nfa-process-hub">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;--text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--orange:#f97316;--font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(32,253,240,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(32,253,240,.015) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0}
+header{width:100%;background:rgba(17,18,20,.96);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}
+.header-links{display:flex;gap:1.5rem}.header-links a{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}.header-links a:hover{color:var(--accent)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px}
+.main{width:100%;max-width:900px;padding:2.5rem 1.5rem 4rem;position:relative;z-index:1}
+.hero{text-align:center;margin-bottom:2rem}
+.hero-eyebrow{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;gap:10px}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:28px;height:1px;background:var(--accent);opacity:.4}
+.hero-title{font-family:var(--font-head);font-weight:900;font-size:clamp(32px,6vw,52px);text-transform:uppercase;letter-spacing:.02em;line-height:1;color:#fff;margin-bottom:.75rem}.hero-title span{color:var(--accent)}
+.hero-sub{font-size:14px;color:var(--sub);line-height:1.7;max-width:560px;margin:0 auto}
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.5rem}
+.stat-item{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center}
+.stat-num{font-family:var(--font-head);font-size:28px;font-weight:900;color:var(--accent);line-height:1}
+.stat-lbl{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+.alert{padding:10px 14px;border-radius:7px;font-size:13px;line-height:1.6;margin-bottom:1.25rem}
+.alert.success{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);color:var(--sub)}.alert.success strong{color:var(--green)}
+.alert.warn{background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.2);color:var(--sub)}.alert.warn strong{color:var(--yellow)}
+.alert.info{background:rgba(32,253,240,.05);border:1px solid rgba(32,253,240,.15);color:var(--sub)}.alert.info strong{color:var(--accent)}
+.guide-section{margin-bottom:2.25rem}
+.section-hdr{display:flex;align-items:center;gap:12px;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.section-num{font-family:var(--font-head);font-size:28px;font-weight:900;color:var(--accent);min-width:28px}
+.section-title{font-family:var(--font-head);font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff}
+.section-sub{font-size:12px;color:var(--sub);margin-top:2px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.125rem}
+.form-card.hl{border-color:rgba(32,253,240,.3);background:rgba(32,253,240,.03)}
+.form-card.bl{border-color:rgba(59,130,246,.25);background:rgba(59,130,246,.03)}
+.fc-badge{display:inline-block;padding:2px 8px;border-radius:3px;font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.b-cyan{background:rgba(32,253,240,.12);color:var(--accent);border:1px solid rgba(32,253,240,.2)}
+.b-blue{background:rgba(59,130,246,.12);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
+.b-green{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.2)}
+.b-yellow{background:rgba(234,179,8,.1);color:#facc15;border:1px solid rgba(234,179,8,.2)}
+.fc-num{font-family:var(--font-head);font-size:28px;font-weight:900;color:var(--accent);margin-bottom:.25rem}
+.fc-title{font-family:var(--font-head);font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:.375rem}
+.fc-body{font-size:12px;color:var(--sub);line-height:1.65}.fc-body strong{color:var(--text)}
+.fc-list{list-style:none;padding:0;margin-top:.625rem;display:flex;flex-direction:column;gap:4px}
+.fc-list li{font-size:12px;color:var(--sub);padding-left:12px;position:relative;line-height:1.45}.fc-list li::before{content:'>';position:absolute;left:0;color:var(--accent)}.fc-list li strong{color:var(--text)}
+.dec-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.dec-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.125rem}
+.dec-card.rec{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.03)}
+.dc-badge{display:inline-block;padding:2px 8px;border-radius:3px;font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.dc-title{font-family:var(--font-head);font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:.375rem}
+.dc-body{font-size:12px;color:var(--sub);line-height:1.65}.dc-body strong{color:var(--text)}
+.pros-list{list-style:none;padding:0;margin-top:.625rem;display:flex;flex-direction:column;gap:4px}
+.pros-list li{font-size:12px;color:var(--sub);padding-left:14px;position:relative;line-height:1.45}.pros-list li::before{content:'>';position:absolute;left:0;color:var(--accent)}.pros-list li.con::before{color:var(--red)}.pros-list li strong{color:var(--text)}
+.wait-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.wait-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1rem}
+.wc-type{font-family:var(--font-head);font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:var(--text);margin-bottom:.5rem}
+.wc-bar-wrap{background:var(--muted);border-radius:999px;height:6px;margin-bottom:.375rem;overflow:hidden}
+.wc-bar{height:100%;border-radius:999px;background:var(--accent)}
+.wc-time{font-family:var(--font-head);font-size:20px;font-weight:900;color:var(--accent)}
+.wc-range{font-size:11px;color:var(--sub);margin-top:2px}.wc-note{font-size:11px;color:var(--muted);margin-top:.5rem;line-height:1.5}
+.process-steps{display:flex;flex-direction:column}
+.ps{display:grid;grid-template-columns:46px 1fr;gap:1rem}
+.ps-left{display:flex;flex-direction:column;align-items:center}
+.ps-num{width:36px;height:36px;background:var(--card);border:2px solid var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:17px;font-weight:900;color:var(--accent);flex-shrink:0}
+.ps-line{width:2px;flex:1;background:linear-gradient(to bottom,rgba(32,253,240,.3),transparent);margin:5px auto 0;min-height:16px}
+.ps:last-child .ps-line{display:none}
+.ps-content{padding-bottom:1.5rem}
+.ps-title{font-family:var(--font-head);font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:.375rem}
+.ps-body{font-size:13px;color:var(--sub);line-height:1.65}.ps-body strong{color:var(--text)}
+.ps-tag{display:inline-block;padding:2px 7px;border-radius:3px;font-family:var(--font-head);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-left:6px;vertical-align:middle}
+.t-new{background:rgba(34,197,94,.15);color:#4ade80}.t-warn{background:rgba(234,179,8,.12);color:#facc15}
+.ps-note{background:var(--dark);border:1px solid var(--border);border-radius:5px;padding:8px 12px;margin-top:.5rem;font-size:12px;color:var(--sub);line-height:1.5}
+.cl-wrap{display:flex;flex-direction:column;gap:6px;margin-top:.875rem}
+.cl-item{display:flex;align-items:flex-start;gap:10px;padding:.625rem .875rem;background:var(--card);border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;user-select:none}
+.cl-item:hover{border-color:var(--muted)}.cl-item.checked{background:rgba(34,197,94,.05);border-color:rgba(34,197,94,.2)}
+.cl-box{width:18px;height:18px;border-radius:4px;border:1px solid var(--muted);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s;font-size:11px;font-weight:900}
+.cl-item.checked .cl-box{background:var(--green);border-color:var(--green);color:var(--black)}
+.cl-text{font-size:13px;color:var(--sub);line-height:1.5;flex:1}.cl-item.checked .cl-text{color:var(--text)}
+.cl-prog{display:flex;align-items:center;gap:10px;margin-top:1rem;font-size:12px;color:var(--sub)}
+.cl-prog-bar{flex:1;background:var(--muted);border-radius:999px;height:5px;overflow:hidden}
+.cl-prog-fill{height:100%;background:var(--green);border-radius:999px;transition:width .3s}
+.item-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
+.item-card{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.875rem}
+.ic-name{font-family:var(--font-head);font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:var(--accent);margin-bottom:.25rem}
+.ic-def{font-size:11px;color:var(--sub);line-height:1.55;margin-bottom:.375rem}
+.ic-form{font-family:var(--font-head);font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.state-checker{background:var(--dark);border:1px solid var(--border);border-radius:9px;padding:1.125rem;margin-bottom:1rem}
+.sc-hdr{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.875rem}
+.cs-wrap{position:relative;max-width:320px}
+.cs-trig{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:9px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:.875rem}
+.cs-trig:hover{border-color:var(--muted)}
+.cs-val{flex:1;font-size:13px;color:var(--sub)}.cs-val.set{color:var(--text)}
+.cs-arr{font-size:10px;color:var(--sub);transition:transform .2s}
+.cs-dd{display:none;position:absolute;top:100%;left:0;right:0;background:#16181c;border:1px solid #2a2d35;border-radius:6px;max-height:200px;overflow-y:auto;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.9);scrollbar-width:thin;scrollbar-color:#3a3d47 transparent;margin-top:-10px}
+.cs-opt{padding:9px 12px;font-size:13px;color:var(--text);cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04)}.cs-opt:hover{background:rgba(32,253,240,.08);color:var(--accent)}
+.sc-res{background:var(--card);border-radius:7px;padding:.875rem;display:none}.sc-res.vis{display:block}
+.quick-links{background:rgba(9,16,24,.9);border:1px solid rgba(32,253,240,.12);border-radius:10px;padding:1rem;margin-bottom:2rem}
+.ql-title{font-family:var(--font-head);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text);margin-bottom:.75rem;display:flex;align-items:center;gap:8px}.ql-title::before{content:"\u2B21";color:var(--accent)}
+.ql-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ql-card{background:rgba(4,9,14,.8);border:1px solid rgba(32,253,240,.12);border-radius:8px;padding:.625rem .75rem;text-decoration:none;text-align:center;transition:all .15s}.ql-card:hover{border-color:rgba(32,253,240,.3);background:rgba(32,253,240,.04)}.ql-card.cur{background:rgba(32,253,240,.04);border-color:rgba(32,253,240,.25)}
+.ql-label{font-family:var(--font-head);font-size:12px;font-weight:800;color:var(--accent);line-height:1.2}
+.disclaimer{font-size:11px;color:var(--muted);line-height:1.7;text-align:center;margin-bottom:1.5rem}
+footer{border-top:1px solid var(--border);background:var(--dark);padding:1.25rem 2rem;text-align:center;font-family:var(--font-head);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);width:100%}
+@media(max-width:640px){header{padding:0 1rem}.header-links{display:none}.main{padding:1.75rem 1.25rem 3rem}.form-grid,.dec-grid,.wait-grid,.item-grid{grid-template-columns:1fr}.stat-strip{grid-template-columns:1fr 1fr}.ql-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" target="_top" href="https://hexcoremounts.com">Hex<span>Core</span></a>
+  <nav class="header-links">
+    <a target="_top" href="https://hexcoremounts.com/pages/suppressor-buyers-guide">Suppressor Guide</a>
+    <a target="_top" href="https://hexcoremounts.com/pages/sbr-pistol-compliance-checker">SBR Checker</a>
+    <a target="_top" href="https://hexcoremounts.com/pages/build-legality-scanner">Build Scanner</a>
+  </nav>
+  <div class="header-badge">2026 Updated</div>
+</header>
+<div class="main">
+  <div class="hero">
+    <div class="hero-eyebrow">National Firearms Act</div>
+    <h1 class="hero-title">NFA <span>Process Hub</span></h1>
+    <p class="hero-sub">Every NFA form explained. Current ATF processing times. Trust vs individual. State legality by item type. Full submission checklist. One place.</p>
+  </div>
+  <div class="stat-strip">
+    <div class="stat-item"><div class="stat-num">$0</div><div class="stat-lbl">Tax Stamp 2026</div></div>
+    <div class="stat-item"><div class="stat-num">Days</div><div class="stat-lbl">eForm Approvals</div></div>
+    <div class="stat-item"><div class="stat-num">42</div><div class="stat-lbl">Suppressor States</div></div>
+    <div class="stat-item"><div class="stat-num">5</div><div class="stat-lbl">ATF Form Types</div></div>
+  </div>
+  <div class="alert success"><strong>&#10003; January 1, 2026 &mdash; $0 Tax Stamp:</strong> The One Big Beautiful Bill Act eliminated the $200 NFA transfer tax for suppressors, SBRs, SBSs, and AOWs. Machine guns and destructive devices are NOT included. The registration process &mdash; eForm, background check, fingerprints, ATF approval before possession &mdash; remains fully required.</div>
+
+  <!-- 01 NFA ITEM TYPES -->
+  <div class="guide-section">
+    <div class="section-hdr"><div class="section-num">01</div><div><div class="section-title">NFA Item Types</div><div class="section-sub">What qualifies as an NFA item and what form each requires</div></div></div>
+    <div class="item-grid">
+      <div class="item-card"><div class="ic-name">Suppressor</div><div class="ic-def">Any device for silencing or diminishing the report of a portable firearm. Includes solvent trap kits when assembled as a suppressor.</div><div class="ic-form">Buy: Form 4 &middot; Build: Form 1 &middot; Dealer transfer: Form 3</div></div>
+      <div class="item-card"><div class="ic-name">Short Barrel Rifle</div><div class="ic-def">Rifle with barrel under 16" or overall length under 26". Includes adding a stock to a pistol with sub-16" barrel.</div><div class="ic-form">Buy: Form 4 &middot; Convert/Build: Form 1 &middot; Dealer transfer: Form 3</div></div>
+      <div class="item-card"><div class="ic-name">Short Barrel Shotgun</div><div class="ic-def">Shotgun with barrel under 18" or overall length under 26". Same NFA process as SBR &mdash; requires separate ATF approval.</div><div class="ic-form">Buy: Form 4 &middot; Build: Form 1 &middot; Dealer transfer: Form 3</div></div>
+      <div class="item-card"><div class="ic-name">Any Other Weapon</div><div class="ic-def">Pistols with vertical foregrips, smooth-bore pistols, pen guns, and certain concealable firearms not fitting pistol/rifle/shotgun definitions.</div><div class="ic-form">Buy: Form 4 ($5 tax) &middot; Build: Form 1 ($200 tax) &middot; Dealer: Form 3</div></div>
+      <div class="item-card"><div class="ic-name">Machine Gun</div><div class="ic-def">Fires more than one round per trigger pull. Civilian transfer of post-May-19-1986 machine guns is prohibited by federal law. Pre-1986 registered MGs are transferable but extremely expensive.</div><div class="ic-form">Buy pre-1986: Form 4 &middot; $0 stamp does NOT apply to machine guns</div></div>
+      <div class="item-card"><div class="ic-name">Destructive Device</div><div class="ic-def">Explosives, grenades, rockets, large-bore firearms (bore over half inch). Civilian ownership is effectively prohibited or requires special licensing for most DD items.</div><div class="ic-form">Buy: Form 4 &middot; $0 stamp does NOT apply to destructive devices</div></div>
+    </div>
+    <div class="alert warn"><strong>&#9888; AOW Tax Exception:</strong> AOW Form 4 transfers use a $5 tax stamp &mdash; not $200, not $0. If you build an AOW yourself via Form 1, the $200 stamp applies (now $0 under the 2026 change). Suppressors, SBRs, and SBSs all use $0 as of Jan 1, 2026.</div>
+  </div>
+
+  <!-- 02 WHICH FORM -->
+  <div class="guide-section">
+    <div class="section-hdr"><div class="section-num">02</div><div><div class="section-title">Which Form Do You Need?</div><div class="section-sub">eForm 1, Form 3, eForm 4, and Form 5 &mdash; when each applies</div></div></div>
+    <div class="form-grid">
+      <div class="form-card hl">
+        <div class="fc-badge b-cyan">Most Common &mdash; Buy</div>
+        <div class="fc-num">Form 4</div>
+        <div class="fc-title">Application for Tax-Paid Transfer</div>
+        <div class="fc-body">Used when a <strong>private citizen purchases a manufactured NFA item</strong> from a dealer or another individual. The item stays at the dealer until ATF approves your Form 4.</div>
+        <ul class="fc-list">
+          <li><strong>Tax:</strong> $0 effective January 1, 2026 (was $200)</li>
+          <li><strong>Used for:</strong> Buying suppressors, SBRs, SBSs, AOWs from licensed FFL/SOT dealers</li>
+          <li><strong>Who files:</strong> You and your Class III dealer together at eForms.atf.gov</li>
+          <li><strong>Requires:</strong> Background check, fingerprints, photo, demographic info</li>
+          <li><strong>Wait:</strong> Days to a few weeks for eForm submissions in 2026</li>
+          <li><strong>Trust or Individual:</strong> Both options available on eForm 4</li>
+        </ul>
+        <a href="https://eforms.atf.gov" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;margin-top:.875rem;padding:7px 12px;background:rgba(32,253,240,.08);border:1px solid rgba(32,253,240,.2);border-radius:5px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);text-decoration:none">&#8599; File eForm 4 at ATF eForms</a>
+      </div>
+      <div class="form-card bl">
+        <div class="fc-badge b-blue">Build Your Own</div>
+        <div class="fc-num">Form 1</div>
+        <div class="fc-title">Application to Make and Register</div>
+        <div class="fc-body">Used when a <strong>private citizen makes or converts an NFA item</strong> &mdash; building a suppressor from a solvent trap kit, converting a pistol to SBR, or making an AOW.</div>
+        <ul class="fc-list">
+          <li><strong>Tax:</strong> $0 effective January 1, 2026</li>
+          <li><strong>Used for:</strong> Building suppressors, converting pistols to SBR, making AOWs from scratch</li>
+          <li><strong>Who files:</strong> You directly at eForms.atf.gov &mdash; no dealer required to initiate</li>
+          <li><strong>Requires:</strong> Background check, fingerprints, photo, serial number engraving plan</li>
+          <li><strong>Wait:</strong> Generally faster than Form 4 &mdash; often just days</li>
+          <li><strong>Critical:</strong> Do NOT begin building until your Form 1 is approved. Building before approval is a federal felony.</li>
+        </ul>
+        <a href="https://eforms.atf.gov" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;margin-top:.875rem;padding:7px 12px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:5px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#60a5fa;text-decoration:none">&#8599; File eForm 1 at ATF eForms</a>
+      </div>
+      <div class="form-card">
+        <div class="fc-badge b-green">Dealer-to-Dealer</div>
+        <div class="fc-num">Form 3</div>
+        <div class="fc-title">Tax-Exempt Transfer Between SOT Dealers</div>
+        <div class="fc-body">Used when an NFA item moves between two <strong>FFL dealers with SOT status</strong>. This is how manufacturers ship items to local dealers. You never file Form 3 &mdash; your dealer does.</div>
+        <ul class="fc-list">
+          <li><strong>Tax:</strong> Always $0 &mdash; this transfer is inherently tax-exempt</li>
+          <li><strong>Used for:</strong> Manufacturer to distributor to your local FFL/SOT dealer</li>
+          <li><strong>Who files:</strong> The sending dealer. You have no role in this form.</li>
+          <li><strong>Wait:</strong> Typically under 2 weeks &mdash; fast dealer-to-dealer channel</li>
+          <li><strong>What it means for you:</strong> When you order online, the suppressor moves to your local dealer via Form 3 first. Then you file Form 4 for the final transfer to you.</li>
+        </ul>
+        <a href="https://www.atf.gov/firearms/docs/form/form-5320-3-application-tax-exempt-transfer-and-registration-firearm/download" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;margin-top:.875rem;padding:7px 12px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.18);border-radius:5px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#4ade80;text-decoration:none">&#8599; ATF Form 3 (PDF) — Dealer Reference</a>
+      </div>
+      <div class="form-card">
+        <div class="fc-badge b-yellow">Estate / Government</div>
+        <div class="fc-num">Form 5</div>
+        <div class="fc-title">Tax-Exempt Transfer &mdash; Inheritance or Government</div>
+        <div class="fc-body">Used for <strong>tax-exempt transfers</strong> &mdash; primarily when an NFA owner passes away and heirs inherit the item, or for transfers to government entities.</div>
+        <ul class="fc-list">
+          <li><strong>Tax:</strong> Always $0 &mdash; this transfer is tax-exempt</li>
+          <li><strong>Used for:</strong> Heirs inheriting NFA items from an individual owner's estate; transfers to law enforcement or government</li>
+          <li><strong>Trust advantage:</strong> NFA items owned by a trust pass to beneficiaries without a new Form 4 or Form 5 &mdash; a major reason to use a trust</li>
+          <li><strong>Individual owners:</strong> Your heirs will need Form 5 when you pass &mdash; another argument for trust registration</li>
+        </ul>
+        <a href="https://www.atf.gov/firearms/docs/form/form-5320-5-application-tax-exempt-transfer-and-registration-firearm/download" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;margin-top:.875rem;padding:7px 12px;background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.18);border-radius:5px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#facc15;text-decoration:none">&#8599; ATF Form 5 (PDF) — Inheritance / Government</a>
+      </div>
+    </div>
+    <div style="background:rgba(32,253,240,.04);border:1px solid rgba(32,253,240,.15);border-radius:7px;padding:12px 14px;font-size:13px;color:var(--sub)"><strong style="color:var(--accent)">Quick decision:</strong> Buying a manufactured suppressor or SBR from a dealer &rarr; <strong style="color:var(--text)">Form 4.</strong> Building your own &rarr; <strong style="color:var(--text)">Form 1.</strong> Dealer moving it to their location &rarr; <strong style="color:var(--text)">Form 3</strong> (they handle it). Heirs inheriting it &rarr; <strong style="color:var(--text)">Form 5.</strong></div>
+  </div>
+
+  <!-- 03 TRUST VS INDIVIDUAL -->
+  <div class="guide-section">
+    <div class="section-hdr"><div class="section-num">03</div><div><div class="section-title">Trust vs Individual</div><div class="section-sub">How you register it &mdash; this decision has permanent implications</div></div></div>
+    <div class="dec-grid">
+      <div class="dec-card rec">
+        <div class="dc-badge" style="background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.2)">Recommended for Most</div>
+        <div class="dc-title">NFA Gun Trust</div>
+        <div class="dc-body">A legal entity that owns the NFA item. Multiple "responsible persons" can legally possess and use it. Best for anyone with family, hunting partners, or estate planning concerns.</div>
+        <ul class="pros-list">
+          <li><strong>Shared possession:</strong> Spouse, adult children, partners listed as responsible persons can all legally use it</li>
+          <li><strong>Estate planning:</strong> Passes to trust beneficiaries without a new Form 4 &mdash; far simpler than individual inheritance via Form 5</li>
+          <li><strong>Future flexibility:</strong> Add or remove responsible persons via trust amendment with no ATF involvement</li>
+          <li><strong>Remote certification:</strong> Trust filers can certify eForm 4 remotely &mdash; no in-person dealer visit required for your signature</li>
+          <li class="con">More upfront paperwork &mdash; all responsible persons submit photos, prints, background checks</li>
+          <li class="con">Slightly more complex setup &mdash; most dealers offer trust setup free or very cheaply</li>
+        </ul>
+      </div>
+      <div class="dec-card">
+        <div class="dc-badge" style="background:rgba(234,179,8,.1);color:#facc15;border:1px solid rgba(234,179,8,.2)">Solo Shooter</div>
+        <div class="dc-title">Individual Filing</div>
+        <div class="dc-body">Registered to you personally. Simplest paperwork path. Best if you are the only person who will ever use the item and estate planning is not a priority.</div>
+        <ul class="pros-list">
+          <li><strong>Simpler process:</strong> Less paperwork, fewer moving parts at submission</li>
+          <li><strong>Marginally faster:</strong> Individual eForm 4 approvals slightly faster than trust in 2026</li>
+          <li class="con">Only you can legally possess it &mdash; not your spouse, adult children, or anyone else</li>
+          <li class="con">Lending it to someone &mdash; even briefly &mdash; is illegal under federal law</li>
+          <li class="con">After your death, heirs must file Form 5 (tax-exempt but still paperwork and time)</li>
+          <li class="con">Transferring to a trust later requires a brand new Form 4 filing</li>
+          <li class="con">Must certify Form 4 in person at the dealer &mdash; remote certification not available for individuals</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert info"><strong>Bottom line:</strong> If there is any chance someone else will use it, or you care about what happens to it when you're gone &mdash; get the trust. The paperwork difference is one afternoon. The flexibility difference is permanent. Most dealers will set up a basic NFA trust at no charge.</div>
+  </div>
+
+  <!-- 04 WAIT TIMES -->
+  <div class="guide-section">
+    <div class="section-hdr"><div class="section-num">04</div><div><div class="section-title">Processing Time Estimator</div><div class="section-sub">Current ATF eForm wait times as of early 2026 &mdash; estimates only, actual times vary</div></div></div>
+    <div class="alert warn"><strong>&#9888; Surge expected in 2026:</strong> The $0 tax stamp change is driving a significant surge in NFA applications. ATF is preparing for higher volume. Times below reflect the pre-surge early 2026 baseline &mdash; expect increases as the year progresses. File early if you are planning a purchase.</div>
+    <div class="wait-grid">
+      <div class="wait-card">
+        <div class="wc-type">eForm 4 &mdash; Individual</div>
+        <div class="wc-bar-wrap"><div class="wc-bar" style="width:12%"></div></div>
+        <div class="wc-time">3&ndash;14 days</div>
+        <div class="wc-range">Early 2026 baseline &middot; Pre-surge</div>
+        <div class="wc-note">Historically fast eForm individual approvals. Expect this window to widen as the $0 stamp surge fully hits ATF volume through 2026.</div>
+      </div>
+      <div class="wait-card">
+        <div class="wc-type">eForm 4 &mdash; Trust</div>
+        <div class="wc-bar-wrap"><div class="wc-bar" style="width:18%"></div></div>
+        <div class="wc-time">7&ndash;21 days</div>
+        <div class="wc-range">Early 2026 baseline &middot; Pre-surge</div>
+        <div class="wc-note">Marginally longer than individual due to additional responsible person verification. Still dramatically faster than historical wait times of 6&ndash;12 months.</div>
+      </div>
+      <div class="wait-card">
+        <div class="wc-type">eForm 1 &mdash; Individual or Trust</div>
+        <div class="wc-bar-wrap"><div class="wc-bar" style="width:8%"></div></div>
+        <div class="wc-time">1&ndash;10 days</div>
+        <div class="wc-range">Generally fastest NFA eForm path</div>
+        <div class="wc-note">Form 1 approvals are currently the fastest path. Complete all forms accurately &mdash; errors cause delays regardless of form type or submission method.</div>
+      </div>
+      <div class="wait-card">
+        <div class="wc-type">Paper Form 4 (mail-in)</div>
+        <div class="wc-bar-wrap"><div class="wc-bar" style="width:90%"></div></div>
+        <div class="wc-time">3&ndash;12+ months</div>
+        <div class="wc-range">Avoid unless eForm is unavailable</div>
+        <div class="wc-note">Paper forms are dramatically slower than eForms. Always use ATF eForms at eForms.atf.gov when possible. Paper is effectively a legacy path at this point.</div>
+      </div>
+    </div>
+    <div class="alert info"><strong>Fastest approval path:</strong> Accurate form &rarr; digital fingerprints via kiosk &rarr; immediate electronic signature &rarr; eForm submission. Every delay in signatures or demographic errors extends your wait. Your full legal name, DOB, and address must match your government-issued ID exactly.</div>
+  </div>
+
+  <!-- 05 STATE LEGALITY -->
+  <div class="guide-section">
+    <div class="section-hdr"><div class="section-num">05</div><div><div class="section-title">State Legality Checker</div><div class="section-sub">Suppressor and SBR/SBS legality by state</div></div></div>
+    <div class="state-checker">
+      <div class="sc-hdr">&#9678; Quick State Check &mdash; Suppressor &amp; SBR/SBS</div>
+      <div class="cs-wrap">
+        <div class="cs-trig" onclick="toggleSC()">
+          <div class="cs-val" id="sc-val">Select your state...</div>
+          <div class="cs-arr" id="sc-arr">&#9660;</div>
+        </div>
+        <div class="cs-dd" id="sc-dd"></div>
+      </div>
+      <div class="sc-res" id="sc-res"></div>
+    </div>
+  </div>
+
+  <!-- 06 FULL PROCESS -->
+  <div class="guide-section">
+    <div class="section-hdr"><div class="section-num">06</div><div><div class="section-title">The Full Process</div><div class="section-sub">From purchase decision to range day &mdash; every step</div></div></div>
+    <div class="process-steps">
+      <div class="ps">
+        <div class="ps-left"><div class="ps-num">1</div><div class="ps-line"></div></div>
+        <div class="ps-content">
+          <div class="ps-title">Verify Your State Allows It</div>
+          <div class="ps-body">Use the state checker in Section 05 above. If your state bans the NFA item type, ATF will not approve a Form 1 or Form 4 for a resident of that state. There is no exception &mdash; federal NFA compliance does not override a state ban.</div>
+        </div>
+      </div>
+      <div class="ps">
+        <div class="ps-left"><div class="ps-num">2</div><div class="ps-line"></div></div>
+        <div class="ps-content">
+          <div class="ps-title">Decide: Trust or Individual <span class="ps-tag t-warn">Before You Buy</span></div>
+          <div class="ps-body">Make this decision before you start any paperwork. If filing as a trust, get your trust set up with your dealer or a legal service first. Changing your registration method after submission requires a brand new filing.</div>
+        </div>
+      </div>
+      <div class="ps">
+        <div class="ps-left"><div class="ps-num">3</div><div class="ps-line"></div></div>
+        <div class="ps-content">
+          <div class="ps-title">Select Item and Find a Class III Dealer</div>
+          <div class="ps-body">You need an <strong>FFL with SOT status</strong> &mdash; commonly called a Class III dealer. You can buy locally or order online and have the item shipped to a local Class III FFL. The item stays at the dealer while your Form 4 is pending.</div>
+          <div class="ps-note">Online purchase flow: Order from a retailer &rarr; they ship via Form 3 to your local FFL/SOT &rarr; you file Form 4 at the local dealer for the final transfer to you. Dealer transfer fees typically run $50&ndash;100.</div>
+        </div>
+      </div>
+      <div class="ps">
+        <div class="ps-left"><div class="ps-num">4</div><div class="ps-line"></div></div>
+        <div class="ps-content">
+          <div class="ps-title">Submit ATF eForm <span class="ps-tag t-new">$0 Tax 2026</span></div>
+          <div class="ps-body">Your dealer initiates eForm 4 (or you file eForm 1 for building) at <strong><a href="https://eforms.atf.gov" target="_blank" rel="noopener" style="color:var(--accent)">eForms.atf.gov</a></strong>. You provide your demographic info, photo, and fingerprints. The $200 tax payment step is gone as of January 1, 2026. Review every field carefully before certifying &mdash; errors are the number one cause of delays.</div>
+          <div class="ps-note">Fingerprints: Many dealers have a Silencer Shop kiosk for digital fingerprint submission. If not, use a local fingerprinting service with ink cards. Digital fingerprints process faster.</div>
+        </div>
+      </div>
+      <div class="ps">
+        <div class="ps-left"><div class="ps-num">5</div><div class="ps-line"></div></div>
+        <div class="ps-content">
+          <div class="ps-title">Wait for ATF Approval</div>
+          <div class="ps-body">ATF runs your background check and reviews the application. Monitor status at <strong><a href="https://eforms.atf.gov" target="_blank" rel="noopener" style="color:var(--accent)">eForms.atf.gov</a></strong> or ask your dealer. You will receive an email notification when approved. Do not contact ATF to check status &mdash; it does not speed up the process.</div>
+        </div>
+      </div>
+      <div class="ps">
+        <div class="ps-left"><div class="ps-num">6</div></div>
+        <div class="ps-content">
+          <div class="ps-title">Pick Up and Keep Your Paperwork</div>
+          <div class="ps-body">Once approved, ATF emails the dealer your approved Form. You complete the final transfer and take your item home. <strong>Keep a copy of your approved Form accessible whenever you use or transport the NFA item.</strong></div>
+          <div class="ps-note">Interstate transport: Suppressors and SBSs do not require ATF Form 5320.20 for travel across state lines. SBRs, machine guns, and destructive devices DO require prior ATF notification via Form 5320.20 before crossing state lines.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 SUBMISSION CHECKLIST -->
+  <div class="guide-section">
+    <div class="section-hdr"><div class="section-num">07</div><div><div class="section-title">Submission Checklist</div><div class="section-sub">Everything needed before certifying your eForm &mdash; errors are the number one cause of delays</div></div></div>
+    <div class="cl-wrap">
+      <div class="cl-item" onclick="chk(this)"><div class="cl-box"></div><div class="cl-text"><strong>State verified:</strong> Confirmed your state allows this NFA item type before purchasing or beginning the process</div></div>
+      <div class="cl-item" onclick="chk(this)"><div class="cl-box"></div><div class="cl-text"><strong>Trust or individual decided:</strong> Made your registration method decision before starting paperwork</div></div>
+      <div class="cl-item" onclick="chk(this)"><div class="cl-box"></div><div class="cl-text"><strong>ATF eForms account created:</strong> Account set up at eForms.atf.gov before going to the dealer</div></div>
+      <div class="cl-item" onclick="chk(this)"><div class="cl-box"></div><div class="cl-text"><strong>Fingerprints collected:</strong> Digital prints via kiosk, or ink fingerprint cards ready for mail submission</div></div>
+      <div class="cl-item" onclick="chk(this)"><div class="cl-box"></div><div class="cl-text"><strong>Photo ready:</strong> Current passport-style photo, matching your government ID appearance</div></div>
+      <div class="cl-item" onclick="chk(this)"><div class="cl-box"></div><div class="cl-text"><strong>Name matches ID exactly:</strong> Full legal name on form is identical to your government-issued photo ID &mdash; middle name, suffix, everything</div></div>
+      <div class="cl-item" onclick="chk(this)"><div class="cl-box"></div><div class="cl-text"><strong>Address is current:</strong> Residence address matches your ID or most recent address if you have moved</div></div>
+      <div class="cl-item" onclick="chk(this)"><div class="cl-box"></div><div class="cl-text"><strong>Date of birth correct:</strong> DOB matches your government ID exactly &mdash; a single digit error causes a delay and possible denial</div></div>
+      <div class="cl-item" onclick="chk(this)"><div class="cl-box"></div><div class="cl-text"><strong>Trust documents ready (trust filers):</strong> Signed, executed trust document ready for submission. All responsible persons have submitted their background check info.</div></div>
+      <div class="cl-item" onclick="chk(this)"><div class="cl-box"></div><div class="cl-text"><strong>Form 1 serial number planned (builders):</strong> If building, serial number format confirmed and engraving planned before submission &mdash; must contain a letter and a number, no special characters</div></div>
+      <div class="cl-item" onclick="chk(this)"><div class="cl-box"></div><div class="cl-text"><strong>eForm reviewed before certifying:</strong> Every field double-checked &mdash; name, DOB, address, item description, serial number, dealer info all match your records</div></div>
+      <div class="cl-item" onclick="chk(this)"><div class="cl-box"></div><div class="cl-text"><strong>Certification completed:</strong> Form certified at eForms.atf.gov &mdash; individual filers in-person at dealer, trust filers may certify remotely</div></div>
+      <div class="cl-item" onclick="chk(this)"><div class="cl-box"></div><div class="cl-text"><strong>Wait confirmed:</strong> Item stays at the dealer (Form 4) or unbuilt (Form 1) until ATF approval arrives &mdash; possession before approval is a federal felony regardless of how long you have been waiting</div></div>
+    </div>
+    <div class="cl-prog"><span id="cl-cnt">0 / 13</span><div class="cl-prog-bar"><div class="cl-prog-fill" id="cl-fill" style="width:0%"></div></div></div>
+  </div>
+
+  <div class="quick-links">
+    <div class="ql-title">HexCore Tools</div>
+    <div class="ql-grid">
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/suppressor-buyers-guide"><div class="ql-label">Suppressor Guide</div></a>
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/build-legality-scanner"><div class="ql-label">Build Scanner</div></a>
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/sbr-pistol-compliance-checker"><div class="ql-label">SBR Checker</div></a>
+      <a class="ql-card cur" target="_top" href="https://hexcoremounts.com/pages/nfa-process-hub"><div class="ql-label">NFA Process Hub</div></a>
+    </div>
+  </div>
+  <div class="disclaimer">For general informational purposes only &mdash; not legal advice. NFA laws, ATF processes, and processing times change frequently. Always verify current requirements at atf.gov and with a licensed NFA dealer and firearms attorney before purchasing or making any NFA item. Processing times are estimates based on early 2026 reports and may vary significantly. Data reviewed March 2026. &copy; HexCore Mounts</div>
+</div>
+<footer>&copy; 2026 HexCore Mounts &nbsp;&middot;&nbsp; Atlanta, Georgia &nbsp;&middot;&nbsp; Data reviewed March 2026</footer>
+<script>
+const STATES=['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
+const SUPP_BANNED=['California','Hawaii','Illinois','Maryland','Massachusetts','New Jersey','New York','Rhode Island','District of Columbia'];
+const SUPP_RESTRICTED=['Connecticut','Minnesota','Pennsylvania'];
+const SBR_BANNED=['California','New York','New Jersey','Massachusetts','Hawaii','Illinois','Rhode Island','District of Columbia'];
+const SBR_RESTRICTED=['Maryland'];
+const NOTES={'California':'Both suppressors and SBRs are banned in California. Federal NFA compliance does not override this.','Maryland':'Suppressors banned statewide. SBRs: effectively banned in most configurations due to AWB feature restrictions.','Connecticut':'Suppressors legal with federal Form 4 plus state registration. Hunting with suppressor is prohibited.','Minnesota':'Suppressors legal with federal Form 4 plus a state transfer permit from local law enforcement. Hunting prohibited.','Pennsylvania':'Suppressors legal with federal Form 4. Hunting with suppressor prohibited under Game and Wildlife Code.'};
+const dd=document.getElementById('sc-dd');
+STATES.forEach(s=>{const o=document.createElement('div');o.className='cs-opt';o.textContent=s;o.onclick=()=>{document.getElementById('sc-val').textContent=s;document.getElementById('sc-val').classList.add('set');document.getElementById('sc-dd').style.display='none';document.getElementById('sc-arr').style.transform='';showSC(s);};dd.appendChild(o);});
+function toggleSC(){const d=document.getElementById('sc-dd');const a=document.getElementById('sc-arr');const open=d.style.display==='block';d.style.display=open?'none':'block';a.style.transform=open?'':'rotate(180deg)';}
+document.addEventListener('click',e=>{if(!e.target.closest('.cs-wrap')){document.getElementById('sc-dd').style.display='none';document.getElementById('sc-arr').style.transform='';}});
+function showSC(s){const sBan=SUPP_BANNED.includes(s);const sRes=SUPP_RESTRICTED.includes(s);const rBan=SBR_BANNED.includes(s);const rRes=SBR_RESTRICTED.includes(s);const note=NOTES[s]||'';const sC=sBan?'#f87171':sRes?'#facc15':'#4ade80';const sT=sBan?'BANNED':sRes?'Legal with State Steps':'Legal with Form 4';const rC=rBan?'#f87171':rRes?'#facc15':'#4ade80';const rT=rBan?'BANNED':rRes?'AWB Restrictions Apply':'Legal with Form 1 or 4';const r=document.getElementById('sc-res');r.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.75rem"><div style="background:var(--dark);border-radius:6px;padding:.875rem;text-align:center"><div style="font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.375rem">Suppressor</div><div style="font-family:var(--font-head);font-size:14px;font-weight:900;color:'+sC+'">'+sT+'</div></div><div style="background:var(--dark);border-radius:6px;padding:.875rem;text-align:center"><div style="font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.375rem">SBR / SBS</div><div style="font-family:var(--font-head);font-size:14px;font-weight:900;color:'+rC+'">'+rT+'</div></div></div>'+(note?'<div style="font-size:12px;color:var(--sub);line-height:1.6;padding:8px 10px;background:var(--dark);border-radius:5px">'+note+'</div>':'')+'<div style="font-size:11px;color:var(--muted);margin-top:.625rem;line-height:1.5">$0 NFA tax stamp effective Jan 1, 2026. Federal Form 4 still required before possession. Federal compliance does not override state bans.</div>';r.classList.add('vis');}
+function chk(item){item.classList.toggle('checked');item.querySelector('.cl-box').textContent=item.classList.contains('checked')?'&#10003;':'';const c=document.querySelectorAll('.cl-item.checked').length;const t=document.querySelectorAll('.cl-item').length;document.getElementById('cl-cnt').textContent=c+' / '+t;document.getElementById('cl-fill').style.width=(c/t*100)+'%';}
+</script>
+</body>
+</html>
