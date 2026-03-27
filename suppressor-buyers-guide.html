@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suppressor Buyer's Guide 2026 — NFA Process & Selection | HexCore Mounts</title>
+<meta name="description" content="Interactive suppressor buyer's guide for 2026. $0 tax stamp, Form 4 vs Form 1, trust vs individual — step-by-step NFA process tool with state legality checker.">
+<link rel="canonical" href="https://hexcoremounts.com/pages/suppressor-buyers-guide">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;
+  --text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;
+  --red:#ef4444;--orange:#f97316;--blue:#3b82f6;
+  --font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(32,253,240,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(32,253,240,.015) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0}
+
+header{width:100%;background:rgba(17,18,20,.96);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}
+.header-links{display:flex;gap:1.5rem}
+.header-links a{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}.header-links a:hover{color:var(--accent)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px}
+
+.main{width:100%;max-width:900px;padding:2.5rem 1.5rem 4rem;position:relative;z-index:1}
+
+/* HERO */
+.hero{text-align:center;margin-bottom:2.5rem}
+.hero-eyebrow{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;gap:10px}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:28px;height:1px;background:var(--accent);opacity:.4}
+.hero-title{font-family:var(--font-head);font-weight:900;font-size:clamp(34px,6vw,54px);text-transform:uppercase;letter-spacing:.02em;line-height:1;color:#fff;margin-bottom:.75rem}
+.hero-title span{color:var(--accent)}
+.hero-sub{font-size:14px;color:var(--sub);line-height:1.7;max-width:540px;margin:0 auto}
+
+/* STAT STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:2rem}
+.stat-item{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center}
+.stat-num{font-family:var(--font-head);font-size:28px;font-weight:900;color:var(--accent);line-height:1}
+.stat-lbl{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+
+/* GUIDE SECTIONS */
+.guide-section{margin-bottom:2rem}
+.section-hdr{display:flex;align-items:center;gap:12px;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.section-num{font-family:var(--font-head);font-size:28px;font-weight:900;color:var(--accent);min-width:28px}
+.section-title{font-family:var(--font-head);font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff}
+.section-sub{font-size:12px;color:var(--sub);margin-top:2px}
+
+/* DECISION CARDS */
+.decision-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.decision-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.25rem;position:relative;transition:all .2s}
+.decision-card.winner{border-color:rgba(32,253,240,.4);background:rgba(32,253,240,.04)}
+.decision-card.neutral{border-color:rgba(234,179,8,.25);background:rgba(234,179,8,.03)}
+.dc-badge{display:inline-block;padding:2px 8px;border-radius:3px;font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.625rem}
+.dc-badge.green{background:rgba(34,197,94,.15);color:#4ade80}
+.dc-badge.accent{background:rgba(32,253,240,.12);color:var(--accent)}
+.dc-badge.yellow{background:rgba(234,179,8,.12);color:#facc15}
+.dc-badge.blue{background:rgba(59,130,246,.15);color:#60a5fa}
+.dc-title{font-family:var(--font-head);font-size:17px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:.5rem}
+.dc-body{font-size:13px;color:var(--sub);line-height:1.6}
+.dc-body strong{color:var(--text);font-weight:600}
+.dc-pros{list-style:none;padding:0;margin-top:.75rem;display:flex;flex-direction:column;gap:5px}
+.dc-pros li{font-size:12px;color:var(--sub);padding-left:14px;position:relative;line-height:1.4}
+.dc-pros li::before{content:'›';position:absolute;left:0;color:var(--accent)}
+.dc-pros li strong{color:var(--text)}
+.dc-pros li.con::before{color:var(--red)}
+
+/* PROCESS STEPS */
+.process-steps{display:flex;flex-direction:column;gap:0}
+.ps{display:grid;grid-template-columns:52px 1fr;gap:1rem;position:relative}
+.ps-left{display:flex;flex-direction:column;align-items:center}
+.ps-num{width:40px;height:40px;background:var(--card);border:2px solid var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:18px;font-weight:900;color:var(--accent);flex-shrink:0}
+.ps-line{width:2px;flex:1;background:linear-gradient(to bottom,var(--accent),transparent);opacity:.2;margin:5px auto 0;min-height:20px}
+.ps:last-child .ps-line{display:none}
+.ps-content{padding-bottom:1.5rem}
+.ps-title{font-family:var(--font-head);font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:.375rem}
+.ps-body{font-size:13px;color:var(--sub);line-height:1.6}
+.ps-body strong{color:var(--text);font-weight:600}
+.ps-tag{display:inline-block;padding:2px 8px;border-radius:3px;font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-left:6px;vertical-align:middle}
+.ps-tag.new{background:rgba(34,197,94,.15);color:#4ade80}
+.ps-note{background:var(--dark);border:1px solid var(--border);border-radius:5px;padding:8px 12px;margin-top:.5rem;font-size:12px;color:var(--sub);line-height:1.5}
+
+/* CALIBER GUIDE */
+.cal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
+.cal-card{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.875rem 1rem}
+.cal-name{font-family:var(--font-head);font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:var(--accent);margin-bottom:.25rem}
+.cal-guns{font-size:11px;color:var(--sub);margin-bottom:.5rem}
+.cal-rec{font-size:12px;color:var(--text);line-height:1.5}
+.cal-tag{display:inline-block;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:rgba(32,253,240,.08);color:var(--accent);border:1px solid rgba(32,253,240,.15);margin-top:4px}
+
+/* STATE CHECKER */
+.state-checker{background:var(--dark);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem}
+.sc-title{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:1rem;display:flex;align-items:center;gap:6px}
+.sc-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-bottom:1rem}
+.sc-select-wrap{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .15s;position:relative}
+.sc-select-wrap:hover{border-color:var(--muted)}
+.sc-label{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;font-family:var(--font-head);font-weight:700;white-space:nowrap}
+.sc-display{flex:1;font-size:14px;font-weight:500;color:var(--sub);padding-left:4px}
+.sc-arrow{color:var(--sub);font-size:11px;transition:transform .2s}
+.sc-dropdown{display:none;position:absolute;top:100%;left:0;right:0;background:#16181c;border:1px solid #2a2d35;border-radius:6px;max-height:200px;overflow-y:auto;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.9);scrollbar-width:thin;scrollbar-color:#3a3d47 transparent;margin-top:3px}
+.sc-result{background:var(--card);border-radius:7px;padding:1rem;display:none}
+.sc-result.visible{display:block;animation:fadeIn .2s ease-out}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.sc-status{font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:.375rem}
+.sc-detail{font-size:13px;color:var(--sub);line-height:1.6}
+
+/* ALERTS */
+.alert{padding:12px 14px;border-radius:7px;font-size:13px;line-height:1.6;margin-bottom:1.25rem}
+.alert.success{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);color:var(--sub)}.alert.success strong{color:var(--green)}
+.alert.warn{background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.2);color:var(--sub)}.alert.warn strong{color:var(--yellow)}
+.alert.info{background:rgba(32,253,240,.05);border:1px solid rgba(32,253,240,.15);color:var(--sub)}.alert.info strong{color:var(--accent)}
+.alert.danger{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:var(--sub)}.alert.danger strong{color:var(--red)}
+
+/* QUICK LINKS */
+.quick-links{background:rgba(9,16,24,.9);border:1px solid rgba(32,253,240,.12);border-radius:10px;padding:1rem;margin-bottom:2rem}
+.ql-title{font-family:var(--font-head);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text);margin-bottom:.75rem;display:flex;align-items:center;gap:8px}
+.ql-title::before{content:'⬡';color:var(--accent)}
+.ql-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ql-card{background:rgba(4,9,14,.8);border:1px solid rgba(32,253,240,.12);border-radius:8px;padding:.625rem .75rem;text-decoration:none;text-align:center;transition:all .15s}
+.ql-card:hover{border-color:rgba(32,253,240,.3);background:rgba(32,253,240,.04)}
+.ql-card.current{background:rgba(32,253,240,.04);border-color:rgba(32,253,240,.25)}
+.ql-label{font-family:var(--font-head);font-size:12px;font-weight:800;color:var(--accent);line-height:1.2}
+
+.disclaimer{font-size:11px;color:var(--muted);line-height:1.7;text-align:center;margin-bottom:1.5rem}
+footer{border-top:1px solid var(--border);background:var(--dark);padding:1.25rem 2rem;text-align:center;font-family:var(--font-head);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);width:100%}
+
+@media(max-width:640px){
+  header{padding:0 1rem}.header-links{display:none}
+  .main{padding:1.75rem 1.25rem 3rem}
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .decision-grid,.cal-grid{grid-template-columns:1fr}
+  .ql-grid{grid-template-columns:1fr 1fr}
+  .hero-title{font-size:34px}
+  .sc-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" target="_top" href="https://hexcoremounts.com">Hex<span>Core</span></a>
+  <nav class="header-links">
+    <a target="_top" href="https://hexcoremounts.com/pages/firearm-law-hub">Law Hub</a>
+    <a target="_top" href="https://hexcoremounts.com/pages/sbr-pistol-compliance-checker">SBR Checker</a>
+    <a target="_top" href="https://hexcoremounts.com/pages/2a-alert-feed">2A Alerts</a>
+  </nav>
+  <div class="header-badge">2026 Updated</div>
+</header>
+
+<div class="main">
+
+  <div class="hero">
+    <div class="hero-eyebrow">NFA Buyer's Guide</div>
+    <h1 class="hero-title">Suppressor <span>Buyer's Guide</span></h1>
+    <p class="hero-sub">The $200 tax stamp is gone as of January 1, 2026. The process still exists — here's exactly how it works, which form you need, and whether a trust is right for you.</p>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-item"><div class="stat-num">$0</div><div class="stat-lbl">Tax Stamp 2026</div></div>
+    <div class="stat-item"><div class="stat-num">42</div><div class="stat-lbl">Legal States</div></div>
+    <div class="stat-item"><div class="stat-num">Days</div><div class="stat-lbl">eForm Approvals</div></div>
+    <div class="stat-item"><div class="stat-num">Form 4</div><div class="stat-lbl">Still Required</div></div>
+  </div>
+
+  <div class="alert success"><strong>&#10003; January 1, 2026 — $0 Tax Stamp:</strong> The One Big Beautiful Bill Act eliminated the $200 NFA transfer tax for suppressors, SBRs, SBSs, and AOWs. The registration process — eForm 4, background check, fingerprints, ATF approval before possession — remains fully in place. The tax is $0, not optional. You still file.</div>
+
+  <!-- STEP 1: CAN YOU OWN? -->
+  <div class="guide-section" id="eligibility">
+    <div class="section-hdr">
+      <div class="section-num">01</div>
+      <div><div class="section-title">Can You Own a Suppressor?</div><div class="section-sub">Federal eligibility + your state</div></div>
+    </div>
+    <div class="decision-grid" style="grid-template-columns:1fr 1fr;margin-bottom:1.25rem">
+      <div class="decision-card winner">
+        <div class="dc-badge accent">Federal Requirements</div>
+        <div class="dc-title">You Qualify If...</div>
+        <ul class="dc-pros">
+          <li>21+ years old to buy from a dealer</li>
+          <li>18+ to receive via trust or private transfer</li>
+          <li>U.S. citizen or legal permanent resident</li>
+          <li>Not a prohibited person under federal law</li>
+          <li>Reside in a state that allows suppressor ownership</li>
+          <li>Can pass a standard NICS background check</li>
+        </ul>
+      </div>
+      <div class="decision-card">
+        <div class="dc-badge yellow">State Bans</div>
+        <div class="dc-title">Banned in These States</div>
+        <div class="dc-body">These 8 states + DC prohibit civilian suppressor ownership regardless of federal NFA compliance:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:.75rem">
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:3px 8px;font-family:var(--font-head);font-size:11px;font-weight:700;color:#f87171">California</span>
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:3px 8px;font-family:var(--font-head);font-size:11px;font-weight:700;color:#f87171">Hawaii</span>
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:3px 8px;font-family:var(--font-head);font-size:11px;font-weight:700;color:#f87171">Illinois</span>
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:3px 8px;font-family:var(--font-head);font-size:11px;font-weight:700;color:#f87171">Maryland</span>
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:3px 8px;font-family:var(--font-head);font-size:11px;font-weight:700;color:#f87171">Massachusetts</span>
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:3px 8px;font-family:var(--font-head);font-size:11px;font-weight:700;color:#f87171">New Jersey</span>
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:3px 8px;font-family:var(--font-head);font-size:11px;font-weight:700;color:#f87171">New York</span>
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:3px 8px;font-family:var(--font-head);font-size:11px;font-weight:700;color:#f87171">Rhode Island</span>
+          <span style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:3px;padding:3px 8px;font-family:var(--font-head);font-size:11px;font-weight:700;color:#f87171">DC</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:.625rem">CT, MN, and PA: legal but with additional state restrictions. Always verify current state law.</div>
+      </div>
+    </div>
+
+    <!-- STATE CHECKER -->
+    <div class="state-checker">
+      <div class="sc-title">&#9678; Quick State Check</div>
+      <div class="sc-row">
+        <div style="position:relative">
+          <div class="sc-select-wrap" onclick="toggleSuppDrop()">
+            <div class="sc-label">State</div>
+            <div class="sc-display" id="supp-display">Select your state...</div>
+            <div class="sc-arrow" id="supp-arrow">▼</div>
+          </div>
+          <div class="sc-dropdown" id="supp-dropdown"></div>
+        </div>
+      </div>
+      <div class="sc-result" id="supp-result">
+        <div class="sc-status" id="supp-status"></div>
+        <div class="sc-detail" id="supp-detail"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: FORM 4 vs FORM 1 -->
+  <div class="guide-section" id="forms">
+    <div class="section-hdr">
+      <div class="section-num">02</div>
+      <div><div class="section-title">Form 4 vs Form 1</div><div class="section-sub">Which form you need depends on how you're getting it</div></div>
+    </div>
+    <div class="decision-grid">
+      <div class="decision-card winner">
+        <div class="dc-badge accent">Most Common</div>
+        <div class="dc-title">ATF eForm 4 — Buy One</div>
+        <div class="dc-body">Used when <strong>purchasing a manufactured suppressor</strong> from an NFA dealer. The suppressor stays at the dealer until ATF approves your Form 4. You cannot take possession before approval.</div>
+        <ul class="dc-pros">
+          <li><strong>Who files it:</strong> You and your dealer together at the FFL</li>
+          <li><strong>Where:</strong> ATF eForms at eForms.atf.gov</li>
+          <li><strong>Requirements:</strong> Background check, fingerprints, photo</li>
+          <li><strong>Cost:</strong> $0 tax stamp as of Jan 1, 2026</li>
+          <li><strong>Wait time:</strong> Days to weeks in 2026 for eForm</li>
+          <li><strong>Used for:</strong> Factory-built suppressors, all calibers</li>
+        </ul>
+      </div>
+      <div class="decision-card">
+        <div class="dc-badge blue">Build Your Own</div>
+        <div class="dc-title">ATF eForm 1 — Make One</div>
+        <div class="dc-body">Used when <strong>building your own suppressor</strong> or manufacturing an NFA item yourself. Requires machining knowledge and the ability to engrave a serial number on the finished item.</div>
+        <ul class="dc-pros">
+          <li><strong>Who files it:</strong> You, directly with ATF eForms</li>
+          <li><strong>Requirements:</strong> Same as Form 4 + serial number engraving plan</li>
+          <li><strong>Cost:</strong> $0 tax stamp as of Jan 1, 2026</li>
+          <li><strong>Wait time:</strong> Generally faster than Form 4</li>
+          <li><strong>Used for:</strong> Solvent trap kits, custom builds</li>
+          <li class="con">Cannot build until ATF approval — not before</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert warn"><strong>&#9888; Do not take possession until approved.</strong> This applies to both Form 1 and Form 4. The suppressor must stay with the dealer (Form 4) or unbuilt (Form 1) until your ATF approval arrives. Possession before approval is a federal felony regardless of how long you've been waiting.</div>
+  </div>
+
+  <!-- STEP 3: TRUST vs INDIVIDUAL -->
+  <div class="guide-section" id="trust">
+    <div class="section-hdr">
+      <div class="section-num">03</div>
+      <div><div class="section-title">Trust vs Individual</div><div class="section-sub">How you want to register it — this decision matters long-term</div></div>
+    </div>
+    <div class="decision-grid">
+      <div class="decision-card winner">
+        <div class="dc-badge green">Recommended for Most</div>
+        <div class="dc-title">NFA Gun Trust</div>
+        <div class="dc-body">A legal entity that owns the suppressor. Multiple "responsible persons" on the trust can legally possess and use it. Best for anyone with family, hunting partners, or estate planning concerns.</div>
+        <ul class="dc-pros">
+          <li><strong>Shared possession:</strong> Spouse, adult children, hunting partners can all use it legally</li>
+          <li><strong>Estate planning:</strong> Passes to beneficiaries without a new Form 4</li>
+          <li><strong>Future flexibility:</strong> Add or remove trustees without ATF involvement</li>
+          <li><strong>Remote certification:</strong> Can certify eForm 4 remotely (no in-person dealer visit required for signature)</li>
+          <li class="con">More paperwork upfront — all responsible persons need background checks</li>
+          <li class="con">Slightly more complex to set up than individual</li>
+        </ul>
+      </div>
+      <div class="decision-card">
+        <div class="dc-badge yellow">Solo Shooter</div>
+        <div class="dc-title">Individual Filing</div>
+        <div class="dc-body">Registered to you personally. Simplest paperwork. Best if you are the only person who will ever use it and you have no estate planning concerns.</div>
+        <ul class="dc-pros">
+          <li><strong>Simpler:</strong> Fewer forms, less admin</li>
+          <li><strong>Currently faster:</strong> Individual eForm 4 approvals slightly faster than trust in 2026</li>
+          <li class="con">Only you can legally possess it — not even your spouse</li>
+          <li class="con">Transferring to a trust later requires a new Form 4 (new filing)</li>
+          <li class="con">Estate transfer requires Form 5 (tax-free but still paperwork)</li>
+          <li class="con">Must certify Form 4 in person at the dealer</li>
+        </ul>
+      </div>
+    </div>
+    <div style="background:rgba(32,253,240,.04);border:1px solid rgba(32,253,240,.15);border-radius:7px;padding:12px 14px;font-size:13px;color:var(--sub)"><strong style="color:var(--accent)">Bottom line:</strong> If you have a spouse, family, or any chance you'll want someone else to be able to use it, get the trust. The paperwork difference is minimal. The flexibility difference is significant. Most dealers can set up a basic NFA trust for free or very low cost.</div>
+  </div>
+
+  <!-- STEP 4: THE PROCESS -->
+  <div class="guide-section" id="process">
+    <div class="section-hdr">
+      <div class="section-num">04</div>
+      <div><div class="section-title">The Full Process</div><div class="section-sub">Step-by-step — from selection to range day</div></div>
+    </div>
+    <div class="process-steps">
+      <div class="ps">
+        <div class="ps-left"><div class="ps-num">1</div><div class="ps-line"></div></div>
+        <div class="ps-content">
+          <div class="ps-title">Select Your Suppressor & Find a Class III Dealer</div>
+          <div class="ps-body">You need an FFL with SOT (Special Occupational Taxpayer) status — commonly called a "Class III dealer" — to handle the transfer. You can buy locally or order online and have it shipped to a local Class III FFL. <strong>The suppressor ships to and stays at the dealer</strong> until your Form 4 is approved.</div>
+          <div class="ps-note">Online purchase tip: Sites like Silencer Shop, Silencer Central, and SilencerCo direct allow online orders that transfer to a local dealer. Dealer transfer fees typically run $50–$100.</div>
+        </div>
+      </div>
+      <div class="ps">
+        <div class="ps-left"><div class="ps-num">2</div><div class="ps-line"></div></div>
+        <div class="ps-content">
+          <div class="ps-title">Choose Trust or Individual <span class="ps-tag new">Decide now</span></div>
+          <div class="ps-body">Make this decision before you start the paperwork. If filing as a trust, set one up with your dealer or a legal service. If filing as an individual, you'll certify in person at the dealer.</div>
+        </div>
+      </div>
+      <div class="ps">
+        <div class="ps-left"><div class="ps-num">3</div><div class="ps-line"></div></div>
+        <div class="ps-content">
+          <div class="ps-title">Submit ATF eForm 4 <span class="ps-tag new">$0 Tax 2026</span></div>
+          <div class="ps-body">Your dealer initiates the eForm 4 at <strong>eForms.atf.gov</strong>. You provide your demographic info, photo, and fingerprints. The $200 tax payment step is eliminated as of January 1, 2026. You review, certify, and the form is submitted.</div>
+          <div class="ps-note">Fingerprints: Many larger NFA dealers have a Silencer Shop kiosk that scans your prints digitally. If not, use a local fingerprinting service and submit ink cards.</div>
+        </div>
+      </div>
+      <div class="ps">
+        <div class="ps-left"><div class="ps-num">4</div><div class="ps-line"></div></div>
+        <div class="ps-content">
+          <div class="ps-title">Wait for ATF Approval</div>
+          <div class="ps-body">ATF conducts your background check and reviews the application. As of early 2026, eForm 4 approvals are running <strong>days to a few weeks</strong> for most individual and trust submissions — dramatically faster than the 6–12 months of previous years. You'll get an email from ATF when approved.</div>
+          <div class="ps-note">Status check: Log into your ATF eForms account at eForms.atf.gov to monitor your application status. Your dealer can also check on your behalf.</div>
+        </div>
+      </div>
+      <div class="ps">
+        <div class="ps-left"><div class="ps-num">5</div></div>
+        <div class="ps-content">
+          <div class="ps-title">Pick Up & Keep Your Paperwork</div>
+          <div class="ps-body">Once approved, ATF emails the dealer your approved Form 4. You complete the final transfer paperwork and take your suppressor home. <strong>Keep your approved Form 4 accessible whenever you use the suppressor.</strong> When traveling across state lines, you do not need ATF Form 5320.20 for suppressors (only SBRs, SBSs, and machine guns require that form).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: CALIBER SELECTION -->
+  <div class="guide-section" id="caliber">
+    <div class="section-hdr">
+      <div class="section-num">05</div>
+      <div><div class="section-title">Caliber Selection Guide</div><div class="section-sub">Match your suppressor to how you actually shoot</div></div>
+    </div>
+    <div class="alert info"><strong>Key principle:</strong> A larger-caliber suppressor can run smaller calibers, but not the reverse. A .30 cal suppressor works on 5.56, .308, and .300 BLK. A dedicated 9mm pistol can cannot run on a rifle. <strong>When in doubt, go one caliber up for versatility.</strong></div>
+    <div class="cal-grid">
+      <div class="cal-card">
+        <div class="cal-name">.22 LR / Rimfire</div>
+        <div class="cal-guns">Pistols, rifles, bolt-action</div>
+        <div class="cal-rec">Best entry point. Rimfire suppressors are often the cheapest and easiest to shoot suppressed. Many are user-serviceable for cleaning. <strong>Cannot be used on centerfire calibers.</strong></div>
+        <span class="cal-tag">Best Entry Point</span>
+      </div>
+      <div class="cal-card">
+        <div class="cal-name">9mm / Pistol</div>
+        <div class="cal-guns">Handguns, PCCs, MP5-style</div>
+        <div class="cal-rec">Most popular pistol can. Works on 9mm, .45 ACP, .40 S&W (with adapter). Heavier than rimfire but extremely effective. Look for direct-thread or Nielsen device for semi-auto pistols.</div>
+        <span class="cal-tag">Most Popular Pistol</span>
+      </div>
+      <div class="cal-card">
+        <div class="cal-name">5.56 / .223</div>
+        <div class="cal-guns">AR-15, M4-style rifles</div>
+        <div class="cal-rec">Dedicated 5.56 cans are lighter and more compact. <strong>Note:</strong> 5.56 is supersonic — you'll still hear a supersonic crack. For truly quiet, use subsonic .300 BLK with a .30 cal can.</div>
+        <span class="cal-tag">AR-15 Standard</span>
+      </div>
+      <div class="cal-card">
+        <div class="cal-name">.30 Cal / .308</div>
+        <div class="cal-guns">AR-10, bolt rifles, .300 BLK</div>
+        <div class="cal-rec">Most versatile option. A .30 cal can works on 5.56, 6.5 Creedmoor, .308, and .300 BLK. <strong>Best single suppressor if you shoot multiple platforms.</strong> Heavier but worth the flexibility.</div>
+        <span class="cal-tag">Best Versatility</span>
+      </div>
+      <div class="cal-card">
+        <div class="cal-name">.300 BLK Subsonic</div>
+        <div class="cal-guns">AR-15 with .300 BLK upper</div>
+        <div class="cal-rec">The quietest commonly available suppressed combination. Subsonic .300 BLK through a .30 cal can on a short barrel is hearing-safe without ear protection. Popular for home defense and hunting.</div>
+        <span class="cal-tag">Quietest Setup</span>
+      </div>
+      <div class="cal-card">
+        <div class="cal-name">Multi-Caliber</div>
+        <div class="cal-guns">Multiple platforms</div>
+        <div class="cal-rec">Some suppressors (like the Dead Air Nomad) are rated for multiple calibers out of the box. Larger, heavier, and more expensive — but one can covers your entire safe. Good for collectors or mixed fleets.</div>
+        <span class="cal-tag">One Can Solution</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK LINKS -->
+  <div class="quick-links">
+    <div class="ql-title">HexCore Tools</div>
+    <div class="ql-grid">
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/firearm-law-hub"><div class="ql-label">Firearm Law Hub</div></a>
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/sbr-pistol-compliance-checker"><div class="ql-label">SBR Checker</div></a>
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/ccw-reciprocity-map"><div class="ql-label">CCW Map</div></a>
+      <a class="ql-card current" target="_top" href="https://hexcoremounts.com/pages/suppressor-buyers-guide"><div class="ql-label">Suppressor Guide</div></a>
+    </div>
+  </div>
+
+  <div class="disclaimer">This guide is for general informational purposes only and does not constitute legal advice. NFA laws and ATF processes change frequently. Always verify current requirements at atf.gov and with a licensed NFA dealer before purchasing. HexCore Mounts does not sell suppressors or NFA items.</div>
+</div>
+
+<footer>&copy; 2026 HexCore Mounts &nbsp;·&nbsp; Atlanta, Georgia &nbsp;·&nbsp; Data reviewed March 2026</footer>
+
+<script>
+const SUPP_BANNED = ['California','Hawaii','Illinois','Maryland','Massachusetts','New Jersey','New York','Rhode Island','District of Columbia'];
+const SUPP_RESTRICTED = ['Connecticut','Minnesota','Pennsylvania'];
+const STATES = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
+
+const SUPP_NOTES = {
+  'California':'Banned under Penal Code 33410. Felony possession. No civilian exceptions.',
+  'Hawaii':'Banned statewide. Civilian ownership prohibited.',
+  'Illinois':'Banned statewide. FOID card system does not provide an exception.',
+  'Maryland':'Banned statewide.',
+  'Massachusetts':'Banned statewide.',
+  'New Jersey':'Banned statewide. Felony possession.',
+  'New York':'Banned statewide.',
+  'Rhode Island':'Banned statewide.',
+  'District of Columbia':'All NFA items banned. Federal compliance does not override this.',
+  'Connecticut':'Legal with federal Form 4 + state registration. Hunting use prohibited.',
+  'Minnesota':'Legal with federal Form 4 + local law enforcement transfer permit. Hunting prohibited.',
+  'Pennsylvania':'Legal with federal Form 4. Hunting use prohibited under Game and Wildlife Code.',
+};
+
+// Build dropdown
+const dropdown = document.getElementById('supp-dropdown');
+STATES.forEach(s=>{
+  const item = document.createElement('div');
+  item.textContent = s;
+  item.style.cssText = 'padding:9px 14px;font-size:13px;color:#e8e9ec;cursor:pointer;border-bottom:1px solid #1e2024;font-family:Barlow,sans-serif;transition:background .1s';
+  item.addEventListener('mouseenter',function(){this.style.background='rgba(32,253,240,.08)';this.style.color='#20FDF0';});
+  item.addEventListener('mouseleave',function(){this.style.background='';this.style.color='#e8e9ec';});
+  item.addEventListener('click',function(e){
+    e.stopPropagation();
+    document.getElementById('supp-display').textContent = s;
+    document.getElementById('supp-display').style.color = '#e8e9ec';
+    closeSuppDrop();
+    showSuppResult(s);
+  });
+  dropdown.appendChild(item);
+});
+
+function toggleSuppDrop(){
+  const dd=document.getElementById('supp-dropdown'),ar=document.getElementById('supp-arrow');
+  if(dd.style.display==='none'||!dd.style.display){dd.style.display='block';ar.style.transform='rotate(180deg)';}
+  else{closeSuppDrop();}
+}
+function closeSuppDrop(){
+  document.getElementById('supp-dropdown').style.display='none';
+  document.getElementById('supp-arrow').style.transform='';
+}
+document.addEventListener('click',function(e){if(!e.target.closest('.state-checker'))closeSuppDrop();});
+
+function showSuppResult(state){
+  const r=document.getElementById('supp-result');
+  const status=document.getElementById('supp-status');
+  const detail=document.getElementById('supp-detail');
+  const banned=SUPP_BANNED.includes(state);
+  const restricted=SUPP_RESTRICTED.includes(state);
+  if(banned){
+    r.style.background='rgba(239,68,68,.08)';r.style.border='1px solid rgba(239,68,68,.2)';
+    status.style.color='#f87171';status.textContent='&#9940; Banned in '+state;
+    status.innerHTML='<span>&#9940;</span> Banned in '+state;
+    detail.textContent=(SUPP_NOTES[state]||'Suppressors are banned in '+state+'. Federal NFA compliance does not override this state ban.')+' You cannot legally own a suppressor while residing in this state.';
+  } else if(restricted){
+    r.style.background='rgba(234,179,8,.07)';r.style.border='1px solid rgba(234,179,8,.2)';
+    status.style.color='#facc15';
+    status.innerHTML='<span>&#9888;</span> Restricted in '+state;
+    detail.textContent=(SUPP_NOTES[state]||'Legal with restrictions.')+' Verify current requirements with a local NFA dealer.';
+  } else {
+    r.style.background='rgba(34,197,94,.07)';r.style.border='1px solid rgba(34,197,94,.2)';
+    status.style.color='#4ade80';
+    status.innerHTML='<span>&#10003;</span> Legal in '+state;
+    detail.textContent=state+' allows civilian suppressor ownership with federal NFA compliance (eForm 4, background check, ATF approval before possession). $0 tax stamp as of January 1, 2026. No additional state requirements beyond federal process.';
+  }
+  r.classList.add('visible');
+}
+</script>
+</body>
+</html>

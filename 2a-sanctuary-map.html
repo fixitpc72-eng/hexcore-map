@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2A Sanctuary Map — States & Counties | HexCore Mounts</title>
+<meta name="description" content="Interactive map of Second Amendment sanctuary states. See which states have passed 2A sanctuary laws refusing to enforce unconstitutional gun control. Updated 2026.">
+<link rel="canonical" href="https://hexcoremounts.com/pages/2a-sanctuary-map">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<style>
+:root{
+  --black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;
+  --text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;
+  --red:#ef4444;--orange:#f97316;
+  --gold:#f59e0b;--silver:#94a3b8;
+  --font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+
+header{width:100%;background:rgba(17,18,20,.96);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}
+.header-links{display:flex;gap:1.5rem}
+.header-links a{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}.header-links a:hover{color:var(--accent)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;flex-shrink:0}
+.header-updated{font-size:11px;color:var(--sub)}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:300px 1fr;height:calc(100vh - 58px);width:100%;min-height:500px}
+.sidebar{background:var(--dark);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-hdr{padding:.875rem 1.25rem .75rem;border-bottom:1px solid var(--border);flex-shrink:0}
+.sidebar-title{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);display:flex;align-items:center;gap:6px}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}
+.sidebar-body{flex:1;overflow-y:auto;padding:1rem 1.25rem;scrollbar-width:thin;scrollbar-color:var(--muted) transparent}
+
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:1rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 12px}
+.stat-num{font-family:var(--font-head);font-size:26px;font-weight:900;line-height:1}
+.stat-num.gold{color:var(--gold)}.stat-num.silver{color:var(--silver)}.stat-num.green{color:var(--green)}.stat-num.red{color:var(--red)}.stat-num.accent{color:var(--accent)}
+.stat-lbl{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+
+.sec-lbl{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.5rem}
+.leg-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:12px;color:var(--text);font-weight:500}
+.leg-swatch{width:13px;height:13px;border-radius:3px;flex-shrink:0}
+
+/* STATE DETAIL */
+.state-detail{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.875rem 1rem;margin-top:.75rem;display:none}
+.state-detail.visible{display:block;animation:fadeUp .2s ease-out}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.sd-name{font-family:var(--font-head);font-size:18px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;margin-bottom:.25rem}
+.sd-tier{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.sd-desc{font-size:12px;color:var(--sub);line-height:1.6}
+.sd-law{font-size:11px;color:var(--muted);margin-top:.375rem;font-style:italic}
+
+.disclaimer-card{background:rgba(234,179,8,.05);border:1px solid rgba(234,179,8,.15);border-radius:6px;padding:8px 10px;font-size:11px;color:var(--sub);line-height:1.5;margin-top:.75rem}
+.disclaimer-card strong{color:var(--yellow)}
+
+/* MAP */
+.map-area{background:var(--black);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#map-svg-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1rem}
+#usa-svg{width:100%;height:100%;max-height:calc(100vh - 80px)}
+.map-tooltip{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 14px;pointer-events:none;display:none;z-index:30;min-width:200px;max-width:300px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.tt-name{font-family:var(--font-head);font-weight:900;font-size:16px;color:var(--text);text-transform:uppercase;letter-spacing:.03em;margin-bottom:3px}
+.tt-tier{font-size:12px;font-weight:700;margin-bottom:4px}
+.tt-desc{font-size:11px;color:var(--sub);line-height:1.5}
+.tt-hint{font-size:10px;color:var(--muted);margin-top:5px;font-style:italic}
+
+.map-legend{position:absolute;bottom:1rem;left:1rem;background:rgba(22,24,28,.92);border:1px solid var(--border);border-radius:6px;padding:10px 14px;backdrop-filter:blur(4px);z-index:10}
+.legend-title{font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:6px}
+.leg-row{display:flex;align-items:center;gap:7px;margin-bottom:4px;font-size:11px;color:var(--sub)}
+.leg-row .leg-sq{width:12px;height:12px;border-radius:2px;flex-shrink:0}
+
+.map-instruction{position:absolute;bottom:1rem;right:1rem;background:rgba(22,24,28,.9);border:1px solid var(--border);border-radius:6px;padding:7px 12px;font-size:11px;color:var(--sub)}
+
+/* CONTENT */
+.content-section{width:100%;background:var(--black);border-top:1px solid var(--border);position:relative;z-index:1}
+.content-section::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(32,253,240,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(32,253,240,.012) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.section-inner{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:2.5rem 1.5rem}
+.section-title-lg{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin-bottom:1.25rem;display:flex;align-items:center;gap:10px}
+.section-title-lg::after{content:'';flex:1;height:1px;background:var(--border)}
+.tier-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1.5rem}
+.tier-card{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:1.125rem}
+.tier-name{font-family:var(--font-head);font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem}
+.tier-body{font-size:12px;color:var(--sub);line-height:1.6}
+.tier-body strong{color:var(--text)}
+.states-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:.625rem}
+.s-badge{display:inline-block;padding:3px 8px;border-radius:3px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+
+/* QUICK LINKS */
+.quick-links{background:rgba(9,16,24,.9);border:1px solid rgba(32,253,240,.12);border-radius:10px;padding:1rem;margin-bottom:1.5rem}
+.ql-title{font-family:var(--font-head);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text);margin-bottom:.75rem;display:flex;align-items:center;gap:8px}
+.ql-title::before{content:'⬡';color:var(--accent)}
+.ql-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ql-card{background:rgba(4,9,14,.8);border:1px solid rgba(32,253,240,.12);border-radius:8px;padding:.625rem .75rem;text-decoration:none;text-align:center;transition:all .15s}
+.ql-card:hover{border-color:rgba(32,253,240,.3);background:rgba(32,253,240,.04)}
+.ql-card.current{background:rgba(32,253,240,.04);border-color:rgba(32,253,240,.25)}
+.ql-label{font-family:var(--font-head);font-size:12px;font-weight:800;color:var(--accent);line-height:1.2}
+
+footer{border-top:1px solid var(--border);background:var(--dark);padding:1.25rem 2rem;text-align:center;font-family:var(--font-head);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);width:100%}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;height:auto}
+  .map-area{height:55vw;min-height:280px;max-height:400px;order:1}
+  .sidebar{order:2;height:auto;overflow:visible}.sidebar-body{overflow:visible}
+  header{padding:0 1rem}.header-links{display:none}
+  .tier-grid{grid-template-columns:1fr}
+  .ql-grid{grid-template-columns:1fr 1fr}
+  .map-legend,.map-instruction{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" target="_top" href="https://hexcoremounts.com">Hex<span>Core</span></a>
+  <nav class="header-links">
+    <a target="_top" href="https://hexcoremounts.com/pages/firearm-law-hub">Law Hub</a>
+    <a target="_top" href="https://hexcoremounts.com/pages/ccw-reciprocity-map">CCW Map</a>
+    <a target="_top" href="https://hexcoremounts.com/pages/2a-alert-feed">2A Alerts</a>
+  </nav>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="header-updated">March 2026</div>
+    <div class="header-badge">2A Sanctuary Map</div>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-hdr">
+      <div class="sidebar-title"><div class="pulse"></div>Second Amendment Sanctuary States</div>
+    </div>
+    <div class="sidebar-body">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-num gold">2</div><div class="stat-lbl">Gold Standard</div></div>
+        <div class="stat-card"><div class="stat-num silver">7</div><div class="stat-lbl">Silver Standard</div></div>
+        <div class="stat-card"><div class="stat-num green">~1,930</div><div class="stat-lbl">Sanctuary Counties</div></div>
+        <div class="stat-card"><div class="stat-num accent">40+</div><div class="stat-lbl">States w/ Activity</div></div>
+      </div>
+      <div style="margin-bottom:1rem">
+        <div class="sec-lbl">Map Legend</div>
+        <div class="leg-item"><div class="leg-swatch" style="background:#b45309;opacity:.85"></div>Gold Standard SAPA</div>
+        <div class="leg-item"><div class="leg-swatch" style="background:#374151;opacity:.85"></div>Silver Standard SAPA</div>
+        <div class="leg-item"><div class="leg-swatch" style="background:#14532d;opacity:.75"></div>Limited / Symbolic Law</div>
+        <div class="leg-item"><div class="leg-swatch" style="background:#1e3a5f;opacity:.75"></div>County-Level Activity Only</div>
+        <div class="leg-item"><div class="leg-swatch" style="background:#16181c;opacity:.9"></div>No 2A Sanctuary Activity</div>
+      </div>
+      <div id="state-detail-wrap">
+        <div class="disclaimer-card"><strong>&#9888; Note:</strong> 2A Sanctuary resolutions declare intent to not enforce unconstitutional gun laws. Legal enforceability varies by state. Federal law still applies — state and local officials cannot prevent federal agents from enforcing federal law. Click any state to see details.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="map-area" id="map-area">
+    <div id="map-svg-wrap">
+      <svg id="usa-svg" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg">
+        <rect width="960" height="600" fill="var(--black)"/>
+        <g id="states-g"></g>
+        <g id="labels-g"></g>
+      </svg>
+    </div>
+    <div class="map-tooltip" id="map-tooltip"></div>
+    <div class="map-legend">
+      <div class="legend-title">2A Sanctuary Status</div>
+      <div class="leg-row"><div class="leg-sq" style="background:#b45309;opacity:.85"></div>Gold SAPA</div>
+      <div class="leg-row"><div class="leg-sq" style="background:#475569;opacity:.85"></div>Silver SAPA</div>
+      <div class="leg-row"><div class="leg-sq" style="background:#14532d;opacity:.75"></div>Limited Law</div>
+      <div class="leg-row"><div class="leg-sq" style="background:#1e3a5f;opacity:.75"></div>County Activity</div>
+      <div class="leg-row"><div class="leg-sq" style="background:#16181c;opacity:.9"></div>None</div>
+    </div>
+    <div class="map-instruction">&#9678; Click any state for details</div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content-section">
+  <div class="section-inner">
+    <div class="section-title-lg">What is a 2A Sanctuary?</div>
+    <p style="font-size:14px;color:var(--sub);line-height:1.7;margin-bottom:1.5rem">A Second Amendment Sanctuary is a state, county, or locality that has passed a law or resolution declaring it will not enforce gun laws perceived to violate the Second Amendment — including red flag laws, assault weapon bans, universal background check mandates, and magazine restrictions. As of 2026, nearly 1,930 counties across 40+ states have some form of 2A sanctuary declaration, making it one of the largest grassroots political movements in American history.</p>
+
+    <div class="section-title-lg">GOA Tier Standards</div>
+    <div class="tier-grid">
+      <div class="tier-card" style="border-color:rgba(180,83,9,.4)">
+        <div class="tier-name" style="color:var(--gold)">&#9733; Gold Standard</div>
+        <div class="tier-body">The strongest form. Includes <strong>funding prohibitions</strong> for unconstitutional gun enforcement and <strong>criminal or civil penalties</strong> for government agents who violate citizens' rights. Carries real legal weight.
+          <div class="states-list">
+            <span class="s-badge" style="background:rgba(180,83,9,.15);color:#fbbf24;border:1px solid rgba(180,83,9,.3)">Idaho</span>
+            <span class="s-badge" style="background:rgba(180,83,9,.15);color:#fbbf24;border:1px solid rgba(180,83,9,.3)">Missouri</span>
+          </div>
+        </div>
+      </div>
+      <div class="tier-card" style="border-color:rgba(71,85,105,.4)">
+        <div class="tier-name" style="color:var(--silver)">&#9651; Silver Standard</div>
+        <div class="tier-body">Strong commitment on record but lacks funding prohibitions or enforcement penalties. Demonstrates political will but offers less structural protection than Gold.
+          <div class="states-list">
+            <span class="s-badge" style="background:rgba(71,85,105,.15);color:#94a3b8;border:1px solid rgba(71,85,105,.3)">Arizona</span>
+            <span class="s-badge" style="background:rgba(71,85,105,.15);color:#94a3b8;border:1px solid rgba(71,85,105,.3)">Arkansas</span>
+            <span class="s-badge" style="background:rgba(71,85,105,.15);color:#94a3b8;border:1px solid rgba(71,85,105,.3)">Montana</span>
+            <span class="s-badge" style="background:rgba(71,85,105,.15);color:#94a3b8;border:1px solid rgba(71,85,105,.3)">Oklahoma</span>
+            <span class="s-badge" style="background:rgba(71,85,105,.15);color:#94a3b8;border:1px solid rgba(71,85,105,.3)">SC</span>
+            <span class="s-badge" style="background:rgba(71,85,105,.15);color:#94a3b8;border:1px solid rgba(71,85,105,.3)">Texas</span>
+            <span class="s-badge" style="background:rgba(71,85,105,.15);color:#94a3b8;border:1px solid rgba(71,85,105,.3)">WV</span>
+          </div>
+        </div>
+      </div>
+      <div class="tier-card">
+        <div class="tier-name" style="color:var(--green)">&#9675; Limited / Symbolic</div>
+        <div class="tier-body">Passed legislation or gubernatorial proclamations that express support for the Second Amendment but are narrower in scope — often focused on in-state manufactured firearms or are proclamations without force of law.
+          <div class="states-list">
+            <span class="s-badge" style="background:rgba(34,197,94,.08);color:#4ade80;border:1px solid rgba(34,197,94,.18)">Alabama</span>
+            <span class="s-badge" style="background:rgba(34,197,94,.08);color:#4ade80;border:1px solid rgba(34,197,94,.18)">Alaska</span>
+            <span class="s-badge" style="background:rgba(34,197,94,.08);color:#4ade80;border:1px solid rgba(34,197,94,.18)">Kansas</span>
+            <span class="s-badge" style="background:rgba(34,197,94,.08);color:#4ade80;border:1px solid rgba(34,197,94,.18)">Nebraska</span>
+            <span class="s-badge" style="background:rgba(34,197,94,.08);color:#4ade80;border:1px solid rgba(34,197,94,.18)">North Dakota</span>
+            <span class="s-badge" style="background:rgba(34,197,94,.08);color:#4ade80;border:1px solid rgba(34,197,94,.18)">Tennessee</span>
+            <span class="s-badge" style="background:rgba(34,197,94,.08);color:#4ade80;border:1px solid rgba(34,197,94,.18)">Utah</span>
+            <span class="s-badge" style="background:rgba(34,197,94,.08);color:#4ade80;border:1px solid rgba(34,197,94,.18)">Wyoming</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:1.25rem;margin-bottom:1.5rem">
+      <div style="font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.75rem">Important Legal Context</div>
+      <p style="font-size:13px;color:var(--sub);line-height:1.7;margin-bottom:.625rem">Under the <strong style="color:var(--text)">Tenth Amendment</strong>, states and localities can legally refuse to use their own resources to enforce federal laws — a doctrine called "anti-commandeering." This is the constitutional basis for 2A sanctuaries, the same legal principle used by immigration sanctuary cities. Federal agents can still enforce federal gun laws within sanctuary jurisdictions — state officials simply won't assist.</p>
+      <p style="font-size:13px;color:var(--sub);line-height:1.7">This means <strong style="color:var(--text)">2A sanctuaries do not exempt residents from federal law.</strong> If the ATF wants to enforce a federal regulation in a Gold Standard SAPA state, they can — local law enforcement just won't help. The practical effect is reduced enforcement of state-level gun restrictions perceived as unconstitutional.</p>
+    </div>
+
+    <div class="quick-links">
+      <div class="ql-title">HexCore Tools</div>
+      <div class="ql-grid">
+        <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/firearm-law-hub"><div class="ql-label">Firearm Law Hub</div></a>
+        <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/ccw-reciprocity-map"><div class="ql-label">CCW Map</div></a>
+        <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/2a-alert-feed"><div class="ql-label">2A Alerts</div></a>
+        <a class="ql-card current" target="_top" href="https://hexcoremounts.com/pages/2a-sanctuary-map"><div class="ql-label">Sanctuary Map</div></a>
+      </div>
+    </div>
+
+    <div style="font-size:11px;color:var(--muted);line-height:1.7;text-align:center">2A Sanctuary status is based on GOA tier standards and publicly available legislative records. County-level data represents approximate activity as of 2021–2026. Laws and resolutions change — verify with official state sources. This map is for informational purposes only and does not constitute legal advice. Data reviewed March 2026. &copy; HexCore Mounts</div>
+  </div>
+</div>
+
+<footer>&copy; 2026 HexCore Mounts &nbsp;·&nbsp; Atlanta, Georgia &nbsp;·&nbsp; Data reviewed March 2026</footer>
+
+<script>
+// State data: tier = 'gold'|'silver'|'limited'|'county'|'none'
+const SANCTUARY = {
+  'Alabama':{tier:'limited',law:'SB 2 (2022) — Second Amendment Preservation Act',desc:'Governor Kay Ivey signed the Alabama Second Amendment Preservation Act in April 2022. Protects against enforcement of unconstitutional federal gun laws.',counties:'Strong county-level activity statewide.'},
+  'Alaska':{tier:'limited',law:'HB 186 (2010), HB 69 (2013) — Firearms Freedom Acts',desc:'Two firearms freedom acts declare certain firearms manufactured and sold within Alaska exempt from federal regulation.',counties:'Multiple boroughs have passed supporting resolutions.'},
+  'Arizona':{tier:'silver',law:'HB 2307 (2010) + Senate Bill expansion',desc:'Silver Standard SAPA. Prohibits state and local officials from enforcing federal gun laws that violate the Arizona Constitution. Among the first states to pass meaningful 2A sanctuary legislation.',counties:'Majority of counties have passed resolutions. Note: Tucson passed a resolution opposing the state law in 2021.'},
+  'Arkansas':{tier:'silver',law:'HB 1957 (2021) — Arkansas Sovereignty Act',desc:'Silver Standard SAPA signed by Governor Hutchinson after the legislature overrode his veto of a stronger version. Limits state assistance with enforcement of certain federal gun regulations.',counties:'Widespread county-level activity.'},
+  'California':{tier:'none',law:'No 2A sanctuary legislation',desc:'California is one of the most restrictive states for gun owners. No state or significant local 2A sanctuary activity. The state has actively passed laws restricting firearms, magazines, and accessories.',counties:'None.'},
+  'Colorado':{tier:'county',law:'No state-level SAPA',desc:'No state 2A sanctuary law. However, significant county-level activity — dozens of Colorado counties have passed sanctuary resolutions, particularly in rural areas, in response to state-level gun control measures.',counties:'Widespread in rural counties. Custer County, Weld County, and others passed strong resolutions.'},
+  'Connecticut':{tier:'none',law:'No 2A sanctuary legislation',desc:'No 2A sanctuary activity at state or significant local level. Connecticut has some of the strictest gun laws in the nation.',counties:'None significant.'},
+  'Delaware':{tier:'none',law:'No 2A sanctuary legislation',desc:'No 2A sanctuary legislation. Delaware has been moving toward stricter gun laws, including a 2022 assault weapons ban.',counties:'None.'},
+  'District of Columbia':{tier:'none',law:'No 2A sanctuary legislation',desc:'DC bans all NFA items and has some of the most restrictive gun laws in the country. No 2A sanctuary activity.',counties:'N/A'},
+  'Florida':{tier:'county',law:'No state-level SAPA',desc:'Florida does not have a state-level 2A sanctuary law but has strong constitutional carry (enacted 2023). Multiple counties have passed sanctuary resolutions.',counties:'Several counties passed resolutions. Strong pro-2A legislative environment.'},
+  'Georgia':{tier:'county',law:'No state-level SAPA',desc:'No state SAPA but significant county-level activity. Georgia has constitutional carry (2022) and a generally pro-2A legislature.',counties:'Multiple counties passed resolutions.'},
+  'Hawaii':{tier:'none',law:'No 2A sanctuary legislation',desc:'Hawaii has some of the strictest gun laws in the country and bans all NFA items. No 2A sanctuary activity.',counties:'None.'},
+  'Idaho':{tier:'gold',law:'SB 1332 (2014) + expanded protections',desc:'Gold Standard SAPA. Idaho passed strong protections prohibiting state and local officers from enforcing federal firearms laws that violate the Idaho Constitution. Includes enforcement protections for officers.',counties:'Strong statewide support.'},
+  'Illinois':{tier:'county',law:'No state-level SAPA',desc:'Illinois state government has some of the strictest gun laws. However, the 2A sanctuary movement originated significantly in Illinois at the county level — over 90% of Illinois counties have passed sanctuary resolutions in protest of state gun laws.',counties:'Over 80 counties — including Effingham County which popularized the term "2A Sanctuary" in 2018.'},
+  'Indiana':{tier:'county',law:'No state-level SAPA',desc:'Indiana has constitutional carry (2022) and a pro-2A legislature. Several counties have passed sanctuary resolutions as a show of support.',counties:'Multiple counties have passed resolutions.'},
+  'Iowa':{tier:'county',law:'No state-level SAPA',desc:'No state SAPA but county activity present.',counties:'Multiple counties including Muscatine have passed resolutions.'},
+  'Kansas':{tier:'limited',law:'Second Amendment Protection Act (2013)',desc:'Kansas passed the Second Amendment Protection Act in 2013, prohibiting state enforcement of federal gun laws for firearms manufactured and used in Kansas. Tested in federal court — federal law still applies but state won\'t assist.',counties:'Statewide support.'},
+  'Kentucky':{tier:'county',law:'No state-level SAPA',desc:'No state SAPA. Kentucky has constitutional carry and a strongly pro-2A legislature. Significant county activity following Virginia\'s sanctuary movement in 2019.',counties:'Majority of counties passed resolutions in 2019-2020.'},
+  'Louisiana':{tier:'county',law:'No state-level SAPA',desc:'No state SAPA. Louisiana has constitutional carry (2024) and county-level activity.',counties:'Multiple parishes have passed resolutions.'},
+  'Maine':{tier:'none',law:'No 2A sanctuary legislation',desc:'No significant 2A sanctuary activity.',counties:'None significant.'},
+  'Maryland':{tier:'county',law:'No state-level SAPA',desc:'Ironically, Carroll County, Maryland is considered the first jurisdiction to use the term "Second Amendment Sanctuary" (2013). However, the state government is strongly anti-2A and there is no state law.',counties:'Carroll County and several others. State AG declared county resolutions null and void.'},
+  'Massachusetts':{tier:'none',law:'No 2A sanctuary legislation',desc:'Massachusetts has some of the strictest gun laws in the country. No 2A sanctuary activity.',counties:'None.'},
+  'Michigan':{tier:'county',law:'No state-level SAPA',desc:'No state SAPA but very significant county-level activity. Michigan saw a surge of county sanctuary resolutions in 2020-2021.',counties:'Majority of counties passed resolutions.'},
+  'Minnesota':{tier:'county',law:'No state-level SAPA',desc:'No state SAPA. Some county activity. Minnesota has been moving toward stricter gun laws.',counties:'Several counties including Itasca County and Traverse County.'},
+  'Mississippi':{tier:'county',law:'No state-level SAPA',desc:'No state SAPA but constitutional carry state with strong county-level support.',counties:'Multiple counties.'},
+  'Missouri':{tier:'gold',law:'HB 85 (2021) — Second Amendment Preservation Act',desc:'Gold Standard SAPA. Missouri\'s SAPA is one of the strongest in the nation — it prohibits state and local officials from enforcing federal gun laws and allows citizens to sue agencies that violate it. Tested in federal court.',counties:'Statewide strong support.'},
+  'Montana':{tier:'silver',law:'HB 0258 (2021) — Montana Firearms Sovereignty Act',desc:'Silver Standard. Bans enforcement of federal bans on firearms, magazines, or ammunition. Applies retroactively to January 1, 2021.',counties:'Statewide support.'},
+  'Nebraska':{tier:'limited',law:'Gubernatorial Proclamation (2021)',desc:'Governor Ricketts signed a proclamation designating Nebraska a 2A Sanctuary State in 2021. Symbolic — not a law with enforcement mechanisms. GOA commended the proclamation but urged the legislature to follow with a formal SAPA.',counties:'Some county activity.'},
+  'Nevada':{tier:'county',law:'No state-level SAPA',desc:'No state SAPA. Some county activity in rural Nevada.',counties:'Some rural counties.'},
+  'New Hampshire':{tier:'none',law:'No 2A sanctuary legislation',desc:'No significant 2A sanctuary legislation. NH has constitutional carry but no formal SAPA.',counties:'None significant.'},
+  'New Jersey':{tier:'none',law:'No 2A sanctuary legislation',desc:'New Jersey has some of the strictest gun laws in the country. No 2A sanctuary activity.',counties:'None.'},
+  'New Mexico':{tier:'county',law:'No state-level SAPA',desc:'No state SAPA. New Mexico saw a major surge in county sanctuary resolutions in 2020 in response to proposed state gun laws. Most rural counties passed resolutions.',counties:'Majority of counties passed resolutions in 2020.'},
+  'New York':{tier:'none',law:'No 2A sanctuary legislation',desc:'New York has extremely strict gun laws. No 2A sanctuary activity at meaningful level.',counties:'None.'},
+  'North Carolina':{tier:'county',law:'No state-level SAPA',desc:'No state SAPA but significant county activity. NC has constitutional carry (2023) and a generally pro-2A legislature.',counties:'Multiple counties.'},
+  'North Dakota':{tier:'limited',law:'Gubernatorial Proclamation + HB 1340 (2021)',desc:'Governor Burgum signed a proclamation designating ND a 2A Sanctuary State and signed several bills protecting gun rights. The legislation bans enforcement of certain federal gun control orders.',counties:'Statewide support.'},
+  'Ohio':{tier:'county',law:'No state-level SAPA',desc:'No state SAPA. Ohio has constitutional carry (2022) and county-level sanctuary activity.',counties:'Multiple counties.'},
+  'Oklahoma':{tier:'silver',law:'Second Amendment Sanctuary Act (2021)',desc:'Silver Standard SAPA signed by Governor Stitt. Prohibits state and local officials from enforcing any federal executive order, rule, or regulation perceived to infringe on Second Amendment rights.',counties:'Statewide strong support.'},
+  'Oregon':{tier:'county',law:'Second Amendment Preservation Ordinance (county level)',desc:'No state SAPA — Oregon\'s state government is strongly anti-2A. However, significant county-level sanctuary activity, including Columbia County which passed a strong ordinance with fines for enforcement.',counties:'Multiple counties, particularly rural eastern Oregon.'},
+  'Pennsylvania':{tier:'county',law:'No state-level SAPA',desc:'No state SAPA but significant county activity. PA counties have passed sanctuary resolutions, some with enforcement provisions.',counties:'Many counties including Buffalo Township with fine provisions.'},
+  'Rhode Island':{tier:'none',law:'No 2A sanctuary legislation',desc:'No 2A sanctuary activity. Rhode Island passed an AWB in 2025.',counties:'None.'},
+  'South Carolina':{tier:'silver',law:'Second Amendment Sanctuary Act (2021)',desc:'Silver Standard SAPA. Prohibits state and local officials from enforcing federal gun laws that are "more restrictive" than South Carolina\'s own laws.',counties:'Statewide support.'},
+  'South Dakota':{tier:'county',law:'No state-level SAPA',desc:'No state SAPA but strong pro-2A environment. Constitutional carry, no restrictions.',counties:'Some county activity.'},
+  'Tennessee':{tier:'limited',law:'Tennessee Second Amendment Sanctuary Act (2021)',desc:'Governor Lee signed the act prohibiting Tennessee from enforcing any federal law, treaty, executive order, or regulation that violates the Second Amendment. GOA rates as limited due to weak enforcement mechanisms.',counties:'Statewide support.'},
+  'Texas':{tier:'silver',law:'HB 2622 (2021) — Second Amendment Sanctuary Act',desc:'Silver Standard SAPA. Prohibits Texas agencies from enforcing federal gun control laws passed after January 19, 2021 that are more restrictive than Texas law. Among the largest populations protected by a SAPA.',counties:'Strong statewide support.'},
+  'Utah':{tier:'limited',law:'State-Made Firearms Protection Act (2010)',desc:'Utah passed the State-Made Firearms Protection Act in 2010. More focused on protecting in-state firearms manufacturers than broad sanctuary protections. GOA classifies as limited.',counties:'Some county activity.'},
+  'Vermont':{tier:'none',law:'No 2A sanctuary legislation',desc:'Vermont is constitutional carry but has been moving toward stricter gun laws. No 2A sanctuary legislation.',counties:'None.'},
+  'Virginia':{tier:'county',law:'No state-level SAPA',desc:'Virginia\'s 2019 surge of county sanctuary resolutions is considered what popularized the 2A sanctuary movement nationally. Within months, 95%+ of Virginia counties passed resolutions. State government passed gun control laws anyway.',counties:'Over 90% of counties passed resolutions in 2019-2020.'},
+  'Washington':{tier:'county',law:'No state-level SAPA',desc:'No state SAPA — Washington state has strict gun laws. However, significant rural county sanctuary activity in response to state laws.',counties:'Multiple rural counties passed resolutions.'},
+  'West Virginia':{tier:'silver',law:'WV SAPA (2021)',desc:'Silver Standard SAPA. West Virginia passed a Second Amendment Preservation Act protecting residents from enforcement of certain federal gun regulations.',counties:'Statewide strong support.'},
+  'Wisconsin':{tier:'county',law:'No state-level SAPA',desc:'No state SAPA. Some county activity including Kenosha County which also lifted a ban on firearms in county buildings.',counties:'Several counties including Kenosha and Lincoln counties.'},
+  'Wyoming':{tier:'limited',law:'Firearms Freedom Act',desc:'Wyoming passed a Firearms Freedom Act declaring in-state firearms exempt from federal law. GOA rates as limited. Wyoming has constitutional carry and is generally pro-2A.',counties:'Strong statewide support.'},
+};
+
+const FIPS = {'01':'Alabama','02':'Alaska','04':'Arizona','05':'Arkansas','06':'California','08':'Colorado','09':'Connecticut','10':'Delaware','11':'District of Columbia','12':'Florida','13':'Georgia','15':'Hawaii','16':'Idaho','17':'Illinois','18':'Indiana','19':'Iowa','20':'Kansas','21':'Kentucky','22':'Louisiana','23':'Maine','24':'Maryland','25':'Massachusetts','26':'Michigan','27':'Minnesota','28':'Mississippi','29':'Missouri','30':'Montana','31':'Nebraska','32':'Nevada','33':'New Hampshire','34':'New Jersey','35':'New Mexico','36':'New York','37':'North Carolina','38':'North Dakota','39':'Ohio','40':'Oklahoma','41':'Oregon','42':'Pennsylvania','44':'Rhode Island','45':'South Carolina','46':'South Dakota','47':'Tennessee','48':'Texas','49':'Utah','50':'Vermont','51':'Virginia','53':'Washington','54':'West Virginia','55':'Wisconsin','56':'Wyoming'};
+
+const COLORS = {gold:'#92400e',silver:'#374151',limited:'#14532d',county:'#1e3a5f',none:'#111214'};
+const TIER_LABELS = {gold:'Gold Standard SAPA',silver:'Silver Standard SAPA',limited:'Limited / Symbolic',county:'County Activity Only',none:'No 2A Sanctuary Activity'};
+const TIER_COLORS = {gold:'#fbbf24',silver:'#94a3b8',limited:'#4ade80',county:'#60a5fa',none:'#3a3d47'};
+
+let stateEls = {};
+
+function drawMap(){
+  fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(r=>r.json()).then(us=>{
+    const proj = d3.geoAlbersUsa().scale(1280).translate([480,300]);
+    const path = d3.geoPath().projection(proj);
+    const feats = topojson.feature(us, us.objects.states);
+
+    d3.select('#states-g').selectAll('path').data(feats.features).enter().append('path')
+      .attr('d', path)
+      .attr('fill', d=>{
+        const name = FIPS[String(d.id).padStart(2,'0')];
+        const data = SANCTUARY[name];
+        return data ? COLORS[data.tier] : COLORS.none;
+      })
+      .attr('fill-opacity', d=>{
+        const name = FIPS[String(d.id).padStart(2,'0')];
+        const data = SANCTUARY[name];
+        return (data && data.tier !== 'none') ? .75 : .5;
+      })
+      .attr('stroke','#2a2d35')
+      .attr('stroke-width','0.8')
+      .attr('cursor','pointer')
+      .each(function(d){ const n=FIPS[String(d.id).padStart(2,'0')]; if(n) stateEls[n]=this; })
+      .on('mouseenter', function(e,d){
+        const name = FIPS[String(d.id).padStart(2,'0')]; if(!name) return;
+        d3.select(this).attr('stroke','#20FDF0').attr('stroke-width','2').raise();
+        d3.select('#labels-g').raise();
+        showTooltip(e, name);
+      })
+      .on('mousemove', moveTooltip)
+      .on('mouseleave', function(e,d){
+        const name = FIPS[String(d.id).padStart(2,'0')];
+        d3.select(this).attr('stroke','#2a2d35').attr('stroke-width','0.8');
+        hideTooltip();
+      })
+      .on('click', (e,d)=>{
+        const name = FIPS[String(d.id).padStart(2,'0')]; if(!name) return;
+        showDetail(name);
+      });
+
+    // State labels
+    feats.features.forEach(f=>{
+      const name = FIPS[String(f.id).padStart(2,'0')];
+      if(!name) return;
+      const c = path.centroid(f);
+      if(!c || isNaN(c[0])) return;
+      const abbr = {Alabama:'AL',Alaska:'AK',Arizona:'AZ',Arkansas:'AR',California:'CA',Colorado:'CO',Connecticut:'CT',Delaware:'DE','District of Columbia':'DC',Florida:'FL',Georgia:'GA',Hawaii:'HI',Idaho:'ID',Illinois:'IL',Indiana:'IN',Iowa:'IA',Kansas:'KS',Kentucky:'KY',Louisiana:'LA',Maine:'ME',Maryland:'MD',Massachusetts:'MA',Michigan:'MI',Minnesota:'MN',Mississippi:'MS',Missouri:'MO',Montana:'MT',Nebraska:'NE',Nevada:'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND',Ohio:'OH',Oklahoma:'OK',Oregon:'OR',Pennsylvania:'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD',Tennessee:'TN',Texas:'TX',Utah:'UT',Vermont:'VT',Virginia:'VA',Washington:'WA','West Virginia':'WV',Wisconsin:'WI',Wyoming:'WY'}[name];
+      if(!abbr) return;
+      d3.select('#labels-g').append('text')
+        .attr('x',c[0]).attr('y',c[1])
+        .attr('text-anchor','middle').attr('dominant-baseline','central')
+        .attr('fill','rgba(255,255,255,.35)').attr('font-family','Barlow Condensed,sans-serif')
+        .attr('font-size','10').attr('font-weight','700').attr('pointer-events','none')
+        .text(abbr);
+    });
+  });
+}
+
+function showTooltip(e, name){
+  const data = SANCTUARY[name];
+  if(!data) return;
+  const tt = document.getElementById('map-tooltip');
+  tt.innerHTML = `<div class="tt-name">${name}</div>
+    <div class="tt-tier" style="color:${TIER_COLORS[data.tier]}">${TIER_LABELS[data.tier]}</div>
+    <div class="tt-desc">${data.desc.substring(0,120)}...</div>
+    <div class="tt-hint">Click for full details</div>`;
+  tt.style.display='block';
+  moveTooltip(e);
+}
+function moveTooltip(e){
+  const tt=document.getElementById('map-tooltip');
+  const r=document.getElementById('map-area').getBoundingClientRect();
+  let x=e.clientX-r.left+15, y=e.clientY-r.top-10;
+  if(x+260>r.width) x=e.clientX-r.left-260;
+  if(y+140>r.height) y=e.clientY-r.top-140;
+  tt.style.left=Math.max(4,x)+'px'; tt.style.top=Math.max(4,y)+'px';
+}
+function hideTooltip(){ document.getElementById('map-tooltip').style.display='none'; }
+
+function showDetail(name){
+  const data = SANCTUARY[name];
+  if(!data) return;
+  const wrap = document.getElementById('state-detail-wrap');
+  wrap.innerHTML = `<div class="state-detail visible">
+    <div class="sd-name">${name}</div>
+    <div class="sd-tier" style="color:${TIER_COLORS[data.tier]}">${TIER_LABELS[data.tier]}</div>
+    <div class="sd-desc">${data.desc}</div>
+    ${data.counties ? `<div class="sd-law"><strong>County activity:</strong> ${data.counties}</div>` : ''}
+    ${data.law ? `<div class="sd-law"><strong>Law/Resolution:</strong> ${data.law}</div>` : ''}
+  </div>
+  <div class="disclaimer-card" style="margin-top:.75rem"><strong>&#9888; Note:</strong> 2A Sanctuaries declare intent not to enforce unconstitutional gun laws. Federal law still applies. Verify with official state sources.</div>`;
+
+  // Highlight on map
+  Object.entries(stateEls).forEach(([n,el])=>{
+    d3.select(el).attr('stroke', n===name ? '#ffffff' : '#2a2d35').attr('stroke-width', n===name ? '2' : '0.8');
+  });
+}
+
+drawMap();
+</script>
+</body>
+</html>

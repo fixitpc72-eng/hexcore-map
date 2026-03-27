@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home Defense Setup Planner | HexCore Mounts</title>
+<meta name="description" content="Build your home defense setup step by step. Primary firearm selection, room placement, storage strategy, lighting, and state castle doctrine — all in one guide.">
+<link rel="canonical" href="https://hexcoremounts.com/pages/home-defense-planner">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;
+  --text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;
+  --red:#ef4444;--orange:#f97316;
+  --font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(32,253,240,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(32,253,240,.015) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0}
+
+header{width:100%;background:rgba(17,18,20,.96);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}
+.header-links{display:flex;gap:1.5rem}
+.header-links a{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}.header-links a:hover{color:var(--accent)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px}
+
+.main{width:100%;max-width:900px;padding:2.5rem 1.5rem 4rem;position:relative;z-index:1}
+
+/* HERO */
+.hero{text-align:center;margin-bottom:2.5rem}
+.hero-eyebrow{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;gap:10px}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:28px;height:1px;background:var(--accent);opacity:.4}
+.hero-title{font-family:var(--font-head);font-weight:900;font-size:clamp(32px,6vw,52px);text-transform:uppercase;letter-spacing:.02em;line-height:1;color:#fff;margin-bottom:.75rem}
+.hero-title span{color:var(--accent)}
+.hero-sub{font-size:14px;color:var(--sub);line-height:1.7;max-width:540px;margin:0 auto}
+
+/* PLANNER PROGRESS */
+.progress-bar{display:flex;gap:0;margin-bottom:2rem;background:var(--dark);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.progress-step{flex:1;padding:10px 8px;text-align:center;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .2s;border-right:1px solid var(--border);position:relative}
+.progress-step:last-child{border-right:none}
+.progress-step.active{background:rgba(32,253,240,.08);color:var(--accent)}
+.progress-step.done{color:var(--green)}
+.progress-step.done::after{content:'✓';position:absolute;top:6px;right:6px;font-size:9px;color:var(--green)}
+
+/* PLANNER SECTIONS */
+.planner-section{display:none}
+.planner-section.active{display:block;animation:fadeUp .25s ease-out}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.plan-card{background:var(--dark);border:1px solid var(--border);border-radius:10px;overflow:visible;margin-bottom:1.5rem}
+.plan-card-header{padding:1.125rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.plan-card-icon{font-size:20px}
+.plan-card-title{font-family:var(--font-head);font-size:18px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff}
+.plan-card-sub{font-size:12px;color:var(--sub);margin-top:1px}
+.plan-card-body{padding:1.25rem 1.5rem}
+
+/* OPTION BUTTONS */
+.opt-grid{display:grid;gap:8px;margin-bottom:1rem}
+.opt-grid.cols-2{grid-template-columns:1fr 1fr}
+.opt-grid.cols-3{grid-template-columns:1fr 1fr 1fr}
+.opt-btn{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:10px 14px;font-family:var(--font-body);font-size:13px;font-weight:500;color:var(--sub);cursor:pointer;transition:all .15s;text-align:left;line-height:1.4}
+.opt-btn:hover{border-color:var(--muted);color:var(--text);background:rgba(32,253,240,.03)}
+.opt-btn.selected{background:rgba(32,253,240,.08);border-color:rgba(32,253,240,.4);color:var(--accent)}
+.opt-btn .opt-title{font-family:var(--font-head);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;display:block;margin-bottom:2px}
+.opt-btn .opt-sub{font-size:11px;color:var(--muted);line-height:1.4}
+.opt-btn.selected .opt-sub{color:rgba(32,253,240,.6)}
+
+/* RESULTS */
+.result-section{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.125rem;margin-bottom:1rem}
+.rs-title{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.75rem;padding-bottom:.375rem;border-bottom:1px solid var(--border)}
+.rec-item{display:flex;align-items:flex-start;gap:10px;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--sub);line-height:1.5}
+.rec-item:last-child{border-bottom:none;padding-bottom:0}
+.rec-icon{font-size:16px;flex-shrink:0;width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:rgba(32,253,240,.06);border:1px solid rgba(32,253,240,.12);border-radius:5px;margin-top:1px}
+.rec-item strong{color:var(--text);font-weight:600}
+
+/* ROOM GRID */
+.room-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.room-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1rem;transition:border-color .2s}
+.room-card.highlighted{border-color:rgba(32,253,240,.35);background:rgba(32,253,240,.03)}
+.rc-room{font-family:var(--font-head);font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:var(--accent);margin-bottom:.375rem}
+.rc-priority{display:inline-block;padding:1px 6px;border-radius:3px;font-family:var(--font-head);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+.pri-critical{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.pri-high{background:rgba(234,179,8,.1);color:#facc15;border:1px solid rgba(234,179,8,.2)}
+.pri-medium{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
+.rc-rec{font-size:12px;color:var(--sub);line-height:1.5}
+.rc-rec strong{color:var(--text)}
+
+/* PLAN SUMMARY */
+.plan-summary{background:var(--dark);border:2px solid rgba(32,253,240,.25);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem}
+.ps-header{font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:1.25rem;display:flex;align-items:center;gap:8px}
+.ps-header::before{content:'⬡';font-size:14px}
+.ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+.ps-item{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.75rem .875rem}
+.ps-item-label{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;font-family:var(--font-head);font-weight:700;margin-bottom:3px}
+.ps-item-val{font-size:14px;color:var(--text);font-weight:600}
+
+/* NAV BUTTONS */
+.nav-btns{display:flex;gap:10px;margin-top:1.5rem}
+.nav-btn{flex:1;padding:12px;border-radius:6px;font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .15s}
+.nav-btn.primary{background:var(--accent);border:none;color:var(--black)}
+.nav-btn.primary:hover{opacity:.85}
+.nav-btn.secondary{background:none;border:1px solid var(--border);color:var(--sub)}
+.nav-btn.secondary:hover{border-color:var(--muted);color:var(--text)}
+
+/* ALERTS */
+.alert{padding:12px 14px;border-radius:7px;font-size:13px;line-height:1.6;margin-bottom:1rem}
+.alert.info{background:rgba(32,253,240,.05);border:1px solid rgba(32,253,240,.15);color:var(--sub)}.alert.info strong{color:var(--accent)}
+.alert.warn{background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.2);color:var(--sub)}.alert.warn strong{color:var(--yellow)}
+.alert.success{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);color:var(--sub)}.alert.success strong{color:var(--green)}
+
+/* HEXCORE PRODUCT TIE-IN */
+.product-rec{background:rgba(32,253,240,.04);border:1px solid rgba(32,253,240,.2);border-radius:8px;padding:1rem 1.125rem;margin-top:1rem}
+.pr-label{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem}
+.pr-body{font-size:13px;color:var(--sub);line-height:1.6}
+.pr-body strong{color:var(--text)}
+.pr-link{display:inline-flex;align-items:center;gap:5px;margin-top:.625rem;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);text-decoration:none;padding:6px 12px;background:rgba(32,253,240,.08);border:1px solid rgba(32,253,240,.25);border-radius:4px;transition:all .15s}
+.pr-link:hover{background:rgba(32,253,240,.16)}
+
+/* QUICK LINKS */
+.quick-links{background:rgba(9,16,24,.9);border:1px solid rgba(32,253,240,.12);border-radius:10px;padding:1rem;margin-bottom:2rem}
+.ql-title{font-family:var(--font-head);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text);margin-bottom:.75rem;display:flex;align-items:center;gap:8px}
+.ql-title::before{content:'⬡';color:var(--accent)}
+.ql-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ql-card{background:rgba(4,9,14,.8);border:1px solid rgba(32,253,240,.12);border-radius:8px;padding:.625rem .75rem;text-decoration:none;text-align:center;transition:all .15s}
+.ql-card:hover{border-color:rgba(32,253,240,.3);background:rgba(32,253,240,.04)}
+.ql-card.current{background:rgba(32,253,240,.04);border-color:rgba(32,253,240,.25)}
+.ql-label{font-family:var(--font-head);font-size:12px;font-weight:800;color:var(--accent);line-height:1.2}
+
+.disclaimer{font-size:11px;color:var(--muted);line-height:1.7;text-align:center;margin-bottom:1.5rem}
+footer{border-top:1px solid var(--border);background:var(--dark);padding:1.25rem 2rem;text-align:center;font-family:var(--font-head);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);width:100%}
+
+@media(max-width:640px){
+  header{padding:0 1rem}.header-links{display:none}
+  .main{padding:1.75rem 1.25rem 3rem}
+  .opt-grid.cols-2,.opt-grid.cols-3,.room-grid,.ps-grid{grid-template-columns:1fr}
+  .ql-grid{grid-template-columns:1fr 1fr}
+  .nav-btns{flex-direction:column}
+  .progress-bar{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" target="_top" href="https://hexcoremounts.com">Hex<span>Core</span></a>
+  <nav class="header-links">
+    <a target="_top" href="https://hexcoremounts.com/pages/firearm-law-hub">Law Hub</a>
+    <a target="_top" href="https://hexcoremounts.com/pages/where-can-i-carry-law-tool">Carry Laws</a>
+    <a target="_top" href="https://hexcoremounts.com/collections/all">Shop Mounts</a>
+  </nav>
+  <div class="header-badge">Free Tool</div>
+</header>
+
+<div class="main">
+
+  <div class="hero">
+    <div class="hero-eyebrow">Purpose-Built Planning</div>
+    <h1 class="hero-title">Home Defense <span>Setup Planner</span></h1>
+    <p class="hero-sub">Answer five questions about your home, household, and firearm — get a room-by-room placement guide, storage recommendations, and a complete setup checklist.</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar">
+    <div class="progress-step active" id="prog-1" onclick="goToStep(1)">1 · Home</div>
+    <div class="progress-step" id="prog-2" onclick="goToStep(2)">2 · Household</div>
+    <div class="progress-step" id="prog-3" onclick="goToStep(3)">3 · Firearm</div>
+    <div class="progress-step" id="prog-4" onclick="goToStep(4)">4 · Storage</div>
+    <div class="progress-step" id="prog-5" onclick="goToStep(5)">5 · Your Plan</div>
+  </div>
+
+  <!-- STEP 1: HOME TYPE -->
+  <div class="planner-section active" id="step-1">
+    <div class="plan-card">
+      <div class="plan-card-header">
+        <div class="plan-card-icon">&#127968;</div>
+        <div><div class="plan-card-title">Your Home</div><div class="plan-card-sub">Structure type affects placement strategy significantly</div></div>
+      </div>
+      <div class="plan-card-body">
+        <div class="opt-grid cols-3" style="margin-bottom:1.25rem">
+          <button type="button" class="opt-btn" onclick="pick('homeType','apartment',this)">
+            <span class="opt-title">Apartment</span>
+            <span class="opt-sub">Single-floor unit, shared walls, limited rooms</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('homeType','singleStory',this)">
+            <span class="opt-title">Single-Story House</span>
+            <span class="opt-sub">All bedrooms and living areas on one floor</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('homeType','multiStory',this)">
+            <span class="opt-title">Multi-Story House</span>
+            <span class="opt-sub">Bedrooms on separate floor from main living area</span>
+          </button>
+        </div>
+        <div style="font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.625rem">Primary Entry Points</div>
+        <div class="opt-grid cols-2">
+          <button type="button" class="opt-btn" onclick="pick('entryType','front',this)">
+            <span class="opt-title">Front Door Only</span>
+            <span class="opt-sub">Single main entry, minimal windows at grade</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('entryType','multiple',this)">
+            <span class="opt-title">Multiple Entries</span>
+            <span class="opt-sub">Front + back doors, garage, sliding doors, ground-level windows</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button type="button" class="nav-btn primary" onclick="nextStep(1)">Next: Your Household &#8594;</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: HOUSEHOLD -->
+  <div class="planner-section" id="step-2">
+    <div class="plan-card">
+      <div class="plan-card-header">
+        <div class="plan-card-icon">&#128106;</div>
+        <div><div class="plan-card-title">Your Household</div><div class="plan-card-sub">This determines safe storage requirements and access strategy</div></div>
+      </div>
+      <div class="plan-card-body">
+        <div style="font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.625rem">Who lives in the home?</div>
+        <div class="opt-grid cols-2" style="margin-bottom:1.25rem">
+          <button type="button" class="opt-btn" onclick="pick('household','adults',this)">
+            <span class="opt-title">Adults Only</span>
+            <span class="opt-sub">All household members are adults, trained or familiar with firearms</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('household','children',this)">
+            <span class="opt-title">Children in Home</span>
+            <span class="opt-sub">Children under 18 present — safe storage is mandatory</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('household','visitors',this)">
+            <span class="opt-title">Frequent Visitors</span>
+            <span class="opt-sub">Guests, family, babysitters regularly in the home</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('household','solo',this)">
+            <span class="opt-title">Solo / Couple</span>
+            <span class="opt-sub">Just you, or you and a trained partner</span>
+          </button>
+        </div>
+        <div style="font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.625rem">Response time concern</div>
+        <div class="opt-grid cols-2">
+          <button type="button" class="opt-btn" onclick="pick('response','fast',this)">
+            <span class="opt-title">Speed Priority</span>
+            <span class="opt-sub">I need to access my firearm in under 5 seconds in the dark</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('response','secure',this)">
+            <span class="opt-title">Security Priority</span>
+            <span class="opt-sub">I'm willing to trade some speed for more secure storage</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button type="button" class="nav-btn secondary" onclick="prevStep(2)">&#8592; Back</button>
+      <button type="button" class="nav-btn primary" onclick="nextStep(2)">Next: Your Firearm &#8594;</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: FIREARM -->
+  <div class="planner-section" id="step-3">
+    <div class="plan-card">
+      <div class="plan-card-header">
+        <div class="plan-card-icon">&#128737;</div>
+        <div><div class="plan-card-title">Your Firearm</div><div class="plan-card-sub">Primary home defense firearm type</div></div>
+      </div>
+      <div class="plan-card-body">
+        <div class="opt-grid cols-2" style="margin-bottom:1.25rem">
+          <button type="button" class="opt-btn" onclick="pick('firearm','handgun',this)">
+            <span class="opt-title">Handgun / Pistol</span>
+            <span class="opt-sub">9mm, .45 ACP, .40 S&W — most versatile HD option</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('firearm','ar15',this)">
+            <span class="opt-title">AR-15 / Rifle</span>
+            <span class="opt-sub">5.56, .300 BLK, or similar — high capacity, high velocity</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('firearm','shotgun',this)">
+            <span class="opt-title">Shotgun</span>
+            <span class="opt-sub">12 or 20 gauge — devastating close range but limited capacity</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('firearm','pcc',this)">
+            <span class="opt-title">Pistol Caliber Carbine</span>
+            <span class="opt-sub">9mm carbine — rifle ergonomics, pistol caliber, lower penetration</span>
+          </button>
+        </div>
+        <div style="font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.625rem">Lighting / Optics Setup</div>
+        <div class="opt-grid cols-3">
+          <button type="button" class="opt-btn" onclick="pick('light','weaponLight',this)">
+            <span class="opt-title">Weapon-Mounted Light</span>
+            <span class="opt-sub">Light mounted to the firearm</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('light','handheld',this)">
+            <span class="opt-title">Handheld Light</span>
+            <span class="opt-sub">Separate flashlight, two-handed technique</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('light','none',this)">
+            <span class="opt-title">No Light Currently</span>
+            <span class="opt-sub">Not yet equipped with a light</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button type="button" class="nav-btn secondary" onclick="prevStep(3)">&#8592; Back</button>
+      <button type="button" class="nav-btn primary" onclick="nextStep(3)">Next: Storage &#8594;</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: STORAGE -->
+  <div class="planner-section" id="step-4">
+    <div class="plan-card">
+      <div class="plan-card-header">
+        <div class="plan-card-icon">&#128274;</div>
+        <div><div class="plan-card-title">Storage Method</div><div class="plan-card-sub">How you currently store or plan to store your home defense firearm</div></div>
+      </div>
+      <div class="plan-card-body">
+        <div class="opt-grid cols-2" style="margin-bottom:1.25rem">
+          <button type="button" class="opt-btn" onclick="pick('storage','quickAccess',this)">
+            <span class="opt-title">Quick-Access Safe</span>
+            <span class="opt-sub">Biometric or keypad — opens in under 3 seconds, secured from children</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('storage','wallMount',this)">
+            <span class="opt-title">Wall Mount / Display</span>
+            <span class="opt-sub">Mounted securely on wall — instantly accessible, adults-only home</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('storage','fullSafe',this)">
+            <span class="opt-title">Full-Size Gun Safe</span>
+            <span class="opt-sub">Large safe — secure but slower access</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('storage','unsecured',this)">
+            <span class="opt-title">Unsecured / Not Decided</span>
+            <span class="opt-sub">Figuring out the right approach</span>
+          </button>
+        </div>
+        <div style="font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:.625rem">Magazine / Ammo Status</div>
+        <div class="opt-grid cols-2">
+          <button type="button" class="opt-btn" onclick="pick('ammo','loaded',this)">
+            <span class="opt-title">Loaded &amp; Ready</span>
+            <span class="opt-sub">Firearm kept loaded and ready to fire</span>
+          </button>
+          <button type="button" class="opt-btn" onclick="pick('ammo','staged',this)">
+            <span class="opt-title">Firearm + Mag Staged</span>
+            <span class="opt-sub">Unloaded with loaded magazine nearby</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button type="button" class="nav-btn secondary" onclick="prevStep(4)">&#8592; Back</button>
+      <button type="button" class="nav-btn primary" onclick="nextStep(4)">Build My Plan &#8594;</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: RESULTS -->
+  <div class="planner-section" id="step-5">
+    <div class="plan-summary">
+      <div class="ps-header">Your Home Defense Plan</div>
+      <div class="ps-grid" id="summary-grid"></div>
+    </div>
+
+    <!-- Room Placement -->
+    <div class="result-section">
+      <div class="rs-title">Room-by-Room Placement</div>
+      <div class="room-grid" id="room-grid"></div>
+    </div>
+
+    <!-- Storage Recommendation -->
+    <div class="result-section">
+      <div class="rs-title">Storage Recommendation</div>
+      <div id="storage-rec"></div>
+    </div>
+
+    <!-- Firearm-Specific Notes -->
+    <div class="result-section">
+      <div class="rs-title">Firearm-Specific Setup Notes</div>
+      <div id="firearm-notes"></div>
+    </div>
+
+    <!-- Lighting -->
+    <div class="result-section">
+      <div class="rs-title">Lighting Assessment</div>
+      <div id="lighting-notes"></div>
+    </div>
+
+    <!-- Legal -->
+    <div class="result-section">
+      <div class="rs-title">Legal Considerations</div>
+      <div id="legal-notes"></div>
+    </div>
+
+    <!-- HexCore Product Rec -->
+    <div id="product-rec-wrap"></div>
+
+    <!-- Action Checklist -->
+    <div class="result-section">
+      <div class="rs-title">Your Action Checklist</div>
+      <div id="checklist"></div>
+    </div>
+
+    <div class="nav-btns">
+      <button type="button" class="nav-btn secondary" onclick="resetPlanner()">&#8635; Start Over</button>
+      <a class="nav-btn primary" target="_top" href="https://hexcoremounts.com/collections/all" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Shop HexCore Mounts &#8594;</a>
+    </div>
+  </div>
+
+  <!-- QUICK LINKS -->
+  <div class="quick-links" id="quick-links-wrap" style="margin-top:2rem">
+    <div class="ql-title">HexCore Tools</div>
+    <div class="ql-grid">
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/where-can-i-carry-law-tool"><div class="ql-label">Where Can I Carry?</div></a>
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/firearm-law-hub"><div class="ql-label">Firearm Law Hub</div></a>
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/suppressor-buyers-guide"><div class="ql-label">Suppressor Guide</div></a>
+      <a class="ql-card current" target="_top" href="https://hexcoremounts.com/pages/home-defense-planner"><div class="ql-label">HD Planner</div></a>
+    </div>
+  </div>
+
+  <div class="disclaimer">This tool provides general home defense guidance for educational purposes only. It does not constitute legal advice. Laws regarding safe storage, loaded firearms, and use of force vary by state and locality. Always verify your state's laws with an attorney. HexCore Mounts is not responsible for decisions made based on this tool.</div>
+</div>
+
+<footer>&copy; 2026 HexCore Mounts &nbsp;·&nbsp; Atlanta, Georgia &nbsp;·&nbsp; Purpose-Built for the Modern Armory</footer>
+
+<script>
+let plan = {homeType:null,entryType:null,household:null,response:null,firearm:null,light:null,storage:null,ammo:null};
+let currentStep = 1;
+
+function pick(field, value, btn){
+  plan[field] = value;
+  const grid = btn.closest('.opt-grid');
+  grid.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function nextStep(from){
+  const step = from + 1;
+  if(step > 5) return;
+  if(step === 5){ buildPlan(); }
+  showStep(step);
+  document.getElementById('prog-'+from).classList.add('done');
+  document.getElementById('prog-'+from).classList.remove('active');
+}
+
+function prevStep(from){
+  showStep(from - 1);
+}
+
+function goToStep(n){
+  if(n <= currentStep) showStep(n);
+}
+
+function showStep(n){
+  document.querySelectorAll('.planner-section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step-'+n).classList.add('active');
+  document.querySelectorAll('.progress-step').forEach(p=>p.classList.remove('active'));
+  document.getElementById('prog-'+n).classList.add('active');
+  currentStep = n;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function buildPlan(){
+  const p = plan;
+
+  // SUMMARY GRID
+  const labels = {
+    homeType:{apartment:'Apartment',singleStory:'Single-Story House',multiStory:'Multi-Story House'},
+    household:{adults:'Adults Only',children:'Children Present',visitors:'Frequent Visitors',solo:'Solo / Couple'},
+    firearm:{handgun:'Handgun / Pistol',ar15:'AR-15 / Rifle',shotgun:'Shotgun',pcc:'Pistol Caliber Carbine'},
+    storage:{quickAccess:'Quick-Access Safe',wallMount:'Wall Mount',fullSafe:'Full Safe',unsecured:'Not Secured Yet'},
+  };
+  document.getElementById('summary-grid').innerHTML = [
+    ['Home Type', labels.homeType[p.homeType]||'—'],
+    ['Household', labels.household[p.household]||'—'],
+    ['Primary Firearm', labels.firearm[p.firearm]||'—'],
+    ['Storage', labels.storage[p.storage]||'—'],
+  ].map(([l,v])=>`<div class="ps-item"><div class="ps-item-label">${l}</div><div class="ps-item-val">${v||'Not specified'}</div></div>`).join('');
+
+  // ROOM PLACEMENT
+  let rooms = [];
+  const isMultiStory = p.homeType === 'multiStory';
+  const hasChildren = p.household === 'children';
+  const wantsSpeed = p.response === 'fast';
+
+  rooms.push({room:'Primary Bedroom',priority:'critical',rec:`Your most important placement. <strong>This is where you are most vulnerable.</strong> Keep your primary ${p.firearm==='ar15'?'rifle':'handgun'} within arm's reach of the bed — ${wantsSpeed?'in a quick-access safe mounted to the nightstand or bed frame':'in a secure but accessible location'}. ${hasChildren?'Quick-access safe required — children cannot be able to reach it.':'Mount or safe on the dominant-hand side of the bed.'}`});
+
+  if(isMultiStory){
+    rooms.push({room:'Top of Stairs',priority:'high',rec:`In a multi-story home with bedrooms upstairs, the top of the staircase is a critical choke point. A ${p.firearm==='handgun'?'spare handgun in a quick-access safe':'staged magazine or backup handgun'} here gives you an option if you need to move toward the bedrooms from downstairs, or delay an intruder coming up.`});
+  }
+
+  rooms.push({room:'Living Room / Main Entry',priority: p.entryType==='multiple'?'high':'medium',rec:`Position yourself to see the front door from your defensive position. ${p.entryType==='multiple'?'With multiple entry points, the living room is harder to defend — know your cover positions.':'Front door is your primary concern.'} ${p.firearm==='handgun'?'A wall mount or quick-access safe in a nearby closet or cabinet provides staging.':`A ${p.firearm==='ar15'?'rifle wall mount':'staged long gun'} near your cover position is optimal if no children are present.`}`});
+
+  if(p.entryType === 'multiple'){
+    rooms.push({room:'Back Door / Garage Entry',priority:'high',rec:`Secondary entries are where most home invasions occur. If you have a garage door, it is often the weakest point. Reinforce door locks first. ${hasChildren?'Do not stage a firearm near entry points with children in the home.':'A quick-access safe or wall mount near this entry point is worth considering for a backup firearm.'}`});
+  }
+
+  if(p.homeType !== 'apartment'){
+    rooms.push({room:'Hallway / Corridor',priority:'medium',rec:`Hallways are natural choke points — an intruder has to pass through them. Know where the hallways are in your home relative to your bedroom. In a defensive situation, <strong>if possible, stay in your bedroom</strong> and call 911 rather than clearing the house. Your position in the bedroom with a loaded firearm is tactically superior.`});
+  }
+
+  document.getElementById('room-grid').innerHTML = rooms.map(r=>`<div class="room-card ${r.priority==='critical'?'highlighted':''}">
+    <div class="rc-room">${r.room}</div>
+    <span class="rc-priority pri-${r.priority}">${r.priority}</span>
+    <div class="rc-rec">${r.rec}</div>
+  </div>`).join('');
+
+  // STORAGE REC
+  let storageHtml = '';
+  if(p.storage === 'wallMount'){
+    if(hasChildren){
+      storageHtml = `<div class="alert warn"><strong>&#9888; Critical:</strong> Wall mounts in homes with children require children to have zero access. Mount at a height and location inaccessible to children, and consider a locked wall mount or quick-access safe instead. In many states, accessible loaded firearms near children is a legal liability regardless of intent.</div>`;
+      storageHtml += `<div class="rec-item"><div class="rec-icon">&#128274;</div><div><strong>Recommended:</strong> Switch to a quick-access biometric safe mounted to the nightstand or wall. Keeps the firearm accessible to you in under 3 seconds while being inaccessible to children.</div></div>`;
+    } else {
+      storageHtml = `<div class="alert success"><strong>&#10003; Wall Mount:</strong> Excellent choice for adults-only homes. A properly installed wall mount keeps your firearm instantly accessible, prevents it from being knocked over or damaged, and keeps it off furniture where it might be forgotten. Mount at a consistent, practiced location.</div>`;
+    }
+  } else if(p.storage === 'quickAccess'){
+    storageHtml = `<div class="alert success"><strong>&#10003; Quick-Access Safe:</strong> The best balance of security and speed. ${wantsSpeed?'For fastest access, choose biometric over keypad — muscle memory under stress is unreliable.':'Keypad is reliable and simple.'} Mount it to the nightstand, bed frame, or wall — <strong>always anchored, never loose</strong>. A loose safe can be grabbed and taken. Test your access in the dark, multiple times.</div>`;
+    if(hasChildren) storageHtml += `<div class="rec-item" style="margin-top:.75rem"><div class="rec-icon">&#128100;</div><div><strong>With children present:</strong> Ensure children cannot access the combination or observe you opening it. Change codes periodically and never share access with children regardless of age unless fully trained.</div></div>`;
+  } else if(p.storage === 'fullSafe'){
+    storageHtml = `<div class="rec-item"><div class="rec-icon">&#128274;</div><div><strong>Full safe for primary storage:</strong> Excellent for securing your collection. However, a full-size safe is not ideal for <em>immediate</em> home defense access. Consider a second dedicated quick-access safe or wall mount in the bedroom specifically for your home defense firearm, while keeping everything else in the full safe.</div></div>`;
+  } else {
+    storageHtml = `<div class="alert warn"><strong>&#9888; Action Required:</strong> An unsecured loaded firearm in the home is a safety risk, especially with children or visitors present. Prioritize getting a quick-access safe or a wall mount before anything else. This is the most important item on your checklist.</div>`;
+  }
+  document.getElementById('storage-rec').innerHTML = storageHtml;
+
+  // FIREARM NOTES
+  let firearmsHtml = '';
+  if(p.firearm === 'handgun'){
+    firearmsHtml = `<div class="rec-item"><div class="rec-icon">&#127919;</div><div><strong>Handgun advantages:</strong> Most versatile option. Easier to move through the home, operate one-handed, and store in a quick-access safe. For HD, use <strong>hollow point ammunition</strong> — it expands on impact and reduces over-penetration through walls, protecting family members in adjacent rooms.</div></div>
+    <div class="rec-item"><div class="rec-icon">&#9888;</div><div><strong>Ammo for HD:</strong> Avoid FMJ (full metal jacket) for home defense. It passes through drywall with minimal resistance. Hollow points like Federal HST, Speer Gold Dot, or Winchester PDX1 are designed for defensive use.</div></div>`;
+  } else if(p.firearm === 'ar15'){
+    firearmsHtml = `<div class="rec-item"><div class="rec-icon">&#127919;</div><div><strong>AR-15 advantages:</strong> High capacity, fast follow-up shots, controllable recoil, excellent terminal performance. For home defense, <strong>frangible or soft-point ammunition</strong> significantly reduces wall penetration compared to standard FMJ 5.56 or even most pistol rounds.</div></div>
+    <div class="rec-item"><div class="rec-icon">&#128737;</div><div><strong>Ammo for HD:</strong> Hornady Critical Defense or Black Hills 55gr TSX are popular HD choices. Avoid M193 or M855 steel-core for indoor use — they penetrate heavily. A wall mount keeps the rifle instantly accessible and prevents optics damage from storage.</div></div>
+    <div class="rec-item"><div class="rec-icon">&#127968;</div><div><strong>Maneuverability:</strong> A full-length rifle is harder to maneuver in tight hallways. Consider a 16" barrel with a collapsible stock, or a 14.5" with pinned muzzle device. Practice clearing doorways at home to understand your angles.</div></div>`;
+  } else if(p.firearm === 'shotgun'){
+    firearmsHtml = `<div class="rec-item"><div class="rec-icon">&#127919;</div><div><strong>Shotgun advantages:</strong> Devastating close-range performance. 00 buckshot delivers ~9 pellets per trigger pull. No need for precise aim in high-stress situations. The sound of racking a pump is also a documented deterrent.</div></div>
+    <div class="rec-item"><div class="rec-icon">&#9888;</div><div><strong>Limitations:</strong> Bulkier, harder to maneuver in tight spaces, slower reloads. Keep a side saddle with extra shells. A wall mount angled vertically maximizes storage footprint efficiency. <strong>Important:</strong> 00 buckshot can penetrate multiple walls — know your home's layout.</div></div>`;
+  } else if(p.firearm === 'pcc'){
+    firearmsHtml = `<div class="rec-item"><div class="rec-icon">&#127919;</div><div><strong>PCC advantages:</strong> Rifle ergonomics with pistol caliber ballistics. Lower velocity means less over-penetration than 5.56. Can often use same magazines as your carry pistol. Suppressor-friendly — a suppressed 9mm PCC is one of the most hearing-safe HD setups available.</div></div>
+    <div class="rec-item"><div class="rec-icon">&#9888;</div><div><strong>Ammo for HD:</strong> Use the same hollow point you'd use in a pistol — Federal HST, Speer Gold Dot, or Hornady Critical Defense. The longer barrel increases velocity and performance compared to a handgun.</div></div>`;
+  }
+  document.getElementById('firearm-notes').innerHTML = firearmsHtml;
+
+  // LIGHTING
+  let lightHtml = '';
+  if(p.light === 'weaponLight'){
+    lightHtml = `<div class="alert success"><strong>&#10003; Weapon-Mounted Light:</strong> Excellent setup. A weapon-mounted light frees both hands and keeps your muzzle pointed at whatever you're illuminating — which focuses your mind on the safety and accountability of where your muzzle points. <strong>Always positively identify your target before pointing the light.</strong> Your firearm's muzzle points wherever the light points.</div>`;
+  } else if(p.light === 'handheld'){
+    lightHtml = `<div class="rec-item"><div class="rec-icon">&#128294;</div><div><strong>Handheld light:</strong> Viable, but requires practice. The Rogers/Surefire technique or FBI technique (light held high and away from your body) are both effective. Main disadvantage is a two-handed technique — requires practice to be consistent under stress. Consider a weapon-mounted light as an upgrade.</div></div>`;
+  } else {
+    lightHtml = `<div class="alert warn"><strong>&#9888; No Light — Action Required:</strong> A firearm without a light source in a home defense scenario is dangerous. You cannot positively identify your target in the dark. You must <em>identify before you fire</em>. A weapon-mounted light like a Streamlight TLR-1 or Surefire X300 is the single most important accessory upgrade for home defense. This should be your next purchase.</div>`;
+  }
+  document.getElementById('lighting-notes').innerHTML = lightHtml;
+
+  // LEGAL
+  document.getElementById('legal-notes').innerHTML = `<div class="rec-item"><div class="rec-icon">&#9878;</div><div><strong>Castle Doctrine:</strong> Most states have castle doctrine laws that allow use of force in your home without a duty to retreat. However, the specifics vary significantly — some states require you to be in your bedroom, some cover the curtilage (yard), some require a reasonable belief of imminent deadly threat. <strong>Know your state's specific statute before relying on it.</strong></div></div>
+  <div class="rec-item"><div class="rec-icon">&#128273;</div><div><strong>Storage laws:</strong> ${hasChildren?'<strong>With children in the home, many states have safe storage laws that require firearms to be secured from minors.</strong> Georgia, California, New York, Massachusetts, and others have specific requirements with criminal penalties. Verify your state\'s current law.':'Verify your state\'s storage requirements — some states have laws about accessible loaded firearms even without children present.'}</div></div>
+  <div class="rec-item"><div class="rec-icon">&#9874;</div><div><strong>After a defensive use:</strong> If you use a firearm in self-defense, <strong>call 911 immediately, keep your hands visible, and do not make statements to police beyond identifying yourself until you speak with an attorney.</strong> Know the number for your state's self-defense attorney network before you need it — not after. <a target="_top" href="https://attorneysonretainer.us/membership/" style="color:var(--accent)">Attorneys on Retainer</a> provides 24/7 access.</div></div>`;
+
+  // HEXCORE PRODUCT REC
+  let productHtml = '';
+  const showMountRec = (p.storage === 'wallMount' || p.storage === 'unsecured' || p.firearm === 'ar15' || p.firearm === 'shotgun');
+  if(showMountRec){
+    let mountRec = '';
+    if(p.firearm === 'ar15') mountRec = 'AR-15 LP or AR-15 RDM wall mount — keeps your rifle secure, accessible, and protected from optics damage.';
+    else if(p.firearm === 'shotgun') mountRec = 'Vertical wall mount — space-efficient, secure, and ready-access for a long gun.';
+    else mountRec = 'HexCore wall mounts keep your defensive firearm instantly accessible without a safe, on a consistent mount you can reach in the dark.';
+    productHtml = `<div class="product-rec">
+      <div class="pr-label">&#9658; HexCore Recommendation</div>
+      <div class="pr-body">${mountRec} All HexCore mounts are built from <strong>high-strength engineered materials</strong>, designed in Winder, Georgia, and built for the setup you're planning right now.</div>
+      <a class="pr-link" target="_top" href="https://hexcoremounts.com/collections/all">View HexCore Mounts &#8594;</a>
+    </div>`;
+  }
+  document.getElementById('product-rec-wrap').innerHTML = productHtml;
+
+  // CHECKLIST
+  const checks = [];
+  if(!p.light || p.light === 'none') checks.push('&#128285; Purchase a weapon-mounted light — Streamlight TLR-1 or Surefire X300 recommended');
+  if(p.storage === 'unsecured') checks.push('&#128274; Get a quick-access safe or secure wall mount — this is your most critical action item');
+  if(hasChildren && p.storage === 'wallMount') checks.push('&#128100; Switch from wall mount to a locked quick-access safe — children in home requires locked storage');
+  if(p.ammo === 'staged') checks.push('&#128737; Practice loading your magazine and chambering quickly in the dark — this is your most likely bottleneck under stress');
+  checks.push('&#127919; Practice dry-fire in your bedroom in the dark — draw from your storage position, acquire a sight picture on your door');
+  checks.push('&#9742; Program your local non-emergency police line and a firearms attorney number into your phone');
+  checks.push('&#128214; Learn your state\'s castle doctrine — specifically what locations it covers and what "imminent threat" means');
+  if(isMultiStory) checks.push('&#127968; Walk your staircase at night without lights — know every step and landing by muscle memory');
+  checks.push('&#9878; Establish a family emergency plan — where do household members go, what is the rally point');
+  checks.push('&#128337; Consider a training class focused specifically on home defense scenarios, not just range shooting');
+  if(showMountRec) checks.push('&#9970; Install your wall mount at a height and angle you can access quickly from your dominant hand while standing beside the bed');
+
+  document.getElementById('checklist').innerHTML = checks.map(c=>`<div class="rec-item"><div class="rec-icon" style="font-size:18px;background:none;border:none">${c.substring(0,2)}</div><div>${c.substring(2)}</div></div>`).join('');
+}
+
+function resetPlanner(){
+  plan = {homeType:null,entryType:null,household:null,response:null,firearm:null,light:null,storage:null,ammo:null};
+  document.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('.progress-step').forEach(s=>{s.classList.remove('active','done');});
+  document.getElementById('prog-1').classList.add('active');
+  showStep(1);
+}
+</script>
+</body>
+</html>
