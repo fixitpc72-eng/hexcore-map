@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Firearm Purchase Navigator — FFL Finder, NICS Delays & Denial Appeals | HexCore Mounts</title>
+<meta name="description" content="The complete firearm purchase guide. Find a local FFL, estimate transfer costs, understand NICS delay and denial responses, and get a step-by-step denial appeal checklist.">
+<link rel="canonical" href="https://hexcoremounts.com/pages/firearm-purchase-navigator">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;--text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--orange:#f97316;--blue:#3b82f6;--font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(32,253,240,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(32,253,240,.015) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0}
+header{width:100%;background:rgba(17,18,20,.96);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}
+.header-links{display:flex;gap:1.5rem}.header-links a{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}.header-links a:hover{color:var(--accent)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px}
+.main{width:100%;max-width:900px;padding:2rem 1.5rem 4rem;position:relative;z-index:1}
+.hero{text-align:center;margin-bottom:1.75rem}
+.hero-eyebrow{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;gap:10px}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:28px;height:1px;background:var(--accent);opacity:.4}
+.hero-title{font-family:var(--font-head);font-weight:900;font-size:clamp(30px,5.5vw,50px);text-transform:uppercase;letter-spacing:.02em;line-height:1;color:#fff;margin-bottom:.625rem}.hero-title span{color:var(--accent)}
+.hero-sub{font-size:14px;color:var(--sub);line-height:1.7;max-width:580px;margin:0 auto}
+
+/* TAB NAV */
+.tab-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-bottom:2rem;background:var(--dark);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.tab-btn{padding:1rem 1.25rem;background:none;border:none;cursor:pointer;text-align:left;transition:background .15s;position:relative}
+.tab-btn:not(:last-child){border-right:1px solid var(--border)}
+.tab-btn.active{background:rgba(32,253,240,.05)}
+.tab-btn.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent)}
+.tab-num{font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.25rem}
+.tab-btn.active .tab-num{color:var(--accent)}
+.tab-label{font-family:var(--font-head);font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:var(--sub);line-height:1.1}
+.tab-btn.active .tab-label{color:var(--text)}
+.tab-sub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.3}
+.tab-btn.active .tab-sub{color:var(--sub)}
+
+/* PANEL */
+.tab-panel{display:none}.tab-panel.active{display:block;animation:fadeUp .25s ease-out}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* SHARED SECTION STYLES */
+.section-lbl{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin-bottom:.875rem;display:flex;align-items:center;gap:10px}
+.section-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
+.alert{padding:10px 14px;border-radius:7px;font-size:13px;line-height:1.6;margin-bottom:1.25rem}
+.alert.info{background:rgba(32,253,240,.05);border:1px solid rgba(32,253,240,.15);color:var(--sub)}.alert.info strong{color:var(--accent)}
+.alert.warn{background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.2);color:var(--sub)}.alert.warn strong{color:var(--yellow)}
+.alert.success{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);color:var(--sub)}.alert.success strong{color:var(--green)}
+.alert.red{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:var(--sub)}.alert.red strong{color:var(--red)}
+
+/* CARD GRIDS */
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
+.card-grid.cols-3{grid-template-columns:1fr 1fr 1fr}
+.info-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1rem}
+.info-card.accent-l{border-left:3px solid var(--accent)}
+.info-card.green-l{border-left:3px solid var(--green)}
+.info-card.yellow-l{border-left:3px solid var(--yellow)}
+.info-card.red-l{border-left:3px solid var(--red)}
+.ic-title{font-family:var(--font-head);font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:var(--accent);margin-bottom:.375rem}
+.ic-title.white{color:#fff}.ic-title.green{color:var(--green)}.ic-title.yellow{color:var(--yellow)}.ic-title.red{color:var(--red)}
+.ic-body{font-size:12px;color:var(--sub);line-height:1.65}.ic-body strong{color:var(--text)}
+.ic-body ul{padding-left:14px;margin-top:.375rem}.ic-body li{margin-bottom:3px}
+.ic-link{display:inline-flex;align-items:center;gap:5px;margin-top:.625rem;font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);text-decoration:none}
+.ic-link:hover{text-decoration:underline}
+
+/* CUSTOM SELECT */
+.cs-wrap{position:relative}
+.cs-trig{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:9px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:border-color .15s}.cs-trig:hover{border-color:var(--muted)}
+.cs-val{flex:1;font-size:13px;color:var(--sub)}.cs-val.set{color:var(--text)}
+.cs-arr{font-size:10px;color:var(--sub);transition:transform .2s}
+.cs-dd{display:none;position:absolute;top:100%;left:0;right:0;background:#16181c;border:1px solid #2a2d35;border-radius:6px;max-height:220px;overflow-y:auto;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.9);scrollbar-width:thin;scrollbar-color:#3a3d47 transparent;margin-top:3px}
+.cs-opt{padding:9px 12px;font-size:13px;color:var(--text);cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04)}.cs-opt:hover{background:rgba(32,253,240,.08);color:var(--accent)}.cs-opt:last-child{border-bottom:none}
+
+/* COST ESTIMATOR */
+.cost-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1.25rem}
+.cost-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.875rem;text-align:center}
+.cost-range{font-family:var(--font-head);font-size:20px;font-weight:900;color:var(--accent)}
+.cost-label{font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-top:3px}
+.cost-note{font-size:11px;color:var(--muted);margin-top:.375rem;line-height:1.4}
+
+/* WHAT TO ASK LIST */
+.ask-list{display:flex;flex-direction:column;gap:6px;margin-bottom:1.25rem}
+.ask-item{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.75rem 1rem;font-size:13px;color:var(--sub);line-height:1.5;display:flex;align-items:flex-start;gap:10px}
+.ask-item::before{content:'?';font-family:var(--font-head);font-size:14px;font-weight:900;color:var(--accent);flex-shrink:0;margin-top:1px}
+.ask-item strong{color:var(--text)}
+
+/* CHECKLIST */
+.cl-wrap{display:flex;flex-direction:column;gap:6px;margin-bottom:1rem}
+.cl-item{display:flex;align-items:flex-start;gap:10px;padding:.625rem .875rem;background:var(--card);border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;user-select:none}
+.cl-item:hover{border-color:var(--muted)}.cl-item.checked{background:rgba(34,197,94,.05);border-color:rgba(34,197,94,.2)}
+.cl-box{width:18px;height:18px;border-radius:4px;border:1px solid var(--muted);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s;font-size:11px;font-weight:900}
+.cl-item.checked .cl-box{background:var(--green);border-color:var(--green);color:var(--black)}
+.cl-text{font-size:13px;color:var(--sub);line-height:1.5;flex:1}.cl-item.checked .cl-text{color:var(--text)}
+.cl-prog{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;font-size:12px;color:var(--sub)}
+.cl-prog-bar{flex:1;background:var(--muted);border-radius:999px;height:5px;overflow:hidden}
+.cl-prog-fill{height:100%;background:var(--green);border-radius:999px;transition:width .3s}
+
+/* NICS STATUS CARDS */
+.nics-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1.25rem}
+.nics-card{border-radius:8px;padding:1rem;border:1px solid}
+.nics-card.proceed{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.25)}
+.nics-card.delay{background:rgba(234,179,8,.06);border-color:rgba(234,179,8,.25)}
+.nics-card.deny{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.25)}
+.nics-status{font-family:var(--font-head);font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.375rem}
+.nics-card.proceed .nics-status{color:var(--green)}
+.nics-card.delay .nics-status{color:var(--yellow)}
+.nics-card.deny .nics-status{color:var(--red)}
+.nics-body{font-size:12px;color:var(--sub);line-height:1.6}.nics-body strong{color:var(--text)}
+
+/* PROCESS STEPS */
+.steps{display:flex;flex-direction:column}
+.step-row{display:grid;grid-template-columns:40px 1fr;gap:.875rem}
+.step-l{display:flex;flex-direction:column;align-items:center}
+.step-num{width:34px;height:34px;border:2px solid var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:16px;font-weight:900;color:var(--accent);flex-shrink:0}
+.step-line{width:2px;flex:1;background:linear-gradient(to bottom,rgba(32,253,240,.25),transparent);margin:4px auto 0;min-height:12px}
+.step-row:last-child .step-line{display:none}
+.step-content{padding-bottom:1.25rem}
+.step-title{font-family:var(--font-head);font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:.25rem}
+.step-body{font-size:12px;color:var(--sub);line-height:1.6}.step-body strong{color:var(--text)}
+.step-note{background:var(--dark);border:1px solid var(--border);border-radius:5px;padding:7px 11px;margin-top:.5rem;font-size:11px;color:var(--sub);line-height:1.5}
+
+/* STATE RESULT */
+.state-result{background:var(--card);border-radius:8px;padding:1rem;margin-top:.875rem;display:none}
+.state-result.vis{display:block;animation:fadeUp .2s ease-out}
+.sr-badge{display:inline-block;padding:2px 8px;border-radius:3px;font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:rgba(32,253,240,.1);color:var(--accent);border:1px solid rgba(32,253,240,.2);margin-bottom:.5rem}
+.sr-title{font-family:var(--font-head);font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:.375rem}
+.sr-body{font-size:12px;color:var(--sub);line-height:1.65;margin-bottom:.625rem}.sr-body strong{color:var(--text)}
+.sr-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.625rem}
+.sr-field{background:var(--dark);border-radius:5px;padding:.625rem}
+.sr-field-lbl{font-family:var(--font-head);font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.25rem}
+.sr-field-val{font-size:12px;color:var(--text);line-height:1.5}
+.sr-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:.5rem}
+.sr-link{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:rgba(32,253,240,.07);border:1px solid rgba(32,253,240,.15);border-radius:4px;font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);text-decoration:none;transition:all .15s}.sr-link:hover{background:rgba(32,253,240,.12)}
+
+/* VAF BOX */
+.vaf-box{background:var(--dark);border:1px solid rgba(32,253,240,.15);border-radius:9px;padding:1.125rem;margin-bottom:1.25rem}
+.vaf-title{font-family:var(--font-head);font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin-bottom:.375rem}
+.vaf-body{font-size:13px;color:var(--sub);line-height:1.65}.vaf-body strong{color:var(--text)}
+.vaf-def{background:var(--card);border-radius:6px;padding:.75rem;margin-top:.625rem;font-size:12px;color:var(--sub);line-height:1.6;border:1px solid var(--border)}
+.vaf-def strong{color:var(--text);font-family:var(--font-head);font-size:13px;font-weight:900;text-transform:uppercase;display:block;margin-bottom:.25rem;letter-spacing:.04em}
+
+/* QUICK LINKS */
+.quick-links{background:rgba(9,16,24,.9);border:1px solid rgba(32,253,240,.12);border-radius:10px;padding:1rem;margin-top:2rem;margin-bottom:2rem}
+.ql-title{font-family:var(--font-head);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text);margin-bottom:.75rem;display:flex;align-items:center;gap:8px}.ql-title::before{content:'\u2B21';color:var(--accent)}
+.ql-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ql-card{background:rgba(4,9,14,.8);border:1px solid rgba(32,253,240,.12);border-radius:8px;padding:.625rem .75rem;text-decoration:none;text-align:center;transition:all .15s}.ql-card:hover{border-color:rgba(32,253,240,.3);background:rgba(32,253,240,.04)}.ql-card.cur{background:rgba(32,253,240,.04);border-color:rgba(32,253,240,.25)}
+.ql-label{font-family:var(--font-head);font-size:12px;font-weight:800;color:var(--accent);line-height:1.2}
+.disclaimer{font-size:11px;color:var(--muted);line-height:1.7;text-align:center;margin-bottom:1.5rem}
+footer{border-top:1px solid var(--border);background:var(--dark);padding:1.25rem 2rem;text-align:center;font-family:var(--font-head);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);width:100%}
+@media(max-width:640px){header{padding:0 1rem}.header-links{display:none}.main{padding:1.5rem 1.25rem 3rem}.tab-nav{grid-template-columns:1fr}.tab-btn:not(:last-child){border-right:none;border-bottom:1px solid var(--border)}.card-grid,.card-grid.cols-3,.cost-grid,.nics-grid,.sr-row{grid-template-columns:1fr}.ql-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" target="_top" href="https://hexcoremounts.com">Hex<span>Core</span></a>
+  <nav class="header-links">
+    <a target="_top" href="https://hexcoremounts.com/pages/first-time-firearm-buyer-guide">Buyer Guide</a>
+    <a target="_top" href="https://hexcoremounts.com/pages/firearm-law-hub">Law Hub</a>
+    <a target="_top" href="https://hexcoremounts.com/pages/build-legality-scanner">Build Scanner</a>
+  </nav>
+  <div class="header-badge">2026 Updated</div>
+</header>
+
+<div class="main">
+  <div class="hero">
+    <div class="hero-eyebrow">Purchase Process</div>
+    <h1 class="hero-title">Firearm Purchase <span>Navigator</span></h1>
+    <p class="hero-sub">Find an FFL. Know your transfer costs. Understand NICS delay and deny responses. Appeal a wrongful denial. Three tabs covering the full purchase journey.</p>
+  </div>
+
+  <!-- TAB NAV -->
+  <div class="tab-nav">
+    <button type="button" class="tab-btn active" onclick="switchTab('tab1',this)">
+      <div class="tab-num">01</div>
+      <div class="tab-label">Before You Buy</div>
+      <div class="tab-sub">FFL finder &middot; transfer costs &middot; what to ask</div>
+    </button>
+    <button type="button" class="tab-btn" onclick="switchTab('tab2',this)">
+      <div class="tab-num">02</div>
+      <div class="tab-label">At the Counter</div>
+      <div class="tab-sub">NICS explained &middot; delay &middot; POC states</div>
+    </button>
+    <button type="button" class="tab-btn" onclick="switchTab('tab3',this)">
+      <div class="tab-num">03</div>
+      <div class="tab-label">After a Denial</div>
+      <div class="tab-sub">VAF &middot; UPIN &middot; appeal checklist</div>
+    </button>
+  </div>
+
+  <!-- TAB 1: BEFORE YOU BUY -->
+  <div class="tab-panel active" id="tab1">
+
+    <div class="section-lbl">State Purchase Requirements</div>
+    <div class="alert info"><strong>Check your state first.</strong> Some states require a permit, license, or certificate before you can purchase. Find your state below before heading to a dealer.</div>
+
+    <div style="margin-bottom:1.25rem">
+      <div style="margin-bottom:.5rem;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub)">Your State</div>
+      <div class="cs-wrap" style="max-width:320px">
+        <div class="cs-trig" onclick="toggleDrop('state-dd','state-val','state-arr')">
+          <div class="cs-val" id="state-val">Select your state...</div>
+          <div class="cs-arr" id="state-arr">&#9660;</div>
+        </div>
+        <div class="cs-dd" id="state-dd"></div>
+      </div>
+      <div class="state-result" id="state-result"></div>
+    </div>
+
+    <div class="section-lbl">Find a Licensed FFL Dealer</div>
+    <div class="card-grid" style="margin-bottom:1.25rem">
+      <div class="info-card accent-l">
+        <div class="ic-title">ATF FFL Search Tool</div>
+        <div class="ic-body">The ATF provides an official FFL eZ Check tool to verify any dealer's license status. Use it to confirm a dealer is currently licensed before shipping a firearm to them.</div>
+        <a class="ic-link" href="https://www.atf.gov/firearms/ffl-ez-check" target="_blank" rel="noopener">&#8599; ATF FFL eZ Check</a>
+      </div>
+      <div class="info-card accent-l">
+        <div class="ic-title">GunBroker FFL Locator</div>
+        <div class="ic-body">GunBroker maintains a dealer locator useful for finding an FFL near you to receive an online purchase transfer. Search by zip code and filter by transfer services.</div>
+        <a class="ic-link" href="https://www.gunbroker.com/ffl-locator" target="_blank" rel="noopener">&#8599; GunBroker FFL Locator</a>
+      </div>
+      <div class="info-card accent-l">
+        <div class="ic-title">GrabAGun Dealer Locator</div>
+        <div class="ic-body">Another option for finding local FFL dealers for transfer services, especially for buyers in rural areas where options may be limited.</div>
+        <a class="ic-link" href="https://www.gagunowners.org/directory/directory-category/firearms-dealers/" target="_blank" rel="noopener">&#8599; Find Dealers Near You</a>
+      </div>
+      <div class="info-card accent-l">
+        <div class="ic-title">GalleryOfGuns Dealer Finder</div>
+        <div class="ic-body">Useful for Davidson's distribution network dealers. If you order through a distributor, they may have a preferred dealer finder for their FFL network.</div>
+        <a class="ic-link" href="https://galleryofguns.com/genie/DealerLocator.aspx" target="_blank" rel="noopener">&#8599; Gallery of Guns Dealers</a>
+      </div>
+    </div>
+
+    <div class="section-lbl">Transfer Cost Estimator</div>
+    <div class="cost-grid">
+      <div class="cost-card">
+        <div class="cost-range">$15&ndash;$35</div>
+        <div class="cost-label">Local dealer transfer</div>
+        <div class="cost-note">Buying from a local shop — low or no transfer fee, just the firearm price</div>
+      </div>
+      <div class="cost-card">
+        <div class="cost-range">$25&ndash;$75</div>
+        <div class="cost-label">Online purchase transfer</div>
+        <div class="cost-note">FFL receives an online purchase and transfers to you — fee varies by dealer</div>
+      </div>
+      <div class="cost-card">
+        <div class="cost-range">$0&ndash;$35</div>
+        <div class="cost-label">State fees (varies)</div>
+        <div class="cost-note">Some states charge a background check fee on top of the federal process</div>
+      </div>
+    </div>
+    <div class="alert info" style="margin-bottom:1.25rem"><strong>Always ask before you ship.</strong> Confirm the FFL's transfer fee before sending a firearm to them. Fees vary widely &mdash; some dealers charge $25, others $75+. Get the number in writing.</div>
+
+    <div class="section-lbl">What to Ask the Dealer Before the Transfer</div>
+    <div class="ask-list">
+      <div class="ask-item"><strong>What is your transfer fee</strong> for an online FFL transfer, and does it change for handguns vs long guns?</div>
+      <div class="ask-item"><strong>Do you accept the shipping format</strong> from the retailer I'm buying from (some dealers won't accept certain carriers or packaging)?</div>
+      <div class="ask-item"><strong>What ID and documentation</strong> do you require beyond a government photo ID &mdash; especially if my state has a permit, license, or certificate requirement?</div>
+      <div class="ask-item"><strong>Is there anything on your end</strong> that could affect the timing of this transfer &mdash; state waiting periods, local paperwork, or delays in your process?</div>
+      <div class="ask-item"><strong>What happens if my NICS check is delayed</strong> &mdash; will you hold the firearm, and for how long?</div>
+      <div class="ask-item"><strong>Do you provide a receipt</strong> for the transfer and a copy of the completed Form 4473 for my records?</div>
+      <div class="ask-item"><strong>Is there a separate fee for any required safe-storage equipment</strong> or trigger lock if your state or locality requires it?</div>
+    </div>
+
+    <div class="section-lbl">Document Checklist &mdash; Bring to the Dealer</div>
+    <div class="cl-wrap" id="cl-t1">
+      <div class="cl-item" onclick="chk(this,'t1')"><div class="cl-box"></div><div class="cl-text"><strong>Government-issued photo ID:</strong> Driver's license, state ID, or passport &mdash; must be current and show your current address</div></div>
+      <div class="cl-item" onclick="chk(this,'t1')"><div class="cl-box"></div><div class="cl-text"><strong>Secondary residence document</strong> (if your ID address is outdated): utility bill, bank statement, or lease showing your current address</div></div>
+      <div class="cl-item" onclick="chk(this,'t1')"><div class="cl-box"></div><div class="cl-text"><strong>State-required permit, license, or certificate</strong> if applicable in your state (check your state result above)</div></div>
+      <div class="cl-item" onclick="chk(this,'t1')"><div class="cl-box"></div><div class="cl-text"><strong>Payment method</strong> the dealer accepts for the transfer fee, state fee, and any other charges</div></div>
+      <div class="cl-item" onclick="chk(this,'t1')"><div class="cl-box"></div><div class="cl-text"><strong>Tracking number</strong> for any online purchase being received by the FFL</div></div>
+      <div class="cl-item" onclick="chk(this,'t1')"><div class="cl-box"></div><div class="cl-text"><strong>Order confirmation or invoice</strong> from the online retailer for your records</div></div>
+    </div>
+    <div class="cl-prog"><span id="cl-t1-cnt">0 / 6</span><div class="cl-prog-bar"><div class="cl-prog-fill" id="cl-t1-fill" style="width:0%"></div></div></div>
+
+    <div class="alert warn"><strong>If buying out of state:</strong> Handguns must be transferred through an FFL in your home state &mdash; not where the seller is located. Long guns from an out-of-state FFL dealer are permissible only if legal in both states. Private out-of-state transfers go through an FFL in your state regardless of firearm type.</div>
+  </div>
+
+  <!-- TAB 2: AT THE COUNTER -->
+  <div class="tab-panel" id="tab2">
+
+    <div class="section-lbl">The Background Check Process</div>
+    <div class="card-grid" style="margin-bottom:1.25rem">
+      <div class="info-card accent-l">
+        <div class="ic-title">ATF Form 4473</div>
+        <div class="ic-body">Every dealer sale starts here. You fill out this federal form &mdash; full legal name, date of birth, address, citizenship, and eligibility questions. <strong>Answer every question accurately.</strong> A false statement on Form 4473 is a federal felony regardless of whether the transaction is approved.<br><br>The dealer sends your info to NICS or your state POC system. You get a response: Proceed, Delay, or Deny.</div>
+        <a class="ic-link" href="https://www.atf.gov/firearms/docs/4473-part-1-firearms-transaction-record-over-counter-atf-form-53009/download" target="_blank" rel="noopener">&#8599; ATF Form 4473 (PDF)</a>
+      </div>
+      <div class="info-card accent-l">
+        <div class="ic-title">FBI NICS vs State POC</div>
+        <div class="ic-body">Some states run their own background check systems (Point of Contact states) rather than going directly to the FBI. In POC states, the dealer contacts your state agency instead of FBI NICS directly.<br><br><strong>POC states:</strong> CA, CO, CT, FL, HI, IL, NJ, NV, OR, PA, TN, TX, UT, VA, WA, WI, plus DC. Partial POC: AZ, MD, MI, NE, NH, NM, NY, NC, ND, SC.<br><br>Your rights after a denial are the same regardless of which system processed your check.</div>
+        <a class="ic-link" href="https://www.fbi.gov/how-we-can-help-you/more-fbi-services-and-information/nics/about-nics" target="_blank" rel="noopener">&#8599; FBI NICS Overview</a>
+      </div>
+    </div>
+
+    <div class="section-lbl">Understanding Your NICS Response</div>
+    <div class="nics-grid">
+      <div class="nics-card proceed">
+        <div class="nics-status">Proceed</div>
+        <div class="nics-body">The background check cleared. <strong>The dealer may transfer the firearm to you.</strong> This is the normal outcome for eligible buyers. A Proceed means no prohibiting records were found in the checked databases at this time.</div>
+      </div>
+      <div class="nics-card delay">
+        <div class="nics-status">Delay</div>
+        <div class="nics-body"><strong>Not a denial.</strong> NICS found a record that requires more research before an approval or denial can be issued. The dealer cannot transfer the firearm during this review window.<br><br>Federal law gives the FBI 3 business days to resolve a delay. If not resolved in 3 business days, the dealer <em>may</em> (but is not required to) transfer the firearm. State law can require dealers to hold longer regardless.</div>
+      </div>
+      <div class="nics-card deny">
+        <div class="nics-status">Deny</div>
+        <div class="nics-body">The system found a record that prohibits the transfer. <strong>The dealer cannot transfer the firearm.</strong><br><br>A denial is not always final &mdash; NICS denials are sometimes wrong. You have the right to appeal through the FBI NICS Voluntary Appeal File (VAF) process. See Tab 03 for the full appeal process.</div>
+      </div>
+    </div>
+
+    <div class="section-lbl">Common Causes of Delay</div>
+    <div class="card-grid cols-3" style="margin-bottom:1.25rem">
+      <div class="info-card">
+        <div class="ic-title white">Name or DOB Match</div>
+        <div class="ic-body">Your name or date of birth closely matches a record in the system. This does not mean you are prohibited &mdash; NICS needs time to verify you are not the person in the record.</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-title white">Incomplete Record</div>
+        <div class="ic-body">A state has submitted a prohibiting record but not all required details. NICS needs to contact the state for clarification before issuing a decision.</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-title white">Disposition Missing</div>
+        <div class="ic-body">An arrest record exists but no final court disposition is on file. Without knowing the outcome of the arrest, NICS cannot determine if a prohibition applies.</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-title white">Mental Health Records</div>
+        <div class="ic-body">Involuntary commitment records or adjudication records are sometimes incomplete or inaccurate across state systems. A match here requires manual review.</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-title white">Immigration Status</div>
+        <div class="ic-body">Non-citizen status records require additional verification. Certain visa categories prohibit firearm purchase; others do not. NICS must verify which applies.</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-title white">System Volume</div>
+        <div class="ic-body">High-volume periods (holidays, political events) can slow NICS response times. A delay during these periods may simply reflect system load rather than a record issue.</div>
+      </div>
+    </div>
+
+    <div class="section-lbl">If You Are Delayed</div>
+    <div class="steps">
+      <div class="step-row">
+        <div class="step-l"><div class="step-num">1</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">Get Your NTN (NICS Transaction Number)</div>
+          <div class="step-body">The dealer receives a NICS Transaction Number when the delay is issued. <strong>Write this number down.</strong> You will need it to follow up on the status of your check and to file an appeal if the delay results in a denial.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-l"><div class="step-num">2</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">Wait Out the 3-Business-Day Window</div>
+          <div class="step-body">Federal law gives NICS 3 business days to resolve a delay. After 3 business days, the dealer <em>may</em> transfer the firearm. However, <strong>state law may require a longer hold</strong> &mdash; in some states, the dealer must wait for a final Proceed before transferring.</div>
+          <div class="step-note">States with mandatory extended holds include California, Colorado, Florida, Illinois, Maryland, New Jersey, and others. Ask your dealer about your state's requirement.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-l"><div class="step-num">3</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">Follow Up with FBI NICS Directly</div>
+          <div class="step-body">You can contact the FBI NICS Section directly to check on the status of a delayed transaction. Have your NTN and personal information ready.<br><br><strong>FBI NICS:</strong> 1-877-444-6427 &nbsp;|&nbsp; <a href="https://www.fbi.gov/how-we-can-help-you/more-fbi-services-and-information/nics/for-potential-buyers" target="_blank" rel="noopener" style="color:var(--accent)">FBI NICS for buyers &#8599;</a></div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-l"><div class="step-num">4</div></div>
+        <div class="step-content">
+          <div class="step-title">If Delay Converts to Denial, Move to the Appeal Process</div>
+          <div class="step-body">If the delay resolves as a denial, you have the right to appeal. See Tab 03 for the full denial appeal process, including the VAF and UPIN program.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: AFTER A DENIAL -->
+  <div class="tab-panel" id="tab3">
+
+    <div class="alert warn"><strong>&#9888; A denial is not always the final answer.</strong> NICS error rates are real. Mismatched records, incomplete dispositions, and outdated information are documented causes of wrongful denials. The appeal process exists specifically to correct these errors.</div>
+
+    <div class="section-lbl">What VAF and UPIN Mean</div>
+    <div class="vaf-box">
+      <div class="vaf-title">VAF &mdash; Voluntary Appeal File</div>
+      <div class="vaf-body">The VAF is a program run by the FBI NICS Section that allows individuals who have been <strong>incorrectly denied or repeatedly delayed</strong> to submit documentation proving their eligibility. Once approved, your records are updated so future checks process faster and more accurately.</div>
+      <div class="vaf-def">
+        <strong>UPIN &mdash; Unique Personal Identification Number</strong>
+        After your VAF appeal is approved, the FBI issues you a UPIN &mdash; a personal number you give to the dealer at the time of each purchase. The dealer includes your UPIN on the Form 4473, and NICS uses it to immediately pull your pre-verified record, dramatically reducing delay and denial risk for all future purchases.
+      </div>
+    </div>
+
+    <div class="section-lbl">Common Reasons for Wrongful Denial</div>
+    <div class="card-grid cols-3" style="margin-bottom:1.25rem">
+      <div class="info-card red-l">
+        <div class="ic-title red">Name / DOB Mismatch</div>
+        <div class="ic-body">Your name, date of birth, or other identifiers closely match a prohibited person's record in the system. You are not that person. The record needs to be distinguished from your file.</div>
+      </div>
+      <div class="info-card red-l">
+        <div class="ic-title red">Expunged or Sealed Record</div>
+        <div class="ic-body">A prior conviction was expunged or sealed, but the prohibition record was never removed from NICS databases. The expungement restored your rights &mdash; the system just hasn't caught up.</div>
+      </div>
+      <div class="info-card red-l">
+        <div class="ic-title red">Outdated Mental Health Record</div>
+        <div class="ic-body">An old involuntary commitment or adjudication that no longer applies, was overturned, or was incorrectly entered is still appearing in the system.</div>
+      </div>
+      <div class="info-card red-l">
+        <div class="ic-title red">Domestic Violence Record Error</div>
+        <div class="ic-body">A misdemeanor domestic violence record was entered incorrectly, the conviction was vacated, or the record doesn't meet the federal Lautenberg definition but is still flagging.</div>
+      </div>
+      <div class="info-card red-l">
+        <div class="ic-title red">Felony Dismissed or Reduced</div>
+        <div class="ic-body">A felony charge was dismissed or reduced to a misdemeanor, but the original record remains without the final disposition attached, triggering the denial.</div>
+      </div>
+      <div class="info-card red-l">
+        <div class="ic-title red">Drug Conviction Error</div>
+        <div class="ic-body">A drug conviction record is in the system but you believe it doesn't apply &mdash; either because of jurisdiction, timing, or an error in what was submitted to the federal database.</div>
+      </div>
+    </div>
+
+    <div class="section-lbl">Step-by-Step Appeal Process</div>
+    <div class="steps" style="margin-bottom:1.25rem">
+      <div class="step-row">
+        <div class="step-l"><div class="step-num">1</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">Get Your NTN from the Dealer</div>
+          <div class="step-body">The NICS Transaction Number is issued when the denial occurs. The dealer receives it &mdash; ask them for it immediately. <strong>You have 30 days from the denial date to initiate an appeal.</strong> Don't wait.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-l"><div class="step-num">2</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">Request the Reason for Denial</div>
+          <div class="step-body">Contact the FBI NICS directly to request the reason for your denial. They are required to tell you the type of record that caused the denial (though not every specific detail). This tells you what documentation to gather.<br><br><strong>FBI NICS:</strong> 1-877-444-6427 &nbsp;|&nbsp; <a href="https://www.fbi.gov/how-we-can-help-you/more-fbi-services-and-information/nics/for-potential-buyers" target="_blank" rel="noopener" style="color:var(--accent)">FBI NICS for buyers &#8599;</a></div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-l"><div class="step-num">3</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">Submit a Challenge via the VAF Program</div>
+          <div class="step-body">File a formal challenge with the FBI NICS Voluntary Appeal File. You submit documentation supporting your eligibility. The NICS Section reviews your records and responds with a decision or requests additional information.</div>
+          <div class="step-note">FBI VAF mailing address: FBI NICS Section, Attn: Voluntary Appeal File, P.O. Box 4278, Clarksburg, WV 26302-4278. Online appeal portal available at the FBI link below.</div>
+          <div style="margin-top:.625rem"><a href="https://www.fbi.gov/how-we-can-help-you/more-fbi-services-and-information/nics/for-potential-buyers" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;background:rgba(32,253,240,.08);border:1px solid rgba(32,253,240,.2);border-radius:5px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);text-decoration:none">&#8599; FBI NICS Appeal &amp; VAF Information</a></div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-l"><div class="step-num">4</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">If the Error Is in a State Record &mdash; Contact the State Agency</div>
+          <div class="step-body">If FBI NICS tells you the denial is based on a state record, the FBI may direct you to the state agency that submitted the record. The state must update or correct its own records &mdash; the FBI cannot change state-submitted data. You will need to work with the state court or agency directly to get the record corrected or the disposition updated.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-l"><div class="step-num">5</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">Apply for Your UPIN After VAF Approval</div>
+          <div class="step-body">Once your VAF appeal is approved, the FBI issues you a <strong>Unique Personal Identification Number (UPIN)</strong>. Provide this number to the dealer at each future purchase &mdash; include it on Form 4473. NICS uses it to pull your pre-verified file, which prevents future delays and denials caused by the same record issue.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-l"><div class="step-num">6</div></div>
+        <div class="step-content">
+          <div class="step-title">If Appeals Fail &mdash; Consult a Firearms Attorney</div>
+          <div class="step-body">If you believe you are eligible but the appeal process has not resolved the issue, consult a licensed firearms attorney. In some cases, federal court challenge of a wrongful denial is the next step. An attorney can also help navigate expungement, record sealing, restoration of rights, and other relief options in your state.</div>
+          <div class="step-note">GOA legal resources and state-specific firearms attorneys can assist with appeals beyond the FBI level. See <a href="https://www.gunowners.org" target="_blank" rel="noopener" style="color:var(--accent)">gunowners.org</a> for resources.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-lbl">Appeal Document Checklist</div>
+    <div class="cl-wrap" id="cl-t3">
+      <div class="cl-item" onclick="chk(this,'t3')"><div class="cl-box"></div><div class="cl-text"><strong>NTN written down:</strong> NICS Transaction Number from the dealer at time of denial &mdash; required to initiate an appeal</div></div>
+      <div class="cl-item" onclick="chk(this,'t3')"><div class="cl-box"></div><div class="cl-text"><strong>Denial reason requested:</strong> Called FBI NICS (1-877-444-6427) to get the type of record causing the denial</div></div>
+      <div class="cl-item" onclick="chk(this,'t3')"><div class="cl-box"></div><div class="cl-text"><strong>Personal ID documentation:</strong> Copy of government-issued photo ID showing full legal name, date of birth, and current address</div></div>
+      <div class="cl-item" onclick="chk(this,'t3')"><div class="cl-box"></div><div class="cl-text"><strong>Court disposition records:</strong> Final disposition documents for any prior arrest or charge referenced in the denial &mdash; dismissal, acquittal, reduced charge, or expungement paperwork</div></div>
+      <div class="cl-item" onclick="chk(this,'t3')"><div class="cl-box"></div><div class="cl-text"><strong>Expungement / sealing order:</strong> If your record was expunged or sealed, a certified copy of the court order restoring your rights</div></div>
+      <div class="cl-item" onclick="chk(this,'t3')"><div class="cl-box"></div><div class="cl-text"><strong>Mental health discharge or correction documentation:</strong> If the denial involves a mental health record, documentation that the commitment was voluntary, was overturned, or the adjudication was incorrect</div></div>
+      <div class="cl-item" onclick="chk(this,'t3')"><div class="cl-box"></div><div class="cl-text"><strong>Military discharge records:</strong> DD-214 or other discharge documentation if military service is part of your eligibility argument</div></div>
+      <div class="cl-item" onclick="chk(this,'t3')"><div class="cl-box"></div><div class="cl-text"><strong>VAF appeal form submitted:</strong> Formal challenge submitted to FBI NICS Voluntary Appeal File with all supporting documentation</div></div>
+      <div class="cl-item" onclick="chk(this,'t3')"><div class="cl-box"></div><div class="cl-text"><strong>State record correction initiated (if applicable):</strong> Contacted the state agency or court that submitted the record and started the correction or update process</div></div>
+      <div class="cl-item" onclick="chk(this,'t3')"><div class="cl-box"></div><div class="cl-text"><strong>Copies kept of everything submitted:</strong> Copies of all documents sent to FBI NICS and any state agencies, with dates and confirmation if available</div></div>
+    </div>
+    <div class="cl-prog"><span id="cl-t3-cnt">0 / 10</span><div class="cl-prog-bar"><div class="cl-prog-fill" id="cl-t3-fill" style="width:0%"></div></div></div>
+
+    <div class="alert info"><strong>Your UPIN goes on every Form 4473.</strong> Once issued, never forget to give your UPIN to the dealer before they run the background check. Omitting it means NICS processes you without your pre-verified record, which can trigger the same delay or denial again.</div>
+  </div>
+
+  <div class="quick-links">
+    <div class="ql-title">HexCore Tools</div>
+    <div class="ql-grid">
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/first-time-firearm-buyer-guide"><div class="ql-label">First-Time Buyer Guide</div></a>
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/firearm-law-hub"><div class="ql-label">Firearm Law Hub</div></a>
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/build-legality-scanner"><div class="ql-label">Build Scanner</div></a>
+      <a class="ql-card cur" target="_top" href="https://hexcoremounts.com/pages/firearm-purchase-navigator"><div class="ql-label">Purchase Navigator</div></a>
+    </div>
+  </div>
+  <div class="disclaimer">For general informational purposes only &mdash; not legal advice. Background check laws, state purchase requirements, and appeal processes change. Always verify current requirements with your dealer, the FBI NICS Section, your state agency, and a licensed firearms attorney before making decisions. Data reviewed March 2026. &copy; HexCore Mounts</div>
+</div>
+<footer>&copy; 2026 HexCore Mounts &nbsp;&middot;&nbsp; Atlanta, Georgia &nbsp;&middot;&nbsp; Data reviewed March 2026</footer>
+
+<script>
+// ═══════════════════════════════════
+// STATE DATA (from First-Time Buyer Guide)
+// ═══════════════════════════════════
+const PROFILES = {"Alabama": {"title": "Alabama", "badge": "Straightforward dealer state", "summary": "Alabama does not use a general purchase permit for ordinary firearm sales, so most first-time buyers follow the standard federal dealer path.", "purchaseGate": "Expect ATF Form 4473, current government photo ID, and the standard federal background-check process.", "timing": "Generally simpler than permit-first states.", "documents": "Current government photo ID.", "watch": "Do not confuse Alabama carry-permit rules with purchase rules.", "links": [["Alabama Law Enforcement Agency", "https://www.alea.gov/gun-laws"]]}, "Alaska": {"title": "Alaska", "badge": "Straightforward dealer state", "summary": "Alaska does not use a general purchase permit for ordinary dealer sales. Most buyers follow the standard federal FFL path.", "purchaseGate": "ATF Form 4473, current government photo ID, standard federal background-check process.", "timing": "Generally simpler than permit-first states.", "documents": "Current government photo ID.", "watch": "Carry and dealer-sale rules are related but not identical.", "links": [["Alaska Firearms FAQ", "https://dps.alaska.gov/statewide/r-i/permitslicensing/firearm-faq"]]}, "Arizona": {"title": "Arizona", "badge": "Straightforward dealer state", "summary": "Arizona does not require a state purchase card or permit for ordinary dealer sales.", "purchaseGate": "Standard ATF Form 4473, government photo ID, and federal background-check process.", "timing": "Generally faster than permit-gated states.", "documents": "Current government photo ID.", "watch": "Carry rules are separate from purchase rules.", "links": [["ATF Arizona state laws", "https://www.atf.gov/media/15196/download"]]}, "Arkansas": {"title": "Arkansas", "badge": "Straightforward dealer state", "summary": "Arkansas does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, current photo ID, and standard federal background-check process.", "timing": "Generally simpler than permit-first states.", "documents": "Current government photo ID.", "watch": "Do not mix up carry rules with purchase rules.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "California": {"title": "California", "badge": "Firearm Safety Certificate required", "summary": "California adds a Firearm Safety Certificate requirement for most buyers and a state waiting-period framework before delivery.", "purchaseGate": "Valid Firearm Safety Certificate required for most buyers before purchase or transfer unless an exemption applies.", "timing": "California waiting-period rules can hold the firearm beyond the instant federal check.", "documents": "Photo ID, Firearm Safety Certificate, and any required residency support.", "watch": "Magazine, roster, feature, and other state-specific restrictions can change what is actually transferable.", "links": [["California DOJ FSC info", "https://oag.ca.gov/firearms/fsc"], ["California FSC study guide", "https://oag.ca.gov/system/files/media/fsc-study-guide.pdf"]]}, "Colorado": {"title": "Colorado", "badge": "State InstaCheck system", "summary": "Colorado routes dealer purchases through the Colorado Bureau of Investigation InstaCheck system rather than a direct FBI NICS workflow.", "purchaseGate": "ATF Form 4473, government photo ID, and a CBI InstaCheck background check.", "timing": "Some sales clear quickly; others take longer under the state check.", "documents": "Current government-issued photo ID.", "watch": "A carry permit does not skip the purchase check in Colorado.", "links": [["Colorado Firearms InstaCheck Unit", "https://cbi.colorado.gov/firearms"]]}, "Connecticut": {"title": "Connecticut", "badge": "Permit / certificate state", "summary": "Connecticut requires a qualifying permit or eligibility certificate before many firearm purchases.", "purchaseGate": "State pistol permit, long-gun eligibility certificate, or pistol/revolver eligibility certificate may be required depending on what you are buying.", "timing": "Not a simple walk-in federal check state. Confirm the exact credential path before going to the dealer.", "documents": "Current ID plus the applicable Connecticut permit or certificate documentation.", "watch": "The exact credential needed depends on the firearm type and purchase path.", "links": [["CT firearms portal", "https://portal.ct.gov/Services/Public-Safety/Firearms"], ["CT eligibility certificates", "https://portal.ct.gov/bfpe/common-elements/common-elements/eligibility-certificates"]]}, "Delaware": {"title": "Delaware", "badge": "Handgun permit state", "summary": "Delaware requires a handgun qualified purchaser permit for handgun purchases and transfers.", "purchaseGate": "Delaware residents generally need a valid handgun qualified purchaser permit from the State Bureau of Identification to purchase a handgun.", "timing": "Permit approval is a separate front-end step requiring training, fingerprints, background review, and permit issuance.", "documents": "Current Delaware ID and your valid handgun qualified purchaser permit for handgun transactions.", "watch": "Confirm whether your planned transaction is a handgun transfer that triggers the permit requirement.", "links": [["Delaware State Police permit to purchase", "https://dsp.delaware.gov/permit-to-purchase/"]]}, "District of Columbia": {"title": "District of Columbia", "badge": "Registration-first jurisdiction", "summary": "D.C. requires firearm registration as the first step to lawful possession.", "purchaseGate": "Registration through MPD is central to lawful possession in the District.", "timing": "Expect extra processing compared with a basic dealer purchase state.", "documents": "Review MPD registration eligibility before purchase.", "watch": "Not a casual first-purchase jurisdiction. Check registration, storage, and model restrictions first.", "links": [["MPD firearms registration", "https://mpdc.dc.gov/page/firearm-registration-0b"]]}, "Florida": {"title": "Florida", "badge": "State point-of-contact + 3-day wait", "summary": "Florida dealer sales run through the FDLE Firearm Purchase Program and a 3-day waiting-period framework applies.", "purchaseGate": "ATF Form 4473, government photo ID, and FDLE background check.", "timing": "Florida imposes a 3-day waiting period, excluding weekends and holidays. Counties may extend to 5 days.", "documents": "Valid government-issued photo ID.", "watch": "Local waiting-period ordinances can be longer than the statewide baseline.", "links": [["FDLE firearm purchase program", "https://www.fdle.state.fl.us/fpp"]]}, "Georgia": {"title": "Georgia", "badge": "Federal-check dealer state", "summary": "Georgia does not use a state purchase permit. Licensed dealers contact FBI NICS directly.", "purchaseGate": "ATF Form 4473, current government photo ID, and FBI NICS check.", "timing": "Generally simpler than permit-first states.", "documents": "Current government photo ID.", "watch": "Carry-law changes do not change dealer-sale rules.", "links": [["ATF state law library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "Hawaii": {"title": "Hawaii", "badge": "Permit to acquire state", "summary": "Hawaii uses a permit-to-acquire system. Handguns use single-use permits; long guns can use annual permits.", "purchaseGate": "Permit to acquire before taking possession.", "timing": "Plan around the permit process before scheduling any transfer.", "documents": "Permit paperwork from your county police department plus dealer-requested ID.", "watch": "Confirm whether you are on the handgun or long-gun track before you buy.", "links": [["Hawaii firearms overview", "https://ag.hawaii.gov/cpja/rs/firearms/"]]}, "Idaho": {"title": "Idaho", "badge": "Straightforward dealer state", "summary": "Idaho does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, current government photo ID, and federal background-check flow.", "timing": "Generally more straightforward than permit-first states.", "documents": "Current government photo ID.", "watch": "Carry and dealer-sale rules are not the same thing.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "Illinois": {"title": "Illinois", "badge": "FOID required", "summary": "Illinois residents need a Firearm Owner's Identification (FOID) card to legally possess firearms or ammunition.", "purchaseGate": "FOID card before possession. Illinois State Police administers both FOID and dealer transfer checks.", "timing": "Illinois has a state-administered transfer inquiry program through ISP.", "documents": "Current FOID, current ID, and any matching residency support the dealer asks for.", "watch": "Confirm local restrictions and any waiting-period rules before committing to a transfer.", "links": [["Illinois FOID overview", "https://isp.illinois.gov/Foid/Foid"]]}, "Indiana": {"title": "Indiana", "badge": "Straightforward dealer state", "summary": "Indiana does not use a general purchase permit or buyer card for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, government photo ID, and standard federal background-check procedure.", "timing": "Usually simpler than permit-first states.", "documents": "Current government photo ID.", "watch": "Carry policy and purchase rules are separate.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "Iowa": {"title": "Iowa", "badge": "No permit required (post-2021)", "summary": "Iowa no longer requires a permit to acquire for handgun purchases from an FFL. Standard federal dealer process applies.", "purchaseGate": "Standard ATF Form 4473 and federal background-check process. No state permit required for FFL purchases.", "timing": "Generally simpler since the 2021 reform.", "documents": "Current government photo ID.", "watch": "Federal dealer-sale age rules still apply.", "links": [["Iowa weapon permits overview", "https://dps.iowa.gov/iowa-dps/weapon-permits"]]}, "Kansas": {"title": "Kansas", "badge": "Straightforward dealer state", "summary": "Kansas does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, current government photo ID, and standard federal background-check process.", "timing": "Generally more straightforward than permit-first states.", "documents": "Current government photo ID.", "watch": "Purchase rules still run through the federal FFL framework regardless of carry changes.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "Kentucky": {"title": "Kentucky", "badge": "Straightforward dealer state", "summary": "Kentucky does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, current government photo ID, and standard federal background-check procedure.", "timing": "Usually simpler than permit-first states.", "documents": "Current government photo ID.", "watch": "Carry changes do not erase the federal dealer paperwork and background-check process.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "Louisiana": {"title": "Louisiana", "badge": "Straightforward dealer state", "summary": "Louisiana does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, current photo ID, and standard federal background-check flow.", "timing": "Generally more straightforward than permit-first states.", "documents": "Current government photo ID.", "watch": "Ordinary dealer sales run through the federal FFL framework.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "Maine": {"title": "Maine", "badge": "72-hour waiting period", "summary": "Maine has a 72-hour waiting-period law that changes timing for many first-time purchases.", "purchaseGate": "Standard federal dealer process, but Maine law bars delivery sooner than 72 hours after the agreement to sell in covered transactions.", "timing": "Even a quickly approved background check may not allow same-day delivery due to the waiting period.", "documents": "Current government photo ID.", "watch": "Do not rely on older Maine buying guides that predate the 2024 waiting-period law.", "links": [["Maine waiting-period statute", "https://legislature.maine.gov/legis/statutes/25/title25sec2016.html"]]}, "Maryland": {"title": "Maryland", "badge": "Handgun Qualification License state", "summary": "Maryland requires a Handgun Qualification License (HQL) for most residents before purchasing, renting, or receiving a handgun.", "purchaseGate": "HQL required before a handgun purchase unless exempt.", "timing": "For handgun buyers, the HQL step comes before the dealer handoff.", "documents": "Current ID, HQL if applicable, and any training or exemption documentation.", "watch": "The handgun path and long-gun path are not the same in Maryland.", "links": [["Maryland HQL overview", "https://mdsp.maryland.gov/Organization/Pages/CriminalInvestigationBureau/LicensingDivision/Firearms/HandgunQualificationLicense.aspx"]]}, "Massachusetts": {"title": "Massachusetts", "badge": "License state", "summary": "Massachusetts buyers need to work through their local police department for the resident firearms license or FID process before purchase.", "purchaseGate": "Resident firearms license or firearms identification card through your local police department.", "timing": "Not a same-day first-purchase jurisdiction for most new buyers because the license step comes first.", "documents": "Check your city or town licensing authority requirements before planning a purchase.", "watch": "Use the state firearms services pages and your local licensing authority.", "links": [["Massachusetts firearms services", "https://www.mass.gov/firearms-services"]]}, "Michigan": {"title": "Michigan", "badge": "Pistol paperwork state", "summary": "Michigan uses a purchase-license and pistol-sales-record framework for many handgun transactions.", "purchaseGate": "License-to-purchase / pistol sales record system applies for pistol purchases.", "timing": "Do not treat a Michigan pistol purchase like a pure federal instant-check state.", "documents": "Current photo ID and applicable Michigan pistol paperwork if buying a handgun.", "watch": "Rules are more nuanced for pistols than for ordinary long-gun dealer sales.", "links": [["Michigan pistol licensing statute", "https://legislature.mi.gov/doc.aspx?mcl-28-422="]]}, "Minnesota": {"title": "Minnesota", "badge": "Permit-to-purchase state", "summary": "Minnesota requires a Permit to Purchase or Permit to Carry for many transfers of pistols and semiautomatic military-style assault weapons.", "purchaseGate": "If you do not have a MN Permit to Carry, you generally need a Permit to Purchase for a pistol or covered firearm.", "timing": "Permit applications process through the local police chief or county sheriff. Law requires action within 30 days.", "documents": "Current ID and Permit to Purchase application if no valid Permit to Carry.", "watch": "Minnesota is not a simple same-day dealer state for handguns.", "links": [["MN permit to purchase guide", "https://mn.gov/elicense/a-z/?id=1083-231173"]]}, "Mississippi": {"title": "Mississippi", "badge": "Straightforward dealer state", "summary": "Mississippi does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, government photo ID, and standard federal background-check procedure.", "timing": "Usually simpler than permit-first states.", "documents": "Current government photo ID.", "watch": "Federal dealer paperwork and background check still control the sale path.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "Missouri": {"title": "Missouri", "badge": "Straightforward dealer state", "summary": "Missouri does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, current government photo ID, and standard federal background-check procedure.", "timing": "Generally more straightforward than permit-first states.", "documents": "Current government photo ID.", "watch": "Permitless carry does not remove the federal dealer paperwork and background check.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "Montana": {"title": "Montana", "badge": "Straightforward dealer state", "summary": "Montana does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, current government photo ID, and standard federal background-check procedure.", "timing": "Generally simpler than permit-first states.", "documents": "Current government photo ID.", "watch": "Dealer-sale eligibility and carry rights are related but not the same.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "Nebraska": {"title": "Nebraska", "badge": "Handgun certificate state", "summary": "Nebraska generally requires a handgun purchase certificate before purchasing or receiving a handgun transfer.", "purchaseGate": "Handgun purchase certificate from the chief of police or sheriff. A Nebraska concealed handgun permit can satisfy this requirement.", "timing": "Nebraska law gives the chief of police or sheriff up to 3 days to investigate and issue or deny the certificate.", "documents": "Nebraska ID and handgun purchase certificate application or existing qualifying permit.", "watch": "Nebraska is a partial POC state: FFLs contact FBI for long guns; state-issued permit used for handguns.", "links": [["Nebraska handgun certificate statute", "https://nebraskalegislature.gov/laws/statutes.php?statute=69-2403"]]}, "Nevada": {"title": "Nevada", "badge": "State check system", "summary": "Nevada does not use a general purchase permit for ordinary firearm sales, but buyer should expect the full dealer process.", "purchaseGate": "ATF Form 4473, current government photo ID, and required dealer-run background-check process.", "timing": "Timing still depends on the background-check process at the dealer.", "documents": "Current government photo ID.", "watch": "Carry-permit rules and purchase rules are separate systems.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "New Hampshire": {"title": "New Hampshire", "badge": "Straightforward dealer state", "summary": "New Hampshire does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, current government photo ID, and standard federal background-check flow.", "timing": "Generally simpler than permit-first states.", "documents": "Current government photo ID.", "watch": "Dealer-sale eligibility still runs through the federal FFL framework.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "New Jersey": {"title": "New Jersey", "badge": "FPIC / permit state", "summary": "New Jersey uses a Firearms Purchaser Identification Card and permit-to-purchase structure.", "purchaseGate": "FPIC and/or handgun purchase permit required depending on what you are buying.", "timing": "The application process comes before dealer release for many first-time buyers.", "documents": "Review New Jersey State Police forms and current application instructions before shopping.", "watch": "One approval does not cover every firearm type or every later purchase step.", "links": [["NJ firearms purchaser instructions", "https://nj.gov/njsp/info/pdf/firearms/071614_firearms_appinstruct.pdf"]]}, "New Mexico": {"title": "New Mexico", "badge": "7-day waiting period", "summary": "New Mexico does not use a general purchase permit, but state law imposes a 7-calendar-day waiting period on most transfers.", "purchaseGate": "Standard federal dealer process plus mandatory 7-calendar-day waiting period before transfer in covered sales.", "timing": "Not a same-day state for many first purchases. Plan for the 7-day wait before pickup.", "documents": "Current government photo ID.", "watch": "Do not rely on older guides that predate the 2024 waiting-period law.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "New York": {"title": "New York", "badge": "License state", "summary": "New York requires a pistol/revolver license for handguns and a semiautomatic rifle license for dealer semiauto rifle purchases.", "purchaseGate": "Pistol or revolver license for handguns; semiautomatic rifle license for dealer semiautomatic rifle purchases.", "timing": "Licensing is part of the front-end process. Dealers run background checks through New York State Police.", "documents": "Your county or local licensing officer forms and documentation before trying to buy.", "watch": "Do not rely on generic age charts. The license requirement is the main first-buyer gate.", "links": [["NY State Police pistol/semiauto application", "https://gunsafety.ny.gov/ppb-3-pistolrevolver-license-application"]]}, "North Carolina": {"title": "North Carolina", "badge": "Permit repealed (2023)", "summary": "North Carolina repealed the old pistol purchase permit system in 2023. Ordinary dealer purchase process now applies.", "purchaseGate": "Standard federal 4473 and background-check path. The old sheriff-issued purchase permit is no longer required.", "timing": "More straightforward since the 2023 repeal.", "documents": "Current government photo ID.", "watch": "Confirm you are reading materials published after the 2023 repeal. Outdated guides still circulate.", "links": [["NC pistol purchase permit repeal bill", "https://www.ncleg.gov/BillLookup/2023/H50"]]}, "North Dakota": {"title": "North Dakota", "badge": "Straightforward dealer state", "summary": "North Dakota does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, current government photo ID, and standard federal background-check procedure.", "timing": "Generally simpler than permit-first states.", "documents": "Current government photo ID.", "watch": "Permitless carry does not replace the federal dealer paperwork and background check.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "Ohio": {"title": "Ohio", "badge": "State age rules", "summary": "Ohio does not require a general purchase permit, but Ohio law sets clear state age rules on top of the federal framework.", "purchaseGate": "Standard federal dealer path: photo ID, ATF Form 4473, and standard background-check process.", "timing": "Usually more straightforward than permit-first states.", "documents": "Current government photo ID.", "watch": "For buyers 18-20, the handgun rule is the main tripwire. Long-gun and handgun purchase rules differ.", "links": [["Ohio firearms statutes", "https://codes.ohio.gov/ohio-revised-code/chapter-2923"]]}, "Oklahoma": {"title": "Oklahoma", "badge": "Straightforward dealer state", "summary": "Oklahoma does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, current government photo ID, and standard federal background-check process.", "timing": "Generally more straightforward than permit-first states.", "documents": "Current government photo ID.", "watch": "Carry changes do not erase the federal FFL process for dealer sales.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "Oregon": {"title": "Oregon", "badge": "State FICS background check", "summary": "Oregon runs dealer transfers through the Oregon State Police Firearms Instant Check System (FICS) rather than a direct federal-only NICS workflow.", "purchaseGate": "Dealer transfers run through OSP FICS. Standard Form 4473 and photo ID required.", "timing": "Some transactions clear quickly; others can delay for identity research.", "documents": "Current government photo ID with consistent identifying information.", "watch": "Oregon does not follow a simple federal-only counter process.", "links": [["Oregon State Police FICS", "https://www.oregon.gov/osp/programs/cjis/pages/firearms-instant-check-system.aspx"]]}, "Pennsylvania": {"title": "Pennsylvania", "badge": "PICS state background check", "summary": "Pennsylvania uses the Pennsylvania Instant Check System (PICS) for dealer transfers rather than a direct FBI NICS workflow.", "purchaseGate": "Ordinary dealer purchases run through PICS. Standard Form 4473 and photo ID required.", "timing": "PSP says PICS completes most checks in a few minutes, but not every transaction clears instantly.", "documents": "Current photo ID and transaction details in case you need to challenge a PICS denial or delay.", "watch": "A carry license is not the same as the dealer-transfer purchase process.", "links": [["Pennsylvania firearms information", "https://www.pa.gov/agencies/psp/programs/firearms/firearms-information.html"]]}, "Rhode Island": {"title": "Rhode Island", "badge": "Extra state steps", "summary": "Rhode Island buyers should confirm state purchase paperwork and release timing before purchase.", "purchaseGate": "Check current Rhode Island firearm purchase and dealer-transfer requirements before committing to a sale.", "timing": "Expect state procedures to matter alongside the federal check.", "documents": "Verify the exact current process with the dealer first.", "watch": "This is a state where buyers should verify the exact current process at the dealer first.", "links": [["ATF state law library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "South Carolina": {"title": "South Carolina", "badge": "Straightforward dealer state", "summary": "South Carolina does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, current government photo ID, and standard dealer background-check procedure.", "timing": "Usually simpler than permit-first states.", "documents": "Current government photo ID.", "watch": "The federal dealer transaction is still the key first-buyer step.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "South Dakota": {"title": "South Dakota", "badge": "Straightforward dealer state", "summary": "South Dakota does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, current government photo ID, and standard federal background-check procedure.", "timing": "Generally more straightforward than permit-first states.", "documents": "Current government photo ID.", "watch": "No state purchase card does not remove the federal dealer check.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "Tennessee": {"title": "Tennessee", "badge": "TICS state background check", "summary": "Tennessee dealer transfers run through the Tennessee Instant Check System (TICS) rather than a purely dealer-to-FBI process.", "purchaseGate": "Standard Form 4473 and photo ID, but background check runs through TBI's TICS program.", "timing": "Many transactions clear quickly, but TICS can still produce denials, delays, or appeals.", "documents": "Current government photo ID. Keep your transaction information if you need to appeal.", "watch": "Handgun carry permit rules and dealer-transfer procedure are separate issues.", "links": [["Tennessee TICS background checks", "https://www.tn.gov/tbi/divisions/cjis-division/firearm-background-checks.html"]]}, "Texas": {"title": "Texas", "badge": "Straightforward dealer state", "summary": "Texas is generally a straightforward first-purchase state. No general state purchase permit.", "purchaseGate": "Standard federal 4473 and dealer background-check process for an ordinary FFL purchase.", "timing": "Usually simpler than states that require a permit or card before the dealer counter.", "documents": "Current government photo ID.", "watch": "Permitless carry does not eliminate the federal dealer paperwork and background-check process.", "links": [["Texas State Law Library buying guide", "https://guides.sll.texas.gov/gun-laws/buying-transferring"]]}, "Utah": {"title": "Utah", "badge": "Straightforward dealer state", "summary": "Utah does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, government photo ID, and standard dealer background-check flow.", "timing": "Generally simpler than permit-first states.", "documents": "Current government photo ID.", "watch": "Carry-permit options are separate from the dealer-sale process.", "links": [["Utah concealed firearm permits", "https://bci.utah.gov/concealed-firearm/"]]}, "Vermont": {"title": "Vermont", "badge": "72-hour waiting period", "summary": "Vermont does not use a general purchase permit, but state law imposes a 72-hour waiting period on firearm transfers.", "purchaseGate": "Standard federal dealer process plus mandatory 72-hour waiting period before transfer.", "timing": "Even a quick background-check response can still leave the transfer waiting on the state timing rule.", "documents": "Current government photo ID.", "watch": "Do not rely on older Vermont guides that predate the waiting-period statute.", "links": [["Vermont waiting-period statute", "https://legislature.vermont.gov/statutes/section/13/085/04019a"]]}, "Virginia": {"title": "Virginia", "badge": "Virginia Firearms Transaction Program", "summary": "Virginia uses the Virginia Firearms Transaction Program (VFTP) for dealer-sale background checks.", "purchaseGate": "ATF Form 4473, government photo ID, and VFTP background check through the dealer.", "timing": "Virginia purchases often move quickly when cleared, but VFTP can still delay or deny.", "documents": "Current government photo ID.", "watch": "Virginia has separate dealer-purchase checks and separate concealed-handgun permit rules.", "links": [["Virginia Firearms Transaction Program", "https://vsp.virginia.gov/services/firearms/virginia-firearms-transaction-program/"]]}, "Washington": {"title": "Washington", "badge": "State background check + waiting period", "summary": "Washington routes dealer applications through the state SAFE background check program. State law controls when a dealer may release the firearm.", "purchaseGate": "Washington state background check procedures apply through the Washington State Patrol.", "timing": "Washington law specifies the dealer delivers the firearm once requirements and the waiting period under state law are satisfied.", "documents": "Current ID and readiness for the Washington-specific processing path.", "watch": "Washington regulates many transfers beyond dealer counter sales. Review state rules before buying or arranging a transfer.", "links": [["Washington dealer-delivery law", "https://app.leg.wa.gov/rcw/default.aspx?cite=9.41.090"], ["Washington State Patrol background division", "https://wsp.wa.gov/firearms-background-division/"]]}, "West Virginia": {"title": "West Virginia", "badge": "Straightforward dealer state", "summary": "West Virginia does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, current government photo ID, and standard federal background-check procedure.", "timing": "Generally more straightforward than permit-first states.", "documents": "Current government photo ID.", "watch": "Permitless carry does not remove the federal dealer paperwork and background check.", "links": [["ATF state laws library", "https://www.atf.gov/firearms/tools-and-services-firearms-industry/state-laws-and-published-ordinances-firearms"]]}, "Wisconsin": {"title": "Wisconsin", "badge": "Handgun check state", "summary": "Wisconsin uses a state handgun purchaser record check through the Wisconsin DOJ for handgun sales.", "purchaseGate": "Standard Form 4473 and photo ID, but handgun sales include a Wisconsin DOJ record-check layer.", "timing": "Many transactions are approved quickly, but handgun buyers should be prepared for the Wisconsin-specific step.", "documents": "Current government photo ID.", "watch": "Wisconsin dealer-sale process and concealed-carry licensing are separate systems.", "links": [["Wisconsin DOJ home", "https://www.doj.state.wi.us/"]]}, "Wyoming": {"title": "Wyoming", "badge": "Straightforward dealer state", "summary": "Wyoming does not use a general purchase permit for ordinary firearm sales.", "purchaseGate": "ATF Form 4473, current government photo ID, and standard federal background-check flow.", "timing": "Generally more straightforward than permit-first states.", "documents": "Current government photo ID.", "watch": "Permitless carry does not remove the federal dealer paperwork and background check.", "links": [["Wyoming DCI concealed firearm permits", "https://wyomingdci.wyo.gov/criminal-justice-information-services-cjis/concealed-firearm-permits"]]}};
+const STATES = Object.keys(PROFILES).sort();
+
+// Build state dropdown
+const dd = document.getElementById('state-dd');
+STATES.forEach(s => {
+  const o = document.createElement('div');
+  o.className = 'cs-opt'; o.textContent = s;
+  o.onclick = () => { showState(s); };
+  dd.appendChild(o);
+});
+
+function toggleDrop(ddId, valId, arrId) {
+  const d = document.getElementById(ddId);
+  const a = document.getElementById(arrId);
+  const open = d.style.display === 'block';
+  document.querySelectorAll('.cs-dd').forEach(x => x.style.display = 'none');
+  document.querySelectorAll('.cs-arr').forEach(x => x.style.transform = '');
+  if (!open) { d.style.display = 'block'; if (a) a.style.transform = 'rotate(180deg)'; }
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.cs-wrap')) {
+    document.querySelectorAll('.cs-dd').forEach(x => x.style.display = 'none');
+    document.querySelectorAll('.cs-arr').forEach(x => x.style.transform = '');
+  }
+});
+
+function showState(s) {
+  const p = PROFILES[s]; if (!p) return;
+  const v = document.getElementById('state-val');
+  v.textContent = s; v.classList.add('set');
+  document.getElementById('state-dd').style.display = 'none';
+  document.getElementById('state-arr').style.transform = '';
+  const r = document.getElementById('state-result');
+  const links = (p.links || []).map(l => `<a class="sr-link" href="${l[1]}" target="_blank" rel="noopener">&#8599; ${l[0]}</a>`).join('');
+  r.innerHTML = `
+    <div class="sr-badge">${p.badge}</div>
+    <div class="sr-title">${p.title}</div>
+    <div class="sr-body">${p.summary}</div>
+    <div class="sr-row">
+      <div class="sr-field"><div class="sr-field-lbl">Purchase Gate</div><div class="sr-field-val">${p.purchaseGate}</div></div>
+      <div class="sr-field"><div class="sr-field-lbl">Timing</div><div class="sr-field-val">${p.timing}</div></div>
+    </div>
+    <div class="sr-field" style="margin-bottom:.5rem"><div class="sr-field-lbl">Documents to Bring</div><div class="sr-field-val">${p.documents}</div></div>
+    <div class="sr-field" style="margin-bottom:.625rem;background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.15)"><div class="sr-field-lbl" style="color:#a16207">Watch Out For</div><div class="sr-field-val">${p.watch}</div></div>
+    ${links ? `<div class="sr-links">${links}</div>` : ''}`;
+  r.classList.add('vis');
+}
+
+// Tabs
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  document.querySelector('.main').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Checklists
+function chk(item, tabId) {
+  item.classList.toggle('checked');
+  item.querySelector('.cl-box').textContent = item.classList.contains('checked') ? '\u2713' : '';
+  const wrap = document.getElementById('cl-' + tabId);
+  const items = wrap.querySelectorAll('.cl-item');
+  const checked = wrap.querySelectorAll('.cl-item.checked').length;
+  document.getElementById('cl-' + tabId + '-cnt').textContent = checked + ' / ' + items.length;
+  document.getElementById('cl-' + tabId + '-fill').style.width = (checked / items.length * 100) + '%';
+}
+</script>
+</body>
+</html>
