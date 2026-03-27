@@ -59,12 +59,16 @@ header{width:100%;background:rgba(17,18,20,.96);border-bottom:1px solid var(--bo
 .dc-dot{width:12px;height:12px;border-radius:50%;margin:0 auto .4rem}.dc-dot.green{background:var(--green)}.dc-dot.yellow{background:var(--yellow)}.dc-dot.red{background:var(--red)}
 .dc-label{font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);margin-bottom:.25rem}
 .dc-status{font-family:var(--font-head);font-size:12px;font-weight:900;text-transform:uppercase}.dc-status.green{color:var(--green)}.dc-status.yellow{color:var(--yellow)}.dc-status.red{color:var(--red)}
+.dc-hint{font-size:10px;color:var(--sub);margin-top:.375rem;line-height:1.4;text-align:center}
 .result-row{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1rem 1.125rem;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px}
 .result-row.green{border-left:3px solid var(--green)}.result-row.yellow{border-left:3px solid var(--yellow)}.result-row.red{border-left:3px solid var(--red)}
 .rr-icon{font-size:18px;flex-shrink:0;margin-top:1px;width:28px;text-align:center}
 .rr-title{font-family:var(--font-head);font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;margin-bottom:.25rem}
 .rr-title.green{color:var(--green)}.rr-title.yellow{color:var(--yellow)}.rr-title.red{color:var(--red)}
 .rr-text{font-size:12px;color:var(--sub);line-height:1.6}.rr-text strong{color:var(--text)}
+.rr-fix{margin-top:.75rem;padding:.625rem .875rem;background:rgba(32,253,240,.04);border:1px solid rgba(32,253,240,.15);border-radius:6px}
+.rr-fix-label{font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:.375rem}
+.fix-list{padding-left:14px;display:flex;flex-direction:column;gap:4px}.fix-list li{font-size:12px;color:var(--sub);line-height:1.55}.fix-list li strong{color:var(--text)}.fix-list li a{color:var(--accent)}
 .nfa-box{background:rgba(32,253,240,.04);border:1px solid rgba(32,253,240,.2);border-radius:8px;padding:1rem 1.125rem;margin-top:1rem}
 .nfa-box-title{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.625rem}
 .nfa-steps{display:flex;flex-direction:column;gap:5px}
@@ -237,25 +241,30 @@ footer{border-top:1px solid var(--border);background:var(--dark);padding:1.25rem
 
 <script>
 const STATES=['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
+
 const SBR_BANNED=['California','New York','New Jersey','Massachusetts','Hawaii','Illinois','Rhode Island','District of Columbia'];
 const SUPP_BANNED=['California','Hawaii','Illinois','Maryland','Massachusetts','New Jersey','New York','Rhode Island','District of Columbia'];
-const SUPP_RESTRICTED=['Connecticut','Minnesota','Pennsylvania'];
+const SUPP_RESTRICTED={
+  'Connecticut':'Suppressors are legal in Connecticut with federal NFA Form 4 approval plus mandatory state registration with DESPP. Hunting with a suppressor is prohibited under CT law. Contact a licensed CT NFA dealer before purchasing.',
+  'Minnesota':'Suppressors are legal in Minnesota with federal NFA Form 4 approval plus a state transfer permit from your local chief of police or county sheriff. Hunting with a suppressor is prohibited. Apply for the state permit before completing the Form 4.',
+  'Pennsylvania':'Suppressors are legal in Pennsylvania with federal NFA Form 4 approval. However, hunting with a suppressor is prohibited under the PA Game and Wildlife Code. No additional state registration is required beyond federal Form 4.'
+};
 const AWB={
-  'California':{name:'Assault Weapons Control Act',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','thumbhole stock','detachable mag with any feature']},
-  'New York':{name:'NY SAFE Act',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','bayonet lug','thumbhole stock']},
-  'New Jersey':{name:'NJ Assault Firearms Law',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','bayonet lug']},
-  'Maryland':{name:'Maryland Assault Weapons Ban',magLimit:10,features:['pistol grip','adjustable/folding stock','flash hider','grenade launcher','bayonet lug','thumbhole stock']},
-  'Massachusetts':{name:'MA Assault Weapons Ban',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','bayonet lug','thumbhole stock']},
-  'Connecticut':{name:'CT Assault Weapons Ban',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','bayonet lug','thumbhole stock']},
-  'Hawaii':{name:'Hawaii Assault Pistols Ban',magLimit:10,features:['pistol grip on pistol']},
-  'Illinois':{name:'Protect Illinois Communities Act (PICA)',magLimit:15,features:['pistol grip','adjustable stock','flash hider','grenade launcher','bayonet lug','thumbhole stock','detachable mag']},
-  'Colorado':{name:'Colorado Magazine Limit (HB21-1298)',magLimit:15,features:[]},
-  'Washington':{name:'WA Assault Weapons Ban (SB 5215)',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','thumbhole stock']},
-  'Rhode Island':{name:'RI Assault Weapons Ban (2025)',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','thumbhole stock']},
-  'Delaware':{name:'Delaware Assault Weapons Ban (2022)',magLimit:17,features:['pistol grip','adjustable stock','flash hider','grenade launcher','thumbhole stock']},
-  'Vermont':{name:'Vermont Magazine Limit',magLimit:15,features:[]},
-  'District of Columbia':{name:'DC Assault Weapons & Magazine Ban',magLimit:10,features:['pistol grip','adjustable stock','flash hider','grenade launcher','bayonet lug']},
-  'Minnesota':{name:'MN Magazine Restriction (enacted 2023)',magLimit:15,features:[]},
+  'California':{name:'CA Assault Weapons Control Act',magLimit:10,bannedFeats:['pistol grip','adjustable stock','flash hider','grenade launcher mount','thumbhole stock','bayonet lug']},
+  'New York':{name:'NY SAFE Act',magLimit:10,bannedFeats:['pistol grip','adjustable/folding stock','flash hider','grenade launcher mount','bayonet lug','thumbhole stock']},
+  'New Jersey':{name:'NJ Assault Firearms Law',magLimit:10,bannedFeats:['pistol grip','adjustable/folding stock','flash hider','grenade launcher mount','bayonet lug','thumbhole stock']},
+  'Maryland':{name:'MD Assault Weapons Ban',magLimit:10,bannedFeats:['pistol grip','adjustable/folding stock','flash hider','grenade launcher mount','bayonet lug','thumbhole stock']},
+  'Massachusetts':{name:'MA Assault Weapons Ban',magLimit:10,bannedFeats:['pistol grip','adjustable stock','flash hider','grenade launcher mount','bayonet lug','thumbhole stock']},
+  'Connecticut':{name:'CT Assault Weapons Ban',magLimit:10,bannedFeats:['pistol grip','adjustable/folding stock','flash hider','grenade launcher mount','bayonet lug','thumbhole stock']},
+  'Hawaii':{name:'Hawaii Assault Pistols Ban',magLimit:10,bannedFeats:['pistol grip on pistol platform']},
+  'Illinois':{name:'Protect Illinois Communities Act (PICA)',magLimit:15,bannedFeats:['pistol grip','adjustable/folding stock','flash hider','grenade launcher mount','bayonet lug','thumbhole stock','detachable mag on semi-auto']},
+  'Colorado':{name:'CO Magazine Limit (HB21-1298)',magLimit:15,bannedFeats:[]},
+  'Washington':{name:'WA Assault Weapons Ban (SB 5215)',magLimit:10,bannedFeats:['pistol grip','adjustable/folding stock','flash hider','grenade launcher mount','thumbhole stock']},
+  'Rhode Island':{name:'RI Assault Weapons Ban (2025)',magLimit:10,bannedFeats:['pistol grip','adjustable/folding stock','flash hider','grenade launcher mount','thumbhole stock']},
+  'Delaware':{name:'DE Assault Weapons Ban (2022)',magLimit:17,bannedFeats:['pistol grip','adjustable/folding stock','flash hider','grenade launcher mount','thumbhole stock']},
+  'Vermont':{name:'VT Magazine Limit',magLimit:15,bannedFeats:[]},
+  'District of Columbia':{name:'DC Assault Weapons & Magazine Ban',magLimit:10,bannedFeats:['pistol grip','adjustable/folding stock','flash hider','grenade launcher mount','bayonet lug']},
+  'Minnesota':{name:'MN Magazine Restriction (2023)',magLimit:15,bannedFeats:[]},
 };
 
 let sel={state:'',type:'',rear:'',suppressor:false};
@@ -302,6 +311,17 @@ function setSuppressor(el,onId,offId,val){
   sel.suppressor=val;
 }
 
+// ─────────────────────────────────────────
+// RESULT ROW BUILDER — supports fix blocks
+// ─────────────────────────────────────────
+function makeRow(color, icon, title, body, fix=''){
+  const fixHtml = fix ? `<div class="rr-fix"><div class="rr-fix-label">&#9654; How to Fix This</div>${fix}</div>` : '';
+  return `<div class="result-row ${color}"><div class="rr-icon">${icon}</div><div style="flex:1"><div class="rr-title ${color}">${title}</div><div class="rr-text">${body}</div>${fixHtml}</div></div>`;
+}
+
+// ─────────────────────────────────────────
+// MAIN SCAN
+// ─────────────────────────────────────────
 function runScan(){
   const barrel=parseFloat(document.getElementById('barrel').value)||0;
   const oal=parseFloat(document.getElementById('oal').value)||0;
@@ -316,114 +336,313 @@ function runScan(){
   const awb=AWB[state]||null;
   const sbrBanned=SBR_BANNED.includes(state);
   const suppBanned=SUPP_BANNED.includes(state);
-  const suppRestricted=SUPP_RESTRICTED.includes(state);
+  const suppRestrictedNote=SUPP_RESTRICTED[state]||null;
   const magLimit=awb?awb.magLimit:999;
   const isRifle=sel.type==='rifle';
   const isPistol=sel.type==='pistol';
   const isShotgun=sel.type==='shotgun';
   const hasShoulder=sel.rear==='stock-fixed'||sel.rear==='stock-adj';
+  const hasAdj=sel.rear==='stock-adj';
   const hasBrace=sel.rear==='brace';
-  const barrelMinRifle=16,barrelMinShotgun=18,oalMin=26;
-  const barrelOk=isShotgun?barrel>=barrelMinShotgun:barrel>=barrelMinRifle;
+  const noRear=sel.rear==='none';
+  const barrelMinRifle=16, barrelMinShotgun=18, oalMin=26;
+  const barrelMin=isShotgun?barrelMinShotgun:barrelMinRifle;
+  const barrelOk=barrel>=barrelMin;
   const oalOk=oal>=oalMin;
   const hasVFG=feats['fv'];
 
-  // Classification
-  let fedClass='',nfaRequired=false,classColor='green';
+  // ── Classification ──
+  let fedClass='', nfaRequired=false, classColor='green';
+
   if(isRifle){
-    if(hasShoulder&&barrelOk&&oalOk)fedClass='Title I Rifle';
+    if(hasShoulder&&barrelOk&&oalOk) fedClass='Title I Rifle';
     else if(hasShoulder&&(!barrelOk||!oalOk)){fedClass='Short Barrel Rifle (SBR)';nfaRequired=true;classColor='red';}
-    else if(hasBrace){fedClass=barrelOk&&oalOk?'Rifle w/ Brace (Legal)':'SBR Risk — Verify';classColor=barrelOk&&oalOk?'green':'yellow';}
-    else{fedClass='Rifle — No Stock';classColor='yellow';}
+    else if(hasBrace){
+      if(barrelOk&&oalOk){fedClass='Rifle w/ Brace (Legal)';classColor='green';}
+      else{fedClass='SBR Risk — Verify';classColor='yellow';}
+    }
+    else{fedClass='Rifle — No Stock / Brace';classColor='yellow';}
   } else if(isPistol){
-    if(hasShoulder){if(barrelOk&&oalOk)fedClass='Rifle (pistol+stock)';else{fedClass='Short Barrel Rifle (SBR)';nfaRequired=true;classColor='red';}}
-    else if(hasVFG){fedClass='AOW (Any Other Weapon)';nfaRequired=true;classColor='red';}
+    if(hasShoulder){
+      if(barrelOk&&oalOk) fedClass='Rifle (pistol+stock, legal length)';
+      else{fedClass='Short Barrel Rifle (SBR)';nfaRequired=true;classColor='red';}
+    } else if(hasVFG){fedClass='AOW (Any Other Weapon)';nfaRequired=true;classColor='red';}
     else fedClass=hasBrace?'Pistol w/ Brace':'Pistol';
   } else if(isShotgun){
-    if(hasShoulder&&barrelOk&&oalOk)fedClass='Title I Shotgun';
+    if(hasShoulder&&barrelOk&&oalOk) fedClass='Title I Shotgun';
     else if(hasShoulder&&(!barrelOk||!oalOk)){fedClass='Short Barrel Shotgun (SBS)';nfaRequired=true;classColor='red';}
     else fedClass='Pistol-Grip Shotgun';
   }
 
-  // Dim check cards
-  const magColor=mag<=0?'green':mag<=magLimit?'green':mag<=magLimit+5?'yellow':'red';
-  const magText=mag<=0?'N/A':`${mag} rds${mag>magLimit?' — OVER LIMIT':''}`;
+  // ── Dim checks ──
+  const barrelNeeded=barrelOk?0:(barrelMin-barrel).toFixed(1);
+  const oalNeeded=oalOk?0:(oalMin-oal).toFixed(1);
+  const magColor=mag<=0?'green':mag>magLimit&&magLimit<999?'red':mag>(magLimit-3)&&magLimit<999?'yellow':'green';
+  const magText=mag<=0?'N/A':`${mag} rds${mag>magLimit&&magLimit<999?' — OVER LIMIT':''}`;
   const nfaColor=nfaRequired?(sbrBanned?'red':'yellow'):'green';
-  document.getElementById('dim-checks').innerHTML=[
-    {l:'Barrel',c:barrelOk?'green':'red',t:`${barrel}"${!barrelOk?' UNDER MIN':''}`},
-    {l:'OAL',c:oalOk?'green':'red',t:`${oal}"${!oalOk?' UNDER MIN':''}`},
-    {l:'Magazine',c:magColor,t:magText},
-    {l:'NFA',c:nfaColor,t:nfaRequired?'Required':'Not Required'},
-  ].map(d=>`<div class="dc-item ${d.c}"><div class="dc-dot ${d.c}"></div><div class="dc-label">${d.l}</div><div class="dc-status ${d.c}">${d.t}</div></div>`).join('');
 
-  // Build result rows
-  let rows=[];
+  const dims=[
+    {
+      l:'Barrel',c:barrelOk?'green':'red',
+      t:`${barrel}"${!barrelOk?' — UNDER MIN':''}`,
+      hint:!barrelOk?`Min is ${barrelMin}". You need <strong>${barrelNeeded}" more</strong>. Option: pin/weld a muzzle device to legally extend barrel length.`:''
+    },
+    {
+      l:'OAL',c:oalOk?'green':'red',
+      t:`${oal}"${!oalOk?' — UNDER MIN':''}`,
+      hint:!oalOk?`Min is ${oalMin}". You need <strong>${oalNeeded}" more</strong>. Measure with stock or brace fully extended.`:''
+    },
+    {
+      l:'Magazine',c:magColor,
+      t:magText,
+      hint:mag>magLimit&&magLimit<999?`${state} limit is <strong>${magLimit} rds</strong>. Replace with a compliant magazine.`:mag>(magLimit-3)&&magLimit<999?`Within ${magLimit-mag} rounds of ${state}'s ${magLimit}-rd limit.`:''
+    },
+    {
+      l:'NFA',c:nfaColor,
+      t:nfaRequired?'Required':'Not Required',
+      hint:nfaRequired&&sbrBanned?`${state} bans this — ATF cannot approve.`:nfaRequired?'Form 1 (build) or Form 4 (purchase) required before possession.':''
+    },
+  ];
+  document.getElementById('dim-checks').innerHTML=dims.map(d=>`<div class="dc-item ${d.c}"><div class="dc-dot ${d.c}"></div><div class="dc-label">${d.l}</div><div class="dc-status ${d.c}">${d.t}</div>${d.hint?`<div class="dc-hint">${d.hint}</div>`:''}</div>`).join('');
 
-  // Federal classification
-  rows.push({c:classColor,i:classColor==='green'?'✓':classColor==='yellow'?'⚠':'⛔',t:`Federal: ${fedClass}`,b:getFedText(fedClass,nfaRequired,barrel,oal,state,sbrBanned,hasBrace)});
+  // ── Result rows ──
+  let html='';
 
-  // State NFA ban
+  // ── 1. Federal classification ──
+  html += makeRow(classColor, classColor==='green'?'✓':classColor==='yellow'?'⚠':'⛔', `Federal: ${fedClass}`, getFedBody(fedClass,barrel,oal,barrelMin,oalMin,state,sbrBanned), getFedFix(fedClass,barrel,oal,barrelMin,oalMin,sbrBanned,state,isPistol,isRifle,isShotgun));
+
+  // ── 2. State NFA ──
   if(nfaRequired){
-    if(sbrBanned)rows.push({c:'red',i:'⛔',t:`${state} — NFA Item Banned`,b:`${state} prohibits civilian ownership of ${fedClass.includes('Shotgun')?'SBS':'SBR'}s regardless of federal NFA compliance. Possession is a state crime. Legal options: modify to Title I configuration or relocate.`});
-    else rows.push({c:'yellow',i:'⚠',t:`${state} — NFA Registration Required`,b:`${state} allows NFA-compliant ownership. <strong>ATF Form ${isRifle||isPistol?'1 (build) or 4 (purchase)':'1 or 4'} must be approved before this configuration exists or is possessed.</strong> $0 tax stamp as of Jan 1, 2026.`});
-  }
-
-  // AWB features
-  if(awb){
-    const activeFeats=[];
-    if(feats['fp'])activeFeats.push('pistol grip / thumbhole stock');
-    if(feats['ff'])activeFeats.push('flash hider');
-    if(feats['fv'])activeFeats.push('vertical foregrip');
-    if(feats['fg'])activeFeats.push('grenade launcher mount');
-    if(feats['fb'])activeFeats.push('bayonet lug');
-    if(feats['fd'])activeFeats.push('detachable magazine');
-    if(activeFeats.length>0){
-      rows.push({c:'red',i:'⛔',t:`${state} — Assault Weapon Features Detected`,b:`Under the <strong>${awb.name}</strong>, this firearm may be classified as a banned assault weapon based on: <strong>${activeFeats.join(', ')}</strong>. Possession, sale, and transfer of newly configured assault weapons is prohibited. Consult a firearms attorney before this configuration is assembled or possessed in ${state}.`});
-    } else if(isRifle){
-      rows.push({c:'yellow',i:'⚠',t:`${state} — AWB Active, No Banned Features Selected`,b:`${state} has an assault weapons ban (${awb.name}) but none of your selected features are on the banned list. If your rifle has additional features not captured here, verify against the statute. Always confirm current law.`});
+    const itemName=fedClass.includes('Shotgun')?'SBS':'SBR';
+    if(sbrBanned){
+      html+=makeRow('red','⛔',`${state} — ${itemName} Banned`,
+        `${state} prohibits civilian ${itemName} ownership regardless of federal NFA compliance. Possession is a state crime even with an approved federal Form 4.`,
+        `<ul class="fix-list">
+          <li>Modify to <strong>Title I configuration</strong>: barrel ≥${barrelMin}" <em>and</em> OAL ≥${oalMin}" with a shoulder stock — removes NFA classification entirely</li>
+          ${isRifle?`<li><strong>14.5" barrel + pinned/welded muzzle device</strong> totaling ≥16" is a legal alternative — no NFA required</li>`:''}
+          ${isPistol&&!hasShoulder?`<li><strong>Remove the stock</strong> — returns the firearm to pistol classification (no NFA)</li>`:''}
+          <li>Relocate to a state that permits NFA items — all surrounding states to most restricted states allow NFA with federal Form 4</li>
+        </ul>`
+      );
+    } else {
+      html+=makeRow('yellow','⚠',`${state} — NFA Registration Required`,
+        `${state} allows NFA-compliant ${itemName} ownership. <strong>ATF Form 1 (build/convert) or Form 4 (purchase) must be approved before this configuration is assembled or possessed.</strong> $0 tax stamp as of Jan 1, 2026.`,
+        `<ul class="fix-list">
+          <li>File <strong>ATF eForm 1</strong> if you are converting or building — submit at <a href="https://eforms.atf.gov" target="_blank" style="color:var(--accent)">eForms.atf.gov</a></li>
+          <li>File <strong>ATF eForm 4</strong> if purchasing a manufactured NFA item from a dealer</li>
+          <li>Do <strong>not</strong> assemble this configuration until your approval letter arrives — possession before approval is a federal felony</li>
+          <li>eForm approvals running days–weeks in early 2026. Full guide: <a href="https://hexcoremounts.com/pages/nfa-process-hub" target="_top" style="color:var(--accent)">NFA Process Hub &#8594;</a></li>
+        </ul>`
+      );
     }
   }
 
-  // Magazine
+  // ── 3. Adjustable stock in AWB state (catches the case where user selected adj stock but didn't check "adjustable stock" in features) ──
+  if(hasAdj && awb && awb.bannedFeats.some(f=>f.includes('adjustable')||f.includes('folding'))){
+    html+=makeRow('red','⛔',`${state} — Adjustable / Folding Stock Is a Banned Feature`,
+      `Under the <strong>${awb.name}</strong>, an adjustable or folding stock is explicitly listed as a banned feature on semi-automatic rifles. Your selected rear configuration triggers this restriction independently of the features checklist below.`,
+      `<ul class="fix-list">
+        <li>Replace with a <strong>fixed, non-adjustable stock</strong> that does not collapse or fold</li>
+        <li>Be aware that ${state}'s law may also restrict other features in combination — verify the full feature list for your specific platform</li>
+        <li>Consult a licensed ${state} firearms attorney before building or purchasing</li>
+      </ul>`
+    );
+  }
+
+  // ── 4. AWB features ──
+  if(awb){
+    const featMap=[
+      {key:'fp',label:'pistol grip / thumbhole stock',fix:'Replace with a <strong>featureless grip</strong> (fin grip, shark fin, or similar state-compliant grip) that does not allow a pistol-style hold'},
+      {key:'ff',label:'flash hider',fix:'Replace with a <strong>muzzle brake or compensator</strong> — these are generally not banned features. A bare threaded muzzle with no device is also compliant in most AWB states'},
+      {key:'fv',label:'vertical foregrip',fix:'Replace with an <strong>angled foregrip</strong> — angled grips are generally not classified as vertical foregrips under AWB laws and do not trigger AOW classification on pistols'},
+      {key:'fg',label:'grenade / flare launcher mount',fix:'<strong>Remove the launcher mount</strong> — this is a banned feature with no compliant substitute'},
+      {key:'fb',label:'bayonet lug',fix:'<strong>Remove or permanently block the bayonet lug</strong> — many featureless conversion kits eliminate the lug as part of the package'},
+      {key:'fd',label:'detachable magazine',fix:'Some AWB states ban semi-auto rifles with <em>both</em> a detachable magazine <em>and</em> any other banned feature — not the mag alone. If detachable mag is the only issue, verify the exact "two-feature" vs "one-feature" test for '+state},
+    ];
+    const activeFeats=featMap.filter(f=>feats[f.key]);
+    if(activeFeats.length>0 && !(hasAdj && awb.bannedFeats.some(f=>f.includes('adjustable')||f.includes('folding')) && activeFeats.length===0)){
+      const featNames=activeFeats.map(f=>f.label);
+      const fixItems=activeFeats.map(f=>`<li>${f.fix}</li>`).join('');
+      html+=makeRow('red','⛔',`${state} — Assault Weapon Features Detected`,
+        `Under the <strong>${awb.name}</strong>, this firearm may be classified as a banned assault weapon. Features triggering this: <strong>${featNames.join(', ')}</strong>. Possession, manufacture, and transfer of newly configured assault weapons is prohibited in ${state}.`,
+        `<ul class="fix-list">${fixItems}<li>A licensed ${state} firearms attorney can confirm whether your specific platform qualifies for any exemption or grandfather clause</li></ul>`
+      );
+    } else if(activeFeats.length===0 && isRifle && !hasAdj){
+      const featList=awb.bannedFeats.length>0?awb.bannedFeats.join(', '):'see state statute';
+      html+=makeRow('yellow','⚠',`${state} — AWB Active, No Banned Features Detected`,
+        `${state} has an assault weapons ban (${awb.name}) but none of your selected features appear on the banned list. <strong>Verify your build against the full statute</strong> — banned features include: ${featList}.`,
+        ''
+      );
+    }
+  }
+
+  // ── 5. Magazine ──
   if(mag>0){
-    if(mag>magLimit&&magLimit<999)rows.push({c:'red',i:'⛔',t:`${state} — Magazine Limit Exceeded (${magLimit}-rd limit)`,b:`${state} limits magazine capacity to <strong>${magLimit} rounds</strong>. Your magazine (${mag} rounds) exceeds this limit. Possession of oversized magazines is prohibited in ${state} — this applies to both purchase and importing existing magazines from other states.`});
-    else if(magLimit<999)rows.push({c:'green',i:'✓',t:`Magazine — Within ${state}'s ${magLimit}-Round Limit`,b:`Your magazine (${mag} rounds) is within ${state}'s ${magLimit}-round limit. Federal law has no magazine capacity restriction.`});
-    else rows.push({c:'green',i:'✓',t:'Magazine — No State Restriction',b:`${state} has no magazine capacity restriction. Your ${mag}-round magazine is legal. Federal law has no magazine capacity limit.`});
+    if(mag>magLimit&&magLimit<999){
+      html+=makeRow('red','⛔',`${state} — Magazine Limit Exceeded`,
+        `${state} limits magazine capacity to <strong>${magLimit} rounds</strong>. Your magazine (${mag} rounds) exceeds this by ${mag-magLimit} rounds. Possession of over-limit magazines is prohibited — this includes importing magazines you already own from another state.`,
+        `<ul class="fix-list">
+          <li>Use only magazines with a capacity of <strong>${magLimit} rounds or fewer</strong> when in ${state}</li>
+          <li>Many manufacturers offer <strong>${magLimit}-round blocked or purpose-built magazines</strong> for your platform</li>
+          <li>Magazines manufactured before the state's ban date may be grandfathered — <strong>verify the specific date and grandfather provision</strong> in ${state}'s law with an attorney</li>
+          <li>Transporting over-limit magazines <em>through</em> ${state} may also be prohibited — check state law before any interstate travel</li>
+        </ul>`
+      );
+    } else if(magLimit<999 && mag>(magLimit-3)){
+      html+=makeRow('yellow','⚠',`Magazine — Close to ${state}'s ${magLimit}-Round Limit`,
+        `Your magazine (${mag} rounds) is within ${state}'s ${magLimit}-round limit but within 3 rounds of the cap. If you use multiple magazine types, confirm all stay at or below ${magLimit} rounds.`,''
+      );
+    } else if(magLimit<999){
+      html+=makeRow('green','✓',`Magazine — Within ${state}'s ${magLimit}-Round Limit`,
+        `Your ${mag}-round magazine is within ${state}'s ${magLimit}-round limit. Federal law has no magazine capacity restriction.`,''
+      );
+    } else {
+      html+=makeRow('green','✓','Magazine — No State Restriction',
+        `${state} has no magazine capacity restriction. Your ${mag}-round magazine is legal. Federal law has no magazine capacity limit.`,''
+      );
+    }
   }
 
-  // Suppressor
+  // ── 6. Suppressor ──
   if(sel.suppressor){
-    if(suppBanned)rows.push({c:'red',i:'⛔',t:`${state} — Suppressor Banned`,b:`${state} prohibits civilian suppressor ownership. Federal NFA Form 4 compliance does not override this state ban.`});
-    else if(suppRestricted)rows.push({c:'yellow',i:'⚠',t:`${state} — Suppressor: Additional State Steps Required`,b:`Suppressors are legal in ${state} with federal NFA Form 4 approval, but ${state} has additional state-level requirements beyond the federal process. Verify with a licensed NFA dealer before purchasing.`});
-    else rows.push({c:'green',i:'✓',t:`Suppressor — Legal in ${state} with NFA Form 4`,b:`${state} allows civilian suppressor ownership with federal Form 4 approval. File ATF eForm 4 through a licensed Class III dealer. $0 tax stamp as of Jan 1, 2026. Do not possess until your approved Form 4 is in hand.`});
+    if(suppBanned){
+      html+=makeRow('red','⛔',`${state} — Suppressor Banned`,
+        `${state} prohibits civilian suppressor ownership. Federal NFA Form 4 approval does not override this state ban — possession is a state crime regardless of federal compliance.`,
+        `<ul class="fix-list">
+          <li>You cannot legally own a suppressor while residing in ${state}</li>
+          <li>If you move to a permitting state, you can then file ATF Form 4 — your state of residence at time of approval is what controls</li>
+          <li>Suppressors owned before the ban date may be grandfathered in some states — verify with a local attorney</li>
+        </ul>`
+      );
+    } else if(suppRestrictedNote){
+      html+=makeRow('yellow','⚠',`${state} — Suppressor: Additional State Steps Required`,
+        suppRestrictedNote,
+        `<ul class="fix-list">
+          <li>Complete the <strong>federal NFA Form 4</strong> process first through a licensed Class III dealer</li>
+          <li>Complete <strong>${state}'s additional state requirement</strong> as described above before taking possession</li>
+          <li><a href="https://hexcoremounts.com/pages/nfa-process-hub" target="_top" style="color:var(--accent)">Full NFA process walkthrough &#8594;</a></li>
+        </ul>`
+      );
+    } else {
+      html+=makeRow('green','✓',`Suppressor — Legal in ${state} with NFA Form 4`,
+        `${state} allows civilian suppressor ownership with federal Form 4 approval. File ATF eForm 4 through a licensed Class III dealer. $0 tax stamp as of Jan 1, 2026. Do not possess until your approved Form 4 is in hand.`,''
+      );
+    }
   }
 
-  // AOW note
-  if(hasVFG&&isPistol)rows.push({c:'red',i:'⛔',t:'AOW — Vertical Foregrip on Pistol',b:'A vertical foregrip on a pistol creates an Any Other Weapon (AOW) requiring ATF Form 1 before possession. An <strong>angled</strong> foregrip does NOT create an AOW — it is legal on a pistol without NFA registration.'});
+  // ── 7. AOW ──
+  if(hasVFG&&isPistol){
+    html+=makeRow('red','⛔','AOW — Vertical Foregrip on Pistol',
+      'A vertical foregrip on a pistol creates an Any Other Weapon (AOW) under 26 USC § 5845(e). This is an NFA item requiring ATF Form 1 approval before the foregrip is attached.',
+      `<ul class="fix-list">
+        <li><strong>Replace with an angled foregrip</strong> — angled foregrips do not create AOW classification and are legal on pistols without NFA registration</li>
+        <li>If you want to keep the vertical foregrip, file <strong>ATF eForm 1</strong> and receive approval before attaching it</li>
+        <li>Do not attach a vertical foregrip to the pistol while the Form 1 is pending — possession triggers NFA violation</li>
+      </ul>`
+    );
+  }
 
-  document.getElementById('result-rows').innerHTML=rows.map(r=>`<div class="result-row ${r.c}"><div class="rr-icon">${r.i}</div><div><div class="rr-title ${r.c}">${r.t}</div><div class="rr-text">${r.b}</div></div></div>`).join('');
+  // ── 8. Gray area: Rifle with no stock and no brace ──
+  if(isRifle && noRear){
+    html+=makeRow('yellow','⚠','Rifle Receiver — No Stock, No Brace',
+      'A rifle receiver without any stock or brace occupies a legal gray area. It cannot legally be a "pistol" (it was manufactured as a rifle) and without a shoulder stock it may not fully meet the "designed to be fired from the shoulder" definition of an SBR. Do not add a vertical foregrip — that creates an AOW.',
+      `<ul class="fix-list">
+        <li>Add a <strong>fixed or adjustable shoulder stock</strong> — if barrel ≥16" and OAL ≥26", this becomes a legal Title I rifle</li>
+        <li>Add a <strong>pistol stabilizing brace</strong> — legal under current 2026 enforcement (brace rule vacated), does not create SBR</li>
+        <li>Do <strong>not</strong> add a vertical foregrip — this would create an AOW requiring NFA Form 1</li>
+        <li>If barrel is under 16": add a stock only after filing and receiving ATF Form 1 approval</li>
+      </ul>`
+    );
+  }
 
-  // NFA process box
-  document.getElementById('nfa-box-wrap').innerHTML=nfaRequired&&!sbrBanned?`<div class="nfa-box"><div class="nfa-box-title">&#9654; NFA Process — Next Steps</div><div class="nfa-steps"><div class="nfa-step"><strong>$0 Tax Stamp:</strong> Eliminated Jan 1, 2026. You still file — the fee is just $0.</div><div class="nfa-step">Use <strong>Form 1</strong> to make/convert an NFA item, or <strong>Form 4</strong> to purchase a manufactured NFA item. Submit via ATF eForms at eForms.atf.gov.</div><div class="nfa-step"><strong>Do not assemble or possess this configuration until ATF approval arrives.</strong> Possession before approval is a federal felony regardless of wait time.</div><div class="nfa-step">eForm approvals running days to a few weeks in early 2026 for most applications.</div><div class="nfa-step">Full process walkthrough: <a target="_top" href="https://hexcoremounts.com/pages/nfa-process-hub" style="color:var(--accent)">HexCore NFA Process Hub &#8594;</a></div></div></div>`:'';
+  document.getElementById('result-rows').innerHTML=html;
+
+  // ── NFA process box ──
+  document.getElementById('nfa-box-wrap').innerHTML=nfaRequired&&!sbrBanned?`<div class="nfa-box"><div class="nfa-box-title">&#9654; NFA Process — Next Steps</div><div class="nfa-steps"><div class="nfa-step"><strong>$0 Tax Stamp:</strong> Eliminated Jan 1, 2026. You still file — the fee is $0.</div><div class="nfa-step">Use <strong>Form 1</strong> to make/convert an NFA item, or <strong>Form 4</strong> to purchase a manufactured NFA item. Submit at <a href="https://eforms.atf.gov" target="_blank" style="color:var(--accent)">eForms.atf.gov</a>.</div><div class="nfa-step"><strong>Do not assemble or possess this configuration until ATF approval arrives.</strong> Possession before approval is a federal felony regardless of wait time.</div><div class="nfa-step">eForm approvals running days to a few weeks in early 2026 for most applications.</div><div class="nfa-step">Full guide: <a target="_top" href="https://hexcoremounts.com/pages/nfa-process-hub" style="color:var(--accent)">HexCore NFA Process Hub &#8594;</a></div></div></div>`:'';
 
   document.getElementById('res-state').textContent=state;
   const el=document.getElementById('results');el.classList.add('visible');
   el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function getFedText(cls,nfa,barrel,oal,state,banned,brace){
-  if(cls==='Title I Rifle')return`Barrel ≥16" and OAL ≥26" with a shoulder stock — standard Title I rifle. No NFA registration required.`;
-  if(cls==='Short Barrel Rifle (SBR)')return`Barrel ${barrel<16?barrel+'" is under the 16" minimum':''}${barrel<16&&oal<26?' and ':''}${oal<26?oal+'" OAL is under the 26" minimum':''}.${banned?' Additionally, '+state+' prohibits SBR ownership — ATF approval cannot be obtained for residents of this state.':' ATF Form 1 (build) or Form 4 (purchase) required before this configuration is assembled or possessed.'}`;
-  if(cls==='Short Barrel Shotgun (SBS)')return`Barrel under 18" or OAL under 26" with a stock creates a Short Barrel Shotgun. NFA Form 1 or Form 4 required before possession.`;
-  if(cls==='AOW (Any Other Weapon)')return`A vertical foregrip on a pistol creates an AOW under 26 USC § 5845(e). ATF Form 1 required before possession.`;
-  if(cls==='Pistol w/ Brace')return`Pistol with a stabilizing brace. Under current 2026 enforcement (brace rule vacated July 17, 2025), this is a legal pistol — not an SBR. No NFA registration required.`;
-  if(cls==='Pistol')return`Standard pistol. No NFA registration required. Do not add a vertical foregrip (AOW) or shoulder stock without prior ATF Form 1 approval.`;
-  if(cls==='Title I Shotgun')return`Standard Title I shotgun — barrel ≥18" and OAL ≥26". No NFA registration required.`;
-  if(cls==='Pistol-Grip Shotgun')return`Shotgun with pistol grip, no shoulder stock. No NFA required as long as it was never configured with a stock. Do not add a stock without verifying measurements.`;
-  if(cls==='Rifle w/ Brace (Legal)')return`Rifle-platform firearm with a stabilizing brace, clearing both NFA measurement thresholds. Legal under 2026 enforcement — brace rule vacated. Not an SBR.`;
-  if(cls==='SBR Risk — Verify')return`Brace-equipped firearm with measurements under NFA thresholds. Under current enforcement a brace alone is not a stock. However, this is a close-call configuration — consider filing ATF Form 1 for clean legal status, or modify barrel/OAL to clear both thresholds.`;
-  if(cls==='Rifle (pistol+stock)')return`Pistol receiver with a shoulder stock added, measuring above NFA thresholds. Now legally configured as a rifle — no NFA required at these dimensions. Note: this receiver cannot be legally converted back to a pistol.`;
-  return'Verify with ATF and a licensed firearms attorney for this configuration.';
+// ─────────────────────────────────────────
+// FED TEXT — body and fix per classification
+// ─────────────────────────────────────────
+function getFedBody(cls,barrel,oal,barrelMin,oalMin,state,banned){
+  const barrelShort=barrel<barrelMin, oalShort=oal<oalMin;
+  if(cls==='Title I Rifle')return`Barrel ≥16" and OAL ≥26" with a shoulder stock — standard Title I rifle. No NFA registration required. Legal to purchase, own, transport, and transfer like any standard rifle.`;
+  if(cls==='Short Barrel Rifle (SBR)'){
+    let reasons=[];
+    if(barrelShort)reasons.push(`your barrel (${barrel}") is ${(barrelMin-barrel).toFixed(1)}" under the ${barrelMin}" minimum`);
+    if(oalShort)reasons.push(`your OAL (${oal}") is ${(oalMin-oal).toFixed(1)}" under the ${oalMin}" minimum`);
+    return`This configuration meets the federal definition of a <strong>Short Barrel Rifle</strong> — ${reasons.join(' and ')}. ${banned?state+' also prohibits SBR ownership — federal NFA approval cannot be obtained for residents of this state.':'ATF Form 1 (build/convert) or Form 4 (purchase) required and must be approved before this configuration is assembled or possessed.'}`;
+  }
+  if(cls==='Short Barrel Shotgun (SBS)'){
+    let reasons=[];
+    if(barrel<18)reasons.push(`barrel ${barrel}" is ${(18-barrel).toFixed(1)}" under the 18" minimum`);
+    if(oalShort)reasons.push(`OAL ${oal}" is ${(oalMin-oal).toFixed(1)}" under the 26" minimum`);
+    return`This configuration meets the federal definition of a <strong>Short Barrel Shotgun</strong> — ${reasons.join(' and ')}. NFA Form 1 or Form 4 required before possession. ${banned?state+' also bans SBS ownership.':''}`;
+  }
+  if(cls==='AOW (Any Other Weapon)')return`A vertical foregrip on a pistol creates an <strong>Any Other Weapon</strong> under 26 USC § 5845(e) — an NFA item. ATF Form 1 required and must be approved before the foregrip is attached.`;
+  if(cls==='Pistol w/ Brace')return`Pistol with a stabilizing brace. Under current 2026 enforcement (brace rule vacated July 17, 2025 in <em>Mock v. Bondi</em>), this is a legal pistol — not an SBR. A brace is not a stock under current ATF enforcement. No NFA registration required.`;
+  if(cls==='Pistol')return`Standard pistol configuration. No NFA registration required. Legal to purchase and own with standard dealer process.`;
+  if(cls==='Title I Shotgun')return`Standard Title I shotgun — barrel ≥18" and OAL ≥26" with a shoulder stock. No NFA registration required.`;
+  if(cls==='Pistol-Grip Shotgun')return`Shotgun with pistol grip and no shoulder stock. No NFA required as long as this receiver was never configured with a shoulder stock. Do not add a stock without verifying OAL and barrel measurements first.`;
+  if(cls==='Rifle w/ Brace (Legal)')return`Rifle-platform firearm with a stabilizing brace, with barrel ≥16" and OAL ≥26". Legal under current 2026 enforcement — the brace rule was vacated July 17, 2025. Not classified as an SBR.`;
+  if(cls==='SBR Risk — Verify'){
+    let reasons=[];
+    if(barrel<16)reasons.push(`barrel ${barrel}" is ${(16-barrel).toFixed(1)}" under the 16" minimum`);
+    if(oalShort)reasons.push(`OAL ${oal}" is ${(oalMin-oal).toFixed(1)}" under the 26" minimum`);
+    return`Brace-equipped firearm with measurements under NFA thresholds — ${reasons.join(' and ')}. Under current 2026 enforcement, a brace alone does not make this an SBR. However, this is a <strong>close-call configuration</strong> — the ATF retains authority to examine individual firearms.`;
+  }
+  if(cls==='Rifle (pistol+stock, legal length)')return`Pistol receiver with a shoulder stock added, with barrel ≥16" and OAL ≥26". This is now legally configured as a <strong>rifle</strong> — no NFA required at these measurements. Important: once configured as a rifle, this receiver <em>cannot legally be converted back</em> to a pistol.`;
+  if(cls==='Rifle — No Stock / Brace')return`Rifle receiver with no stock or brace attached. This occupies a legal gray area — it cannot be classified as a pistol (manufactured as a rifle) and without a stock may not fully trigger the SBR definition. Proceed with caution.`;
+  return'Verify this specific configuration with ATF and a licensed firearms attorney.';
+}
+
+function getFedFix(cls,barrel,oal,barrelMin,oalMin,banned,state,isPistol,isRifle,isShotgun){
+  const barrelShort=barrel<barrelMin, oalShort=oal<oalMin;
+  const barrelNeeded=(barrelMin-barrel).toFixed(1);
+  const oalNeeded=(oalMin-oal).toFixed(1);
+
+  if(cls==='Short Barrel Rifle (SBR)'&&!banned){
+    let fixes=[];
+    if(barrelShort)fixes.push(`<li>Extend barrel to <strong>≥${barrelMin}"</strong> — you need ${barrelNeeded}" more. A 14.5" barrel with a <strong>permanently pinned/welded</strong> muzzle device totaling ≥16" counts as a legal ${barrelMin}" barrel</li>`);
+    if(oalShort)fixes.push(`<li>Extend OAL to <strong>≥${oalMin}"</strong> — you need ${oalNeeded}" more. Measure with stock fully extended</li>`);
+    fixes.push(`<li>Alternatively, <strong>file ATF Form 1</strong> (convert/build) or <strong>Form 4</strong> (purchase) to register it as a legal NFA SBR — $0 tax stamp as of Jan 1, 2026</li>`);
+    if(isPistol)fixes.push(`<li>Remove the shoulder stock — this returns the firearm to <strong>pistol classification</strong> (no NFA) if barrel is under 16"</li>`);
+    return`<ul class="fix-list">${fixes.join('')}</ul>`;
+  }
+  if(cls==='Short Barrel Rifle (SBR)'&&banned){
+    return`<ul class="fix-list">
+      <li>Modify to <strong>Title I configuration</strong>: barrel ≥${barrelMin}" <em>and</em> OAL ≥${oalMin}" with a shoulder stock${barrelShort?` — need ${barrelNeeded}" more barrel`:''}${oalShort?` — need ${oalNeeded}" more OAL`:''}</li>
+      ${isRifle?`<li>14.5" barrel + permanently pinned/welded muzzle device ≥${barrelMin}" total is a legal alternative</li>`:''}
+      ${isPistol?`<li>Remove the shoulder stock — returns to pistol classification (no SBR, no NFA) if you accept pistol configuration</li>`:''}
+      <li>NFA items cannot be approved for ${state} residents — Title I modification is the only compliant path in this state</li>
+    </ul>`;
+  }
+  if(cls==='Short Barrel Shotgun (SBS)'&&!banned){
+    return`<ul class="fix-list">
+      ${barrel<18?`<li>Extend barrel to <strong>≥18"</strong> — you need ${(18-barrel).toFixed(1)}" more</li>`:''}
+      ${oalShort?`<li>Extend OAL to <strong>≥26"</strong> — you need ${oalNeeded}" more. Measure with stock fully extended</li>`:''}
+      <li>Alternatively, file <strong>ATF Form 1 or Form 4</strong> to register as an NFA SBS — $0 tax stamp as of Jan 1, 2026</li>
+    </ul>`;
+  }
+  if(cls==='Short Barrel Shotgun (SBS)'&&banned){
+    return`<ul class="fix-list">
+      ${barrel<18?`<li>Extend barrel to <strong>≥18"</strong> — need ${(18-barrel).toFixed(1)}" more</li>`:''}
+      ${oalShort?`<li>Extend OAL to <strong>≥26"</strong> — need ${oalNeeded}" more</li>`:''}
+      <li>NFA items cannot be approved for ${state} residents — Title I modification is the only compliant path</li>
+    </ul>`;
+  }
+  if(cls==='SBR Risk — Verify'){
+    return`<ul class="fix-list">
+      ${barrel<16?`<li>Extend barrel to <strong>≥16"</strong> — need ${(16-barrel).toFixed(1)}" more — or pin/weld a muzzle device to legal length</li>`:''}
+      ${oal<26?`<li>Extend OAL to <strong>≥26"</strong> — need ${(26-oal).toFixed(1)}" more. Ensure brace is fully extended when measuring</li>`:''}
+      <li>Alternatively, file <strong>ATF Form 1</strong> for clean legal SBR status — removes ambiguity entirely</li>
+    </ul>`;
+  }
+  return '';
 }
 
 function resetScan(){
@@ -433,9 +652,12 @@ function resetScan(){
   document.getElementById('barrel').value='';
   document.getElementById('oal').value='';
   document.getElementById('mag').value='';
-  ['state-val','type-val','rear-val'].forEach(id=>{const el=document.getElementById(id);el.textContent=id==='state-val'?'Select state...':id==='type-val'?'Select type...':'Select rear...';el.classList.remove('set');});
+  ['state-val','type-val','rear-val'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.textContent=id==='state-val'?'Select state...':id==='type-val'?'Select type...':'Select rear...';
+    el.classList.remove('set');
+  });
   document.querySelectorAll('.chk-item').forEach(el=>{el.classList.remove('active');el.querySelector('.chk-box').textContent='';});
-  // Re-set "No suppressor" as default
   const sn=document.getElementById('sn');sn.classList.add('active');sn.querySelector('.chk-box').textContent='✓';
   window.scrollTo({top:0,behavior:'smooth'});
 }
