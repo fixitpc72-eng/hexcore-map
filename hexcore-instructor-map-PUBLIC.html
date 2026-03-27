@@ -19,9 +19,9 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2r
 .header-nav a{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}.header-nav a:hover{color:var(--text)}.header-nav a.active{color:var(--accent)}
 .header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;text-decoration:none}
 .map-wrap{width:100%;max-width:1200px;position:relative;border-bottom:1px solid var(--border)}
-.map-area{width:100%;height:580px;background:var(--black);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;touch-action:none}
-#map-svg-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1rem;touch-action:none}
-#usa-svg{width:100%;height:100%;touch-action:none;user-select:none}
+.map-area{width:100%;height:580px;background:var(--black);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#map-svg-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1rem}
+#usa-svg{width:100%;height:100%}
 .map-tooltip{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px 16px;pointer-events:none;display:none;z-index:20;min-width:220px;max-width:300px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
 .tt-name{font-family:var(--font-head);font-weight:900;font-size:16px;color:var(--text);text-transform:uppercase;letter-spacing:.03em;margin-bottom:1px}
 .tt-biz{font-size:12px;color:var(--accent);margin-bottom:4px}
@@ -98,10 +98,6 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2r
 footer{border-top:1px solid var(--border);background:var(--dark);padding:1.75rem 2rem;text-align:center;font-family:var(--font-head);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);width:100%}
 .disclaimer-bar{width:100%;max-width:1200px;padding:1rem 1.5rem;font-size:11px;color:var(--muted);line-height:1.6;text-align:center}
 .map-focus-ui{position:absolute;top:1rem;left:1rem;display:flex;align-items:center;gap:8px;z-index:14;flex-wrap:wrap;max-width:min(58%,520px)}
-#map-svg-wrap.zoom-active #usa-svg{cursor:grab}
-#map-svg-wrap.zoom-active #usa-svg:active{cursor:grabbing}
-.zoom-hint{position:absolute;bottom:3.5rem;left:50%;transform:translateX(-50%);background:rgba(22,24,28,.88);border:1px solid var(--border);border-radius:5px;padding:5px 12px;font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);pointer-events:none;white-space:nowrap;backdrop-filter:blur(4px);opacity:0;transition:opacity .4s;z-index:10}
-.zoom-hint.vis{opacity:1}
 .map-focus-pill{background:rgba(22,24,28,.94);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text);backdrop-filter:blur(6px)}
 .map-focus-pill span{color:var(--accent)}
 .map-reset-btn{display:none;background:rgba(32,253,240,.08);border:1px solid rgba(32,253,240,.25);color:var(--accent);border-radius:6px;padding:8px 12px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
@@ -150,7 +146,6 @@ footer{border-top:1px solid var(--border);background:var(--dark);padding:1.75rem
       </svg>
     </div>
     <div class="map-tooltip" id="map-tooltip"></div>
-    <div class="zoom-hint" id="zoom-hint">Scroll to zoom &nbsp;·&nbsp; Drag to pan</div>
     <div class="map-legend">
       <div class="map-legend-title">Instructor</div>
       <div class="leg-row">
@@ -439,7 +434,6 @@ function clearStateFocus(){
 
 function focusState(stateName){
   if(!stateName)return;
-  resetZoom();
   hideTooltip();
   document.getElementById('flt-state').value=stateName;
   closeDetail();
@@ -672,7 +666,6 @@ function drawStates(){
     updateStateBadges();
     updateMapView();
     renderPins();
-    initZoom();
   }).catch(()=>{
     projectionFn=d3.geoAlbersUsa().scale(1280).translate([480,300]);
     statePathMap=new Map();
@@ -682,45 +675,6 @@ function drawStates(){
     renderPins();
   });
 }
-function initZoom(){
-  if(selectedStateName) return;
-  const svgEl=document.getElementById('usa-svg');
-  const svg=d3.select(svgEl);
-  const g=d3.select('#map-root');
-
-  const zoom=d3.zoom()
-    .scaleExtent([1,8])
-    .filter(function(event){
-      if(event.type==='wheel') return true;
-      if(event.type==='touchstart'||event.type==='touchmove') return event.touches.length>=1;
-      return !event.button;
-    })
-    .on('zoom',(event)=>{
-      if(selectedStateName) return;
-      g.attr('transform', event.transform.toString());
-    });
-
-  svg.call(zoom)
-     .on('dblclick.zoom', null);
-
-  // D3 v6+ registers wheel as passive — override with non-passive so
-  // preventDefault works and the browser doesn't swallow the scroll event
-  svgEl.addEventListener('wheel', (e)=>{ e.preventDefault(); }, {passive:false});
-
-  window._mapZoom=zoom;
-  window._mapSvg=svg;
-
-  const wrap=document.getElementById('map-svg-wrap');
-  wrap.classList.add('zoom-active');
-  const hint=document.getElementById('zoom-hint');
-  hint.classList.add('vis');
-  setTimeout(()=>hint.classList.remove('vis'),3500);
-}
-
-function resetZoom(){
-  if(window._mapZoom && window._mapSvg){
-    window._mapSvg.transition().duration(300).call(window._mapZoom.transform, d3.zoomIdentity);
-  }
 }
 init();
 </script>
