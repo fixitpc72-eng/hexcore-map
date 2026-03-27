@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsible Ownership Plan | HexCore Mounts</title>
+<meta name="description" content="A planning tool for responsible gun owners. Build your trusted contact plan, temporary storage plan, and off-body checklist while you're in a good headspace — so the plan is ready if you ever need it.">
+<link rel="canonical" href="https://hexcoremounts.com/pages/responsible-ownership-plan">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0a0a0a;--dark:#111214;--card:#16181c;--border:#2a2d35;--muted:#3a3d47;
+  --text:#e8e9ec;--sub:#7a7f8e;--accent:#20FDF0;--green:#22c55e;--yellow:#eab308;
+  --red:#ef4444;--warm:#f97316;
+  --font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(32,253,240,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(32,253,240,.012) 1px,transparent 1px);background-size:56px 56px;pointer-events:none;z-index:0}
+
+header{width:100%;background:rgba(17,18,20,.96);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);text-decoration:none}
+.logo span{color:var(--accent)}
+.header-links{display:flex;gap:1.5rem}
+.header-links a{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);text-decoration:none;transition:color .15s}
+.header-links a:hover{color:var(--accent)}
+.header-badge{background:var(--accent);color:var(--black);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;flex-shrink:0}
+
+.main{width:100%;max-width:860px;padding:2.5rem 1.5rem 5rem;position:relative;z-index:1}
+
+/* HERO */
+.hero{margin-bottom:2.5rem}
+.hero-eyebrow{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:.875rem;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--accent);opacity:.4}
+.hero-title{font-family:var(--font-head);font-weight:900;font-size:clamp(32px,6vw,52px);text-transform:uppercase;letter-spacing:.02em;line-height:.95;color:#fff;margin-bottom:1rem}
+.hero-title span{color:var(--accent)}
+.hero-body{font-size:15px;color:var(--sub);line-height:1.75;max-width:620px;border-left:2px solid var(--accent);padding-left:1rem}
+.hero-body strong{color:var(--text)}
+
+/* PHILOSOPHY STRIP */
+.phil-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.phil-item{background:var(--dark);padding:1rem 1.125rem}
+.phil-label{font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.375rem}
+.phil-text{font-size:12px;color:var(--sub);line-height:1.6}
+.phil-text strong{color:var(--text)}
+
+/* SECTION NAV */
+.section-nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:2.5rem}
+.snav-btn{background:var(--dark);border:1px solid var(--border);border-radius:7px;padding:.75rem .875rem;text-align:center;cursor:pointer;transition:all .15s;text-decoration:none}
+.snav-btn:hover,.snav-btn.active{background:rgba(32,253,240,.06);border-color:rgba(32,253,240,.3)}
+.snav-icon{font-size:18px;margin-bottom:.25rem}
+.snav-label{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--sub);display:block}
+.snav-btn:hover .snav-label,.snav-btn.active .snav-label{color:var(--accent)}
+
+/* SECTION BLOCKS */
+.plan-section{margin-bottom:2.5rem}
+.section-hdr{display:flex;align-items:flex-start;gap:14px;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.section-num{font-family:var(--font-head);font-size:42px;font-weight:900;color:rgba(32,253,240,.15);line-height:1;flex-shrink:0;margin-top:-4px}
+.section-title-wrap{}
+.section-title{font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;line-height:1}
+.section-desc{font-size:13px;color:var(--sub);margin-top:.375rem;line-height:1.6}
+
+/* CARDS */
+.card{background:var(--dark);border:1px solid var(--border);border-radius:9px;margin-bottom:1rem;overflow:hidden}
+.card-hdr{padding:.875rem 1.25rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:background .15s}
+.card-hdr:hover{background:rgba(32,253,240,.03)}
+.card-hdr-left{display:flex;align-items:center;gap:10px}
+.card-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.card-icon.teal{background:rgba(32,253,240,.1);border:1px solid rgba(32,253,240,.2)}
+.card-icon.green{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2)}
+.card-icon.yellow{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.2)}
+.card-icon.warm{background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.2)}
+.card-title{font-family:var(--font-head);font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:var(--text)}
+.card-toggle{font-size:11px;color:var(--sub);transition:transform .2s;flex-shrink:0}
+.card-toggle.open{transform:rotate(180deg)}
+.card-body{display:none;padding:0 1.25rem 1.25rem;border-top:1px solid var(--border)}
+.card-body.open{display:block}
+.card-body p{font-size:13px;color:var(--sub);line-height:1.7;margin-top:.875rem}
+.card-body p strong{color:var(--text)}
+.card-body p + p{margin-top:.625rem}
+
+/* FORM ELEMENTS */
+.field-group{margin-top:1rem;display:grid;gap:.75rem}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.field{display:flex;flex-direction:column;gap:.375rem}
+.field label{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub)}
+.field input,.field select,.field textarea{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:13px;color:var(--text);font-family:var(--font-body);outline:none;transition:border-color .15s;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(32,253,240,.4)}
+.field textarea{resize:vertical;min-height:72px}
+.field select option{background:var(--card)}
+.field-note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:2px}
+
+/* CHECKLIST ITEMS */
+.check-list{display:flex;flex-direction:column;gap:6px;margin-top:.875rem}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:.625rem .875rem;background:var(--card);border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s}
+.check-item:hover{border-color:var(--muted)}
+.check-item.checked{background:rgba(34,197,94,.05);border-color:rgba(34,197,94,.2)}
+.check-box{width:18px;height:18px;border-radius:4px;border:1px solid var(--muted);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s}
+.check-item.checked .check-box{background:var(--green);border-color:var(--green);color:var(--black)}
+.check-text{font-size:13px;color:var(--sub);line-height:1.5;flex:1}
+.check-item.checked .check-text{color:var(--text)}
+
+/* STORAGE OPTIONS */
+.storage-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:.875rem}
+.storage-card{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.875rem;transition:all .15s}
+.storage-card:hover{border-color:var(--muted)}
+.sc-icon{font-size:22px;margin-bottom:.5rem}
+.sc-title{font-family:var(--font-head);font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:var(--text);margin-bottom:.375rem}
+.sc-body{font-size:11px;color:var(--sub);line-height:1.6}
+.sc-tag{display:inline-block;margin-top:.5rem;padding:2px 7px;border-radius:3px;font-family:var(--font-head);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.sc-tag.good{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.2)}
+.sc-tag.note{background:rgba(234,179,8,.1);color:#facc15;border:1px solid rgba(234,179,8,.2)}
+.sc-tag.info{background:rgba(32,253,240,.08);color:var(--accent);border:1px solid rgba(32,253,240,.15)}
+
+/* CRISIS SECTION - intentionally warmer */
+.crisis-box{background:linear-gradient(135deg,rgba(17,18,20,1) 0%,rgba(22,20,18,1) 100%);border:1px solid rgba(249,115,22,.2);border-radius:10px;padding:1.5rem;margin-bottom:1rem}
+.crisis-box-title{font-family:var(--font-head);font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:#fff;margin-bottom:.625rem;display:flex;align-items:center;gap:8px}
+.crisis-box-title span{color:var(--warm)}
+.crisis-body{font-size:13px;color:var(--sub);line-height:1.75}
+.crisis-body strong{color:var(--text)}
+.crisis-body + .crisis-body{margin-top:.625rem}
+
+.crisis-line{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.875rem 1rem;margin-top:.75rem;text-decoration:none;transition:border-color .15s}
+.crisis-line:hover{border-color:rgba(249,115,22,.4)}
+.cl-num{font-family:var(--font-head);font-size:26px;font-weight:900;color:var(--warm);min-width:52px}
+.cl-info{}
+.cl-title{font-family:var(--font-head);font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:var(--text)}
+.cl-sub{font-size:12px;color:var(--sub);margin-top:2px;line-height:1.4}
+.cl-arrow{margin-left:auto;color:var(--muted);font-size:14px}
+
+.crisis-steps{margin-top:.875rem;display:flex;flex-direction:column;gap:6px}
+.cs-step{display:flex;align-items:flex-start;gap:10px;padding:.75rem .875rem;background:var(--card);border:1px solid var(--border);border-radius:6px}
+.cs-num{font-family:var(--font-head);font-size:20px;font-weight:900;color:rgba(249,115,22,.3);min-width:24px;line-height:1}
+.cs-text{font-size:13px;color:var(--sub);line-height:1.6}
+.cs-text strong{color:var(--text)}
+
+/* SAVE PLAN */
+.save-bar{background:rgba(32,253,240,.04);border:1px solid rgba(32,253,240,.15);border-radius:8px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:2rem}
+.save-text{font-size:13px;color:var(--sub);line-height:1.5}
+.save-text strong{color:var(--text)}
+.save-btn{background:var(--accent);border:none;color:var(--black);font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:9px 18px;border-radius:5px;cursor:pointer;transition:opacity .15s;flex-shrink:0}
+.save-btn:hover{opacity:.85}
+
+/* ALERTS */
+.alert{padding:10px 14px;border-radius:6px;font-size:12px;line-height:1.6;margin-top:.875rem}
+.alert.info{background:rgba(32,253,240,.05);border:1px solid rgba(32,253,240,.15);color:var(--sub)}.alert.info strong{color:var(--accent)}
+.alert.success{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.18);color:var(--sub)}.alert.success strong{color:var(--green)}
+.alert.warm{background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.18);color:var(--sub)}.alert.warm strong{color:var(--warm)}
+
+/* LEGAL NOTE */
+.legal-note{font-size:11px;color:rgba(32,253,240,.5);border:1px solid rgba(32,253,240,.12);border-radius:6px;padding:.625rem 1rem;line-height:1.6;margin-top:1rem}
+.legal-note strong{color:rgba(32,253,240,.8)}
+
+/* QUICK LINKS */
+.quick-links{background:rgba(9,16,24,.9);border:1px solid rgba(32,253,240,.12);border-radius:10px;padding:1rem;margin-top:2.5rem}
+.ql-title{font-family:var(--font-head);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text);margin-bottom:.75rem;display:flex;align-items:center;gap:8px}
+.ql-title::before{content:'⬡';color:var(--accent)}
+.ql-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ql-card{background:rgba(4,9,14,.8);border:1px solid rgba(32,253,240,.12);border-radius:8px;padding:.625rem .75rem;text-decoration:none;text-align:center;transition:all .15s}
+.ql-card:hover{border-color:rgba(32,253,240,.3);background:rgba(32,253,240,.04)}
+.ql-card.current{background:rgba(32,253,240,.04);border-color:rgba(32,253,240,.25)}
+.ql-label{font-family:var(--font-head);font-size:12px;font-weight:800;color:var(--accent);line-height:1.2}
+
+.disclaimer{font-size:11px;color:var(--muted);line-height:1.7;text-align:center;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+footer{border-top:1px solid var(--border);background:var(--dark);padding:1.25rem 2rem;text-align:center;font-family:var(--font-head);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);width:100%}
+
+@media(max-width:640px){
+  header{padding:0 1rem}.header-links{display:none}
+  .main{padding:1.75rem 1.25rem 3rem}
+  .phil-strip{grid-template-columns:1fr}
+  .section-nav{grid-template-columns:1fr 1fr}
+  .storage-grid,.field-row{grid-template-columns:1fr}
+  .ql-grid{grid-template-columns:1fr 1fr}
+  .save-bar{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" target="_top" href="https://hexcoremounts.com">Hex<span>Core</span></a>
+  <nav class="header-links">
+    <a target="_top" href="https://hexcoremounts.com/pages/home-defense-planner">HD Planner</a>
+    <a target="_top" href="https://hexcoremounts.com/pages/veterans-resources">Veterans</a>
+    <a target="_top" href="https://hexcoremounts.com/pages/firearm-law-hub">Law Hub</a>
+  </nav>
+  <div class="header-badge">Planning Tool</div>
+</header>
+
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Responsible Ownership</div>
+    <h1 class="hero-title">Your Ownership<br><span>Plan</span></h1>
+    <p class="hero-body">
+      Responsible gun ownership includes planning for the full picture — not just the threat coming through the door, but also what happens if life gets hard. <strong>The best time to make this plan is now, when you're in a good headspace.</strong> Fill it out, save it, and never need it. That's the goal.
+    </p>
+  </div>
+
+  <!-- PHILOSOPHY STRIP -->
+  <div class="phil-strip">
+    <div class="phil-item">
+      <div class="phil-label">The premise</div>
+      <div class="phil-text">Owning a firearm is a right and a responsibility. <strong>Planning ahead is what separates a responsible owner from everyone else.</strong> This tool helps you think through situations before they happen.</div>
+    </div>
+    <div class="phil-item">
+      <div class="phil-label">Your rights, intact</div>
+      <div class="phil-text"><strong>Voluntarily seeking help does not trigger a firearms prohibition.</strong> Only an involuntary commitment under specific legal criteria affects gun rights. Getting help is not losing your guns.</div>
+    </div>
+    <div class="phil-item">
+      <div class="phil-label">This is not a lecture</div>
+      <div class="phil-text">This tool doesn't assume anything about you. It's a planning resource — same as a home defense plan or a will. <strong>Responsible people plan. That's all this is.</strong></div>
+    </div>
+  </div>
+
+  <!-- SECTION NAV -->
+  <div class="section-nav">
+    <a class="snav-btn" href="#trusted-contact">
+      <div class="snav-icon">👤</div>
+      <span class="snav-label">Trusted Contact</span>
+    </a>
+    <a class="snav-btn" href="#temp-storage">
+      <div class="snav-icon">🔐</div>
+      <span class="snav-label">Temp Storage</span>
+    </a>
+    <a class="snav-btn" href="#off-body">
+      <div class="snav-icon">✓</div>
+      <span class="snav-label">Off-Body Checklist</span>
+    </a>
+    <a class="snav-btn" href="#not-good">
+      <div class="snav-icon">📞</div>
+      <span class="snav-label">If Today Is Hard</span>
+    </a>
+  </div>
+
+  <!-- ============================= -->
+  <!-- SECTION 1: TRUSTED CONTACT    -->
+  <!-- ============================= -->
+  <div class="plan-section" id="trusted-contact">
+    <div class="section-hdr">
+      <div class="section-num">01</div>
+      <div class="section-title-wrap">
+        <div class="section-title">Trusted Contact Plan</div>
+        <div class="section-desc">Someone who knows your setup, knows where your firearms are, and has a plan if something happens to you — or if you ever ask them to hold your firearms temporarily.</div>
+      </div>
+    </div>
+
+    <!-- What a trusted contact is -->
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)">
+        <div class="card-hdr-left">
+          <div class="card-icon teal">👤</div>
+          <div class="card-title">What a trusted contact does</div>
+        </div>
+        <div class="card-toggle">▼</div>
+      </div>
+      <div class="card-body">
+        <p>A trusted contact is someone you've specifically told: where your firearms are, how they're stored, what your wishes are if something happens to you, and that they have permission to temporarily hold your firearms at your request.</p>
+        <p><strong>This is not about them having access to your firearms without your knowledge.</strong> It's about having a named, prepared person who knows your plan and can act on it if you ask — whether that's during a rough patch, a hospital stay, a deployment, or after your death.</p>
+        <p>A trusted contact should be an adult you trust completely, who is legally eligible to possess firearms, and who is willing to have an honest conversation about this role in advance. A spouse, sibling, close friend, or fellow gun owner all work. Choose someone who won't panic and who understands firearms.</p>
+      </div>
+    </div>
+
+    <!-- The conversation -->
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)">
+        <div class="card-hdr-left">
+          <div class="card-icon teal">💬</div>
+          <div class="card-title">Having the conversation</div>
+        </div>
+        <div class="card-toggle">▼</div>
+      </div>
+      <div class="card-body">
+        <p>This conversation doesn't have to be heavy. It can be as simple as: <em>"I want to make sure someone I trust knows where everything is and what to do if I'm ever in the hospital or going through a rough time. Would you be willing to be that person?"</em></p>
+        <p>Tell them: where your firearms are stored, combination or key location (in a secure way — written down, not memorized by them), what your wishes are for your firearms if you pass away, and that you may someday ask them to hold your firearms temporarily. Make sure they're comfortable with that role.</p>
+        <p><strong>Have this conversation once, update it if your situation changes.</strong> That's all it takes.</p>
+      </div>
+    </div>
+
+    <!-- Your plan fields -->
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)">
+        <div class="card-hdr-left">
+          <div class="card-icon teal">📝</div>
+          <div class="card-title">Fill out your trusted contact plan</div>
+        </div>
+        <div class="card-toggle open">▼</div>
+      </div>
+      <div class="card-body open">
+        <div style="background:rgba(32,253,240,.06);border:1px solid rgba(32,253,240,.25);border-radius:7px;padding:.875rem 1rem;margin-bottom:.875rem;display:flex;align-items:flex-start;gap:10px">
+          <div style="font-size:18px;flex-shrink:0;margin-top:1px">🔒</div>
+          <div>
+            <div style="font-family:var(--font-head);font-size:13px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:.25rem">Your data never leaves this page</div>
+            <div style="font-size:12px;color:var(--sub);line-height:1.6">Everything you type here stays in your browser only. <strong style="color:var(--text)">HexCore does not collect, store, transmit, or have any access to what you enter.</strong> There are no servers, no databases, no accounts. When you close this tab, the data is gone — which is why we recommend printing or screenshotting your completed plan. This tool exists for you, not for us.</div>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-row">
+            <div class="field">
+              <label>Trusted Contact Name</label>
+              <input type="text" id="tc-name" placeholder="Full name">
+            </div>
+            <div class="field">
+              <label>Relationship</label>
+              <input type="text" id="tc-rel" placeholder="e.g. Brother, spouse, close friend">
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Phone Number</label>
+              <input type="tel" id="tc-phone" placeholder="xxx-xxx-xxxx">
+            </div>
+            <div class="field">
+              <label>Backup Contact (optional)</label>
+              <input type="text" id="tc-backup" placeholder="Name and phone">
+            </div>
+          </div>
+          <div class="field">
+            <label>What they know / What I've told them</label>
+            <textarea id="tc-knows" placeholder="e.g. Location of my safe, that I want my AR-15 to go to my son, that they can hold my firearms if I ask"></textarea>
+            <div class="field-note">Keep this general — don't record combinations or precise locations in a digital form.</div>
+          </div>
+          <div class="field">
+            <label>Date of last conversation</label>
+            <input type="text" id="tc-date" placeholder="Month / Year">
+          </div>
+        </div>
+        <div class="alert success"><strong>&#10003; Good practice:</strong> Revisit this plan any time your household changes — new child, new firearm, new living situation, change in a household member's health.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- SECTION 2: TEMP STORAGE       -->
+  <!-- ============================= -->
+  <div class="plan-section" id="temp-storage">
+    <div class="section-hdr">
+      <div class="section-num">02</div>
+      <div class="section-title-wrap">
+        <div class="section-title">Temporary Storage Plan</div>
+        <div class="section-desc">Situations where you might want your firearms out of the house temporarily — and where they can go. Plan this now so the option is ready if you ever need it.</div>
+      </div>
+    </div>
+
+    <!-- When temporary storage makes sense -->
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)">
+        <div class="card-hdr-left">
+          <div class="card-icon green">📋</div>
+          <div class="card-title">When temporary storage makes sense</div>
+        </div>
+        <div class="card-toggle">▼</div>
+      </div>
+      <div class="card-body">
+        <p>Temporary storage is a completely normal part of responsible ownership. Common situations where gun owners choose to temporarily move their firearms out of the home:</p>
+        <div class="check-list" style="cursor:default">
+          <div class="check-item" style="cursor:default"><div class="check-text">A household member is going through a mental health crisis or rough patch</div></div>
+          <div class="check-item" style="cursor:default"><div class="check-text">You're going through a difficult period and want to put distance between yourself and your firearms — on your own initiative</div></div>
+          <div class="check-item" style="cursor:default"><div class="check-text">You have a guest staying who should not have access (court order, substance issues, age)</div></div>
+          <div class="check-item" style="cursor:default"><div class="check-text">Extended travel, deployment, or hospital stay</div></div>
+          <div class="check-item" style="cursor:default"><div class="check-text">Home renovation with contractors in and out</div></div>
+          <div class="check-item" style="cursor:default"><div class="check-text">Divorce proceedings or elevated household conflict</div></div>
+        </div>
+        <p style="margin-top:.875rem"><strong>Temporary storage is voluntary, reversible, and does not affect your rights.</strong> It's the same decision as putting your firearms in a storage unit when you move. You get them back when you're ready.</p>
+      </div>
+    </div>
+
+    <!-- Where they can go -->
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)">
+        <div class="card-hdr-left">
+          <div class="card-icon green">🏠</div>
+          <div class="card-title">Where your firearms can go</div>
+        </div>
+        <div class="card-toggle open">▼</div>
+      </div>
+      <div class="card-body open">
+        <div class="storage-grid">
+          <div class="storage-card">
+            <div class="sc-icon">👤</div>
+            <div class="sc-title">Trusted adult outside household</div>
+            <div class="sc-body">Someone you trust who is legally eligible to possess firearms and has a secure place to store them. This is the most private option — no paperwork, no record.</div>
+            <span class="sc-tag good">Most Private</span>
+          </div>
+          <div class="storage-card">
+            <div class="sc-icon">🏪</div>
+            <div class="sc-title">Licensed FFL dealer / gun shop</div>
+            <div class="sc-body">Many gun shops will store firearms temporarily for a small fee. Call ahead — not all offer this. The shop holds your firearms as a consignment or storage item. You retrieve them when you're ready.</div>
+            <span class="sc-tag info">Call Ahead</span>
+          </div>
+          <div class="storage-card">
+            <div class="sc-icon">🚔</div>
+            <div class="sc-title">Law enforcement</div>
+            <div class="sc-body">Some police departments accept voluntary temporary storage. Call your local non-emergency line first — do not walk into a station with firearms unannounced. Ask about their process and how to retrieve.</div>
+            <span class="sc-tag note">Call First</span>
+          </div>
+        </div>
+        <div class="alert info"><strong>Legal note:</strong> Temporary transfers to trusted adults may be considered a legal transfer in some states and could require a background check or FFL involvement. Check your state's private transfer laws. An FFL dealer can always facilitate a legal transfer. When in doubt, use a dealer.</div>
+      </div>
+    </div>
+
+    <!-- Your storage plan -->
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)">
+        <div class="card-hdr-left">
+          <div class="card-icon green">📝</div>
+          <div class="card-title">Your temporary storage plan</div>
+        </div>
+        <div class="card-toggle open">▼</div>
+      </div>
+      <div class="card-body open">
+        <div style="background:rgba(32,253,240,.06);border:1px solid rgba(32,253,240,.2);border-radius:6px;padding:.75rem 1rem;margin-bottom:.875rem;display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;flex-shrink:0">🔒</span>
+          <div style="font-size:12px;color:var(--sub);line-height:1.5"><strong style="color:var(--accent)">Private to you.</strong> This information stays in your browser only. HexCore cannot see, access, or store anything you type here.</div>
+        </div>
+        <p>Know this before you need it. When you're in a tough spot is not the time to be researching options.</p>
+        <div class="field-group">
+          <div class="field-row">
+            <div class="field">
+              <label>Primary Storage Option</label>
+              <select id="stor-type">
+                <option value="">Select an option...</option>
+                <option>Trusted adult (named below)</option>
+                <option>Licensed FFL dealer / gun shop</option>
+                <option>Law enforcement storage</option>
+                <option>Commercial storage facility</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Contact / Location Name</label>
+              <input type="text" id="stor-name" placeholder="Person's name or business name">
+            </div>
+          </div>
+          <div class="field">
+            <label>Phone / Address</label>
+            <input type="text" id="stor-contact" placeholder="Phone number or address">
+          </div>
+          <div class="field">
+            <label>Notes (hours, process, what to bring, etc.)</label>
+            <textarea id="stor-notes" placeholder="e.g. Call ahead, bring a case and trigger locks, they charge $10/month per firearm"></textarea>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Backup option</label>
+              <input type="text" id="stor-backup" placeholder="Secondary option if primary unavailable">
+            </div>
+            <div class="field">
+              <label>Backup contact</label>
+              <input type="text" id="stor-backup-contact" placeholder="Phone or address">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- SECTION 3: OFF-BODY CHECKLIST -->
+  <!-- ============================= -->
+  <div class="plan-section" id="off-body">
+    <div class="section-hdr">
+      <div class="section-num">03</div>
+      <div class="section-title-wrap">
+        <div class="section-title">Off-Body Checklist</div>
+        <div class="section-desc">What to do before your firearms leave your possession — whether temporarily, for travel, or permanently. Run this list every time.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)">
+        <div class="card-hdr-left">
+          <div class="card-icon yellow">✓</div>
+          <div class="card-title">Before firearms leave your possession</div>
+        </div>
+        <div class="card-toggle open">▼</div>
+      </div>
+      <div class="card-body open">
+        <p>Run this checklist any time your firearms are leaving your home — temporary storage, travel, lending, or estate transfer.</p>
+        <div class="check-list" id="offbody-checks">
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Unloaded and verified clear</strong> — visually and physically confirm every chamber is empty before transport</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Ammunition stored separately</strong> — in a different bag or container from the firearm</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Trigger lock or case lock applied</strong> — even if going to a trusted adult, lock it</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Serial numbers documented</strong> — photographed or written down in a secure location</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Person receiving it is legally eligible</strong> — not prohibited from possessing firearms</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Understand your state's transfer law</strong> — some states require FFL involvement even for temporary transfers</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Retrieval plan is clear</strong> — both you and the holder know exactly how and when you get them back</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>NFA items: Form 5320.20 if crossing state lines</strong> — SBRs, suppressors, machine guns require ATF notification for interstate transport</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Approved Form 4 or Form 1 is going with the NFA item</strong> — or a copy is held by the person receiving it</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Your trusted contact knows</strong> — the person listed in Section 01 is aware the firearms are now elsewhere</div></div>
+        </div>
+        <div class="alert success" style="margin-top:.875rem"><strong>&#10003; Good habit:</strong> Keep trigger locks and a lockable soft case accessible — not buried in the safe. If your plan is to quickly move firearms to a trusted person's home in an emergency, friction in that process costs time. Make it easy.</div>
+      </div>
+    </div>
+
+    <!-- What travels with the firearms -->
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)">
+        <div class="card-hdr-left">
+          <div class="card-icon yellow">📄</div>
+          <div class="card-title">What documentation travels with them</div>
+        </div>
+        <div class="card-toggle">▼</div>
+      </div>
+      <div class="card-body">
+        <p>Keep a folder — physical or digital — with these documents. Give a copy to whoever is holding your firearms.</p>
+        <div class="check-list" style="cursor:default">
+          <div class="check-item" style="cursor:default"><div class="check-text"><strong>Approved NFA Form 4 or Form 1</strong> (for suppressors, SBRs, SBSs, AOWs, machine guns)</div></div>
+          <div class="check-item" style="cursor:default"><div class="check-text"><strong>Serial number record</strong> — photograph of the firearm's serial number location</div></div>
+          <div class="check-item" style="cursor:default"><div class="check-text"><strong>Your contact information</strong> — so the holder can reach you</div></div>
+          <div class="check-item" style="cursor:default"><div class="check-text"><strong>Retrieval agreement</strong> — simple written note stating the terms of temporary storage</div></div>
+          <div class="check-item" style="cursor:default"><div class="check-text"><strong>ATF Form 5320.20</strong> (if NFA items are crossing state lines)</div></div>
+        </div>
+        <div class="legal-note"><strong>Legal note:</strong> A simple written note between you and your storage contact is not a legal document but creates a clear record of intent. For permanent transfers, use an FFL. For NFA items, always involve an FFL. This tool is not legal advice — consult an attorney if you're unsure about your state's transfer laws.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- SECTION 4: IF TODAY IS HARD   -->
+  <!-- ============================= -->
+  <div class="plan-section" id="not-good">
+    <div class="section-hdr">
+      <div class="section-num">04</div>
+      <div class="section-title-wrap">
+        <div class="section-title">If Today Is Hard</div>
+        <div class="section-desc">This section is for you — or for someone you're worried about. No judgment. No lecture. Just information.</div>
+      </div>
+    </div>
+
+    <!-- Framing -->
+    <div class="crisis-box">
+      <div class="crisis-box-title">&#9679; <span>Read this first</span></div>
+      <p class="crisis-body">
+        If you're reading this section because you're having a hard day — that takes honesty, and honesty takes strength. Most crises are temporary. Most rough patches pass. The decisions you make in a low moment can be permanent. That's the only reason this section exists.
+      </p>
+      <p class="crisis-body" style="margin-top:.75rem">
+        <strong>You built this plan earlier when you were in a good headspace for exactly this moment.</strong> Check Section 02 — your temporary storage plan is already filled out. You know where they can go. You know who to call. The hard part of the planning is done.
+      </p>
+    </div>
+
+    <!-- What to do right now -->
+    <div class="crisis-box" style="border-color:rgba(32,253,240,.15)">
+      <div class="crisis-box-title">&#9656; <span style="color:var(--accent)">What to do right now</span></div>
+      <div class="crisis-steps">
+        <div class="cs-step">
+          <div class="cs-num">1</div>
+          <div class="cs-text"><strong>Put distance between yourself and your firearms.</strong> You don't have to give them up permanently. Just move them somewhere else for now — Section 02 has your plan. Call your trusted contact from Section 01.</div>
+        </div>
+        <div class="cs-step">
+          <div class="cs-num">2</div>
+          <div class="cs-text"><strong>Call someone you trust.</strong> Not to explain everything — just to not be alone. The name in Section 01 is a starting point. A friend, family member, pastor, or fellow veteran. Anyone.</div>
+        </div>
+        <div class="cs-step">
+          <div class="cs-num">3</div>
+          <div class="cs-text"><strong>If you need more support than a conversation, call 988.</strong> It is free, confidential, available 24/7, and staffed by trained people. You do not have to be in immediate danger to call. If today is just hard — that qualifies.</div>
+        </div>
+        <div class="cs-step">
+          <div class="cs-num">4</div>
+          <div class="cs-text"><strong>Remember: voluntary help does not cost you your firearms rights.</strong> Seeking support is not the same as involuntary commitment. You are not losing your guns by asking for help.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crisis lines -->
+    <div style="margin-top:1.25rem">
+      <div style="font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:.75rem">If you need someone to talk to right now</div>
+
+      <a class="crisis-line" href="tel:988">
+        <div class="cl-num">988</div>
+        <div class="cl-info">
+          <div class="cl-title">988 Suicide &amp; Crisis Lifeline</div>
+          <div class="cl-sub">Call or text 988 &nbsp;·&nbsp; Available 24/7, free, confidential &nbsp;·&nbsp; Also available via chat at 988lifeline.org</div>
+        </div>
+        <div class="cl-arrow">→</div>
+      </a>
+
+      <a class="crisis-line" href="tel:988" style="margin-top:6px">
+        <div class="cl-num" style="font-size:18px;padding-top:4px">988 + 1</div>
+        <div class="cl-info">
+          <div class="cl-title">Veterans Crisis Line</div>
+          <div class="cl-sub">Dial 988 then press 1 &nbsp;·&nbsp; Or text 838255 &nbsp;·&nbsp; Staffed by trained veterans &nbsp;·&nbsp; No VA enrollment required &nbsp;·&nbsp; Confidential</div>
+        </div>
+        <div class="cl-arrow">→</div>
+      </a>
+
+      <a class="crisis-line" href="https://mysafetyplan.org" target="_top" style="margin-top:6px">
+        <div class="cl-num" style="font-size:14px;padding-top:4px;min-width:52px">Plan</div>
+        <div class="cl-info">
+          <div class="cl-title">My Safety Plan</div>
+          <div class="cl-sub">mysafetyplan.org &nbsp;·&nbsp; Free tool to build a personal crisis plan with your own words and contacts</div>
+        </div>
+        <div class="cl-arrow">→</div>
+      </a>
+    </div>
+
+    <div class="alert warm" style="margin-top:1rem"><strong>For veterans:</strong> You do not have to be enrolled in VA benefits or health care to use the Veterans Crisis Line. You do not need to identify yourself. The line is for active duty, Guard, Reserve, veterans, and their families. Calling is not a flag on your record. For a full directory of veteran-specific resources, mental health support, and benefits guides, visit the <a target="_top" href="https://hexcoremounts.com/pages/veterans-resources" style="color:var(--warm);text-decoration:underline;font-weight:600">HexCore Veterans Resources page</a>.</div>
+
+    <!-- Worried about someone else -->
+    <div class="card" style="margin-top:1.25rem">
+      <div class="card-hdr" onclick="toggleCard(this)">
+        <div class="card-hdr-left">
+          <div class="card-icon warm">❤</div>
+          <div class="card-title">If you're worried about someone else</div>
+        </div>
+        <div class="card-toggle">▼</div>
+      </div>
+      <div class="card-body">
+        <p>If someone in your household is going through a hard time and you're concerned about access to firearms — you can act. You don't need to wait for a crisis to become an emergency.</p>
+        <p><strong>Have a direct conversation.</strong> Ask plainly: "Are you having thoughts of hurting yourself?" Research consistently shows that asking does not plant the idea — it opens a door. If they say yes, ask them to let you hold their firearms temporarily. Frame it as care, not control.</p>
+        <p><strong>Offer to help move the firearms, not demand it.</strong> "Can I hold these for you for a while?" is more effective than ultimatums. They come back when the person is ready. This is a plan, not a permanent removal.</p>
+        <p><strong>If you believe they are in immediate danger,</strong> call 911. That is the right call. No planning tool replaces emergency services when someone is in immediate danger to themselves or others.</p>
+        <p style="margin-top:.875rem">The 988 Lifeline also has resources for people helping a loved one — you don't have to be in crisis yourself to call.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAVE PLAN -->
+  <div class="save-bar">
+    <div class="save-text"><strong>This plan belongs to you alone.</strong> Nothing you've entered has been sent anywhere — no servers, no tracking, no collection. Print this page or take a screenshot to keep your plan. When you close the tab, it's gone from HexCore's side because it was never on HexCore's side.</div>
+    <button type="button" class="save-btn" onclick="window.print()">Print / Save Plan</button>
+  </div>
+
+  <!-- QUICK LINKS -->
+  <div class="quick-links">
+    <div class="ql-title">HexCore Tools</div>
+    <div class="ql-grid">
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/home-defense-planner"><div class="ql-label">HD Planner</div></a>
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/veterans-resources"><div class="ql-label">Veterans Resources</div></a>
+      <a class="ql-card" target="_top" href="https://hexcoremounts.com/pages/firearm-law-hub"><div class="ql-label">Firearm Law Hub</div></a>
+      <a class="ql-card current" target="_top" href="https://hexcoremounts.com/pages/responsible-ownership-plan"><div class="ql-label">Ownership Plan</div></a>
+    </div>
+  </div>
+
+  <div class="disclaimer">This tool is for planning purposes only and does not constitute legal or medical advice. Temporary storage laws vary by state — consult an attorney or licensed FFL for guidance on your state's transfer requirements. Crisis resources listed are accurate as of March 2026. If you or someone you know is in immediate danger, call 911. &copy; 2026 HexCore Mounts — Atlanta, Georgia.</div>
+
+</div><!-- /main -->
+
+<footer>&copy; 2026 HexCore Mounts &nbsp;·&nbsp; Atlanta, Georgia &nbsp;·&nbsp; Purpose-Built for the Modern Armory</footer>
+
+<script>
+function toggleCard(hdr) {
+  const body = hdr.nextElementSibling;
+  const toggle = hdr.querySelector('.card-toggle');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  toggle.classList.toggle('open', !isOpen);
+}
+
+function toggleCheck(item) {
+  item.classList.toggle('checked');
+  const box = item.querySelector('.check-box');
+  box.textContent = item.classList.contains('checked') ? '✓' : '';
+}
+
+// Smooth scroll for section nav
+document.querySelectorAll('.snav-btn').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    document.querySelectorAll('.snav-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Highlight active section in nav on scroll
+const sections = ['trusted-contact','temp-storage','off-body','not-good'];
+const navBtns = document.querySelectorAll('.snav-btn');
+
+function updateActiveNav() {
+  let current = '';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if(el && window.scrollY + 120 >= el.offsetTop) current = id;
+  });
+  navBtns.forEach(btn => {
+    const href = btn.getAttribute('href').replace('#','');
+    btn.classList.toggle('active', href === current);
+  });
+}
+window.addEventListener('scroll', updateActiveNav, {passive:true});
+updateActiveNav();
+</script>
+
+</body>
+</html>
