@@ -12,7 +12,8 @@
     --font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:stretch;}
+  html{width:100%;}
+  body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:stretch;margin:0;padding:0;}
 
   header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;width:100%;}
   .logo{font-family:var(--font-head);font-weight:900;font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);}
@@ -68,7 +69,6 @@
   <div class="page-header">
     <div style="display:flex;align-items:center;gap:12px">
       <div class="page-title"><span class="pulse-dot"></span>2A Tools <span>FAQ</span></div>
-      <span class="count-badge" id="total-badge">—</span>
     </div>
   </div>
   <div class="filter-bar" id="filter-bar"></div>
@@ -109,7 +109,7 @@ const FAQS = decoded.faqs.length ? decoded.faqs : [
   {id:6,q:"Can I change or cancel my order?",a:"Orders can be modified or cancelled within 1 hour of placement. After that they enter fulfillment. Please contact support immediately.",cat:"Orders",open:false},
 ];
 
-let activeFilter='All';
+let activeFilter=null;
 
 function hexSVG(open){
   const fill=open?'#20FDF0':'#3a3d47';
@@ -128,47 +128,23 @@ function toggleFaq(id){
 
 function renderFilters(){
   const usedCats=CATS.length?CATS.filter(c=>FAQS.some(f=>f.cat===c)):[...new Set(FAQS.map(f=>f.cat))];
-  const all=['All',...usedCats];
-  document.getElementById('filter-bar').innerHTML=all.map(c=>
+  document.getElementById('filter-bar').innerHTML=usedCats.map(c=>
     `<button class="filter-btn${c===activeFilter?' active':''}" onclick="activeFilter='${c}';render()">${c}</button>`).join('');
 }
 
 function render(){
   renderFilters();
-  let list=FAQS;
-  if(activeFilter!=='All')list=list.filter(f=>f.cat===activeFilter);
-  document.getElementById('total-badge').textContent=list.length+' question'+(list.length!==1?'s':'');
+  const el=document.getElementById('faq-content');
+  if(!activeFilter){el.innerHTML='';return;}
+  let list=FAQS.filter(f=>f.cat===activeFilter);
 
   const cats=CATS.length?CATS.filter(c=>list.some(f=>f.cat===c)):[...new Set(list.map(f=>f.cat))];
-  const el=document.getElementById('faq-content');
-
-  if(activeFilter==='All'){
-    el.innerHTML=cats.map(cat=>{
-      const items=list.filter(f=>f.cat===cat);
-      if(!items.length)return '';
-      return `<div class="cat-group">
-        <div class="cat-group-header">
-          <span class="cat-group-label">${cat}</span>
-          <div class="cat-group-line"></div>
-          <span class="cat-group-count">${items.length} FAQ${items.length!==1?'s':''}</span>
-        </div>
-        <div class="faq-grid">${items.map(f=>`
-          <div class="faq-item${f.open?' open':''}" id="fi-${f.id}">
-            <div class="faq-q" onclick="toggleFaq(${f.id})">${hexSVG(f.open)}<span class="faq-q-text">${f.q}</span></div>
-            <div class="faq-a">${f.a}</div>
-          </div>`).join('')}
-        </div>
-      </div>`;
-    }).join('');
-  } else {
-    el.innerHTML=`<div class="faq-grid">${list.map(f=>`
-      <div class="faq-item${f.open?' open':''}" id="fi-${f.id}">
-        <div class="faq-q" onclick="toggleFaq(${f.id})">${hexSVG(f.open)}<span class="faq-q-text">${f.q}</span></div>
-        <div class="faq-a">${f.a}</div>
-      </div>`).join('')}</div>`;
-  }
+  el.innerHTML=`<div class="faq-grid">${list.map(f=>`
+    <div class="faq-item${f.open?' open':''}" id="fi-${f.id}">
+      <div class="faq-q" onclick="toggleFaq(${f.id})">${hexSVG(f.open)}<span class="faq-q-text">${f.q}</span></div>
+      <div class="faq-a">${f.a}</div>
+    </div>`).join('')}</div>`;
 }
-
 render();
 
 function reportHeight(){
