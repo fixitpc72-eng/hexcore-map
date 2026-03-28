@@ -12,14 +12,14 @@
     --font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+  body{background:var(--black);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:stretch;}
 
-  header{background:var(--dark);border-bottom:1px solid var(--border);border-left:1px solid var(--border);border-right:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;width:75%;}
+  header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;width:100%;}
   .logo{font-family:var(--font-head);font-weight:900;font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--text);}
   .logo span{color:var(--accent);}
   .header-badge{background:var(--accent);color:#0a0a0a;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;}
 
-  .main{width:75%;padding:2.5rem 0;}
+  .main{width:100%;padding:2.5rem 2rem;}
 
   .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem;}
   .page-title{font-family:var(--font-head);font-size:28px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;}
@@ -49,7 +49,7 @@
   .faq-a{display:none;padding:12px 16px 16px 50px;border-top:1px solid var(--border);font-size:14px;color:var(--sub);line-height:1.7;}
   .faq-item.open .faq-a{display:block;}
 
-  @media(max-width:900px){header,.main{width:92%;}}
+  @media(max-width:900px){.main{padding:2rem 1.25rem;}}
   @media(max-width:600px){
     .page-title{font-size:22px;}
     .faq-q-text{font-size:14px;}
@@ -170,6 +170,14 @@ function render(){
 }
 
 render();
+
+function reportHeight(){
+  window.parent.postMessage({frameHeight: document.body.scrollHeight}, '*');
+}
+if(window.ResizeObserver){
+  new ResizeObserver(reportHeight).observe(document.body);
+}
+window.addEventListener('load', reportHeight);
 </script>
 </body>
 </html>
