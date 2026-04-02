@@ -46,30 +46,89 @@ Error generating stack: `+t.message+`
 
   </script>
 <script>
-function sendPlannerHeight() {
-  var height = Math.max(
-    document.body.scrollHeight,
-    document.documentElement.scrollHeight,
-    document.body.offsetHeight,
-    document.documentElement.offsetHeight
-  );
+(function () {
+  var lastHeight = 0;
 
-  if (window.parent) {
-    window.parent.postMessage(
-      { type: 'hexcore-planner-height', height: height },
-      '*'
+  function getPlannerHeight() {
+    return Math.max(
+      document.body ? document.body.scrollHeight : 0,
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.offsetHeight : 0,
+      document.documentElement ? document.documentElement.offsetHeight : 0,
+      document.body ? document.body.clientHeight : 0,
+      document.documentElement ? document.documentElement.clientHeight : 0
     );
   }
-}
 
-window.addEventListener('load', sendPlannerHeight);
-window.addEventListener('resize', sendPlannerHeight);
+  function sendPlannerHeight() {
+    var height = getPlannerHeight();
+    if (!height || height === lastHeight) return;
 
-if ('ResizeObserver' in window) {
-  new ResizeObserver(sendPlannerHeight).observe(document.body);
-}
+    lastHeight = height;
 
-setTimeout(sendPlannerHeight, 300);
-setTimeout(sendPlannerHeight, 1000);
+    if (window.parent) {
+      window.parent.postMessage(
+        { type: 'hexcore-planner-height', height: height },
+        '*'
+      );
+    }
+  }
+
+  document.documentElement.style.overflowX = 'hidden';
+  document.body.style.overflowX = 'hidden';
+
+  window.addEventListener('load', sendPlannerHeight);
+  window.addEventListener('resize', sendPlannerHeight);
+
+  document.addEventListener('click', function () {
+    setTimeout(sendPlannerHeight, 0);
+    setTimeout(sendPlannerHeight, 150);
+    setTimeout(sendPlannerHeight, 400);
+    setTimeout(sendPlannerHeight, 800);
+  });
+
+  document.addEventListener('input', function () {
+    setTimeout(sendPlannerHeight, 0);
+    setTimeout(sendPlannerHeight, 150);
+    setTimeout(sendPlannerHeight, 400);
+  });
+
+  document.addEventListener('change', function () {
+    setTimeout(sendPlannerHeight, 0);
+    setTimeout(sendPlannerHeight, 150);
+    setTimeout(sendPlannerHeight, 400);
+  });
+
+  if ('ResizeObserver' in window) {
+    var resizeObserver = new ResizeObserver(function () {
+      sendPlannerHeight();
+      setTimeout(sendPlannerHeight, 150);
+    });
+
+    if (document.body) resizeObserver.observe(document.body);
+    if (document.documentElement) resizeObserver.observe(document.documentElement);
+  }
+
+  if ('MutationObserver' in window) {
+    var mutationObserver = new MutationObserver(function () {
+      setTimeout(sendPlannerHeight, 0);
+      setTimeout(sendPlannerHeight, 150);
+      setTimeout(sendPlannerHeight, 400);
+    });
+
+    mutationObserver.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+      attributes: true
+    });
+  }
+
+  setInterval(sendPlannerHeight, 1000);
+
+  setTimeout(sendPlannerHeight, 100);
+  setTimeout(sendPlannerHeight, 300);
+  setTimeout(sendPlannerHeight, 700);
+  setTimeout(sendPlannerHeight, 1200);
+})();
 </script>
 </div>
