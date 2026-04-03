@@ -887,10 +887,17 @@ const LANE_META = {
   }
 
   function addToCompareByKey(key){
-    if(!key) return;
-    if(compareKeys.includes(key)) return;
+    const clean = (key||'').replace(/&#39;/g,"'");
+    if(!clean) return;
+    if(compareKeys.includes(clean)){
+      enterToolExperience();
+      renderComparePanel(getState());
+      jumpToSection('compare-panel');
+      return;
+    }
     if(compareKeys.length>=3) compareKeys.shift();
-    compareKeys.push(key);
+    compareKeys.push(clean);
+    enterToolExperience();
     renderComparePanel(getState());
     jumpToSection('compare-panel');
   }
@@ -1382,22 +1389,12 @@ const LANE_META = {
 
   function toggleCompareByKey(key){
     const clean = (key||'').replace(/&#39;/g,"'");
-    const mapEntry = suppressorMap[clean];
-    if(!mapEntry) return;
-    const state = getState();
-    const compare = (state.compare||[]).slice();
-    if(compare.indexOf(clean)>=0){
-      state.compare = compare.filter(function(k){return k!==clean;});
-    } else if(compare.length<3){
-      compare.push(clean);
-      state.compare = compare;
+    if(!clean || !getSuppressorByKey(clean)) return;
+    if(compareKeys.includes(clean)){
+      removeCompareByKey(clean);
     } else {
-      compare.shift();
-      compare.push(clean);
-      state.compare = compare;
+      addToCompareByKey(clean);
     }
-    setState(state);
-    renderScenario();
   }
   function renderTopMatches(state){
     const pool = getFilteredSuppressors(Object.assign({}, state, { suppressor:'' }));
@@ -1690,7 +1687,7 @@ const LANE_META = {
     }
     q('suppressor').dispatchEvent(new Event('change', {bubbles:true}));
     renderScenario();
-    const panel = q('selected-suppressor-panel');
+    const panel = q('selectedSuppressorPanel');
     if(panel && panel.scrollIntoView){
       panel.scrollIntoView({behavior:'smooth', block:'start'});
     }
