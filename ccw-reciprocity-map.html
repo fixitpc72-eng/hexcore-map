@@ -432,6 +432,7 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.
       <a href="#multi-permit" class="nav-pill">🃏 Multi-Permit Strategy</a>
       <a href="#vehicle-carry" class="nav-pill">🚗 Vehicle Carry</a>
       <a href="#flying-guide" class="nav-pill">✈️ Flying with Firearms</a>
+      <a href="#suppressor-travel" class="nav-pill">🔇 Suppressor Travel</a>
       <a href="#national-parks" class="nav-pill">🏕️ National Parks</a>
     </div>
 
@@ -905,6 +906,88 @@ header{background:var(--dark);border-bottom:1px solid var(--border);padding:0 1.
   </div>
 </div>
 
+
+<!-- ══════════════════════════════════════════ TRAVELING WITH A SUPPRESSOR ══════════════════════════════════════════ -->
+<div class="edu-section" id="suppressor-travel">
+  <div class="edu-inner">
+    <div class="edu-hero">
+      <div class="edu-eyebrow">Travel</div>
+      <h2 class="edu-title">Traveling With a <span class="ga">Suppressor</span></h2>
+      <p class="edu-sub">Road trip, range day, hunting camp, or flight — traveling with a suppressor is usually straightforward if you pack it correctly, keep your paperwork copy with you, and verify the law where you’re going.</p>
+    </div>
+
+    <div class="edu-alert success">
+      <strong>✅ Good News:</strong> A suppressor generally does <em>not</em> require advance interstate transport approval before crossing state lines. But that does <strong>not</strong> mean every state allows possession or use, so always verify your route and destination first.
+    </div>
+
+    <div class="edu-card-grid" style="margin-bottom:2rem">
+      <div class="edu-card accent-border">
+        <div class="edu-card-icon">📄</div>
+        <div class="edu-card-title">Keep a Paperwork Copy</div>
+        <div class="edu-card-body">Travel with a <strong>copy</strong> of your registration paperwork, not the original. Keep the original stored securely, and keep the copy accessible in case you need to document lawful possession.</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">🔒</div>
+        <div class="edu-card-title">Lock It Up</div>
+        <div class="edu-card-body">When driving, store the suppressor in a <strong>locked case</strong> and keep it <strong>out of easy reach</strong>. Conservative storage is the safest move when crossing state lines or stopping overnight.</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">✈️</div>
+        <div class="edu-card-title">Flying Is Simple</div>
+        <div class="edu-card-body">If you’re flying, put it in <strong>checked baggage only</strong>, inside a <strong>hard-sided locked case</strong>, and <strong>declare it</strong> at the airline counter during check-in.</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">⚖️</div>
+        <div class="edu-card-title">Destination Law Rules</div>
+        <div class="edu-card-body">Transport rules are only part of the picture. Possession, hunting use, public-land rules, and local restrictions can all change once you arrive.</div>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--font-head);font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;margin-bottom:1rem">Travel Checklist</h3>
+    <div class="edu-step-list">
+      <div class="edu-step">
+        <div class="edu-step-num">1</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">Check Every State on the Route</div>
+          <div class="edu-step-body">Do not just check the final destination. Verify the law for <strong>every state you pass through</strong>, especially if your trip includes hotel stops, hunting land, or unexpected detours.</div>
+        </div>
+      </div>
+      <div class="edu-step">
+        <div class="edu-step-num">2</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">Pack It in a Locked Case</div>
+          <div class="edu-step-body">Use a dedicated <strong>locked container</strong>. Keep the setup clean, secure, and separate from easy passenger access during travel.</div>
+        </div>
+      </div>
+      <div class="edu-step">
+        <div class="edu-step-num">3</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">Carry a Documentation Copy</div>
+          <div class="edu-step-body">Bring a copy of the registration paperwork with you. If the item is held in a trust, a copy of the trust documents may also be worth keeping with your travel file.</div>
+        </div>
+      </div>
+      <div class="edu-step">
+        <div class="edu-step-num">4</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">Declare It When Flying</div>
+          <div class="edu-step-body">At the airport, declare it at check-in, place it in <strong>checked baggage</strong>, and use a <strong>hard-sided locked case</strong> that complies with airline procedure.</div>
+        </div>
+      </div>
+      <div class="edu-step">
+        <div class="edu-step-num">5</div>
+        <div class="edu-step-content">
+          <div class="edu-step-title">Know the Rules Where You Land</div>
+          <div class="edu-step-body">Legal transport does not automatically mean legal use everywhere. Confirm the rules that apply once you arrive, especially for hunting, public ranges, and temporary lodging.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="edu-alert warn">
+      <strong>⚠ Bottom Line:</strong> Traveling with a suppressor is often easier than people think, but the smart move is always the same: verify the law, lock it up, bring your paperwork copy, and treat flights and interstate travel with extra care.
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════════════════════════════════ NATIONAL PARKS ══════════════════════════════════════════ -->
 <div class="edu-section" id="national-parks">
   <div class="edu-inner">
@@ -1133,6 +1216,8 @@ function status(ts) {
 function sColor(s){return{you:C.you,hon:C.hon,cc:C.cc,res:C.res,no:C.no,nd:'#3a3d47'}[s]||'#3a3d47'}
 function sLabel(s){return{you:'Your Permit State',hon:'Honors Your Permit',cc:'Constitutional Carry (No Permit Needed)',res:'Restricted / Partial',no:'Does Not Honor',nd:'No Data'}[s]||'Unknown'}
 function cap(s){return s?s.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()):''}
+const SUPPRESSOR_ILLEGAL_STATES=new Set(['California','Delaware','Hawaii','Illinois','Massachusetts','New Jersey','New York','Rhode Island']);
+function suppressorOwnershipTag(stateName){return SUPPRESSOR_ILLEGAL_STATES.has(stateName)?'<span class="tag tag-red">No</span>':'<span class="tag tag-green">Yes</span>'}
 
 // ── MAP DRAW ──
 function drawStates(){
@@ -1337,6 +1422,7 @@ function renderSinglePermitInfo(stateName){
     <div class="info-row"><span class="ir-label">Training</span><span class="ir-value">${p.tr?'Required':'Not Required'}</span></div>
     <div class="info-row"><span class="ir-label">Nonresident</span><span class="ir-value">${p.nrp?'<span class="tag tag-green">Yes</span>':'<span class="tag tag-red">No</span>'}</span></div>
     <div class="info-row"><span class="ir-label">Enhanced Permit</span><span class="ir-value">${p.ep?'<span class="tag tag-green">Yes</span>':'No'}</span></div>
+    <div class="info-row"><span class="ir-label">Suppressor Own.</span><span class="ir-value">${suppressorOwnershipTag(stateName)}</span></div>
     <div class="info-row"><span class="ir-label">Duty to Inform</span><span class="ir-value">${p.dti?'<span class="tag tag-yellow">Yes</span>':'No'}</span></div>
     <div class="info-row"><span class="ir-label">Castle Doctrine</span><span class="ir-value">${p.cd?'<span class="tag tag-green">Yes</span>':'<span class="tag tag-red">No</span>'}</span></div>
     <div class="info-row"><span class="ir-label">Stand Your Ground</span><span class="ir-value">${p.syg?'<span class="tag tag-green">Yes</span>':'<span class="tag tag-red">No</span>'}</span></div>
@@ -1371,6 +1457,7 @@ function showDetail(n){
     <div class="info-row"><span class="ir-label">Training</span><span class="ir-value">${d.tr?'Required':'Not Required'}</span></div>
     <div class="info-row"><span class="ir-label">Nonresident</span><span class="ir-value">${d.nrp?'<span class="tag tag-green">Yes</span>':'No'}</span></div>
     <div class="info-row"><span class="ir-label">Enhanced Permit</span><span class="ir-value">${d.ep?'<span class="tag tag-green">Yes</span>':'No'}</span></div>
+    <div class="info-row"><span class="ir-label">Suppressor Own.</span><span class="ir-value">${suppressorOwnershipTag(n)}</span></div>
     <div class="info-row"><span class="ir-label">Other Weapons</span><span class="ir-value">${d.oth?'<span class="tag tag-green">Yes</span>':'No'}</span></div>
     <div class="info-row"><span class="ir-label">Duty to Inform</span><span class="ir-value">${d.dti?'<span class="tag tag-yellow">Yes</span>':'No'}</span></div>
     <div class="info-row"><span class="ir-label">Castle Doctrine</span><span class="ir-value">${d.cd?'<span class="tag tag-green">Yes</span>':'No'}</span></div>
